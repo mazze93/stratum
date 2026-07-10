@@ -138,10 +138,19 @@
           "sb-018"
         ],
         "status": "asserted"
+      },
+      {
+        "authority": "narrative",
+        "id": "sb-019",
+        "narrative": "The human-readable decision record (docs/DECISIONS.md) is a projection of this trace \u2014 generated, never hand-edited, drift-guarded in CI alongside the golden projection and both implementations' invariants. MIT license. The repo's own decision hygiene is enforced by the machinery it ships.",
+        "revision_chain": [
+          "sb-019"
+        ],
+        "status": "asserted"
       }
     ]
   },
-  "epoch": 18,
+  "epoch": 19,
   "narrative_only": {
     "current_goal": null,
     "next_action": null,
