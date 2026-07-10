@@ -50,13 +50,13 @@
         "status": "validated"
       },
       {
-        "authority": "authoritative_provisional",
+        "authority": "authoritative_verified",
         "id": "sb-003",
         "narrative": "One Durable Object per log is the single-writer gate: appends serialize in a single-threaded scope and every guard runs at one door. Infrastructure expression of ADR-002's single-synchronous-gate principle.",
         "revision_chain": [
           "sb-003"
         ],
-        "status": "pending_evidence"
+        "status": "validated"
       },
       {
         "authority": "authoritative_verified",
@@ -129,10 +129,19 @@
           "sb-016"
         ],
         "status": "asserted"
+      },
+      {
+        "authority": "narrative",
+        "id": "sb-018",
+        "narrative": "Stratum v0.3.0 is public: stratum.mazzeleczzare.com serves the Atrium over the deployed Worker; the demo log is seeded with this genesis trace \u2014 the system's first dataset is the record of its own construction; the workspace log is live for daily capture.",
+        "revision_chain": [
+          "sb-018"
+        ],
+        "status": "asserted"
       }
     ]
   },
-  "epoch": 16,
+  "epoch": 18,
   "narrative_only": {
     "current_goal": null,
     "next_action": null,
