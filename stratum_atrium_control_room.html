@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="lithograph">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Stratum — Atrium (Control Room)</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<style>
+/* ============================================================
+   1. OPINIONATED TOKENS - Lithograph Blueprint Aesthetic
+   Dark, deep slate background with highly saturated, 
+   vintage-lithograph strata colors that pop.
+   ============================================================ */
+:root {
+  /* Core UI - Dark Mode Default */
+  --bg-app: #121416;
+  --bg-panel: #1A1D21;
+  --bg-surface: #23272C;
+  --bg-highlight: #2C3137;
+  
+  --ink-primary: #F0F2F5;
+  --ink-muted: #9BA3AF;
+  --ink-faint: #5B636E;
+  
+  --line-soft: #2C3137;
+  --line-hard: #434B54;
+
+  /* Flowchart / Cognitive Highlights */
+  --accent-intent: #D4AC0D;   /* Ochre/Gold */
+  --accent-verify: #2ECC71;   /* Emerald */
+  --accent-human: #E74C3C;    /* Signal Red */
+  --accent-explain: #3498DB;  /* Blue */
+
+  /* MINERAL STRATA - Vibrant Vintage lithograph colors against dark */
+  --s-working: #F4D03F;    /* Bright Yellow */
+  --s-session: #58D68D;    /* Acid Green */
+  --s-episodic: #5DADE2;   /* Slate Blue */
+  --s-semantic: #EC7063;   /* Striking Pink */
+  --s-preference: #AF7AC5; /* Purple */
+  --s-archive: #E59866;    /* Orange/Brown */
+  --s-basement: #34495E;   /* Deep bedrock */
+
+  /* Typography */
+  --display: "Fraunces", Georgia, serif;
+  --body: "Archivo", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+/* ============================================================
+   2. RESET & FULL VIEWPORT LAYOUT
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0; 
+  font-family: var(--body); 
+  color: var(--ink-primary); 
+  background: var(--bg-app);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* No full-page scroll, panels scroll independently */
+}
+h1, h2, h3, h4, p { margin: 0; }
+button { font: inherit; color: inherit; cursor: pointer; border: none; background: none; }
+a { color: inherit; }
+
+/* The new 3-pane layout */
+.app-grid {
+  display: grid;
+  grid-template-columns: 240px 1fr 340px;
+  flex: 1;
+  overflow: hidden;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  border-right: 1px solid var(--line-hard);
+  background: var(--bg-panel);
+}
+.panel:last-child { border-right: none; }
+
+/* ============================================================
+   3. COMPONENTS & TYPOGRAPHY
+   ============================================================ */
+.mono-label {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+/* Epistemic Contract Badges (From python ADRs) */
+.epistemic-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 2px;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+}
+.e-axiomatic { 
+  color: #F0B27A; border-color: #F0B27A; background: rgba(240, 178, 122, 0.1); 
+} /* Human ratified */
+.e-verified { 
+  color: var(--accent-verify); border-color: var(--accent-verify); background: rgba(46, 204, 113, 0.1); 
+} /* Evidence checked */
+.e-provisional { 
+  color: var(--ink-muted); border-color: var(--line-hard); background: var(--bg-surface); 
+} /* Pending */
+
+/* ============================================================
+   4. LEFT RAIL: VERTICAL CORE-LOG (Depth Gauge)
+   ============================================================ */
+.panel-log { padding: 1.5rem 1rem; background: var(--bg-app); display: flex; flex-direction: column; gap: 2rem;}
+.log-header {
+  border-bottom: 1px solid var(--line-hard);
+  padding-bottom: 1rem;
+}
+.wordmark { font-family: var(--display); font-weight: 400; font-size: 1.8rem; letter-spacing: 0.05em; color: var(--ink-primary); line-height: 1.1; }
+.sub-mark { font-family: var(--mono); font-size: 0.65rem; color: var(--accent-intent); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 0.5rem;}
+
+.strata-stack { display: flex; flex-direction: column; flex: 1; gap: 2px; }
+.strata-layer {
+  display: grid;
+  grid-template-columns: 20px 1fr;
+  gap: 0.75rem;
+  align-items: stretch;
+  min-height: 60px;
+}
+.strata-layer.tall { min-height: 90px; }
+.strata-layer.xtall { min-height: 120px; }
+
+.s-visual {
+  position: relative;
+  border-radius: 2px;
+  background-image: repeating-linear-gradient(rgba(0,0,0,0.15) 0px, rgba(0,0,0,0.15) 1px, transparent 1px, transparent 4px);
+  box-shadow: inset 2px 0 5px rgba(0,0,0,0.3);
+}
+.s-visual::after {
+  content: ''; position: absolute; top: 0; right: -4px; bottom: 0; width: 4px; background: inherit; filter: brightness(0.7);
+}
+.s-1 .s-visual { background-color: var(--s-working); }
+.s-2 .s-visual { background-color: var(--s-session); }
+.s-3 .s-visual { background-color: var(--s-episodic); }
+.s-4 .s-visual { background-color: var(--s-semantic); }
+.s-5 .s-visual { background-color: var(--s-preference); }
+.s-6 .s-visual { background-color: var(--s-archive); }
+
+.s-info { padding: 0.5rem 0; display: flex; flex-direction: column; justify-content: flex-start; }
+.s-info .s-name { font-family: var(--mono); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; color: var(--ink-primary); }
+.s-info .s-meta { font-size: 0.65rem; color: var(--ink-muted); margin-top: 0.2rem; line-height: 1.3;}
+.s-info .s-stat { font-family: var(--mono); font-size: 0.6rem; color: var(--ink-faint); margin-top: auto;}
+
+/* ============================================================
+   5. CENTER: THE ATRIUM (Active Workspace)
+   ============================================================ */
+.panel-atrium { padding: 0; }
+.atrium-header {
+  padding: 1rem 2rem;
+  border-bottom: 1px solid var(--line-hard);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg-highlight);
+}
+.atrium-body { padding: 2rem; display: flex; flex-direction: column; gap: 2rem; }
+
+/* The Human Arbitration Block (Critical Interrupt) */
+.arbitration-block {
+  border: 1px solid var(--accent-human);
+  border-left: 6px solid var(--accent-human);
+  background: rgba(231, 76, 60, 0.05);
+  padding: 1.5rem;
+  border-radius: 4px;
+  display: flex; flex-direction: column; gap: 1rem;
+}
+.arb-top { display: flex; justify-content: space-between; align-items: flex-start; }
+.arb-title { font-family: var(--display); font-size: 1.4rem; color: var(--accent-human); font-style: italic; }
+.arb-desc { font-size: 0.9rem; color: var(--ink-primary); max-width: 80%; line-height: 1.6;}
+.btn-arbitrate {
+  align-self: flex-start;
+  padding: 0.5rem 1.5rem;
+  background: var(--accent-human);
+  color: #fff;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border-radius: 2px;
+  transition: opacity 0.2s;
+}
+.btn-arbitrate:hover { opacity: 0.8; }
+
+/* Active Spec (Document) */
+.doc-card {
+  border: 1px solid var(--line-hard);
+  background: var(--bg-surface);
+  border-radius: 4px;
+  padding: 1.5rem;
+}
+.doc-card h3 { font-family: var(--display); font-size: 1.5rem; font-weight: 400; margin: 0.75rem 0; color: var(--ink-primary);}
+.doc-meta { display: flex; gap: 0.5rem; align-items: center; }
+.clauses {
+  margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed var(--line-hard);
+  color: var(--ink-muted); font-size: 0.9rem;
+}
+.clauses p { margin-bottom: 0.5rem; }
+.clauses p::before { content: "§ "; font-family: var(--mono); color: var(--accent-intent); }
+
+/* Work Units (Tickets) mapping to Cognitive Flowchart */
+.unit-list { display: flex; flex-direction: column; gap: 0.75rem; }
+.unit-row {
+  display: grid;
+  grid-template-columns: 80px 1fr auto;
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--line-soft);
+  border-radius: 4px;
+  transition: border-color 0.2s;
+}
+.unit-row:hover { border-color: var(--ink-muted); }
+
+/* Flowchart Phase Badges */
+.phase {
+  font-family: var(--mono); font-size: 0.65rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  padding: 0.25rem 0.5rem; border-radius: 2px; text-align: center;
+}
+.phase.plan { background: rgba(212, 172, 13, 0.15); color: var(--accent-intent); }
+.phase.execute { background: rgba(93, 173, 226, 0.15); color: var(--accent-explain); }
+.phase.verify { background: rgba(46, 204, 113, 0.15); color: var(--accent-verify); }
+
+.u-title { font-weight: 500; font-size: 0.95rem; color: var(--ink-primary); margin-bottom: 0.2rem;}
+.u-meta { font-size: 0.75rem; color: var(--ink-muted); }
+.u-meta strong { color: var(--ink-primary); font-weight: 500;}
+
+/* ============================================================
+   6. RIGHT RAIL: AGENTS & TELEMETRY
+   ============================================================ */
+.panel-roster { padding: 1.5rem; background: var(--bg-panel); display: flex; flex-direction: column; gap: 2rem;}
+
+.agent-roster { display: flex; flex-direction: column; gap: 1.5rem; position: relative;}
+/* The connection line from the flowchart */
+.agent-roster::before {
+  content: ''; position: absolute; left: 15px; top: 20px; bottom: 20px; width: 2px; background: var(--line-hard); z-index: 0;
+}
+
+.agent-node {
+  display: grid;
+  grid-template-columns: 32px 1fr;
+  gap: 1rem;
+  position: relative;
+  z-index: 1;
+}
+.a-icon {
+  width: 32px; height: 32px; border-radius: 50%; background: var(--bg-surface);
+  border: 2px solid var(--line-hard);
+  display: flex; align-items: center; justify-content: center;
+}
+.agent-node.active .a-icon { border-color: var(--accent-intent); }
+.a-pulse { width: 8px; height: 8px; border-radius: 50%; background: transparent; }
+.agent-node.active .a-pulse { background: var(--accent-intent); box-shadow: 0 0 8px var(--accent-intent); animation: pulse 2s infinite; }
+
+.a-details { display: flex; flex-direction: column; justify-content: center; }
+.a-name { font-family: var(--display); font-size: 1.1rem; color: var(--ink-primary); }
+.a-task { font-size: 0.8rem; color: var(--ink-muted); margin-top: 0.2rem; line-height: 1.3;}
+.a-budget { font-family: var(--mono); font-size: 0.65rem; color: var(--ink-faint); margin-top: 0.4rem; }
+
+/* Log Feed */
+.telemetry-feed { border-top: 1px solid var(--line-hard); padding-top: 1.5rem; flex: 1;}
+.feed-list { list-style: none; padding: 0; margin: 1rem 0 0; display: flex; flex-direction: column; gap: 0.75rem; }
+.feed-item { display: grid; grid-template-columns: 40px 1fr; gap: 0.5rem; font-size: 0.8rem; color: var(--ink-muted); }
+.feed-time { font-family: var(--mono); font-size: 0.65rem; color: var(--ink-faint); padding-top: 0.15rem; }
+.feed-item b { color: var(--ink-primary); font-weight: 500;}
+
+/* ============================================================
+   7. BOTTOM BAR: SYSTEM WEATHER
+   ============================================================ */
+.sys-weather {
+  background: #0D0F11; /* Darkest level */
+  border-top: 1px solid var(--line-soft);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  height: 50px;
+}
+.w-cell {
+  display: flex; align-items: center; justify-content: center; gap: 0.75rem;
+  border-right: 1px solid var(--line-soft);
+}
+.w-cell:last-child { border-right: none; }
+.w-label { font-family: var(--mono); font-size: 0.65rem; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.1em;}
+.w-val { font-size: 0.75rem; color: var(--ink-muted); }
+.w-val.alert { color: var(--accent-human); font-weight: 600;}
+
+/* Animations */
+@keyframes pulse { 0% { transform: scale(0.95); opacity: 0.8; } 50% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(0.95); opacity: 0.8; } }
+@keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+.arb-anim { animation: slideDown 0.4s ease-out forwards; }
+</style>
+</head>
+<body>
+
+<div class="app-grid">
+  
+  <!-- LEFT PANEL: Vertical Core Log -->
+  <aside class="panel panel-log" aria-label="Stratigraphic Depth Gauge">
+    <header class="log-header">
+      <h1 class="wordmark">STRATUM</h1>
+      <div class="sub-mark">Memory Depth Gauge</div>
+    </header>
+    
+    <div class="strata-stack">
+      <div class="strata-layer s-1 tall">
+        <div class="s-visual"></div>
+        <div class="s-info">
+          <span class="s-name">WORKING</span>
+          <span class="s-meta">Total decay<br>In context</span>
+          <span class="s-stat">3.8K / 4.0K</span>
+        </div>
+      </div>
+      
+      <div class="strata-layer s-2 xtall">
+        <div class="s-visual"></div>
+        <div class="s-info">
+          <span class="s-name">SESSION</span>
+          <span class="s-meta">Rolling summary<br>Recency × Salience</span>
+          <span class="s-stat">40K / 64.0K</span>
+        </div>
+      </div>
+      
+      <div class="strata-layer s-3 tall">
+        <div class="s-visual"></div>
+        <div class="s-info">
+          <span class="s-name">EPISODIC</span>
+          <span class="s-meta">Event graph<br>Supersession</span>
+          <span class="s-stat">214 EVENTS</span>
+        </div>
+      </div>
+      
+      <div class="strata-layer s-4">
+        <div class="s-visual"></div>
+        <div class="s-info">
+          <span class="s-name">SEMANTIC</span>
+          <span class="s-meta">Curator eviction</span>
+          <span class="s-stat">71% BUDGET</span>
+        </div>
+      </div>
+      
+      <div class="strata-layer s-5">
+        <div class="s-visual"></div>
+        <div class="s-info">
+          <span class="s-name">PREFERENCE</span>
+          <span class="s-meta">Loaded eagerly</span>
+          <span class="s-stat">PROFILE</span>
+        </div>
+      </div>
+      
+      <div class="strata-layer s-6 tall">
+        <div class="s-visual"></div>
+        <div class="s-info">
+          <span class="s-name">ARCHIVE</span>
+          <span class="s-meta">On-demand<br>Rehydration</span>
+          <span class="s-stat">COLD STORE</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- CENTER PANEL: The Atrium (Action Area) -->
+  <main class="panel panel-atrium" aria-label="Active Workspace">
+    <header class="atrium-header">
+      <div class="mono-label" style="color: var(--ink-primary)">SURVEY: aegis-radius</div>
+      <div class="mono-label">ROUTING HASH: 9f3c1a</div>
+      <div class="mono-label">EPOCH: 1187</div>
+    </header>
+
+    <div class="atrium-body">
+      
+      <!-- Critical Interrupt -->
+      <section class="arbitration-block arb-anim">
+        <div class="arb-top">
+          <h2 class="arb-title">Human Judgment Required</h2>
+          <span class="mono-label" style="color: var(--accent-human)">PENDING ARBITRATION</span>
+        </div>
+        <p class="arb-desc">
+          <strong>Architect</strong> and <strong>Critic</strong> diverge on the rotation-window boundary (ref: TCK-198). 
+          The policy engine halted autonomous resolution. A human decision is required to ratify the constraint before verification can proceed.
+        </p>
+        <button class="btn-arbitrate">Resolve Conflict ↗</button>
+      </section>
+
+      <!-- Active Spec (The projection output) -->
+      <section class="doc-card">
+        <div class="doc-meta">
+          <span class="epistemic-badge e-axiomatic">AUTHORITATIVE_AXIOMATIC</span>
+          <span class="mono-label">ACTIVE SPEC v0.2.0</span>
+        </div>
+        <h3>Certificate rotation for RADIUS supplicants</h3>
+        <div class="clauses">
+          <p>Rotation MUST begin no later than 14 days before notAfter; masked identifiers in every audit line.</p>
+          <p>step-ca is the sole issuing authority; no self-signed fallback path.</p>
+        </div>
+      </section>
+
+      <!-- Map Units (Mapping directly to the flowchart phases) -->
+      <section>
+        <div class="mono-label" style="margin-bottom: 1rem;">Active Work Units (3)</div>
+        <div class="unit-list">
+          
+          <article class="unit-row">
+            <div class="phase execute">Execute</div>
+            <div>
+              <div class="u-title">Implement renewal request builder</div>
+              <div class="u-meta">Target: <strong>Executor</strong> · TCK-204 · Scope: Write</div>
+            </div>
+            <span class="epistemic-badge e-provisional">PROVISIONAL</span>
+          </article>
+
+          <article class="unit-row">
+            <div class="phase verify">Verify</div>
+            <div>
+              <div class="u-title">Adversarial review of audit-masking</div>
+              <div class="u-meta">Target: <strong>Critic</strong> · TCK-201 · 3 Findings (1 High)</div>
+            </div>
+            <span class="epistemic-badge e-provisional">REVIEW_PENDING</span>
+          </article>
+
+          <article class="unit-row">
+            <div class="phase plan" style="opacity: 0.5">Plan</div>
+            <div style="opacity: 0.5">
+              <div class="u-title">Interface contract: PolicyEngine ↔ adapter</div>
+              <div class="u-meta">Target: <strong>Architect</strong> · TCK-198 · Foreclosed option flagged</div>
+            </div>
+            <span class="epistemic-badge" style="border-color: var(--accent-human); color: var(--accent-human)">BLOCKED</span>
+          </article>
+
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- RIGHT PANEL: Agents & Telemetry -->
+  <aside class="panel panel-roster">
+    
+    <section>
+      <div class="mono-label" style="margin-bottom: 1.5rem;">Agent Topology (2 Active)</div>
+      
+      <div class="agent-roster">
+        
+        <div class="agent-node active">
+          <div class="a-icon"><div class="a-pulse"></div></div>
+          <div class="a-details">
+            <div class="a-name">Executor</div>
+            <div class="a-task">writing renewal builder + tests (TCK-204)</div>
+            <div class="a-budget">CTX 8K · WRITE · RUN_TESTS</div>
+          </div>
+        </div>
+
+        <div class="agent-node active">
+          <div class="a-icon"><div class="a-pulse"></div></div>
+          <div class="a-details">
+            <div class="a-name">Historian</div>
+            <div class="a-task">compiling Tessera projection at epoch 1187</div>
+            <div class="a-budget">CTX 16K · READ_ALL · WRITE_TESSERA</div>
+          </div>
+        </div>
+
+        <div class="agent-node" style="opacity: 0.5">
+          <div class="a-icon"><div class="a-pulse"></div></div>
+          <div class="a-details">
+            <div class="a-name">Orchestrator</div>
+            <div class="a-task">routing idle · awaiting arbitration</div>
+            <div class="a-budget">CTX 4K · CONTROL_ONLY</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="telemetry-feed">
+      <div class="mono-label">Event Stream (Recent)</div>
+      <ul class="feed-list">
+        <li class="feed-item">
+          <time class="feed-time">09:42</time>
+          <span><b>Historian</b> derived Tessera projection T-118 from append-log.</span>
+        </li>
+        <li class="feed-item">
+          <time class="feed-time">09:38</time>
+          <span><b>Verifier</b> validated evidence check <span style="color:var(--accent-verify)">6/6 invariants pass</span> (TCK-203).</span>
+        </li>
+        <li class="feed-item">
+          <time class="feed-time">09:31</time>
+          <span><b>Critic</b> appended 3 invalidation flags. <span style="color:var(--accent-human)">Dependents marked provisional.</span></span>
+        </li>
+        <li class="feed-item">
+          <time class="feed-time">09:24</time>
+          <span><b>PolicyEngine</b> synchronized gate. Auth-rotation v0.2.0 ratified.</span>
+        </li>
+      </ul>
+    </section>
+
+  </aside>
+</div>
+
+<!-- BOTTOM WEATHER BAR -->
+<footer class="sys-weather">
+  <div class="w-cell">
+    <span class="w-label">Cirrus (Drift)</span>
+    <span class="w-val">Anchors Holding</span>
+  </div>
+  <div class="w-cell">
+    <span class="w-label">Cumulus (Load)</span>
+    <span class="w-val">2 Agents Async</span>
+  </div>
+  <div class="w-cell">
+    <span class="w-label">Stratus (Memory)</span>
+    <span class="w-val">Tiers Consistent</span>
+  </div>
+  <div class="w-cell">
+    <span class="w-label">Nimbus (Alerts)</span>
+    <span class="w-val alert">1 ARBITRATION PENDING</span>
+  </div>
+</footer>
+
+</body>
+</html>

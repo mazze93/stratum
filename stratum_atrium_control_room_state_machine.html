@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="vellum" data-contrast="standard" data-motion="full">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Stratum — Atrium (Control Room)</title>
+
+<!--
+  STRATUM · ATRIUM (Control Room) — Interactive Design Prototype.
+  Integrates:
+  1. 3-Pane Persistent Workbench layout.
+  2. Live Epistemic State Machine (Plan -> Execute -> Verify).
+  3. Interactive Human Arbitration & Epoch Transitioning (Epoch 1187 -> 1188).
+  4. Real-time Epistemic Inspector (Claim vs. Evidence Lineage drawer).
+  5. Circadian Daylight blending over 4 custom-crafted surfaces.
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<style>
+/* ============================================================
+   1. TOKENS — Managed dynamically by the theme engine
+   ============================================================ */
+:root {
+  --table:#ddd9cf; --paper:#e9e6dd; --paper-cool:#e3e2da; --paper-warm:#f0eee6; --surface:#f3f1ea;
+  --ink:#2a2620; --ink-2:#555047; --ink-3:#777063;
+  --line:#c9c4b6; --line-strong:#b3ad9c; --shadow:rgba(40,34,26,.26);
+  --accent-intent:#8a6a10; --accent-verify:#3f5a36; --accent-human:#a23c27; --accent-explain:#2f6088;
+  --human-fill:#b5462f; --human-fill-ink:#f6efe5;
+  --s-working:#d0b25c; --s-session:#97ab74; --s-episodic:#6c93a9; --s-semantic:#c2855b; --s-preference:#a67f9f; --s-archive:#948872;
+  --sheet-max:1560px; --hair:1px; --text-scale:1;
+  --display:"Fraunces",Georgia,serif; --body:"Archivo",system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+
+/* ============================================================
+   2. RESET + APP SHELL
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; font-size: calc(100% * var(--text-scale)); }
+body {
+  margin: 0; font-family: var(--body); color: var(--ink); background: var(--table); line-height: 1.5;
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+  transition: background-color 400ms ease, color 400ms ease;
+}
+h1, h2, h3, h4, p { margin: 0; font-weight: 400; }
+button { font: inherit; color: inherit; cursor: pointer; border: none; background: none; padding: 0; }
+a { color: inherit; }
+.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.mono-label { font-family: var(--mono); font-size: .65rem; letter-spacing: .15em; text-transform: uppercase; color: var(--ink-2); }
+:focus-visible { outline: 2px solid var(--accent-intent); outline-offset: 2px; border-radius: 2px; }
+
+/* Motion Settings */
+html[data-motion="still"] *, html[data-motion="still"] *::before, html[data-motion="still"] *::after {
+  animation: none !important; transition: none !important;
+}
+html[data-motion="reduced"] .ambient { animation: none !important; }
+
+/* 3-Pane Persistent Layout */
+.app-shell {
+  display: flex; flex-direction: column; min-height: 100vh; max-width: var(--sheet-max); margin: 0 auto;
+  background: var(--paper); border-inline: var(--hair) solid var(--line-strong); position: relative; overflow: hidden;
+}
+.app-grid { display: grid; grid-template-columns: 260px 1fr 348px; flex: 1; min-height: 0; }
+.panel { display: flex; flex-direction: column; border-right: var(--hair) solid var(--line-strong); background: var(--paper); min-height: 0; }
+.panel:last-child { border-right: none; }
+
+/* Desktop view: fixed heights, split pane scrolling */
+@media (min-width: 1025px) {
+  .app-shell { height: 100vh; }
+  .panel { overflow-y: auto; }
+}
+@media (max-width: 1024px) {
+  .app-grid { grid-template-columns: 1fr; }
+  .panel { border-right: none; border-bottom: var(--hair) solid var(--line-strong); }
+}
+
+/* ============================================================
+   3. EPISTEMIC STATUS BADGES (Surfaced contract tokens)
+   ============================================================ */
+.epi {
+  display: inline-flex; align-items: center; gap: .35rem; padding: .2rem .5rem; border-radius: 2px;
+  font-family: var(--mono); font-size: .6rem; letter-spacing: .08em; text-transform: uppercase;
+  border: var(--hair) solid transparent; white-space: nowrap; transition: all 150ms ease;
+}
+.epi::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.epi.axiomatic { color: var(--accent-intent); border-color: var(--accent-intent); background: color-mix(in srgb, var(--accent-intent) 13%, transparent); }
+.epi.verified { color: var(--accent-verify); border-color: var(--accent-verify); background: color-mix(in srgb, var(--accent-verify) 13%, transparent); }
+.epi.provisional { color: var(--ink-2); border-color: var(--line-strong); background: var(--surface); }
+.epi.blocked { color: var(--accent-human); border-color: var(--accent-human); background: color-mix(in srgb, var(--accent-human) 12%, transparent); }
+
+/* ============================================================
+   4. LEFT RAIL — Memory Depth-Gauge 
+   ============================================================ */
+.panel-log { padding: 1.4rem 1.2rem; background: var(--paper-warm); gap: 1.4rem; }
+.log-header { border-bottom: var(--hair) solid var(--line-strong); padding-bottom: 1rem; }
+.wordmark { font-family: var(--display); font-weight: 560; font-size: 1.9rem; letter-spacing: .12em; color: var(--ink); line-height: 1; }
+.sub-mark { font-family: var(--mono); font-size: .62rem; color: var(--accent-intent); letter-spacing: .18em; text-transform: uppercase; margin-top: .5rem; }
+
+.strata-stack { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+.strata-layer { display: grid; grid-template-columns: 18px 1fr; gap: .8rem; align-items: stretch; min-height: 60px; transition: opacity 0.3s; }
+.strata-layer.tall { min-height: 84px; }
+.strata-layer.xtall { min-height: 112px; }
+
+.s-visual {
+  position: relative; border-radius: 2px; box-shadow: inset 2px 0 6px rgba(0,0,0,.18);
+  background-image: repeating-linear-gradient(rgba(0,0,0,.13) 0, rgba(0,0,0,.13) 1px, transparent 1px, transparent 5px);
+  transition: background-color 300ms ease;
+}
+.s-visual::after { content: ""; position: absolute; top: 0; right: -3px; bottom: 0; width: 3px; background: inherit; filter: brightness(.72); }
+
+.s-1 .s-visual { background-color: var(--s-working); }
+.s-2 .s-visual { background-color: var(--s-session); }
+.s-3 .s-visual { background-color: var(--s-episodic); }
+.s-4 .s-visual { background-color: var(--s-semantic); }
+.s-5 .s-visual { background-color: var(--s-preference); }
+.s-6 .s-visual { background-color: var(--s-archive); }
+
+.s-info { padding: .35rem 0; display: flex; flex-direction: column; }
+.s-name { font-family: var(--mono); font-size: .7rem; font-weight: 600; letter-spacing: .1em; color: var(--ink); }
+.s-meta { font-size: .66rem; color: var(--ink-2); margin-top: .2rem; line-height: 1.3; }
+.s-stat { font-family: var(--mono); font-size: .6rem; color: var(--ink-3); margin-top: auto; padding-top: .3rem; }
+
+/* ============================================================
+   5. CENTER — Atrium & Interactive Playground
+   ============================================================ */
+.panel-atrium { padding: 0; background: var(--paper); }
+.atrium-header {
+  padding: .85rem 1.5rem; border-bottom: var(--hair) solid var(--line-strong);
+  display: flex; flex-wrap: wrap; gap: .6rem 1.4rem; justify-content: space-between; align-items: center;
+  background: var(--paper-warm); position: sticky; top: 0; z-index: 5;
+}
+.atrium-header .meta-row { display: flex; flex-wrap: wrap; gap: .4rem 1.2rem; }
+.atrium-header .actions { display: flex; gap: .5rem; margin-left: auto; }
+
+.hbtn {
+  display: inline-flex; align-items: center; gap: .45rem; min-height: 40px; padding: .35rem .75rem;
+  background: var(--paper); border: var(--hair) solid var(--line-strong); font-size: .78rem; font-weight: 500;
+  transition: all 140ms ease; border-radius: 3px;
+}
+.hbtn:hover { background: var(--paper-cool); transform: translateY(-1px); border-color: var(--ink-3); }
+.hbtn.active-filter { background: var(--surface); border-color: var(--accent-intent); color: var(--accent-intent); }
+.hbtn kbd { font-family: var(--mono); font-size: .72rem; padding: .08rem .34rem; border: var(--hair) solid var(--line-strong); background: var(--paper-warm); border-radius: 2px; }
+
+.atrium-body { padding: 1.6rem 1.5rem; display: flex; flex-direction: column; gap: 1.5rem; }
+
+/* Arbitration Alert block */
+.arbitration {
+  border: var(--hair) solid var(--accent-human); border-left: 5px solid var(--accent-human);
+  background: color-mix(in srgb, var(--accent-human) 6%, var(--paper-warm));
+  border-radius: 3px; padding: 1.2rem 1.3rem; display: flex; flex-direction: column; gap: .9rem;
+  animation: slidedown .4s cubic-bezier(0.16, 1, 0.3, 1) both; transition: all 300ms ease;
+}
+.arbitration.resolved {
+  border-color: var(--accent-verify); border-left-color: var(--accent-verify);
+  background: color-mix(in srgb, var(--accent-verify) 6%, var(--paper-warm));
+}
+.arb-top { display: flex; flex-wrap: wrap; gap: .6rem; justify-content: space-between; align-items: flex-start; }
+.arb-title { font-family: var(--display); font-style: italic; font-size: 1.35rem; color: var(--accent-human); transition: color 300ms; }
+.arbitration.resolved .arb-title { color: var(--accent-verify); }
+.arb-desc { font-size: .9rem; color: var(--ink); max-width: 74ch; line-height: 1.6; }
+.arb-desc strong { font-weight: 600; }
+.btn-arb {
+  align-self: flex-start; min-height: 42px; padding: .5rem 1.3rem;
+  background: var(--human-fill); color: var(--human-fill-ink); font-family: var(--mono);
+  font-size: .74rem; font-weight: 600; letter-spacing: .05em; text-transform: uppercase;
+  border-radius: 2px; transition: all 150ms ease; box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+}
+.btn-arb:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+/* Active Spec Card */
+.doc-card { border: 1.5px double var(--line-strong); background: var(--paper-warm); border-radius: 3px; padding: 1.3rem; transition: transform 0.2s ease; }
+.doc-card:hover { border-color: var(--line-strong); }
+.doc-meta { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
+.doc-card h3 { font-family: var(--display); font-weight: 500; font-size: clamp(1.4rem, 2.6vw, 1.85rem); line-height: 1.1; margin: .7rem 0 0; }
+.clauses { margin-top: .9rem; padding-top: .9rem; border-top: var(--hair) dashed var(--line-strong); color: var(--ink-2); font-family: var(--display); font-size: .95rem; }
+.clauses p { margin-bottom: .5rem; }
+.clauses p::before { content: "§ "; font-family: var(--mono); color: var(--accent-intent); }
+.doc-actions { display: flex; flex-wrap: wrap; gap: .55rem; margin-top: 1rem; }
+
+.btn {
+  min-height: 40px; padding: .4rem .85rem; border: var(--hair) solid var(--line-strong);
+  background: var(--paper); font-size: .82rem; font-weight: 500; transition: all 140ms ease; border-radius: 3px;
+}
+.btn:hover { background: var(--paper-cool); transform: translateY(-1px); border-color: var(--ink-3); }
+.btn.primary { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.btn.primary:hover { filter: brightness(1.2); }
+.btn .k { font-family: var(--mono); font-size: .72rem; opacity: .72; margin-left: .35rem; }
+.second-class { font-size: .74rem; color: var(--ink-3); margin-top: -.4rem; }
+.second-class a { text-decoration: underline dotted; text-underline-offset: 3px; }
+
+/* Interactive Pipeline Units */
+.units-head { display: flex; align-items: baseline; justify-content: space-between; border-bottom: var(--hair) solid var(--line); padding-bottom: .5rem; }
+.units-head h2 { font-family: var(--display); font-weight: 500; font-size: 1.12rem; }
+.unit-list { display: flex; flex-direction: column; gap: .7rem; margin-top: .9rem; }
+
+.unit-row {
+  display: grid; grid-template-columns: 84px 1fr auto; gap: 1rem; align-items: center;
+  padding: .85rem; background: var(--paper); border: var(--hair) solid var(--line);
+  border-radius: 3px; transition: all 150ms cubic-bezier(0.16, 1, 0.3, 1); cursor: pointer;
+}
+.unit-row:hover { border-color: var(--accent-intent); transform: translateX(3px); background: var(--surface); }
+.unit-row.dim { opacity: .62; }
+.unit-row.selected { border-color: var(--accent-intent); box-shadow: 0 0 0 2px var(--accent-intent); background: var(--surface); }
+
+.phase { font-family: var(--mono); font-size: .62rem; font-weight: 600; text-transform: uppercase; letter-spacing: .1em; padding: .3rem .4rem; border-radius: 2px; text-align: center; }
+.phase.plan { background: color-mix(in srgb, var(--accent-intent) 16%, transparent); color: var(--accent-intent); }
+.phase.execute { background: color-mix(in srgb, var(--accent-explain) 16%, transparent); color: var(--accent-explain); }
+.phase.verify { background: color-mix(in srgb, var(--accent-verify) 16%, transparent); color: var(--accent-verify); }
+
+.u-title { font-weight: 600; font-size: .95rem; color: var(--ink); margin-bottom: .2rem; }
+.u-meta { font-size: .75rem; color: var(--ink-2); }
+.u-meta strong { color: var(--ink); font-weight: 600; }
+
+/* ============================================================
+   6. RIGHT RAIL — Agent Topology & Live Telemetry Feed
+   ============================================================ */
+.panel-roster { padding: 1.4rem; background: var(--paper-cool); gap: 1.6rem; }
+.roster-head { font-family: var(--mono); font-size: .65rem; letter-spacing: .15em; text-transform: uppercase; color: var(--ink-2); margin-bottom: 1.2rem; }
+.agent-roster { display: flex; flex-direction: column; gap: 1.3rem; position: relative; }
+.agent-roster::before { content: ""; position: absolute; left: 15px; top: 18px; bottom: 18px; width: 2px; background: var(--line-strong); z-index: 0; }
+
+.agent-node { display: grid; grid-template-columns: 32px 1fr; gap: .9rem; position: relative; z-index: 1; transition: opacity 0.3s; }
+.agent-node.dim { opacity: .55; }
+.a-icon { width: 32px; height: 32px; border-radius: 50%; background: var(--paper); border: 2px solid var(--line-strong); display: flex; align-items: center; justify-content: center; transition: border-color 0.3s; }
+.agent-node.active .a-icon { border-color: var(--accent-intent); }
+.a-pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--ink-3); transition: background-color 0.3s; }
+.agent-node.active .a-pulse { background: var(--accent-verify); }
+
+html[data-motion="full"] .agent-node.active .a-pulse { animation: pulse 2.6s ease-in-out infinite; }
+
+.a-name { font-family: var(--display); font-weight: 500; font-size: 1.05rem; color: var(--ink); }
+.a-task { font-size: .8rem; color: var(--ink-2); margin-top: .2rem; line-height: 1.3; }
+.a-budget { font-family: var(--mono); font-size: .62rem; color: var(--ink-3); margin-top: .35rem; }
+
+.telemetry { border-top: var(--hair) solid var(--line-strong); padding-top: 1.3rem; }
+.feed-list { list-style: none; padding: 0; margin: .9rem 0 0; display: flex; flex-direction: column; gap: .7rem; }
+.feed-item { display: grid; grid-template-columns: 38px 1fr; gap: .5rem; font-size: .8rem; color: var(--ink-2); animation: fadein 0.3s ease both; }
+.feed-time { font-family: var(--mono); font-size: .64rem; color: var(--ink-3); padding-top: .12rem; }
+.feed-item b { font-family: var(--display); font-style: italic; font-weight: 500; color: var(--ink); }
+.feed-item .ok { color: var(--accent-verify); font-weight: 600; }
+.feed-item .warn { color: var(--accent-human); font-weight: 600; }
+
+/* ============================================================
+   7. SYSTEM WEATHER BAR
+   ============================================================ */
+.sys-weather { display: grid; grid-template-columns: repeat(4, 1fr); background: var(--paper-warm); border-top: var(--hair) solid var(--line-strong); }
+.w-cell { display: flex; align-items: center; gap: .6rem; justify-content: center; padding: .6rem 1rem; border-right: var(--hair) solid var(--line); min-height: 48px; }
+.w-cell:last-child { border-right: none; }
+.w-label { font-family: var(--mono); font-size: .62rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+.w-val { font-size: .78rem; color: var(--ink); font-weight: 500; transition: color 0.3s; }
+.w-val.alert { color: var(--accent-human); font-weight: 600; }
+@media (max-width: 760px) { .sys-weather { grid-template-columns: 1fr 1fr; } .w-cell:nth-child(2) { border-right: none; } }
+@media (max-width: 460px) { .sys-weather { grid-template-columns: 1fr; } .w-cell { border-right: none; } }
+
+/* ============================================================
+   8. REAL-TIME INSPECTOR DRAWER
+   ============================================================ */
+.inspector-drawer {
+  position: absolute; top: 0; right: 0; bottom: 0; width: 420px; max-width: 100%;
+  background: var(--paper); border-left: var(--hair) solid var(--line-strong);
+  z-index: 100; transform: translateX(101%); transition: transform 350ms cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: -10px 0 40px rgba(0,0,0,0.15); display: flex; flex-direction: column;
+}
+.inspector-drawer.open { transform: translateX(0); }
+.drawer-header {
+  padding: 1.2rem; border-bottom: var(--hair) solid var(--line-strong); background: var(--paper-warm);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.drawer-header h2 { font-family: var(--display); font-weight: 500; font-size: 1.25rem; }
+.drawer-body { padding: 1.5rem; display: flex; flex-direction: column; gap: 1.4rem; overflow-y: auto; flex: 1; }
+.lineage-box { background: var(--surface); border: var(--hair) solid var(--line); padding: 1rem; border-radius: 3px; }
+.evidence-node { display: flex; flex-direction: column; gap: 0.25rem; padding-left: 1rem; border-left: 2px solid var(--accent-intent); margin-top: 0.5rem; }
+.hash-tag { font-family: var(--mono); font-size: 0.65rem; color: var(--ink-3); background: var(--paper); padding: 0.15rem 0.35rem; width: fit-content; border-radius: 2px; margin-top: 0.25rem; }
+
+/* ============================================================
+   9. SETTINGS DIALOG
+   ============================================================ */
+dialog.settings { width: min(560px, 94vw); padding: 0; border: 1.5px solid var(--ink); background: var(--paper); color: var(--ink); box-shadow: 0 30px 80px -30px rgba(0,0,0,.6); border-radius: 4px; }
+dialog.settings::backdrop { background: color-mix(in srgb, var(--ink) 62%, transparent); }
+.settings header { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; padding: 1rem 1.2rem; border-bottom: var(--hair) solid var(--line-strong); background: var(--paper-warm); }
+.settings header h2 { font-family: var(--display); font-weight: 500; font-size: 1.3rem; }
+.settings header .x { min-height: 40px; min-width: 40px; border: var(--hair) solid var(--line-strong); background: var(--paper); border-radius: 3px; }
+.settings .body { padding: 1.1rem 1.2rem 1.3rem; display: grid; gap: 1.05rem; max-height: 70vh; overflow: auto; }
+.settings .intro { font-size: .82rem; color: var(--ink-2); margin: 0; }
+fieldset { border: var(--hair) solid var(--line); padding: .7rem .85rem .85rem; margin: 0; border-radius: 3px; }
+fieldset legend { font-family: var(--mono); font-size: .64rem; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-2); padding: 0 .4rem; }
+fieldset .hint { font-size: .72rem; color: var(--ink-3); margin: .15rem 0 .55rem; }
+.segmented { display: flex; flex-wrap: wrap; border: var(--hair) solid var(--line-strong); width: fit-content; max-width: 100%; border-radius: 3px; overflow: hidden; }
+.segmented label { position: relative; display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 .9rem; font-size: .8rem; font-weight: 500; border-right: var(--hair) solid var(--line-strong); cursor: pointer; background: var(--paper); transition: background-color 120ms ease; }
+.segmented label:last-child { border-right: none; }
+.segmented input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+.segmented label:hover { background: var(--paper-cool); }
+.segmented label:has(input:checked) { background: var(--ink); color: var(--paper); }
+.segmented label:has(input:focus-visible) { outline: 2px solid var(--ink); outline-offset: 2px; }
+.daylight { display: grid; gap: .5rem; }
+.daylight .row { display: flex; align-items: center; gap: .8rem; }
+.daylight input[type=range] { flex: 1; accent-color: var(--ink); height: 24px; }
+.daylight input[type=range]:disabled { opacity: .45; }
+.daylight .val { font-family: var(--mono); font-size: .68rem; color: var(--ink-2); min-width: 9.5em; text-align: right; }
+.daylight .auto { display: inline-flex; align-items: center; gap: .5rem; font-size: .8rem; min-height: 36px; }
+.gradient-rail { height: 8px; border: var(--hair) solid var(--line-strong); background: linear-gradient(90deg, #eceadf, #e6dcc6, #c9b58f, #6c5f4d, #2a2520); border-radius: 3px; }
+.settings footer { display: flex; gap: .6rem; justify-content: flex-end; padding: .9rem 1.2rem; border-top: var(--hair) solid var(--line-strong); background: var(--paper-warm); }
+
+/* ============================================================
+   10. KEYFRAMES
+   ============================================================ */
+@keyframes fadein { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+@keyframes slidedown { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: none; } }
+@keyframes pulse { 
+  0%, 100% { transform: scale(.9); opacity: .7; } 
+  50% { transform: scale(1.25); opacity: 1; box-shadow: 0 0 8px color-mix(in srgb, var(--accent-verify) 70%, transparent); } 
+}
+</style>
+</head>
+<body>
+
+<div class="app-shell">
+  <div class="app-grid">
+
+    <!-- LEFT RAIL: Memory Depth Gauge -->
+    <aside class="panel panel-log" aria-label="Memory depth gauge">
+      <header class="log-header">
+        <h1 class="wordmark">STRATUM</h1>
+        <div class="sub-mark">Memory Depth Gauge</div>
+      </header>
+      <div class="strata-stack" id="corelog-stack" role="img" aria-label="Six memory tiers as a vertical core-log; height encodes capacity.">
+        <div class="strata-layer s-1 tall" id="tier-working">
+          <div class="s-visual"></div>
+          <div class="s-info">
+            <span class="s-name">WORKING</span>
+            <span class="s-meta">Total decay · in context</span>
+            <span class="s-stat" id="stat-working">3.8K / 4.0K</span>
+          </div>
+        </div>
+        <div class="strata-layer s-2 xtall" id="tier-session">
+          <div class="s-visual"></div>
+          <div class="s-info">
+            <span class="s-name">SESSION</span>
+            <span class="s-meta">Rolling summary · recency × salience</span>
+            <span class="s-stat" id="stat-session">40K / 64.0K</span>
+          </div>
+        </div>
+        <div class="strata-layer s-3 tall" id="tier-episodic">
+          <div class="s-visual"></div>
+          <div class="s-info">
+            <span class="s-name">EPISODIC</span>
+            <span class="s-meta">Event graph · supersession</span>
+            <span class="s-stat" id="stat-episodic">214 EVENTS</span>
+          </div>
+        </div>
+        <div class="strata-layer s-4" id="tier-semantic">
+          <div class="s-visual"></div>
+          <div class="s-info">
+            <span class="s-name">SEMANTIC</span>
+            <span class="s-meta">Bounded · curator eviction</span>
+            <span class="s-stat" id="stat-semantic">71% BUDGET</span>
+          </div>
+        </div>
+        <div class="strata-layer s-5" id="tier-preference">
+          <div class="s-visual"></div>
+          <div class="s-info">
+            <span class="s-name">PREFERENCE</span>
+            <span class="s-meta">Per-user · loaded eagerly</span>
+            <span class="s-stat" id="stat-preference">PROFILE</span>
+          </div>
+        </div>
+        <div class="strata-layer s-6 tall" id="tier-archive">
+          <div class="s-visual"></div>
+          <div class="s-info">
+            <span class="s-name">ARCHIVE</span>
+            <span class="s-meta">Cold · on-demand rehydration</span>
+            <span class="s-stat" id="stat-archive">COLD STORE</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- CENTER WORKSPACE: The Atrium -->
+    <main class="panel panel-atrium" aria-label="Active workspace">
+      <header class="atrium-header">
+        <div class="meta-row">
+          <span class="mono-label" style="color:var(--ink)" id="meta-survey">SURVEY · aegis-radius</span>
+          <span class="mono-label">ROUTING · 9f3c1a</span>
+          <span class="mono-label" id="meta-epoch">EPOCH · 1187</span>
+        </div>
+        <div class="actions">
+          <button class="hbtn" id="open-inspector-btn" aria-label="Open Inspector">Inspector <kbd>⌘I</kbd></button>
+          <button class="hbtn" id="open-settings" aria-haspopup="dialog">Survey Settings</button>
+        </div>
+      </header>
+
+      <div class="atrium-body">
+
+        <!-- Human Arbitration Interrupt (Simulates conflict state) -->
+        <section class="arbitration" id="arbitration-block" role="alert" aria-label="Pending arbitration">
+          <div class="arb-top">
+            <h2 class="arb-title" id="arb-header">Human judgment required</h2>
+            <span class="epi blocked" id="arb-badge">Pending arbitration</span>
+          </div>
+          <p class="arb-desc" id="arb-text">
+            <strong>Architect</strong> and <strong>Critic</strong> diverge on the rotation-window boundary (TCK-198). 
+            The PolicyEngine halted autonomous resolution; a human decision is required to ratify the constraint before verification can proceed.
+          </p>
+          <button class="btn-arb" id="resolve-conflict-btn">Resolve conflict ↗</button>
+        </section>
+
+        <!-- Active Spec Document -->
+        <section class="doc-card" aria-label="Active spec">
+          <div class="doc-meta">
+            <span class="epi axiomatic">Axiomatic · human-ratified</span>
+            <span class="mono-label" id="spec-title-version">ACTIVE SPEC · v0.2.0</span>
+          </div>
+          <h3 id="spec-heading">Certificate rotation for RADIUS supplicants</h3>
+          <div class="clauses" id="spec-clauses">
+            <p>Rotation MUST begin no later than 14 days before notAfter; masked identifiers in every audit line.</p>
+            <p>step-ca is the sole issuing authority; no self-signed fallback path.</p>
+          </div>
+          <div class="doc-actions">
+            <button class="btn primary" id="open-doc-btn">Open as document <span class="k">⌘↵</span></button>
+            <button class="btn" id="compile-check-btn">Compile &amp; check</button>
+            <button class="btn" id="ratification-btn">Ratification record</button>
+          </div>
+        </section>
+        <p class="second-class">Or <a href="#" id="raw-exec-link">execute directly, without a spec</a> — unratified, plotted off-survey and marked second-class.</p>
+
+        <!-- Active Pipeline Work Units -->
+        <section aria-label="Active work units">
+          <div class="units-head">
+            <h2>Active work units</h2>
+            <span class="mono-label" id="units-pipeline-count">Pipeline · 3</span>
+          </div>
+          <div class="unit-list" id="unit-row-container">
+            <!-- Rendered dynamically -->
+          </div>
+        </section>
+
+      </div>
+    </main>
+
+    <!-- RIGHT RAIL: Agent Roster & Real-time Telemetry -->
+    <aside class="panel panel-roster" aria-label="Agent topology and telemetry">
+      <section>
+        <div class="roster-head" id="agent-topology-count">Agent topology · 2 active</div>
+        <div class="agent-roster" id="agent-container">
+          <!-- Rendered dynamically -->
+        </div>
+      </section>
+      
+      <section class="telemetry">
+        <div class="roster-head" style="margin:0">Event stream · recent</div>
+        <ul class="feed-list" id="feed-list-container">
+          <!-- Rendered dynamically -->
+        </ul>
+      </section>
+    </aside>
+
+  </div>
+
+  <!-- BOTTOM: System Weather -->
+  <footer class="sys-weather" aria-label="System conditions">
+    <div class="w-cell"><span class="w-label">Cirrus · Drift</span><span class="w-val" id="weather-cirrus">anchors holding</span></div>
+    <div class="w-cell"><span class="w-label">Cumulus · Load</span><span class="w-val" id="weather-cumulus">2 agents async</span></div>
+    <div class="w-cell"><span class="w-label">Stratus · Memory</span><span class="w-val" id="weather-stratus">tiers consistent</span></div>
+    <div class="w-cell"><span class="w-label">Nimbus · Alerts</span><span class="w-val alert" id="weather-nimbus">1 arbitration pending</span></div>
+  </footer>
+</div>
+
+<!-- EPOCH ARBITRATION WIZARD (MODAL DIALOG) -->
+<dialog class="settings" id="arbitration-wizard" aria-label="Arbitration Conflict Resolution Wizard">
+  <header>
+    <h2>Arbitration Wizard (Epoch Transition)</h2>
+    <button class="x" id="close-wizard" aria-label="Close Wizard">✕</button>
+  </header>
+  <div class="body" style="padding: 1.2rem; display: flex; flex-direction: column; gap: 1rem;">
+    <p class="intro" style="font-size: 0.85rem; line-height: 1.5; color: var(--ink-2);">
+      You are resolving an epistemic divergence between the <strong>Architect</strong> and the <strong>Critic</strong> on the rotation-window boundary. This decision acts as axiomatic human ratification, appending a permanent, signed entry to the ledger and stepping the epoch counter.
+    </p>
+    
+    <div style="display: grid; grid-template-columns: 1fr; gap: 1rem;">
+      <button style="border: var(--hair) solid var(--line-strong); background: var(--paper-warm); padding: 1rem; border-radius: 4px; text-align: left;" id="ratify-architect-btn">
+        <strong style="color: var(--accent-intent); font-family: var(--mono); font-size: 0.7rem; display: block; margin-bottom: 0.2rem;">OPTION A — RATIFY ARCHITECT</strong>
+        <span style="font-size: 0.85rem; color: var(--ink); line-height: 1.4; display: block;">Enforce rotation-window at strict 14 days. Increases cryptographic compliance guarantees but invalidates outdated, unmigrated legacy clients.</span>
+      </button>
+      
+      <button style="border: var(--hair) solid var(--line-strong); background: var(--paper-warm); padding: 1rem; border-radius: 4px; text-align: left;" id="ratify-critic-btn">
+        <strong style="color: var(--accent-explain); font-family: var(--mono); font-size: 0.7rem; display: block; margin-bottom: 0.2rem;">OPTION B — RATIFY CRITIC</strong>
+        <span style="font-size: 0.85rem; color: var(--ink); line-height: 1.4; display: block;">Permit dynamic fallback up to 7 days before notAfter. Minimizes legacy client eviction operational risk, but widens the compromise exposure window.</span>
+      </button>
+    </div>
+  </div>
+  <footer style="padding: 1rem; text-align: right; border-top: var(--hair) solid var(--line-strong); background: var(--paper-warm);">
+    <button class="btn" id="cancel-wizard">Cancel</button>
+  </footer>
+</dialog>
+
+<!-- SYSTEM WORKSPACE SURVEY SETTINGS -->
+<dialog class="settings" id="settings" aria-label="Survey Settings">
+  <header><h2>Survey Settings</h2><button class="x" id="close-settings" aria-label="Close settings">✕</button></header>
+  <form method="dialog" class="body" id="settings-form">
+    <p class="intro">Built to its full richness — and yours to tune. Choices are remembered; your system preferences set the starting point, then you decide.</p>
+    <fieldset>
+      <legend>Ground</legend>
+      <p class="hint">The paper the survey is drawn on. Blueprint is the dark control-room register.</p>
+      <div class="segmented" role="radiogroup" aria-label="Ground theme">
+        <label><input type="radio" name="theme" value="vellum"><span>Vellum</span></label>
+        <label><input type="radio" name="theme" value="stone"><span>Stone</span></label>
+        <label><input type="radio" name="theme" value="nocturne"><span>Nocturne</span></label>
+        <label><input type="radio" name="theme" value="blueprint"><span>Blueprint</span></label>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>Daylight</legend>
+      <p class="hint">Brightness, warmth and shadow across the day. Auto follows your local clock.</p>
+      <div class="daylight">
+        <div class="gradient-rail" aria-hidden="true"></div>
+        <div class="row"><input type="range" id="tone" min="0" max="100" step="1" value="20" aria-label="Daylight tone, 0 bright morning to 100 deep evening"><span class="val mono" id="tone-val">—</span></div>
+        <label class="auto"><input type="checkbox" id="tone-auto"> Auto · circadian (follow the clock)</label>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>Contrast</legend>
+      <p class="hint">Independent of Daylight — High strengthens ink and rules beyond the AA floor.</p>
+      <div class="segmented" role="radiogroup" aria-label="Contrast">
+        <label><input type="radio" name="contrast" value="standard"><span>Standard</span></label>
+        <label><input type="radio" name="contrast" value="high"><span>High</span></label>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>Motion</legend>
+      <p class="hint">Entrance reveals and the quiet agent pulse.</p>
+      <div class="segmented" role="radiogroup" aria-label="Motion">
+        <label><input type="radio" name="motion" value="full"><span>Full</span></label>
+        <label><input type="radio" name="motion" value="reduced"><span>Reduced</span></label>
+        <label><input type="radio" name="motion" value="still"><span>Still</span></label>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>Text size</legend>
+      <p class="hint">Scales every surface; layout reflows.</p>
+      <div class="segmented" role="radiogroup" aria-label="Text size">
+        <label><input type="radio" name="text" value="1"><span>A</span></label>
+        <label><input type="radio" name="text" value="1.12"><span>A+</span></label>
+        <label><input type="radio" name="text" value="1.25"><span>A++</span></label>
+      </div>
+    </fieldset>
+  </form>
+  <footer><button class="btn" id="reset-settings" type="button">Reset to system</button><button class="btn primary" id="done-settings" type="button">Done</button></footer>
+</dialog>
+
+<!-- COGNITIVE & EPISTEMIC INSPECTOR DRAWER -->
+<div class="inspector-drawer" id="inspector-drawer">
+  <div class="drawer-header">
+    <h2 id="inspector-title">Epistemic Inspector</h2>
+    <button class="x" id="close-inspector" style="width: 32px; height: 32px; border: var(--hair) solid var(--line-strong); background: var(--paper); display: flex; align-items: center; justify-content: center; border-radius: 3px;">✕</button>
+  </div>
+  <div class="drawer-body" id="inspector-content">
+    <!-- Rendered dynamically depending on selected state -->
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   A. CORE ENGINE STATE MACHINE
+   ============================================================ */
+const STATE = {
+  epoch: 1187,
+  surveyName: 'aegis-radius',
+  arbitrated: false,
+  selectedUnitId: null,
+  activeSpec: {
+    version: 'v0.2.0',
+    authority: 'Axiomatic · human-ratified',
+    heading: 'Certificate rotation for RADIUS supplicants',
+    clauses: [
+      'Rotation MUST begin no later than 14 days before notAfter; masked identifiers in every audit line.',
+      'step-ca is the sole issuing authority; no self-signed fallback path.'
+    ]
+  },
+  units: [
+    { id: 'TCK-204', title: 'Implement renewal request builder', target: 'Executor', phase: 'execute', status: 'provisional', statusText: 'Provisional', meta: 'scope: write', evidenceChain: { type: 'Unverified code signature', claim: 'LLM generated requests, pending test runner execution', hash: 'sha256-e3b0c442...' } },
+    { id: 'TCK-201', title: 'Adversarial review of audit-masking', target: 'Critic', phase: 'verify', status: 'provisional', statusText: 'Review pending', meta: '3 findings (1 high)', evidenceChain: { type: 'Static analyzer output', claim: '3 unmasked keys found in historic telemetry buffer logs', hash: 'sha256-ff71092a...' } },
+    { id: 'TCK-198', title: 'Interface contract: PolicyEngine ↔ adapter', target: 'Architect', phase: 'plan', status: 'blocked', statusText: 'Blocked', meta: 'foreclosed option flagged', evidenceChain: { type: 'Divergent architecture conflict', claim: 'Architect mandates 14d strict rotation; Critic requests dynamic fallback', hash: 'divergence-epoch-1187' } }
+  ],
+  agents: [
+    { name: 'Executor', task: 'writing renewal builder + tests (TCK-204)', budget: 'CTX 8K · WRITE · RUN_TESTS', active: true },
+    { name: 'Historian', task: 'compiling Tessera projection at epoch 1187', budget: 'CTX 16K · READ_ALL · WRITE_TESSERA', active: true },
+    { name: 'Orchestrator', task: 'routing idle · awaiting arbitration', budget: 'CTX 4K · CONTROL_ONLY', active: false }
+  ],
+  telemetry: [
+    { time: '09:42', text: '<b>Historian</b> derived Tessera projection T-118 from the append-log.' },
+    { time: '09:38', text: '<b>Verifier</b> <span class="ok">6/6 invariants pass</span> · TCK-203.' },
+    { time: '09:31', text: '<b>Critic</b> appended 3 invalidation flags · <span class="warn">dependents marked provisional</span>.' },
+    { time: '09:24', text: '<b>PolicyEngine</b> gate synchronized · auth-rotation v0.2.0 ratified.' }
+  ],
+  weather: {
+    cirrus: 'anchors holding',
+    cumulus: '2 agents async',
+    stratus: 'tiers consistent',
+    nimbus: '1 arbitration pending'
+  }
+};
+
+/* ============================================================
+   B. THEME CONFIG & COLOUR BLENDING (Vellum, Stone, Nocturne, Blueprint)
+   ============================================================ */
+const K=['table','paper','paperCool','paperWarm','surface','ink','ink2','ink3','line','lineStrong'];
+const MUTED={working:'#d0b25c',session:'#97ab74',episodic:'#6c93a9',semantic:'#c2855b',preference:'#a67f9f',archive:'#948872'};
+const VIVID={working:'#e8c44e',session:'#6cc78a',episodic:'#5aa9d6',semantic:'#df8a78',preference:'#b389c4',archive:'#d99a6a'};
+const THEMES={
+  vellum:{
+    day:{table:'#ddd9cf',paper:'#e9e6dd',paperCool:'#e3e2da',paperWarm:'#f0eee6',surface:'#f3f1ea',ink:'#2a2620',ink2:'#555047',ink3:'#777063',line:'#c9c4b6',lineStrong:'#b3ad9c',shadow:'rgba(40,34,26,.26)'},
+    night:{table:'#cfc7b6',paper:'#dbd4c5',paperCool:'#d5cfc0',paperWarm:'#e4ddcd',surface:'#e9e3d4',ink:'#2b2620',ink2:'#564f43',ink3:'#7a715f',line:'#c2b9a4',lineStrong:'#ada28a',shadow:'rgba(26,20,12,.42)'},
+    minerals:MUTED,accents:{intent:'#6c520f',verify:'#3f5a36',human:'#a23c27',explain:'#2f6088'},humanFill:'#b5462f',humanInk:'#f6efe5',
+    hc:{ink:'#161310',ink2:'#3b352a',line:'#9b927a',lineStrong:'#6f6754'}
+  },
+  stone:{
+    day:{table:'#d3d4cf',paper:'#e4e5e1',paperCool:'#dcdeda',paperWarm:'#eceeea',surface:'#f0f1ee',ink:'#232624',ink2:'#4c504d',ink3:'#6c706c',line:'#c4c6c1',lineStrong:'#abada7',shadow:'rgba(28,30,28,.24)'},
+    night:{table:'#c4c6c1',paper:'#d3d5d0',paperCool:'#cccfca',paperWarm:'#dddfda',surface:'#e3e5e0',ink:'#212422',ink2:'#494d4a',ink3:'#686c69',line:'#bbbdb7',lineStrong:'#a1a39d',shadow:'rgba(18,20,18,.4)'},
+    minerals:MUTED,accents:{intent:'#675210',verify:'#3e5836',human:'#9c3d29',explain:'#2d5f84'},humanFill:'#b0432d',humanInk:'#f6efe5',
+    hc:{ink:'#141614',ink2:'#393c39',line:'#969890',lineStrong:'#6c6e68'}
+  },
+  nocturne:{
+    day:{table:'#2b2922',paper:'#312e27',paperCool:'#36332b',paperWarm:'#3a362e',surface:'#3f3b32',ink:'#ede7d9',ink2:'#bab2a1',ink3:'#8f897a',line:'#46423a',lineStrong:'#585348',shadow:'rgba(0,0,0,.5)'},
+    night:{table:'#1e1c18',paper:'#24221c',paperCool:'#292620',paperWarm:'#2c2922',surface:'#302c25',ink:'#ece6d7',ink2:'#b4ad9b',ink3:'#8a8474',line:'#3b3830',lineStrong:'#4d4940',shadow:'rgba(0,0,0,.62)'},
+    minerals:MUTED,accents:{intent:'#e0b84e',verify:'#94b07f',human:'#e89674',explain:'#74b6e6'},humanFill:'#b5462f',humanInk:'#f6efe5',
+    hc:{ink:'#f8f3e9',ink2:'#d2cbba',line:'#5a564c',lineStrong:'#736d60'}
+  },
+  blueprint:{
+    day:{table:'#1b1f24',paper:'#20252b',paperCool:'#252b32',paperWarm:'#2a313a',surface:'#2f3741',ink:'#eef2f6',ink2:'#a7b1bd',ink3:'#727d8a',line:'#323a44',lineStrong:'#44505d',shadow:'rgba(0,0,0,.55)'},
+    night:{table:'#101316',paper:'#15181c',paperCool:'#191d22',paperWarm:'#1d222a',surface:'#222932',ink:'#eef2f6',ink2:'#a2acb8',ink3:'#6d7884',line:'#262d35',lineStrong:'#3a4450',shadow:'rgba(0,0,0,.68)'},
+    minerals:VIVID,accents:{intent:'#ecc24f',verify:'#5fcf8a',human:'#ef8a73',explain:'#6bb6e8'},humanFill:'#c0473a',humanInk:'#fbf3ee',
+    hc:{ink:'#ffffff',ink2:'#cdd6df',line:'#4a545f',lineStrong:'#64707d'}
+  }
+};
+
+const hx = h => { h=h.replace('#',''); return [parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)]; };
+const toHex = a => '#'+a.map(n=>Math.max(0,Math.min(255,Math.round(n))).toString(16).padStart(2,'0')).join('');
+const mix = (a,b,f) => { const x=hx(a),y=hx(b); return toHex([0,1,2].map(i=>x[i]+(y[i]-x[i])*f)); };
+const root = document.documentElement;
+
+function applyTokens(theme, tone, contrast){
+  const t = THEMES[theme], f = tone/100, o = {};
+  K.forEach(k => o[k] = mix(t.day[k], t.night[k], f));
+  o.shadow = f < .5 ? t.day.shadow : t.night.shadow;
+  if(contrast === 'high'){ o.ink=t.hc.ink; o.ink2=t.hc.ink2; o.line=t.hc.line; o.lineStrong=t.hc.lineStrong; }
+  const S = root.style;
+  S.setProperty('--table', o.table); S.setProperty('--paper', o.paper); S.setProperty('--paper-cool', o.paperCool);
+  S.setProperty('--paper-warm', o.paperWarm); S.setProperty('--surface', o.surface);
+  S.setProperty('--ink', o.ink); S.setProperty('--ink-2', o.ink2); S.setProperty('--ink-3', o.ink3);
+  S.setProperty('--line', o.line); S.setProperty('--line-strong', o.lineStrong); S.setProperty('--shadow', o.shadow);
+  S.setProperty('--accent-intent', t.accents.intent); S.setProperty('--accent-verify', t.accents.verify);
+  S.setProperty('--accent-human', t.accents.human); S.setProperty('--accent-explain', t.accents.explain);
+  S.setProperty('--human-fill', t.humanFill); S.setProperty('--human-fill-ink', t.humanInk);
+  S.setProperty('--s-working', t.minerals.working); S.setProperty('--s-session', t.minerals.session);
+  S.setProperty('--s-episodic', t.minerals.episodic); S.setProperty('--s-semantic', t.minerals.semantic);
+  S.setProperty('--s-preference', t.minerals.preference); S.setProperty('--s-archive', t.minerals.archive);
+  root.dataset.theme = theme; root.dataset.contrast = contrast;
+}
+
+function circadianTone(d){ const h=d.getHours()+d.getMinutes()/60; return Math.round(50-50*Math.cos(((h-13)/24)*2*Math.PI)); }
+function toneWord(v){ return v<20?'bright morning':v<40?'midday':v<60?'afternoon':v<80?'golden hour':'deep evening'; }
+
+/* ============================================================
+   C. RENDERING LOGIC & INTERACTIONS
+   ============================================================ */
+function renderDynamicContent() {
+  // 1. Update global counters / titles
+  document.getElementById('meta-epoch').textContent = `EPOCH · ${STATE.epoch}`;
+  document.getElementById('units-pipeline-count').textContent = `Pipeline · ${STATE.units.length}`;
+  document.getElementById('agent-topology-count').textContent = `Agent topology · ${STATE.agents.filter(a => a.active).length} active`;
+  
+  // 2. Render Units Pipeline
+  const container = document.getElementById('unit-row-container');
+  container.innerHTML = '';
+  STATE.units.forEach(u => {
+    const row = document.createElement('article');
+    row.className = `unit-row ${u.status === 'blocked' ? 'dim' : ''} ${STATE.selectedUnitId === u.id ? 'selected' : ''}`;
+    row.setAttribute('tabindex', '0');
+    row.setAttribute('role', 'button');
+    row.setAttribute('aria-label', `Work unit ${u.id}: ${u.title}`);
+    
+    // Status badges matching MEMORY_MODEL contract definitions
+    let badgeClass = 'provisional';
+    if (u.status === 'verified') badgeClass = 'verified';
+    if (u.status === 'blocked') badgeClass = 'blocked';
+    if (u.status === 'axiomatic') badgeClass = 'axiomatic';
+
+    row.innerHTML = `
+      <div class="phase ${u.phase}">${u.phase}</div>
+      <div>
+        <div class="u-title">${u.title}</div>
+        <div class="u-meta">Target <strong>${u.target}</strong> · ${u.id} · ${u.meta}</div>
+      </div>
+      <span class="epi ${badgeClass}">${u.statusText}</span>
+    `;
+
+    row.addEventListener('click', () => {
+      selectUnit(u.id);
+    });
+
+    row.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        selectUnit(u.id);
+      }
+    });
+
+    container.appendChild(row);
+  });
+
+  // 3. Render Agent Topology
+  const agentContainer = document.getElementById('agent-container');
+  agentContainer.innerHTML = '';
+  STATE.agents.forEach(a => {
+    const node = document.createElement('div');
+    node.className = `agent-node ${a.active ? 'active' : 'dim'}`;
+    node.innerHTML = `
+      <div class="a-icon"><div class="a-pulse ${a.active ? 'ambient' : ''}"></div></div>
+      <div>
+        <div class="a-name">${a.name}</div>
+        <div class="a-task">${a.task}</div>
+        <div class="a-budget">${a.budget}</div>
+      </div>
+    `;
+    agentContainer.appendChild(node);
+  });
+
+  // 4. Render Telemetry Feeds
+  const feedContainer = document.getElementById('feed-list-container');
+  feedContainer.innerHTML = '';
+  STATE.telemetry.forEach(t => {
+    const li = document.createElement('li');
+    li.className = 'feed-item';
+    li.innerHTML = `<time class="feed-time">${t.time}</time><span>${t.text}</span>`;
+    feedContainer.appendChild(li);
+  });
+
+  // 5. Update System Weather Dashboard
+  document.getElementById('weather-cirrus').textContent = STATE.weather.cirrus;
+  document.getElementById('weather-cumulus').textContent = STATE.weather.cumulus;
+  document.getElementById('weather-stratus').textContent = STATE.weather.stratus;
+  
+  const alertCell = document.getElementById('weather-nimbus');
+  alertCell.textContent = STATE.weather.nimbus;
+  if (STATE.arbitrated) {
+    alertCell.classList.remove('alert');
+    alertCell.style.color = 'var(--accent-verify)';
+  } else {
+    alertCell.classList.add('alert');
+  }
+
+  // 6. Update Core Log stats dynamically if changes happen
+  document.getElementById('stat-working').textContent = STATE.units.some(u => u.status === 'provisional') ? '4.0K / 4.0K (decaying)' : '3.8K / 4.0K';
+}
+
+function selectUnit(id) {
+  STATE.selectedUnitId = id;
+  renderDynamicContent();
+  openInspector(id);
+}
+
+function appendTelemetry(actor, action, isOk = true) {
+  const d = new Date();
+  const timeStr = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+  const spanClass = isOk ? 'ok' : 'warn';
+  const actionText = isOk 
+    ? `verified invariants: <span class="${spanClass}">all constraints valid</span>` 
+    : `divergence caught: <span class="${spanClass}">${action}</span>`;
+  
+  STATE.telemetry.unshift({
+    time: timeStr,
+    text: `<b>${actor}</b> ${actionText} (${STATE.selectedUnitId || 'sys'})`
+  });
+  renderDynamicContent();
+}
+
+/* ============================================================
+   D. HUMAN ARBITRATION WIZARD ENGINE
+   ============================================================ */
+const arbWizard = document.getElementById('arbitration-wizard');
+const arbBlock = document.getElementById('arbitration-block');
+
+document.getElementById('resolve-conflict-btn').addEventListener('click', () => {
+  arbWizard.showModal();
+});
+
+document.getElementById('close-wizard').addEventListener('click', () => arbWizard.close());
+document.getElementById('cancel-wizard').addEventListener('click', () => arbWizard.close());
+
+function executeArbitrationResolution(choiceText) {
+  STATE.arbitrated = true;
+  STATE.epoch = 1188;
+  
+  // Update state elements derived from ADR arbitration
+  arbBlock.classList.add('resolved');
+  document.getElementById('arb-badge').className = 'epi verified';
+  document.getElementById('arb-badge').textContent = 'Resolved & Ratified';
+  document.getElementById('arb-header').textContent = 'Conflict resolved';
+  document.getElementById('arb-text').innerHTML = `
+    Precedent recorded for <strong>Epoch 1188</strong>: ${choiceText}. 
+    Spec compiler has completed re-verification gates successfully. All constraints satisfy safety standards.
+  `;
+  document.getElementById('resolve-conflict-btn').style.display = 'none';
+
+  // Activate Orchestrator and unlock the blocked TCK-198 task
+  const blockedUnit = STATE.units.find(u => u.id === 'TCK-198');
+  if (blockedUnit) {
+    blockedUnit.status = 'verified';
+    blockedUnit.statusText = 'Verified';
+    blockedUnit.meta = 'Ratified with precedent Epoch 1188';
+  }
+
+  const orchestrator = STATE.agents.find(a => a.name === 'Orchestrator');
+  if (orchestrator) {
+    orchestrator.active = true;
+    orchestrator.task = 'actively executing pipeline compilation at Epoch 1188';
+  }
+
+  // Update telemetry and weather indicators
+  STATE.weather.nimbus = 'no alerts pending';
+  appendTelemetry('Human Arbitrator', 'ratified architectural contract precedent', true);
+  
+  arbWizard.close();
+  renderDynamicContent();
+}
+
+document.getElementById('ratify-architect-btn').addEventListener('click', () => {
+  executeArbitrationResolution('Architect ratify strict 14-day rotation window enforced.');
+});
+
+document.getElementById('ratify-critic-btn').addEventListener('click', () => {
+  executeArbitrationResolution('Critic ratify 7-day dynamic fallback window permitted.');
+});
+
+/* ============================================================
+   E. REAL-TIME INSPECTOR & AUTOMATED TESTING SIMULATOR
+   ============================================================ */
+const drawer = document.getElementById('inspector-drawer');
+document.getElementById('open-inspector-btn').addEventListener('click', () => {
+  openInspector(STATE.selectedUnitId || STATE.units[0].id);
+});
+
+document.getElementById('close-inspector').addEventListener('click', () => {
+  drawer.classList.remove('open');
+});
+
+function openInspector(unitId) {
+  const unit = STATE.units.find(u => u.id === unitId) || STATE.units[0];
+  STATE.selectedUnitId = unit.id;
+  
+  const content = document.getElementById('inspector-content');
+  drawer.classList.add('open');
+
+  content.innerHTML = `
+    <div style="border-bottom: var(--hair) solid var(--line-strong); padding-bottom: 1rem;">
+      <span class="mono-label" style="font-size: 0.6rem; display: block; margin-bottom: 0.25rem;">Artifact Reference ID</span>
+      <h3 style="font-family: var(--display); font-size: 1.5rem; margin: 0;">${unit.id}</h3>
+      <p style="font-size: 0.85rem; color: var(--ink-2); margin-top: 0.25rem;">${unit.title}</p>
+    </div>
+
+    <div>
+      <span class="mono-label">Epistemic Status (Log Fold)</span>
+      <div style="margin-top: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+        <span class="epi ${unit.status === 'verified' ? 'verified' : unit.status === 'blocked' ? 'blocked' : 'provisional'}">${unit.statusText}</span>
+      </div>
+    </div>
+
+    <div class="lineage-box">
+      <span class="mono-label" style="font-size: 0.6rem;">Cryptographic Lineage Explorer</span>
+      <div class="evidence-node">
+        <span style="font-size: 0.75rem; font-weight: 600;">CLAIM (LLM Narrative Generation)</span>
+        <p style="font-size: 0.75rem; color: var(--ink-2); margin-top: 0.15rem;">"${unit.evidenceChain.claim}"</p>
+      </div>
+      <div class="evidence-node" style="border-color: var(--accent-verify)">
+        <span style="font-size: 0.75rem; font-weight: 600;">EVIDENCE (Substrate Reference Check)</span>
+        <span style="font-size: 0.7rem; color: var(--ink-3);">${unit.evidenceChain.type}</span>
+        <span class="hash-tag">${unit.evidenceChain.hash}</span>
+      </div>
+    </div>
+
+    <div id="inspector-action-area" style="margin-top: auto; display: flex; flex-direction: column; gap: 0.75rem;">
+      ${unit.status === 'provisional' ? `
+        <button class="btn primary" id="simulate-verify-btn" style="width: 100%; min-height: 44px;">
+          Execute Verification Test Runner
+        </button>
+        <p style="font-size: 0.7rem; color: var(--ink-3); text-align: center; margin: 0;">Runs 16/16 pure-epoch invariants over log replay.</p>
+      ` : `
+        <div style="text-align: center; padding: 1rem; border: 1px dashed var(--accent-verify); border-radius: 4px; background: color-mix(in srgb, var(--accent-verify) 8%, transparent)">
+          <span style="color: var(--accent-verify); font-weight: 600; font-size: 0.85rem;">✓ Cryptographically Ratified</span>
+          <p style="font-size: 0.75rem; color: var(--ink-2); margin-top: 0.25rem;">This transition state is sealed across all historic transaction replays.</p>
+        </div>
+      `}
+    </div>
+  `;
+
+  // Attach dynamic test runner logic
+  const verifyBtn = document.getElementById('simulate-verify-btn');
+  if (verifyBtn) {
+    verifyBtn.addEventListener('click', () => {
+      verifyBtn.disabled = true;
+      verifyBtn.textContent = 'Running test suites...';
+      
+      setTimeout(() => {
+        unit.status = 'verified';
+        unit.statusText = 'Verified';
+        unit.meta = 'evidence: checked_at matches cryptographic run';
+        unit.evidenceChain.claim = 'Verified via local mock-run execution matching MEMORY_MODEL spec.';
+        unit.evidenceChain.hash = 'sha256-verified-00000000000000000';
+        
+        appendTelemetry('Verifier Suite', 'verified invariants matching ADR validation parameters', true);
+        openInspector(unit.id);
+        renderDynamicContent();
+      }, 1200);
+    });
+  }
+}
+
+/* ============================================================
+   F. SETTINGS SYSTEM & ACCESSIBILITY WIRING
+   ============================================================ */
+(function settings(){
+  const KEY='stratum.a11y';
+  const dlg=document.getElementById('settings'), form=document.getElementById('settings-form');
+  const toneEl=document.getElementById('tone'), toneVal=document.getElementById('tone-val'), autoEl=document.getElementById('tone-auto');
+  const prefersReduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const prefersHigh=matchMedia('(prefers-contrast: more)').matches;
+  const prefersDark=matchMedia('(prefers-color-scheme: dark)').matches;
+  
+  const defaults={
+    theme:prefersDark?'nocturne':'vellum',
+    tone:20,
+    toneAuto:false,
+    contrast:prefersHigh?'high':'standard',
+    motion:prefersReduce?'reduced':'full',
+    text:'1'
+  };
+  
+  let s=Object.assign({},defaults);
+  try{s=Object.assign(s,JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){}
+  
+  let timer=null;
+  function render(){
+    const tone=s.toneAuto?circadianTone(new Date()):Number(s.tone);
+    applyTokens(s.theme,tone,s.contrast);
+    root.dataset.motion=s.motion;root.style.setProperty('--text-scale',s.text);
+    form.querySelectorAll('input[type=radio]').forEach(i=>{i.checked=(String(s[i.name])===i.value)});
+    toneEl.value=tone;toneEl.disabled=s.toneAuto;autoEl.checked=s.toneAuto;
+    toneVal.textContent=(s.toneAuto?'auto · ':'')+toneWord(tone)+' ('+tone+')';
+    try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}
+  }
+  
+  function startAuto(){stopAuto();if(s.toneAuto)timer=setInterval(()=>{if(s.toneAuto)render()},3e5)}
+  function stopAuto(){if(timer){clearInterval(timer);timer=null}}
+  
+  // App initialization calls
+  render();
+  startAuto();
+  renderDynamicContent();
+  
+  form.addEventListener('change',e=>{const i=e.target;if(i&&i.name){s[i.name]=i.value;render()}});
+  toneEl.addEventListener('input',()=>{s.toneAuto=false;s.tone=Number(toneEl.value);render()});
+  autoEl.addEventListener('change',()=>{s.toneAuto=autoEl.checked;render();startAuto()});
+  
+  const open=()=>dlg.showModal();
+  document.getElementById('open-settings').addEventListener('click',open);
+  document.getElementById('close-settings').addEventListener('click',()=>dlg.close());
+  document.getElementById('done-settings').addEventListener('click',()=>dlg.close());
+  document.getElementById('reset-settings').addEventListener('click',()=>{s=Object.assign({},defaults);render();startAuto()});
+  
+  // Global Key Bindings (Command/Ctrl + I toggles inspector drawer)
+  addEventListener('keydown',e=>{
+    if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='i'){
+      e.preventDefault();
+      const firstUnitId = STATE.selectedUnitId || STATE.units[0].id;
+      openInspector(firstUnitId);
+    }
+  });
+})();
+</script>
+</body>
+</html>

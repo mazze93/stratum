@@ -1,0 +1,10 @@
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Python build artifacts
+__pycache__/
+*.py[cod]
+
+# local secrets
+*.key
