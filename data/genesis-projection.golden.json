@@ -21,6 +21,13 @@
         "id": "sb-008",
         "narrative": "Cloudflare Access as the v1 auth layer is foreclosed; a single bearer token (wrangler secret) gates writes and private reads.",
         "status": "asserted"
+      },
+      {
+        "active": true,
+        "authority": "narrative",
+        "id": "sb-014",
+        "narrative": "In-process Worker unit tests (vitest-pool-workers) are deferred for v1; the deployed API is verified by a live end-to-end smoke suite instead.",
+        "status": "asserted"
       }
     ],
     "recent_decisions": [
@@ -34,13 +41,13 @@
         "status": "ratified"
       },
       {
-        "authority": "authoritative_provisional",
+        "authority": "authoritative_verified",
         "id": "sb-001",
         "narrative": "The TypeScript port in core/ is the single runtime source of truth for Worker, CLI, and Atrium. The Python reference remains the semantics oracle; divergence is decided by the Python.",
         "revision_chain": [
           "sb-001"
         ],
-        "status": "pending_evidence"
+        "status": "validated"
       },
       {
         "authority": "authoritative_provisional",
@@ -86,10 +93,28 @@
           "sb-010"
         ],
         "status": "asserted"
+      },
+      {
+        "authority": "narrative",
+        "id": "sb-012",
+        "narrative": "API surface v1: POST events (guarded append), GET projection at any epoch, GET events (export = serialize_log), GET event detail. Contract violations map to HTTP 409, parse failures to 400 \u2014 the wire mirrors the guards.",
+        "revision_chain": [
+          "sb-012"
+        ],
+        "status": "asserted"
+      },
+      {
+        "authority": "narrative",
+        "id": "sb-013",
+        "narrative": "Visitors get per-session playground logs cloned from the curated demo seed: write-open but capped, isolated per Durable Object, disposable. The canonical demo log stays read-only to the public.",
+        "revision_chain": [
+          "sb-013"
+        ],
+        "status": "asserted"
       }
     ]
   },
-  "epoch": 10,
+  "epoch": 14,
   "narrative_only": {
     "current_goal": null,
     "next_action": null,

@@ -1,0 +1,34 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "stratum",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-06-01",
+  "routes": [
+    {
+      "pattern": "stratum.mazzeleczzare.com",
+      "custom_domain": true
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "STRATUM_LOG",
+        "class_name": "StratumLogDO"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["StratumLogDO"]
+    }
+  ],
+  "assets": {
+    "directory": "../atrium/public",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"]
+  },
+  "observability": {
+    "enabled": true
+  }
+}
