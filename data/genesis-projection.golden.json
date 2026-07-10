@@ -120,10 +120,19 @@
           "sb-015"
         ],
         "status": "asserted"
+      },
+      {
+        "authority": "narrative",
+        "id": "sb-016",
+        "narrative": "The CLI is the primary daily capture surface: zero-dependency single file, one command per contract motion, config in ~/.config/stratum, exit code 2 reserved for guard refusals so scripts can distinguish contract violations from transport errors. Supersession is one command performing the two-event motion (new decision + marker).",
+        "revision_chain": [
+          "sb-016"
+        ],
+        "status": "asserted"
       }
     ]
   },
-  "epoch": 15,
+  "epoch": 16,
   "narrative_only": {
     "current_goal": null,
     "next_action": null,
