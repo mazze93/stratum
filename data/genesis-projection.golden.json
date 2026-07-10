@@ -111,10 +111,19 @@
           "sb-013"
         ],
         "status": "asserted"
+      },
+      {
+        "authority": "narrative",
+        "id": "sb-015",
+        "narrative": "Atrium arbitration actions are derived from the transition system at the event's current folded status \u2014 the UI can only offer what the guards would accept, and a 409 is shown verbatim as the gate speaking. All rendered text is escaped (playground narratives are untrusted input). The epoch scrubber exposes deterministic replay as a first-class UI feature.",
+        "revision_chain": [
+          "sb-015"
+        ],
+        "status": "asserted"
       }
     ]
   },
-  "epoch": 14,
+  "epoch": 15,
   "narrative_only": {
     "current_goal": null,
     "next_action": null,
