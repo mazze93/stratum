@@ -1,0 +1,98 @@
+{
+  "authoritative": {
+    "foreclosed_options": [
+      {
+        "active": true,
+        "authority": "narrative",
+        "id": "sb-002",
+        "narrative": "No frontend framework for Atrium v1. Hand-authored ES modules served as static assets; zero build step.",
+        "status": "asserted"
+      },
+      {
+        "active": true,
+        "authority": "narrative",
+        "id": "sb-004",
+        "narrative": "The simulated agent roster and mock telemetry are cut from Atrium v1. Everything rendered is a projection of a real log.",
+        "status": "asserted"
+      },
+      {
+        "active": true,
+        "authority": "narrative",
+        "id": "sb-008",
+        "narrative": "Cloudflare Access as the v1 auth layer is foreclosed; a single bearer token (wrangler secret) gates writes and private reads.",
+        "status": "asserted"
+      }
+    ],
+    "recent_decisions": [
+      {
+        "authority": "authoritative_axiomatic",
+        "id": "sb-000",
+        "narrative": "Launch Stratum as a working prototype: full frontend and backend, production-quality Atrium, public deployment at stratum.mazzeleczzare.com, usable for daily decision capture. Build recorded in the system's own event format.",
+        "revision_chain": [
+          "sb-000"
+        ],
+        "status": "ratified"
+      },
+      {
+        "authority": "authoritative_provisional",
+        "id": "sb-001",
+        "narrative": "The TypeScript port in core/ is the single runtime source of truth for Worker, CLI, and Atrium. The Python reference remains the semantics oracle; divergence is decided by the Python.",
+        "revision_chain": [
+          "sb-001"
+        ],
+        "status": "pending_evidence"
+      },
+      {
+        "authority": "authoritative_provisional",
+        "id": "sb-003",
+        "narrative": "One Durable Object per log is the single-writer gate: appends serialize in a single-threaded scope and every guard runs at one door. Infrastructure expression of ADR-002's single-synchronous-gate principle.",
+        "revision_chain": [
+          "sb-003"
+        ],
+        "status": "pending_evidence"
+      },
+      {
+        "authority": "authoritative_verified",
+        "id": "sb-005",
+        "narrative": "Public GitHub repository from genesis: clean signed-or-marked history, no secrets in code, event data lives in Durable Object storage rather than git.",
+        "revision_chain": [
+          "sb-005"
+        ],
+        "status": "validated"
+      },
+      {
+        "authority": "narrative",
+        "id": "sb-007",
+        "narrative": "Workflow event data lives on Cloudflare (Durable Object storage), bearer-gated. The sovereignty escape hatch is the contract itself: the export endpoint is serialize_log, and invariant I4 proves the full round-trip. Portability is a tested invariant, not a promise.",
+        "revision_chain": [
+          "sb-007"
+        ],
+        "status": "asserted"
+      },
+      {
+        "authority": "narrative",
+        "id": "sb-009",
+        "narrative": "The numbering collision flagged in MEMORY_MODEL's header is resolved: the Event Epistemic Contract keeps its MEMORY_MODEL identity (it is a contract, not an ADR); ADR-001 and ADR-002 in the architecture evaluation keep their numbers; new ADRs from this build begin at ADR-003.",
+        "revision_chain": [
+          "sb-009"
+        ],
+        "status": "asserted"
+      },
+      {
+        "authority": "narrative",
+        "id": "sb-010",
+        "narrative": "Flat npm workspaces (core, worker, cli, plus static atrium) rather than the packages/runtime path MEMORY_MODEL's carry-forward sketch used. Same intent, shallower tree.",
+        "revision_chain": [
+          "sb-010"
+        ],
+        "status": "asserted"
+      }
+    ]
+  },
+  "epoch": 10,
+  "narrative_only": {
+    "current_goal": null,
+    "next_action": null,
+    "warnings": []
+  }
+}
