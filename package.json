@@ -1,0 +1,29 @@
+{
+  "name": "stratum",
+  "private": true,
+  "version": "0.3.0",
+  "description": "Epistemic decision ledger: append-only event log with evidence-gated trust and deterministic Tessera projection.",
+  "type": "module",
+  "workspaces": [
+    "core",
+    "worker",
+    "cli"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:reference": "cd reference && python3 test_tessera_projection.py",
+    "validate:trace": "python3 scripts/validate-trace.py",
+    "check": "npm run check --workspaces --if-present",
+    "dev": "npm run dev --workspace worker",
+    "deploy": "npm run deploy --workspace worker"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "name": "@stratum/cli",
+  "version": "0.3.0",
+  "description": "stratum — one command, one recorded decision. CLI for the Stratum epistemic ledger.",
+  "type": "module",
+  "private": true,
+  "bin": {
+    "stratum": "./bin/stratum.mjs"
+  }
+}
