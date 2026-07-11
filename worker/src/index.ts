@@ -12,6 +12,7 @@ import type { Env } from "./env.js";
 import type { AppendResult, SeedResult } from "./do.js";
 
 export { StratumLogDO } from "./do.js";
+export { PlaygroundGateDO } from "./gate.js";
 
 const app = new Hono<{ Bindings: Env }>();
 
