@@ -1,5 +1,7 @@
 # Stratum
 
+[![CI](https://github.com/mazze93/stratum/actions/workflows/ci.yml/badge.svg)](https://github.com/mazze93/stratum/actions/workflows/ci.yml)
+
 **An epistemic decision ledger — evidence-gated trust for human + AI work.**
 
 Live: **[stratum.mazzeleczzare.com](https://stratum.mazzeleczzare.com)** — the demo log is the
