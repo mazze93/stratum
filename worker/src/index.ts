@@ -26,8 +26,21 @@ app.get("/api/health", (c) =>
   c.json({ ok: true, service: "stratum", version: "0.3.0" }),
 );
 
-/** Create a per-visitor sandbox log, cloned from the curated demo seed. */
+/** Create a per-visitor sandbox log, cloned from the curated demo seed.
+ * Unauthenticated by design (tiered access) — so creation is rate-gated:
+ * per-IP hourly and global daily caps in PlaygroundGateDO. Authed callers
+ * bypass the gate. */
 app.post("/api/playground", async (c) => {
+  const authed = await bearerOk(c.req.raw, c.env.STRATUM_TOKEN);
+  if (!authed) {
+    const ip = c.req.header("cf-connecting-ip") ?? "unknown";
+    const gate = c.env.PLAYGROUND_GATE.get(c.env.PLAYGROUND_GATE.idFromName("global"));
+    const decision = await gate.check(ip);
+    if (!decision.allowed) {
+      c.header("Retry-After", String(decision.retryAfterSeconds));
+      return c.json({ error: decision.reason }, 429);
+    }
+  }
   const logId = `playground-${crypto.randomUUID().slice(0, 8)}`;
   const seedRecords = await stub(c.env, "demo").exportEvents();
   const result = await stub(c.env, logId).seedIfEmpty(seedRecords);
