@@ -14,40 +14,10 @@
  */
 
 import { DurableObject } from "cloudflare:workers";
+import { DAY_MS, HOUR_MS, decide, type GateDecision } from "./gate-policy.js";
 import type { Env } from "./env.js";
 
-const PER_IP_HOURLY = 5;
-const GLOBAL_DAILY = 200;
-
-const HOUR_MS = 3_600_000;
-const DAY_MS = 86_400_000;
-
-export type GateDecision =
-  | { allowed: true }
-  | { allowed: false; reason: string; retryAfterSeconds: number };
-
-/** Pure decision core — exported for direct testing without a DO harness. */
-export function decide(
-  ipCount: number,
-  globalCount: number,
-  nowMs: number,
-): GateDecision {
-  if (globalCount >= GLOBAL_DAILY) {
-    return {
-      allowed: false,
-      reason: "playground creation is at its daily cap — try again tomorrow",
-      retryAfterSeconds: Math.ceil((DAY_MS - (nowMs % DAY_MS)) / 1000),
-    };
-  }
-  if (ipCount >= PER_IP_HOURLY) {
-    return {
-      allowed: false,
-      reason: "too many playgrounds from this address — try again in an hour",
-      retryAfterSeconds: Math.ceil((HOUR_MS - (nowMs % HOUR_MS)) / 1000),
-    };
-  }
-  return { allowed: true };
-}
+export type { GateDecision };
 
 export class PlaygroundGateDO extends DurableObject<Env> {
   constructor(ctx: DurableObjectState, env: Env) {

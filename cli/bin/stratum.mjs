@@ -77,6 +77,16 @@ const newId = (prefix) =>
 
 async function call(s, path, opts = {}) {
   const headers = {};
+  // Refuse to send the bearer token in plaintext. Local dev is exempt;
+  // anything else over http:// needs an explicit opt-in.
+  if (
+    s.token &&
+    s.endpoint.startsWith("http://") &&
+    !/^http:\/\/(localhost|127\.0\.0\.1|\[::1\])(:|\/|$)/.test(s.endpoint) &&
+    process.env.STRATUM_ALLOW_INSECURE !== "1"
+  ) {
+    fail(`refusing to send token over plaintext http endpoint ${s.endpoint} (set STRATUM_ALLOW_INSECURE=1 to override)`);
+  }
   if (s.token) headers.authorization = `Bearer ${s.token}`;
   if (opts.body !== undefined) headers["content-type"] = "application/json";
   let res;

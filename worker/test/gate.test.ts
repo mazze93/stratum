@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { decide } from "../src/gate.js";
+import { decide } from "../src/gate-policy.js";
 
 const NOW = 1_700_000_000_000;
 
