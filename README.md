@@ -27,7 +27,7 @@ Stratum stores **events**, and derives everything else:
 - **Authoritative fields are projections.** The Tessera (canonical handoff state) is a
   pure function of the log at an epoch. There is nothing to hallucinate: prose fields
   exist, but they are marked narrative and are *never* canonical. For a rendered
-  example of the form, see [a published tessera record](https://mazzeleczzare.com/artifacts/tessera-claude-anchor.html).
+  example of the form, see [a published tessera record](https://mazzeleczzare.com/artifacts/tessera-claude-anchor).
 - **Verification requires checked evidence.** `checked_at == null` means *cited, not
   checked*, and only checked evidence counts — everywhere, including quorum. A claim
   cannot reach `validated` without it (invariant I1).
