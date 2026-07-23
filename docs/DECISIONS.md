@@ -207,7 +207,7 @@ Unblock stele delivery by adding a CodeQL workflow (codeql.yml, javascript-types
 
 *The public landing surface — this session's own decisions, recorded live.*
 
-> `data/atrium-trace.jsonl` · epoch 17 · 18 events · 16 decisions · 2 foreclosures
+> `data/atrium-trace.jsonl` · epoch 32 · 33 events · 16 decisions · 2 foreclosures
 
 ## Decisions
 
@@ -219,7 +219,7 @@ Public-launch working session decisions route through this trace: data/atrium-tr
 
 > **Shadow [TRACE · certainty 1.0]** — Human mandate, given 2026-07-23 in-session during plan review. Alternative was folding session decisions into the existing stele-trace or journal-only narrative — rejected: this session's decisions concern Stratum's own public surface, a distinct trust scope, and journal-only memory is the conflation Stratum exists to prevent.
 
-### at-001 — ◐ PROVISIONAL · pending_evidence
+### at-001 — ● VERIFIED · validated
 
 **claude-fable-5** · 2026-07-23T14:20:00-04:00
 
@@ -227,7 +227,7 @@ The public landing page takes over `/`; the Atrium control room moves to `/atriu
 
 > **Shadow [TRACE · certainty 0.9]** — Ghost edges: separate subdomain or repo for the landing (rejected: splits deploy surface, wrangler already serves static assets from atrium/public); landing section stacked above the control room in one page (rejected: control room is an instrument panel, not a pitch — mixing registers weakens both). Path-safety claim verified by touchstone probe before approval, not assumed.
 
-### at-002 — ◐ PROVISIONAL · pending_evidence
+### at-002 — ● VERIFIED · validated
 
 **claude-fable-5** · 2026-07-23T14:22:00-04:00
 
@@ -235,7 +235,7 @@ The landing hero is a stratigraphic cross-section of the real genesis trace — 
 
 > **Shadow [TRACE · certainty 0.95]** — User selected static-plus-live-enhance from three options. Ghost edges: live-rendered only (truest to everything-is-a-projection, but blank on API failure or JS off — a landing page cannot fail closed); static only (never reflects the live log). The figure uses real trace data either way; a decorative fake stratum diagram was never on the table — sb-004 forecloses simulated dashboards.
 
-### at-003 — ◐ PROVISIONAL · pending_evidence
+### at-003 — ● VERIFIED · validated
 
 **claude-fable-5** · 2026-07-23T14:25:00-04:00
 
@@ -243,7 +243,7 @@ Atrium gains a circadian theme mode: an accessible light-to-dark progression key
 
 > **Shadow [TRACE · certainty 0.85]** — User mandate ('accessible light to dark gradient on a circadian engine, with user override for atrium'). Design latitude retained on mechanism: banded interpolation across dawn/dusk windows vs continuous interpolation — resolved at implementation toward whichever keeps WCAG-AA contrast provable at every point in the cycle.
 
-### at-005 — ◐ PROVISIONAL · pending_evidence
+### at-005 — ● VERIFIED · validated
 
 **claude-opus-4.8** · 2026-07-23T16:40:00-04:00
 
@@ -251,7 +251,7 @@ Intra-tier policy contradictions resolve deny-wins, stated normatively in ARCHIT
 
 > **Shadow [TRACE · certainty 0.9]** — The rule was already inferable from fail-closed, which is why it sat unstated for a month. Stating it anyway: fail-closed describes behaviour under error, whereas this describes behaviour under a well-formed disagreement between two valid rules — a different case, and one that otherwise resolves by authoring order, i.e. by accident. Ghost edge: allow-wins-with-audit-log, rejected because it makes adding a rule capable of widening a grant, breaking composition with the cross-tier intersection semantics.
 
-### at-006 — ◐ PROVISIONAL · pending_evidence
+### at-006 — ● VERIFIED · validated
 
 **claude-opus-4.8** · 2026-07-23T16:45:00-04:00
 
@@ -259,7 +259,7 @@ ADR-001 (Tessera fidelity) moves Proposed → Accepted-implemented, with action 
 
 > **Shadow [TRACE · certainty 0.95]** — Items 1-3 were verified before checking, not assumed: schema split at tessera_projection.py:348 and core/src/projection.ts; MEMORY_MODEL rev 3 §§2/5/8 is the projection spec; the trace-check has BOTH positive and negative tests in both implementations and runs in CI. Item 4 could have been quietly checked to make the ADR look closed — the Chronicle role contract lives in the paper and v0.2.0 SPEC, neither committed here, so there is nothing in this repo to re-scope. Marking it deferred is the honest state and is itself the interesting datum: the projection design landed, the role's self-description never followed. Ghost edge: rewriting §1/§2 in place to read as resolved — rejected as mutating a dated review; supersede, don't mutate, matching the contract this document evaluates.
 
-### at-008 — ◐ PROVISIONAL · pending_evidence
+### at-008 — ● VERIFIED · validated
 
 **claude-opus-4.8** · 2026-07-23T17:10:00-04:00
 
@@ -267,7 +267,7 @@ Supersedes at-003's open mechanism question: the circadian work is SURFACING the
 
 > **Shadow [TRACE · certainty 0.9]** — Investigation found theme.js ALREADY had the circadian engine: circadianTone() maps hour to a 0-100 tone, applyTokens interpolates day-to-night per ground, toneAuto defaults true, a 5-minute timer re-renders. The plan's 'extend theme.js with a new auto mode' was written before reading the file and would have rebuilt what existed. Human chose surfacing over a ground-to-ground progression across the day, trading that scope for the Plate bridge. Ghost edges: full vellum-through-nocturne progression across the cycle (deferred, not rejected — reopen if the tone range within one ground proves too narrow to read as circadian); pinning the Atrium to Plate on arrival from the landing via referrer sniffing (rejected as fragile and as overriding a returning visitor's room). Requires a real fix: render() persists state on first paint, so a defaulted theme is indistinguishable from a chosen one — live tracking needs an explicit themeExplicit flag or it would override deliberate choices.
 
-### at-009 — ◐ PROVISIONAL · pending_evidence
+### at-009 — ● VERIFIED · validated
 
 **claude-opus-4.8** · 2026-07-23T17:40:00-04:00
 
@@ -275,7 +275,7 @@ docs/ARBITRATION.md drafted as a RESEARCH-posture exploration of precedent decay
 
 > **Shadow [RECON · certainty 0.55]** — Key reasoning: the contract's existing correction markers (supersession, invalidation) are AUTHOR-triggered, but precedent fails READER-triggered — it is consulted without being visited, so nothing prompts an author to correct it. That mismatch is the real gap and is why 'just use supersession' fails. Time-based half-life rejected because the contract deliberately ignores wall-clock in every projection path (MEMORY_MODEL §2); making decay trust a clock would be the single place the system does so. Distance-as-trigger rather than weight because a trigger's worst case is 'asked a human unnecessarily' while a weight's worst case is 'silently deferred to stale authority' — and the metric is likely stochastic, which is tolerable only in the first position. Ghost edges: continuous embedding-similarity weight (rejected — makes an authority boundary depend on a stochastic model in a system whose thesis is mechanical checkability); pure time half-life (rejected as primary, retained as possible backstop since its failure mode is also escalation). Open dependency surfaced: precedent reconciliation of two priors is a diamond, and multi-parent lineage is rejected at write time in v1 — nobody had drawn that dependency.
 
-### at-010 — ◐ PROVISIONAL · pending_evidence
+### at-010 — ● VERIFIED · validated
 
 **claude-opus-4.8** · 2026-07-23T18:05:00-04:00
 
@@ -283,7 +283,7 @@ render-decisions.py renders every trace (genesis, stele, atrium) into docs/DECIS
 
 > **Shadow [TRACE · certainty 0.9]** — Independent projection, not a merged log: each trace carries its own trust root, so they are separate trust scopes — a merged projection would imply a shared lineage existing in no log, and would also have to invent an ordering across three independent seq spaces. Ghost edge: one combined chronological projection, rejected on both counts. The DECISIONS.md sync gate was negative-tested before being trusted — drift was deliberately introduced and the diff caught it — because a gate nobody has watched fail is an assumption, not a gate. That is the same discipline the contract applies to its own IncompleteProjection test.
 
-### at-011 — ◐ PROVISIONAL · pending_evidence
+### at-011 — ● VERIFIED · validated
 
 **claude-opus-4.8** · 2026-07-23T18:30:00-04:00
 
@@ -291,7 +291,7 @@ Release version bumps 0.3.0 -> 0.4.0 across root, core, worker, cli, the lockfil
 
 > **Shadow [TRACE · certainty 0.9]** — Human chose the bump over staying at 0.3.0; the counter-argument (version tracks the contract, and the contract did not move) was correct on its merits, so it is preserved in the README wording rather than discarded — 'v0.4.0, carrying the same event contract (unchanged since rev 3)'. Historical v0.3.0 strings in docs/DECISIONS.md and the golden file were deliberately NOT touched: they are sb-018's immutable event narrative, not status text, and rewriting log content to match a current version is precisely the mutation this system exists to prevent. package-lock.json regenerated because CI runs npm ci, which fails on a lock that disagrees with package.json — caught locally rather than in a red build.
 
-### at-012 — ◐ PROVISIONAL · pending_evidence
+### at-012 — ● VERIFIED · validated
 
 **claude-opus-4.8** · 2026-07-23T19:15:00-04:00
 
@@ -299,7 +299,7 @@ The landing gains a decoding layer above the fold and a per-layer audit panel: s
 
 > **Shadow [TRACE · certainty 0.9]** — Human feedback: the plate read as a beautiful thesis statement rather than a credible decision-audit product, and named the missing piece exactly — selecting sb-014 should reveal claim, evidence, invalidating event, timestamps, actor identity, and reason. Two of the four requested tier definitions were corrected rather than shipped as given: 'narrative = provisional interpretation' conflates two distinct tiers (authoritative_provisional is separate and is now its own PENDING row), and 'foreclosed = invalidated by later evidence' describes invalidation, a different event type — a foreclosure is a deliberate choice with a reopen condition, not a refutation. Shipping either would have misdescribed the contract on the public surface. Records baked inline rather than fetched: the record behind a layer is part of the plate, not an enhancement, and the panel must not depend on an API that may be unreachable. Layers made focusable with role=button and Enter/Space handling; the right-register label is a second hit target because a 1-2px lens is not a realistic click target.
 
-### at-013 — ◐ PROVISIONAL · pending_evidence
+### at-013 — ● VERIFIED · validated
 
 **claude-opus-4.8** · 2026-07-23T20:05:00-04:00
 
@@ -309,7 +309,7 @@ Revises at-002: the landing no longer swaps its figure for a live projection. It
 
 > **Shadow [TRACE · certainty 0.9]** — The epoch scrubber made at-002's live-enhance clause incoherent: the scrubber's frames are oracle projections baked at render time, so replacing the figure with a live projection would leave the scrubber driving a figure it no longer describes — two surfaces silently disagreeing about the log, which is the exact failure this project exists to prevent. FIRST ATTEMPT WAS A supersession EVENT AND THE GUARD REFUSED IT: 'illegal transition pending_evidence -> superseded on at-002'. The contract was right and I was wrong — you cannot supersede a decision that was never established; at-002 is still awaiting its own evidence. Recorded instead as a revision with at-002 as lineage parent. The deeper lesson is that at-002 was written too coarsely: it bundled two independent choices (how to draw the figure statically, and whether to swap for live data), one of which shipped and one of which was replaced. A well-formed ledger would have recorded them as separate decisions.
 
-### at-014 — ◐ PROVISIONAL · pending_evidence
+### at-014 — ● VERIFIED · validated
 
 **claude-opus-4.8** · 2026-07-23T20:10:00-04:00
 
@@ -317,7 +317,7 @@ The landing answers the 15-second developer question: masthead nav (Docs, Contra
 
 > **Shadow [TRACE · certainty 0.9]** — Human compared the plate against mise-en-place and named what was missing: nav, version badge, source links, an install command, a terminal showing real usage. Correctly identified that moving the Atrium to /atrium/ (at-001) had created a trap with no way back — a journey break introduced three phases earlier and unnoticed until a human walked it. Two things deliberately NOT copied: a fabricated GitHub star count (no honest number is available at build time) and a docs search box (there are no hosted docs to search; links point at GitHub, which has search). The install command is git clone, NOT npm install: @stratum/cli is private:true and unpublished, and shipping a command that does not run would be precisely the generated-truth failure this project exists to prevent. Two layout defects were found by measuring rather than eyeballing: the h1's min-content width overran its hero column and slid under the terminal, and flex/grid children defaulting to min-width:auto let the 700px figure force 745px of horizontal scroll on a 390px viewport — mobile had never been checked until the human asked.
 
-### at-015 — ◐ PROVISIONAL · pending_evidence
+### at-015 — ● VERIFIED · validated
 
 **claude-opus-4.8** · 2026-07-23T20:15:00-04:00
 
@@ -325,7 +325,7 @@ Deterministic replay moves to the front page: an epoch scrubber under the figure
 
 > **Shadow [TRACE · certainty 0.95]** — Answering 'what is the unforgettable moment': not the poster, not the audit panel, but the thing no other tool does — watching status un-derive. The page already CLAIMED 'drag the past back and watch decisions un-verify' while only asserting it, one click away in the Atrium. Ghost edge: implementing the fold in JS — rejected outright, since a third implementation could drift from the contract and the golden-file discipline exists to prevent exactly that. Baking 20 oracle-computed frames costs 17KB and keeps the page's claim literally true. Measured proof the moment lands: 3 green verification seams at epoch 19, 2 at epoch 12, 0 at epoch 5.
 
-### at-016 — ◐ PROVISIONAL · pending_evidence
+### at-016 — ● VERIFIED · validated
 
 **claude-opus-4.8** · 2026-07-23T20:45:00-04:00
 
@@ -333,7 +333,7 @@ Comprehension before admiration: a one-line legend sits directly under the figur
 
 > **Shadow [TRACE · certainty 0.9]** — Human direction: sell the system through one impeccable record view rather than more abstract explanation, and compress comprehension so a first-time visitor understands the model before admiring it. One word changed from the requested legend copy: 'Foreclosed = closed by later decision' became 'a road deliberately closed' — a foreclosure IS the closing decision, not something closed by a subsequent one, and the shorter phrasing is no longer while staying accurate. Required a small Atrium change: ?event=ID opens the inspector on load, one-shot so Refresh does not reopen it.
 
-### at-017 — ◐ PROVISIONAL · pending_evidence
+### at-017 — ● VERIFIED · validated
 
 **claude-opus-4.8** · 2026-07-23T21:20:00-04:00
 
@@ -361,7 +361,23 @@ docs/TRUST.md ships as a skeleton that RESOLVES the two decidable questions (den
 
 ## Checked-evidence ledger
 
-*No checked evidence yet — every decision above is provisional or axiomatic.*
+| verification | target | what was checked | when |
+|---|---|---|---|
+| `at-018` | `at-001` | https://stratum.mazzeleczzare.com/ -> 200; /atrium/ -> 200; /atrium -> 307 | 2026-07-23T21:52:00-04:00 |
+| `at-019` | `at-002` | https://stratum.mazzeleczzare.com/ contains baked strata-records + FIG.1 section at epoch 19 | 2026-07-23T21:52:00-04:00 |
+| `at-020` | `at-003` | atrium/public/theme.js @ 369a056 on main (circadian engine surfaced, themeExplicit guard) | 2026-07-23T21:53:00-04:00 |
+| `at-021` | `at-005` | docs/ARCHITECTURE-EVALUATION.md + docs/TRUST.md @ 369a056 on main | 2026-07-23T21:53:30-04:00 |
+| `at-022` | `at-006` | docs/ARCHITECTURE-EVALUATION.md ADR-001 + §0 addendum @ 369a056 on main | 2026-07-23T21:54:00-04:00 |
+| `at-023` | `at-008` | https://stratum.mazzeleczzare.com/ cta--fork #5aa9d6 / cta--atrium #d0b25c; Plate ground in theme.js @ 369a056 | 2026-07-23T21:54:30-04:00 |
+| `at-024` | `at-009` | docs/ARBITRATION.md @ 369a056 on main | 2026-07-23T21:55:00-04:00 |
+| `at-025` | `at-010` | https://github.com/mazze93/stratum/actions/runs/30037916351 — check + 26 tests + reference + all-traces + DECISIONS-sync all pass | 2026-07-23T21:55:30-04:00 |
+| `at-026` | `at-011` | https://stratum.mazzeleczzare.com/api/health -> {"ok":true,"service":"stratum","version":"0.4.0"} | 2026-07-23T21:56:00-04:00 |
+| `at-027` | `at-012` | https://stratum.mazzeleczzare.com/ contains id=strata-records (20 events) + audit panel markup | 2026-07-23T21:56:30-04:00 |
+| `at-028` | `at-013` | https://stratum.mazzeleczzare.com/ fig-live caption reads 'LIVE LOG REACHED · IN SYNC AT EPOCH 19' | 2026-07-23T21:57:00-04:00 |
+| `at-029` | `at-014` | https://stratum.mazzeleczzare.com/ masthead nav + git-clone install cmd; /atrium/ has back-to-Plate/GitHub/Author links | 2026-07-23T21:57:30-04:00 |
+| `at-030` | `at-015` | https://stratum.mazzeleczzare.com/ scrubber: 3 green seams at epoch 19, 0 at epoch 5 (measured in-browser) | 2026-07-23T21:58:00-04:00 |
+| `at-031` | `at-016` | https://stratum.mazzeleczzare.com/ contains decode-line legend + audit-canon canonical links | 2026-07-23T21:58:30-04:00 |
+| `at-032` | `at-017` | https://stratum.mazzeleczzare.com/ hero-title centered; cta--fork #5aa9d6 + cta--atrium #d0b25c with corner-tick deco; real :hover floods blue, ink dark | 2026-07-23T21:59:00-04:00 |
 
 ---
 
