@@ -1,7 +1,7 @@
 {
   "name": "stratum",
   "private": true,
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Epistemic decision ledger: append-only event log with evidence-gated trust and deterministic Tessera projection.",
   "type": "module",
   "workspaces": [

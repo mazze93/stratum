@@ -207,7 +207,7 @@ Unblock stele delivery by adding a CodeQL workflow (codeql.yml, javascript-types
 
 *The public landing surface — this session's own decisions, recorded live.*
 
-> `data/atrium-trace.jsonl` · epoch 10 · 11 events · 9 decisions · 2 foreclosures
+> `data/atrium-trace.jsonl` · epoch 11 · 12 events · 10 decisions · 2 foreclosures
 
 ## Decisions
 
@@ -282,6 +282,14 @@ docs/ARBITRATION.md drafted as a RESEARCH-posture exploration of precedent decay
 render-decisions.py renders every trace (genesis, stele, atrium) into docs/DECISIONS.md, projecting each INDEPENDENTLY rather than merging them. CI gains two gates: every data/*-trace.jsonl must load through the reference guards, and docs/DECISIONS.md must match a fresh render.
 
 > **Shadow [TRACE · certainty 0.9]** — Independent projection, not a merged log: each trace carries its own trust root, so they are separate trust scopes — a merged projection would imply a shared lineage existing in no log, and would also have to invent an ordering across three independent seq spaces. Ghost edge: one combined chronological projection, rejected on both counts. The DECISIONS.md sync gate was negative-tested before being trusted — drift was deliberately introduced and the diff caught it — because a gate nobody has watched fail is an assumption, not a gate. That is the same discipline the contract applies to its own IncompleteProjection test.
+
+### at-011 — ◐ PROVISIONAL · pending_evidence
+
+**claude-opus-4.8** · 2026-07-23T18:30:00-04:00
+
+Release version bumps 0.3.0 -> 0.4.0 across root, core, worker, cli, the lockfile, and the /api/health payload. The event contract is NOT versioned by this: no schema, projection, or guard semantics changed this session, and the README provenance line now states both facts explicitly.
+
+> **Shadow [TRACE · certainty 0.9]** — Human chose the bump over staying at 0.3.0; the counter-argument (version tracks the contract, and the contract did not move) was correct on its merits, so it is preserved in the README wording rather than discarded — 'v0.4.0, carrying the same event contract (unchanged since rev 3)'. Historical v0.3.0 strings in docs/DECISIONS.md and the golden file were deliberately NOT touched: they are sb-018's immutable event narrative, not status text, and rewriting log content to match a current version is precisely the mutation this system exists to prevent. package-lock.json regenerated because CI runs npm ci, which fails on a lock that disagrees with package.json — caught locally rather than in a red build.
 
 ## Foreclosures — ghost edges
 
