@@ -207,7 +207,7 @@ Unblock stele delivery by adding a CodeQL workflow (codeql.yml, javascript-types
 
 *The public landing surface — this session's own decisions, recorded live.*
 
-> `data/atrium-trace.jsonl` · epoch 12 · 13 events · 11 decisions · 2 foreclosures
+> `data/atrium-trace.jsonl` · epoch 15 · 16 events · 14 decisions · 2 foreclosures
 
 ## Decisions
 
@@ -298,6 +298,32 @@ Release version bumps 0.3.0 -> 0.4.0 across root, core, worker, cli, the lockfil
 The landing gains a decoding layer above the fold and a per-layer audit panel: selecting any stratum opens its full record — claim, evidence with checked-vs-cited state, actor identity, timestamps, every later event that acted on it (with that event's own evidence), roads not taken, and the buried shadow. Event records are baked inline alongside the figure so the panel works with no network.
 
 > **Shadow [TRACE · certainty 0.9]** — Human feedback: the plate read as a beautiful thesis statement rather than a credible decision-audit product, and named the missing piece exactly — selecting sb-014 should reveal claim, evidence, invalidating event, timestamps, actor identity, and reason. Two of the four requested tier definitions were corrected rather than shipped as given: 'narrative = provisional interpretation' conflates two distinct tiers (authoritative_provisional is separate and is now its own PENDING row), and 'foreclosed = invalidated by later evidence' describes invalidation, a different event type — a foreclosure is a deliberate choice with a reopen condition, not a refutation. Shipping either would have misdescribed the contract on the public surface. Records baked inline rather than fetched: the record behind a layer is part of the plate, not an enhancement, and the panel must not depend on an API that may be unreachable. Layers made focusable with role=button and Enter/Space handling; the right-register label is a second hit target because a 1-2px lens is not a realistic click target.
+
+### at-013 — ◐ PROVISIONAL · pending_evidence
+
+**claude-opus-4.8** · 2026-07-23T20:05:00-04:00
+
+Revises at-002: the landing no longer swaps its figure for a live projection. It reconciles against the live log and reports agreement or divergence instead. The static-SVG half of at-002 stands unchanged.
+
+*Revision chain:* `at-002 → at-013`
+
+> **Shadow [TRACE · certainty 0.9]** — The epoch scrubber made at-002's live-enhance clause incoherent: the scrubber's frames are oracle projections baked at render time, so replacing the figure with a live projection would leave the scrubber driving a figure it no longer describes — two surfaces silently disagreeing about the log, which is the exact failure this project exists to prevent. FIRST ATTEMPT WAS A supersession EVENT AND THE GUARD REFUSED IT: 'illegal transition pending_evidence -> superseded on at-002'. The contract was right and I was wrong — you cannot supersede a decision that was never established; at-002 is still awaiting its own evidence. Recorded instead as a revision with at-002 as lineage parent. The deeper lesson is that at-002 was written too coarsely: it bundled two independent choices (how to draw the figure statically, and whether to swap for live data), one of which shipped and one of which was replaced. A well-formed ledger would have recorded them as separate decisions.
+
+### at-014 — ◐ PROVISIONAL · pending_evidence
+
+**claude-opus-4.8** · 2026-07-23T20:10:00-04:00
+
+The landing answers the 15-second developer question: masthead nav (Docs, Contract, Decisions, Atrium, Author, version badge, GitHub), a terminal transcript of real CLI usage beside the wordmark, a copyable clone-and-run command, and FORK A LIVE LOG as the zero-install path. The Atrium gains navigation out — wordmark and Plate link home, plus GitHub and Author — so it is a destination, not a dead end. The landing scrubber hands its position to the Atrium via ?epoch=N.
+
+> **Shadow [TRACE · certainty 0.9]** — Human compared the plate against mise-en-place and named what was missing: nav, version badge, source links, an install command, a terminal showing real usage. Correctly identified that moving the Atrium to /atrium/ (at-001) had created a trap with no way back — a journey break introduced three phases earlier and unnoticed until a human walked it. Two things deliberately NOT copied: a fabricated GitHub star count (no honest number is available at build time) and a docs search box (there are no hosted docs to search; links point at GitHub, which has search). The install command is git clone, NOT npm install: @stratum/cli is private:true and unpublished, and shipping a command that does not run would be precisely the generated-truth failure this project exists to prevent. Two layout defects were found by measuring rather than eyeballing: the h1's min-content width overran its hero column and slid under the terminal, and flex/grid children defaulting to min-width:auto let the 700px figure force 745px of horizontal scroll on a 390px viewport — mobile had never been checked until the human asked.
+
+### at-015 — ◐ PROVISIONAL · pending_evidence
+
+**claude-opus-4.8** · 2026-07-23T20:15:00-04:00
+
+Deterministic replay moves to the front page: an epoch scrubber under the figure redraws the section at any epoch, so a visitor watches verified decisions lose their evidence and foreclosed roads reopen. Every position is a projection computed by the Python oracle at render time (scripts/render-epoch-frames.py), not a browser reimplementation of the fold.
+
+> **Shadow [TRACE · certainty 0.95]** — Answering 'what is the unforgettable moment': not the poster, not the audit panel, but the thing no other tool does — watching status un-derive. The page already CLAIMED 'drag the past back and watch decisions un-verify' while only asserting it, one click away in the Atrium. Ghost edge: implementing the fold in JS — rejected outright, since a third implementation could drift from the contract and the golden-file discipline exists to prevent exactly that. Baking 20 oracle-computed frames costs 17KB and keeps the page's claim literally true. Measured proof the moment lands: 3 green verification seams at epoch 19, 2 at epoch 12, 0 at epoch 5.
 
 ## Foreclosures — ghost edges
 

@@ -31,9 +31,19 @@ const records = readFileSync(join(ROOT, tracePath), "utf8")
   .split("\n")
   .filter((l) => l.trim())
   .map((l) => JSON.parse(l));
+/* Per-epoch projection frames, computed by the Python oracle (see
+   scripts/render-epoch-frames.py) and piped in as argv[3] or a sibling file.
+   The scrubber steps through real projections, not a browser reimplementation
+   of the fold — so "deterministic replay" on the page is literally true. */
+const framesPath = process.argv[3];
+const frames = framesPath ? readFileSync(join(ROOT, framesPath), "utf8").trim() : "[]";
+
 const dataBlock =
   `<script type="application/json" id="strata-records">` +
   JSON.stringify(records).replace(/</g, "\\u003c") +
+  `</script>\n` +
+  `<script type="application/json" id="strata-frames">` +
+  frames.replace(/</g, "\\u003c") +
   `</script>`;
 
 const page = join(ROOT, "atrium/public/index.html");

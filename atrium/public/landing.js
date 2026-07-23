@@ -171,32 +171,128 @@ function wireFigure() {
   });
 }
 
-async function enhance() {
+/**
+ * Reconcile the baked plate against the live log (supersedes the earlier
+ * swap-the-figure enhancement, at-013).
+ *
+ * The scrubber's frames are oracle projections baked at render time. Replacing
+ * the figure with a live projection would leave the scrubber driving a figure
+ * it no longer describes — the two would silently disagree, which is precisely
+ * the failure this project exists to prevent. So the live log is *checked*
+ * rather than substituted: if it matches, say so; if it has moved ahead, say
+ * that too, and point at the instrument that renders it live.
+ */
+async function reconcile() {
+  const live = $("fig-live");
   try {
-    const [pRes, eRes] = await Promise.all([
-      fetch("/api/logs/demo/projection"),
-      fetch("/api/logs/demo/events"),
-    ]);
-    if (!pRes.ok || !eRes.ok) return;
-    const projection = await pRes.json();
-    const events = await eRes.json();
-    const n =
-      (projection?.authoritative?.recent_decisions?.length ?? 0) +
-      (projection?.authoritative?.foreclosed_options?.length ?? 0);
-    /* An empty or record-less live log never displaces the baked plate: the
-       static figure is real data, and blank "live" data is not an upgrade. */
-    if (n === 0 || !Array.isArray(events) || events.length === 0) return;
+    const res = await fetch("/api/logs/demo/projection");
+    if (!res.ok) return;
+    const projection = await res.json();
+    const liveEpoch = projection?.epoch;
+    /* An empty log projects at epoch -1. Reachable-but-empty is not a
+       discrepancy worth shouting about (it's the normal state of a fresh
+       local instance) — leave the plate's own caption standing. */
+    if (typeof liveEpoch !== "number" || liveEpoch < 0) return;
+    const bakedHead = FRAMES.length ? FRAMES[FRAMES.length - 1].epoch : null;
 
-    close();
-    $("fig-well").innerHTML = drawStrata(projection);
-    RECORDS = events;
-    $("fig-source").textContent = "the live demo log";
-    const live = $("fig-live");
-    live.textContent = `LIVE PROJECTION · EPOCH ${projection.epoch}`;
-    live.classList.add("live");
+    if (bakedHead !== null && liveEpoch === bakedHead) {
+      live.textContent = `LIVE LOG REACHED · IN SYNC AT EPOCH ${liveEpoch}`;
+      live.classList.add("live");
+    } else {
+      live.textContent = `LIVE LOG AT EPOCH ${liveEpoch} · PLATE SHOWS ${bakedHead} — OPEN THE ATRIUM FOR LIVE`;
+      live.classList.add("live");
+    }
   } catch {
-    /* static plate stands */
+    /* offline: the plate is real data regardless — say nothing louder */
   }
+}
+
+/* ── Deterministic replay ─────────────────────────────────────────────
+   FRAMES[e] is the oracle's projection at epoch e. The scrubber swaps
+   between real projections; nothing here recomputes the fold. */
+let FRAMES = [];
+try {
+  FRAMES = JSON.parse($("strata-frames")?.textContent || "[]");
+} catch {
+  FRAMES = [];
+}
+
+/* Rebuild a projection-shaped object by joining a frame to the baked records
+   (frames carry status/authority; narratives live once, in the records). */
+function frameToProjection(frame) {
+  const map = byId();
+  const narrative = (id) => (map.get(id)?.claim || {}).narrative || "";
+  return {
+    epoch: frame.epoch,
+    authoritative: {
+      recent_decisions: frame.decisions.map((d) => ({ ...d, narrative: narrative(d.id) })),
+      foreclosed_options: frame.foreclosures.map((f) => ({ ...f, narrative: narrative(f.id) })),
+    },
+  };
+}
+
+function describe(frame) {
+  const verified = frame.decisions.filter((d) => d.authority === "authoritative_verified").length;
+  const pending = frame.decisions.filter((d) => d.authority === "authoritative_provisional").length;
+  const head = FRAMES.length - 1;
+  const atHead = frame.epoch === head;
+  const headVerified = FRAMES[head]?.decisions.filter((d) => d.authority === "authoritative_verified").length ?? 0;
+  const lost = headVerified - verified;
+  const n = frame.decisions.length;
+  return (
+    `${n} decision${n === 1 ? "" : "s"} · ${verified} verified · ${pending} awaiting evidence · ` +
+    `${frame.foreclosures.length} foreclosed` +
+    (atHead
+      ? ""
+      : ` — ${lost > 0 ? `${lost} decision${lost === 1 ? "" : "s"} not yet verified here` : "earlier in the record"}`)
+  );
+}
+
+function wireScrubber() {
+  const el = $("epoch");
+  const out = $("epoch-out");
+  const read = $("scrub-read");
+  if (!FRAMES.length) {
+    $("scrub").hidden = true;
+    return;
+  }
+  el.max = String(FRAMES.length - 1);
+  el.value = String(FRAMES.length - 1);
+
+  const apply = () => {
+    const e = Number(el.value);
+    const frame = FRAMES[e];
+    if (!frame) return;
+    const atHead = e === FRAMES.length - 1;
+    out.textContent = `EPOCH ${e}${atHead ? " · HEAD" : ""}`;
+    out.classList.toggle("is-past", !atHead);
+    read.textContent = describe(frame);
+    $("fig-well").innerHTML = drawStrata(frameToProjection(frame));
+    close(); // a record open at a later epoch may not exist here
+  };
+  el.addEventListener("input", apply);
+  apply();
+}
+
+function wireCopy() {
+  const btn = $("install-copy");
+  btn.addEventListener("click", async () => {
+    const text = $("install-cmd").textContent.trim();
+    try {
+      await navigator.clipboard.writeText(text);
+      btn.textContent = "COPIED";
+    } catch {
+      /* clipboard blocked (insecure context / permissions) — select instead,
+         so the command is still one keystroke away rather than unreachable */
+      const r = document.createRange();
+      r.selectNodeContents($("install-cmd"));
+      const sel = getSelection();
+      sel.removeAllRanges();
+      sel.addRange(r);
+      btn.textContent = "SELECTED";
+    }
+    setTimeout(() => (btn.textContent = "COPY"), 1600);
+  });
 }
 
 function wirePlayground() {
@@ -216,6 +312,24 @@ function wirePlayground() {
   });
 }
 
+/* The Atrium opens at whatever epoch you scrubbed to — the transition carries
+   state, not just style: you keep looking at the same moment in the record. */
+function wireHandoff() {
+  for (const a of document.querySelectorAll('a[href="/atrium/"]')) {
+    a.addEventListener("click", (e) => {
+      const el = $("epoch");
+      if (!el || !FRAMES.length) return;
+      const epoch = Number(el.value);
+      if (epoch === FRAMES.length - 1) return; // at head: no need to pin
+      e.preventDefault();
+      location.href = `/atrium/?log=demo&epoch=${epoch}`;
+    });
+  }
+}
+
 wireFigure();
+wireScrubber();
+wireCopy();
 wirePlayground();
-enhance();
+wireHandoff();
+reconcile();

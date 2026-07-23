@@ -15,7 +15,14 @@
 
   <header class="top-bar">
     <div class="brand">
-      <h1 class="wordmark">STRATUM</h1>
+      <a class="wordmark-link" href="/" title="Back to the survey plate">
+        <svg viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" focusable="false">
+          <path d="M2 9 C8 7.5 14 10.5 20 9 C24 8 28 9.5 30 9 L30 14 C24 15.5 18 12.5 12 14 C8 15 4 13.5 2 14 Z" fill="var(--s-episodic)"/>
+          <path d="M2 15 C8 13.5 14 16.5 20 15 C24 14 28 15.5 30 15 L30 20 C24 21.5 18 18.5 12 20 C8 21 4 19.5 2 20 Z" fill="var(--s-session)"/>
+          <path d="M2 21 C8 19.5 14 22.5 20 21 C24 20 28 21.5 30 21 L30 27 C24 28.5 18 25.5 12 27 C8 28 4 26.5 2 27 Z" fill="var(--s-semantic)"/>
+        </svg>
+        <h1 class="wordmark">STRATUM</h1>
+      </a>
       <span class="sub-mark">Atrium · Control Room</span>
     </div>
     <div class="log-context">
@@ -25,6 +32,9 @@
       <span class="epi provisional" id="scrub-badge" hidden>viewing past epoch</span>
     </div>
     <div class="top-actions">
+      <a class="hbtn hbtn--link" href="/" title="Back to the survey plate">← Plate</a>
+      <a class="hbtn hbtn--link" href="https://github.com/mazze93/stratum" title="Source on GitHub">GitHub</a>
+      <a class="hbtn hbtn--link" href="https://mazzeleczzare.com/" title="Built by Mazze LeCzzare">Author</a>
       <button class="hbtn" id="btn-refresh" title="Refetch projection">Refresh</button>
       <button class="hbtn" id="btn-playground" title="Fork a sandbox you can write to">Fork playground</button>
       <button class="hbtn" id="btn-export" title="Download the full event log (serialize_log)">Export</button>
