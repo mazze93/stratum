@@ -7,6 +7,9 @@
 const K = ["table", "paper", "paperCool", "paperWarm", "surface", "ink", "ink2", "ink3", "line", "lineStrong"];
 const MUTED = { working: "#d0b25c", session: "#97ab74", episodic: "#6c93a9", semantic: "#c2855b", preference: "#a67f9f", archive: "#948872" };
 const VIVID = { working: "#e8c44e", session: "#6cc78a", episodic: "#5aa9d6", semantic: "#df8a78", preference: "#b389c4", archive: "#d99a6a" };
+/* Plate minerals are the landing plate's strata fills, lifted for legibility
+   at swatch size — the survey sheet and the control room use one palette. */
+const PLATE_MIN = { working: "#c9a03a", session: "#58d68d", episodic: "#5a82a8", semantic: "#b8543f", preference: "#b4658c", archive: "#7e8894" };
 
 const THEMES = {
   vellum: {
@@ -26,6 +29,18 @@ const THEMES = {
     night: { table: "#1e1c18", paper: "#24221c", paperCool: "#292620", paperWarm: "#2c2922", surface: "#302c25", ink: "#ece6d7", ink2: "#b4ad9b", ink3: "#8a8474", line: "#3b3830", lineStrong: "#4d4940", shadow: "rgba(0,0,0,.62)" },
     minerals: MUTED, accents: { intent: "#e0b84e", verify: "#94b07f", human: "#e89674", explain: "#74b6e6" }, humanFill: "#b5462f", humanInk: "#f6efe5",
     hc: { ink: "#f8f3e9", ink2: "#d2cbba", line: "#5a564c", lineStrong: "#736d60" },
+  },
+  /* Plate — the landing sheet's ground, carried indoors. Its day/night span is
+     deliberately narrow: the poster's identity is the constant, so the
+     circadian engine breathes it rather than re-inking it. */
+  plate: {
+    /* ink3 is lifted off the landing sheet's --ink-faint (#6E7681): that value
+       is AA-large only, and in here it carries small text. Measured ≥4.5:1 on
+       every plate surface including the lightest (day `surface`). */
+    day: { table: "#0f1215", paper: "#15181b", paperCool: "#181c20", paperWarm: "#1a1e22", surface: "#1e2328", ink: "#f2f4f7", ink2: "#a7aeb8", ink3: "#868e98", line: "#262b31", lineStrong: "#434b54", shadow: "rgba(0,0,0,.55)" },
+    night: { table: "#0a0c0e", paper: "#0f1113", paperCool: "#121416", paperWarm: "#141719", surface: "#181c1f", ink: "#f0f2f5", ink2: "#9ba3af", ink3: "#828a94", line: "#23272c", lineStrong: "#3c434b", shadow: "rgba(0,0,0,.7)" },
+    minerals: PLATE_MIN, accents: { intent: "#c9a03a", verify: "#58d68d", human: "#e74c3c", explain: "#6bb6e8" }, humanFill: "#c0473a", humanInk: "#fbf3ee",
+    hc: { ink: "#ffffff", ink2: "#d5dbe1", line: "#4a545f", lineStrong: "#6b7681" },
   },
   blueprint: {
     day: { table: "#1b1f24", paper: "#20252b", paperCool: "#252b32", paperWarm: "#2a313a", surface: "#2f3741", ink: "#eef2f6", ink2: "#a7b1bd", ink3: "#727d8a", line: "#323a44", lineStrong: "#44505d", shadow: "rgba(0,0,0,.55)" },
@@ -71,8 +86,17 @@ export function initTheme() {
   const toneVal = document.getElementById("tone-val");
   const autoEl = document.getElementById("tone-auto");
 
+  const darkMQ = matchMedia("(prefers-color-scheme: dark)");
+  /* Plate is the dark default so arriving from the landing sheet at / lands
+     the visitor in the same room they were just looking at. */
+  const groundFor = (dark) => (dark ? "plate" : "vellum");
+
   const defaults = {
-    theme: matchMedia("(prefers-color-scheme: dark)").matches ? "nocturne" : "vellum",
+    theme: groundFor(darkMQ.matches),
+    /* Distinguishes "we picked this for you" from "you picked this". render()
+       persists on first paint, so without this flag a default would look like
+       a deliberate choice and system changes could never be followed. */
+    themeExplicit: false,
     tone: 20,
     toneAuto: true,
     contrast: matchMedia("(prefers-contrast: more)").matches ? "high" : "standard",
@@ -99,7 +123,22 @@ export function initTheme() {
 
   render(); startAuto();
 
-  form.addEventListener("change", (e) => { const i = e.target; if (i && i.name) { s[i.name] = i.value; render(); } });
+  form.addEventListener("change", (e) => {
+    const i = e.target;
+    if (i && i.name) {
+      if (i.name === "theme") s.themeExplicit = true; // a chosen ground is never overridden
+      s[i.name] = i.value;
+      render();
+    }
+  });
+
+  /* Follow the system light/dark switch live — but only while the visitor has
+     not chosen a ground themselves. An explicit choice outranks the OS. */
+  darkMQ.addEventListener("change", (e) => {
+    if (s.themeExplicit) return;
+    s.theme = groundFor(e.matches);
+    render();
+  });
   toneEl.addEventListener("input", () => { s.toneAuto = false; s.tone = Number(toneEl.value); render(); });
   autoEl.addEventListener("change", () => { s.toneAuto = autoEl.checked; render(); startAuto(); });
 
