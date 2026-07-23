@@ -67,7 +67,17 @@ async function refresh() {
      head rather than rendering a pinned view of an epoch that doesn't exist. */
   if (state.epoch !== null && state.epoch >= state.head) state.epoch = null;
   render();
+
+  /* ?event=ID deep-links a single record: the landing plate's audit panel
+     hands off to the canonical proof surface, landing on the exact record
+     rather than the front door. One-shot — cleared so Refresh doesn't reopen. */
+  const wanted = _q.get("event");
+  if (wanted && !_deepLinked) {
+    _deepLinked = true;
+    await openInspector(wanted).catch(() => {});
+  }
 }
+let _deepLinked = false;
 
 // ---------------------------------------------------------------- render
 

@@ -207,7 +207,7 @@ Unblock stele delivery by adding a CodeQL workflow (codeql.yml, javascript-types
 
 *The public landing surface — this session's own decisions, recorded live.*
 
-> `data/atrium-trace.jsonl` · epoch 15 · 16 events · 14 decisions · 2 foreclosures
+> `data/atrium-trace.jsonl` · epoch 16 · 17 events · 15 decisions · 2 foreclosures
 
 ## Decisions
 
@@ -324,6 +324,14 @@ The landing answers the 15-second developer question: masthead nav (Docs, Contra
 Deterministic replay moves to the front page: an epoch scrubber under the figure redraws the section at any epoch, so a visitor watches verified decisions lose their evidence and foreclosed roads reopen. Every position is a projection computed by the Python oracle at render time (scripts/render-epoch-frames.py), not a browser reimplementation of the fold.
 
 > **Shadow [TRACE · certainty 0.95]** — Answering 'what is the unforgettable moment': not the poster, not the audit panel, but the thing no other tool does — watching status un-derive. The page already CLAIMED 'drag the past back and watch decisions un-verify' while only asserting it, one click away in the Atrium. Ghost edge: implementing the fold in JS — rejected outright, since a third implementation could drift from the contract and the golden-file discipline exists to prevent exactly that. Baking 20 oracle-computed frames costs 17KB and keeps the page's claim literally true. Measured proof the moment lands: 3 green verification seams at epoch 19, 2 at epoch 12, 0 at epoch 5.
+
+### at-016 — ◐ PROVISIONAL · pending_evidence
+
+**claude-opus-4.8** · 2026-07-23T20:45:00-04:00
+
+Comprehension before admiration: a one-line legend sits directly under the figure, the hero closes with the operational consequence stated rather than implied ('Every later decision inherits prior unchecked claims — unless the ledger says otherwise'), and every audit record links through to the Atrium as the canonical proof surface via /atrium/?log=demo&event=ID, which deep-links the inspector to that exact record.
+
+> **Shadow [TRACE · certainty 0.9]** — Human direction: sell the system through one impeccable record view rather than more abstract explanation, and compress comprehension so a first-time visitor understands the model before admiring it. One word changed from the requested legend copy: 'Foreclosed = closed by later decision' became 'a road deliberately closed' — a foreclosure IS the closing decision, not something closed by a subsequent one, and the shorter phrasing is no longer while staying accurate. Required a small Atrium change: ?event=ID opens the inspector on load, one-shot so Refresh does not reopen it.
 
 ## Foreclosures — ghost edges
 

@@ -322,6 +322,34 @@ body.plate::after {
   font-style: italic; border-left: 2px solid var(--t-foreclosure); padding-left: 14px;
 }
 
+/* Every record points at the canonical proof surface. */
+.audit-canon {
+  display: block; margin-top: 24px; padding: 14px 16px;
+  border: 1px solid var(--seam); text-decoration: none;
+  font-family: var(--mono); font-size: 13px; letter-spacing: .12em; color: var(--seam);
+  transition: background .15s ease;
+}
+.audit-canon:hover, .audit-canon:focus-visible { background: rgba(88,214,141,.08); }
+.audit-canon:focus-visible { outline: 2px solid var(--seam); outline-offset: 2px; }
+.audit-canon-sub {
+  display: block; margin-top: 5px; font-family: var(--body); font-size: 12.5px;
+  letter-spacing: .02em; color: var(--ink-muted); text-transform: none;
+}
+
+/* One-line legend — comprehension before admiration. */
+.decode-line {
+  margin: 14px 0 0; padding-top: 14px; border-top: 1px solid var(--frame-soft);
+  font-family: var(--mono); font-size: 12px; line-height: 1.9; color: var(--ink-muted);
+  letter-spacing: .04em;
+}
+.decode-line b { color: var(--ink); font-weight: 500; }
+
+/* The operational consequence, stated rather than implied. */
+.thesis-punch {
+  margin: 0; padding-left: 14px; border-left: 2px solid var(--red);
+  font-size: clamp(15px, 1.6vw, 17.5px); color: var(--ink);
+}
+
 /* ── Quote ────────────────────────────────────────────────────────── */
 .quote {
   border-left: 2px solid var(--red);

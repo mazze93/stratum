@@ -133,6 +133,11 @@ function render(id) {
            }</p>`
         : ""
     }
+
+    <a class="audit-canon" href="/atrium/?log=demo&amp;event=${encodeURIComponent(r.id)}">
+      Open ${esc(r.id)} in the Atrium
+      <span class="audit-canon-sub">the canonical record — live projection, full transition history, epoch replay</span>
+    </a>
   `;
 
   const panel = $("audit");
