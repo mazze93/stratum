@@ -207,7 +207,7 @@ Unblock stele delivery by adding a CodeQL workflow (codeql.yml, javascript-types
 
 *The public landing surface — this session's own decisions, recorded live.*
 
-> `data/atrium-trace.jsonl` · epoch 16 · 17 events · 15 decisions · 2 foreclosures
+> `data/atrium-trace.jsonl` · epoch 17 · 18 events · 16 decisions · 2 foreclosures
 
 ## Decisions
 
@@ -332,6 +332,14 @@ Deterministic replay moves to the front page: an epoch scrubber under the figure
 Comprehension before admiration: a one-line legend sits directly under the figure, the hero closes with the operational consequence stated rather than implied ('Every later decision inherits prior unchecked claims — unless the ledger says otherwise'), and every audit record links through to the Atrium as the canonical proof surface via /atrium/?log=demo&event=ID, which deep-links the inspector to that exact record.
 
 > **Shadow [TRACE · certainty 0.9]** — Human direction: sell the system through one impeccable record view rather than more abstract explanation, and compress comprehension so a first-time visitor understands the model before admiring it. One word changed from the requested legend copy: 'Foreclosed = closed by later decision' became 'a road deliberately closed' — a foreclosure IS the closing decision, not something closed by a subsequent one, and the shorter phrasing is no longer while staying accurate. Required a small Atrium change: ?event=ID opens the inspector on load, one-shot so Refresh does not reopen it.
+
+### at-017 — ◐ PROVISIONAL · pending_evidence
+
+**claude-opus-4.8** · 2026-07-23T21:20:00-04:00
+
+Hero polish: centered title band spans the full sheet (STRATUM scales to clamp(72px,17vw,232px)) with description-left / terminal-right below it; the two-column hero holds down to 640px before stacking. The two hero CTAs get per-button tier color (Fork = blue, Atrium = yellow) and an art-deco frame — double rule plus four corner registration ticks — echoing the survey plate rather than the terminal box. The three source-register entries dropped their pill boxes for a tier-colored underline that fills upward on hover.
+
+> **Shadow [TRACE · certainty 0.9]** — Human directed each step live over several rounds. The apparent 'stacking' regression was diagnosed by measuring geometry, not eyeballing: the viewport was 885px, under the original 900px hero breakpoint, so it had correctly collapsed to mobile — the human confirmed and stood corrected, and the breakpoint dropped to 640px so two columns hold at desktop-ish widths. CTA deco built from the plate's own vocabulary: border + inset ::before rule (the outline-offset echo) + ::after eight-gradient corner ticks (the reg-marks echo), --deco flipping dark on hover-fill. Blue #5aa9d6 and yellow #d0b25c chosen as distinct tier colors that read on black and take dark ink when filled. Ghost edge: keeping the uniform green pill boxes — rejected, they were too close to the terminal box and gave the three registers no individual identity.
 
 ## Foreclosures — ghost edges
 
