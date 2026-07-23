@@ -1,13 +1,21 @@
 #!/usr/bin/env python3
-"""Render docs/DECISIONS.md as a PROJECTION of the genesis trace.
+"""Render docs/DECISIONS.md as a PROJECTION of every recorded trace.
 
 Never hand-edit the output — regenerate it:
   python3 scripts/render-decisions.py > docs/DECISIONS.md
+
+With no arguments, renders every trace in TRACES (in order). Pass explicit
+paths to render a subset:
+  python3 scripts/render-decisions.py data/stele-trace.jsonl
 
 Two faces per decision, after the decision-telemetry method:
 the clean record as projected (status, tier, evidence), and the shadow
 trace it buried (oscillation, ghost edges), with its honesty tag and
 certainty weight. Da'ath — the mechanism itself — stays empty by design.
+
+Each trace is projected independently. They are separate trust scopes with
+their own trust roots, and merging them would fabricate a lineage that does
+not exist in any log.
 """
 
 import json
@@ -26,33 +34,40 @@ TIER_MARK = {
     "narrative": "○ narrative",
 }
 
+# Ordered. Each entry: (filename, display title, one-line scope description).
+TRACES = [
+    ("genesis-trace.jsonl", "Genesis",
+     "The recorded decisions of this repository's own construction."),
+    ("stele-trace.jsonl", "Stele",
+     "Cross-project use: STELE decisions routed through Stratum."),
+    ("atrium-trace.jsonl", "Public launch",
+     "The public landing surface — this session's own decisions, recorded live."),
+]
 
-def main() -> int:
-    path = ROOT / "data" / "genesis-trace.jsonl"
+
+def render_trace(path: Path, title: str, blurb: str, w) -> None:
+    """Append one trace's projection to the output via `w`."""
     records = [json.loads(l) for l in path.read_text().splitlines() if l.strip()]
     by_id = {r["id"]: r for r in records}
-    log = load_log(records)
+    log = load_log(records)          # guards re-run; a corrupt trace fails here
     proj = project_tessera(log)
     decisions = proj["authoritative"]["recent_decisions"]
     foreclosures = proj["authoritative"]["foreclosed_options"]
     verifications = [r for r in records if r["type"] == "verification"]
 
-    out = []
-    w = out.append
-    w("# Decisions — projected from the genesis trace")
+    w(f"# {title}")
     w("")
-    w(f"> Generated from `data/genesis-trace.jsonl` at epoch {proj['epoch']} "
-      f"({len(records)} events). **Do not hand-edit** — regenerate with "
-      f"`python3 scripts/render-decisions.py > docs/DECISIONS.md`.")
-    w(">")
-    w("> Each entry has two faces: the clean record as the projection renders it, "
-      "and the *shadow trace* — what the clean record buried, tagged `TRACE` when "
-      "sourced from surfaced deliberation or `RECON` when reconstructed, with a "
-      "certainty weight. Ghost edges are roads deliberately not taken.")
+    w(f"*{blurb}*")
+    w("")
+    w(f"> `data/{path.name}` · epoch {proj['epoch']} · {len(records)} events · "
+      f"{len(decisions)} decisions · {len(foreclosures)} foreclosures")
     w("")
 
     w("## Decisions")
     w("")
+    if not decisions:
+        w("*None recorded.*")
+        w("")
     for d in decisions:
         r = by_id[d["id"]]
         w(f"### {d['id']} — {TIER_MARK[d['authority']]} · {d['status']}")
@@ -80,6 +95,9 @@ def main() -> int:
 
     w("## Foreclosures — ghost edges")
     w("")
+    if not foreclosures:
+        w("*None recorded.*")
+        w("")
     for f in foreclosures:
         r = by_id[f["id"]]
         standing = "standing" if f["active"] else "REOPENED / overturned"
@@ -99,13 +117,50 @@ def main() -> int:
 
     w("## Checked-evidence ledger")
     w("")
+    rows = [(v, e) for v in verifications for e in v.get("evidence", []) if e.get("checked_at")]
+    if not rows:
+        w("*No checked evidence yet — every decision above is provisional or axiomatic.*")
+        w("")
+        return
     w("| verification | target | what was checked | when |")
     w("|---|---|---|---|")
-    for v in verifications:
-        for e in v.get("evidence", []):
-            if e.get("checked_at"):
-                w(f"| `{v['id']}` | `{v['targets'][0]}` | {e['ref']} | {e['checked_at']} |")
+    for v, e in rows:
+        w(f"| `{v['id']}` | `{v['targets'][0]}` | {e['ref']} | {e['checked_at']} |")
     w("")
+
+
+def main() -> int:
+    args = [a for a in sys.argv[1:] if not a.startswith("--")]
+    if args:
+        selected = []
+        for a in args:
+            p = Path(a)
+            known = next((t for t in TRACES if t[0] == p.name), None)
+            selected.append((p, known[1] if known else p.stem, known[2] if known else ""))
+    else:
+        selected = [(ROOT / "data" / fn, title, blurb) for fn, title, blurb in TRACES]
+
+    out = []
+    w = out.append
+
+    w("# Decisions — projected from the traces")
+    w("")
+    w("> **Do not hand-edit.** Regenerate with "
+      "`python3 scripts/render-decisions.py > docs/DECISIONS.md`.")
+    w(">")
+    w("> Each entry has two faces: the clean record as the projection renders it, "
+      "and the *shadow trace* — what the clean record buried, tagged `TRACE` when "
+      "sourced from surfaced deliberation or `RECON` when reconstructed, with a "
+      "certainty weight. Ghost edges are roads deliberately not taken.")
+    w(">")
+    w("> Traces are projected **independently**. Each carries its own trust root, "
+      "so they are separate trust scopes; a merged projection would imply a shared "
+      "lineage that exists in no log.")
+    w("")
+    for path, title, blurb in selected:
+        w("---")
+        w("")
+        render_trace(path, title, blurb, w)
 
     w("---")
     w("")
