@@ -5,9 +5,12 @@
 replay proven by an actual serialize→reload→reproject round-trip. The Python
 is a semantics check; port the rules into `packages/runtime`.*
 
-**Numbering note:** the Event Epistemic Contract was drafted as "ADR-002,"
-which collides with ADR-002 (PolicyEngine concentration) in the architecture
-evaluation. Renumber one before these enter the record.
+**Numbering note — resolved.** The Event Epistemic Contract was drafted as
+"ADR-002," colliding with ADR-002 (PolicyEngine concentration) in the
+architecture evaluation. Resolution recorded as genesis event `sb-009`
+(see `docs/DECISIONS.md`): this contract keeps its MEMORY_MODEL identity
+rather than an ADR number, ADR-001 and ADR-002 keep theirs, and new ADRs
+start at ADR-003. Nothing is renumbered.
 
 **What rev 3 fixed (two review rounds):** status is no longer a mutable field
 (it is a fold), verification is a logged event (not a side effect), review is
