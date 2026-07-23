@@ -108,22 +108,22 @@ body.plate::after {
 .mast-gh:hover { color: var(--ink); }
 
 /* ── Hero ─────────────────────────────────────────────────────────── */
+/* Centered title band spans the full sheet, then description (left) and the
+   terminal (right) sit below it. The full width lets STRATUM go large. */
 .hero {
-  display: grid; gap: clamp(24px, 4vw, 52px);
+  display: grid; gap: clamp(22px, 3.5vw, 44px);
   grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
   align-items: start;
 }
-@media (max-width: 900px) { .hero { grid-template-columns: 1fr; } }
-.hero-say { display: grid; gap: 16px; }
+.hero-title { grid-column: 1 / -1; text-align: center; display: grid; gap: 12px; justify-items: center; }
+.hero-title .titleplate-sub { margin: 0; }
+/* Two columns hold down to phone widths; only stack when a side would be
+   genuinely too narrow to read. */
+@media (max-width: 640px) { .hero { grid-template-columns: 1fr; } }
+.hero-say { display: grid; gap: 16px; align-content: start; }
 .hero-run { display: grid; gap: 12px; align-content: start; }
-/* STRATUM is one unbreakable word: its min-content width is the whole
-   wordmark, so an over-large clamp doesn't wrap — it overruns the column and
-   slides under the terminal. Sized to fit the narrower hero column instead of
-   the full sheet, and only allowed full scale once the hero is single-column. */
-.hero .titleplate-name { font-size: clamp(46px, 7.2vw, 104px); }
-@media (max-width: 900px) {
-  .hero .titleplate-name { font-size: clamp(56px, 13vw, 150px); }
-}
+/* Full-width band, so STRATUM can scale hard without overrunning a column. */
+.hero .titleplate-name { font-size: clamp(72px, 17vw, 232px); }
 
 /* Terminal transcript */
 .term { border: 1px solid var(--frame-soft); background: #0a0c0d; overflow: hidden; }
@@ -381,22 +381,70 @@ body.plate::after {
 /* ── Instrument register ──────────────────────────────────────────── */
 .instrument { display: grid; gap: 22px; }
 .cta-row { display: flex; flex-wrap: wrap; gap: 14px; }
+/* Hero CTAs — art-deco plate frame, per-button tier color. The double rule
+   (border + inset ::before) and the four corner registration ticks (::after)
+   echo the sheet's own border + offset outline + corner marks, so the buttons
+   read as survey-plate cartouches, not terminal boxes. --deco flips dark on
+   hover when the button floods with its color. */
 .cta {
-  flex: 1 1 220px; min-height: 64px;
-  display: flex; flex-direction: column; justify-content: center; gap: 4px;
-  padding: 14px 20px;
+  --cta-c: var(--frame);
+  --deco: var(--cta-c);
+  position: relative; flex: 1 1 240px; min-height: 70px;
+  display: flex; flex-direction: column; justify-content: center; gap: 5px;
+  padding: 16px 22px;
   font-family: var(--mono); font-size: 13.5px; letter-spacing: .18em;
-  color: var(--ink); text-decoration: none; text-align: left;
-  background: var(--plate-well); border: 1px solid var(--frame);
-  transition: border-color .15s ease, background .15s ease, transform .15s ease;
+  color: var(--deco); text-decoration: none; text-align: left;
+  background: transparent; border: 1px solid var(--cta-c);
+  transition: background .16s ease, color .16s ease, transform .16s ease;
   cursor: pointer;
 }
-.cta:hover, .cta:focus-visible { border-color: var(--seam); background: #161a1d; transform: translateY(-2px); }
-.cta:focus-visible { outline: 2px solid var(--seam); outline-offset: 3px; }
-.cta--primary { border-color: var(--red); }
-.cta--primary:hover, .cta--primary:focus-visible { border-color: var(--seam); }
-.cta-sub { font-family: var(--body); font-size: 12.5px; letter-spacing: .02em; color: var(--ink-muted); text-transform: none; }
+.cta::before {   /* the offset inner rule — plate's outline-offset echo */
+  content: ""; position: absolute; inset: 5px; border: 1px solid var(--deco);
+  opacity: .3; pointer-events: none; transition: opacity .16s ease, border-color .16s ease;
+}
+.cta::after {    /* four corner registration ticks — plate's reg-marks echo */
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  --t: 13px; --w: 1.5px;
+  background:
+    linear-gradient(var(--deco), var(--deco)) 0 0, linear-gradient(var(--deco), var(--deco)) 0 0,
+    linear-gradient(var(--deco), var(--deco)) 100% 0, linear-gradient(var(--deco), var(--deco)) 100% 0,
+    linear-gradient(var(--deco), var(--deco)) 0 100%, linear-gradient(var(--deco), var(--deco)) 0 100%,
+    linear-gradient(var(--deco), var(--deco)) 100% 100%, linear-gradient(var(--deco), var(--deco)) 100% 100%;
+  background-repeat: no-repeat;
+  background-size:
+    var(--t) var(--w), var(--w) var(--t), var(--t) var(--w), var(--w) var(--t),
+    var(--t) var(--w), var(--w) var(--t), var(--t) var(--w), var(--w) var(--t);
+}
+.cta:hover, .cta:focus-visible { background: var(--cta-c); --deco: #0a0c0d; transform: translateY(-2px); }
+.cta:hover::before, .cta:focus-visible::before { opacity: .55; }
+.cta:hover .cta-sub, .cta:focus-visible .cta-sub { color: rgba(8, 10, 11, .74); }
+.cta:focus-visible { outline: 2px solid var(--cta-c); outline-offset: 4px; }
+.cta-sub { font-family: var(--body); font-size: 12.5px; letter-spacing: .02em; color: var(--ink-muted); text-transform: none; transition: color .16s ease; }
 .cta[disabled] { opacity: .55; cursor: progress; }
+.cta--fork { --cta-c: #5aa9d6; }      /* Fork a live log — blue */
+.cta--atrium { --cta-c: #d0b25c; }     /* Open the Atrium — yellow */
+
+/* Source register — no pill boxes. A colored underline that fills upward on
+   hover, each entry its own tier color, breaking the boxiness. */
+.reg-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 2px; }
+.reg {
+  position: relative; display: grid; gap: 4px;
+  padding: 16px 14px 16px 4px; text-decoration: none; color: var(--ink);
+  border-bottom: 2px solid var(--reg-c);
+  transition: color .15s ease, padding-left .15s ease;
+}
+.reg::before {
+  content: ""; position: absolute; inset: auto 0 0 0; height: 0;
+  background: var(--reg-c); opacity: .16; z-index: -1; transition: height .18s ease;
+}
+.reg:hover, .reg:focus-visible { padding-left: 14px; }
+.reg:hover::before, .reg:focus-visible::before { height: 100%; }
+.reg:focus-visible { outline: 2px solid var(--reg-c); outline-offset: 2px; }
+.reg-label { font-family: var(--mono); font-size: 13.5px; letter-spacing: .18em; color: var(--reg-c); }
+.reg-sub { font-size: 13px; color: var(--ink-muted); }
+.reg--source { --reg-c: var(--seam); }
+.reg--record { --reg-c: #b389c4; }
+.reg--contract { --reg-c: var(--t-pending); }
 
 .cli {
   margin: 0; padding: 18px 22px; overflow-x: auto;

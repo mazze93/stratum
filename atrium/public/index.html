@@ -50,9 +50,12 @@
 
   <!-- Hero: what it is, and how to run it -->
   <section class="hero">
-    <div class="hero-say reveal">
+    <div class="hero-title reveal">
       <h1 class="titleplate-name">STRATUM</h1>
       <p class="titleplate-sub">EPISTEMIC DECISION LEDGER</p>
+    </div>
+
+    <div class="hero-say reveal">
       <p class="titleplate-thesis">
         An append-only ledger for human + AI work. Agentic systems conflate <em>generation</em> with
         <em>authority</em>: without an evidence ledger, a generated conclusion becomes operational truth
@@ -64,10 +67,10 @@
         Every later decision inherits prior unchecked claims — unless the ledger says otherwise.
       </p>
       <div class="cta-row">
-        <button class="cta cta--primary" id="cta-playground" type="button">
+        <button class="cta cta--fork" id="cta-playground" type="button">
           FORK A LIVE LOG<span class="cta-sub">no install · real guards · one click</span>
         </button>
-        <a class="cta" href="/atrium/">OPEN THE ATRIUM<span class="cta-sub">read the live instrument</span></a>
+        <a class="cta cta--atrium" href="/atrium/">OPEN THE ATRIUM<span class="cta-sub">read the live instrument</span></a>
       </div>
     </div>
 
@@ -341,10 +344,19 @@
 
   <!-- Source register -->
   <section class="instrument reveal">
-    <div class="cta-row">
-      <a class="cta" href="https://github.com/mazze93/stratum">SOURCE<span class="cta-sub">MIT · TypeScript core + Python oracle</span></a>
-      <a class="cta" href="https://github.com/mazze93/stratum/blob/main/docs/DECISIONS.md">THE RECORD<span class="cta-sub">every decision, generated from the traces</span></a>
-      <a class="cta" href="https://github.com/mazze93/stratum/blob/main/docs/MEMORY_MODEL.md">THE CONTRACT<span class="cta-sub">status is a fold · 16 invariants</span></a>
+    <div class="reg-row">
+      <a class="reg reg--source" href="https://github.com/mazze93/stratum">
+        <span class="reg-label">SOURCE</span>
+        <span class="reg-sub">MIT · TypeScript core + Python oracle</span>
+      </a>
+      <a class="reg reg--record" href="https://github.com/mazze93/stratum/blob/main/docs/DECISIONS.md">
+        <span class="reg-label">THE RECORD</span>
+        <span class="reg-sub">every decision, generated from the traces</span>
+      </a>
+      <a class="reg reg--contract" href="https://github.com/mazze93/stratum/blob/main/docs/MEMORY_MODEL.md">
+        <span class="reg-label">THE CONTRACT</span>
+        <span class="reg-sub">status is a fold · 16 invariants</span>
+      </a>
     </div>
   </section>
 
