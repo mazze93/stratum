@@ -9,6 +9,15 @@
 
 ---
 
+## 0. Status addendum — 2026-07-23
+
+*The body of this document is the assessment as written on 2026-06-20 and is left standing; this section records what has changed since, in the same spirit as the contract it evaluates — supersede, don't mutate.*
+
+- **ADR-001 (Tessera fidelity) — now Accepted and implemented.** §1's "one remains open" and §2's `Open` row for *Tessera/Chronicle is an unguarded compression point* were accurate on 2026-06-20 and are **superseded**: Option C shipped in both implementations, and B's trace-check is a hard CI gate. One of its four action items (Chronicle role re-scope) remains deferred — see §3.
+- **ADR-002 intra-tier tie-break — resolved:** deny-wins, now stated normatively in §4 and `TRUST.md` §2.
+- **`TRUST.md` and `ARBITRATION.md` now exist** as skeletons carrying the open questions §5 assigns them. They frame the questions; they do not answer them. Capability-ontology granularity and precedent decay both remain open research.
+- **Unchanged and still open:** the cost model / assurance-tier principle (§5), branch-merge conflict resolution per tier (§5), and the relevance-scoring weights gap (§6).
+
 ## 1. Verdict
 
 The design is sound and unusually disciplined — it is closer to an operating-system spec than to an app spec, which is the correct register for the thesis. The v0.2.0 delta is a genuine improvement, not a feature pile: it closed two of the four load-bearing gaps from prior review (determinism, negative-space/scope) and did so structurally rather than cosmetically. One gap is **partially** closed (role/topology cost) and **one remains open** (Tessera fidelity). The single new architectural commitment — the PolicyEngine as a synchronous gate on every dispatch — is the right call, but it concentrates risk in a way worth recording explicitly (ADR-002).
@@ -39,10 +48,12 @@ Net: ship-worthy as a v1.0 contract once ADR-001 is resolved. The remaining item
 
 ## 3. ADR-001: Tessera fidelity verification
 
-**Status:** Proposed
-**Date:** 2026-06-20
+**Status:** **Accepted — implemented** (was Proposed; accepted 2026-07-23)
+**Date:** 2026-06-20 · accepted 2026-07-23
 **Deciders:** Stratum architecture owner; Chronicle + Memory Curator role owners
-**Relates to:** SPEC §9.4, §15, §6.6 (paper); MEMORY_MODEL.md (pending)
+**Relates to:** SPEC §9.4, §15, §6.6 (paper); MEMORY_MODEL.md rev 3 (§5, §8)
+
+> **Acceptance note (2026-07-23).** Option C is not merely chosen — it is the design both implementations now ship. Authoritative Tessera fields are projections over the append-only log (`reference/tessera_projection.py`, `core/src/projection.ts`); prose fields are segregated in a `narrative_only` block and are never canonical. B's trace-check was retained as recommended and is a hard CI gate. Action item 4 is **not** done and is not counted as done — see below.
 
 ### Context
 
@@ -101,10 +112,10 @@ B guards the artifact; C removes the need to guard it. C is more in the spirit o
 - **Revisit:** the Chronicle role description (§4.9 paper) should be re-scoped from "compress the session" to "project authoritative state and summarize the rest." This is arguably a third mechanical rename candidate after Historian→Chronicle.
 
 ### Action items
-1. [ ] Split the Tessera schema (§6.6 paper) into `authoritative` and `narrative` blocks.
-2. [ ] Specify the episodic→Tessera projection query in MEMORY_MODEL.md.
-3. [ ] Add the trace-check invariant to §16 testing (positive: every authoritative field traces; negative: a dropped event fails the build).
-4. [ ] Re-scope the Chronicle role contract.
+1. [x] Split the Tessera schema (§6.6 paper) into `authoritative` and `narrative` blocks — projections emit `authoritative` (`recent_decisions`, `foreclosed_options`) and `narrative_only` (`current_goal`, `next_action`, `warnings`). `reference/tessera_projection.py:348`, `core/src/projection.ts`.
+2. [x] Specify the episodic→Tessera projection query in MEMORY_MODEL.md — MEMORY_MODEL rev 3 is that specification: §2 (status as a fold), §5 (the four projected authority tiers), §8 (fail-closed on incompleteness).
+3. [x] Add the trace-check invariant to §16 testing — `require_authoritative()` raises `IncompleteProjection` when a field has no backing event. Tested **both** directions in both implementations: positive resolve and negative ghost-id raise (`reference/test_tessera_projection.py:258-261`, `core/test/invariants.test.ts:306`). Runs in CI via `npm test` + `npm run test:reference`, so a dropped event does fail the build.
+4. [ ] **Re-scope the Chronicle role contract — deferred, not done.** The Chronicle/Historian role lives in `cognitive-architecture-paper.md` §4.9 and the v0.2.0 SPEC, neither of which is committed to this repository; there is no agent-runtime role contract here to edit. Deferred to whichever repo carries the role definitions. Recording it as deferred rather than checked is the point: the projection design landed, the role's *description* of itself did not follow it.
 
 ---
 
@@ -122,6 +133,8 @@ v0.1.0 scattered permission logic across `toolAllowlist` (§8), security default
 ### Decision
 
 A single PolicyEngine adjudicates every capability-bearing action, deny-by-default, fail-closed, recorded, deterministic, on the synchronous dispatch path.
+
+**Intra-tier tie-break (added 2026-07-23):** when two rules of equal precedence *within the same tier* contradict, **deny wins**. This is stated normatively rather than left to be inferred from fail-closed, because "fail-closed" describes behaviour on *error* while this describes behaviour on *a well-formed disagreement* — a different case that would otherwise be resolved by rule ordering, i.e. by accident. Cross-tier precedence remains intersection semantics; deny-wins is its within-tier analogue, so the two compose without a special case.
 
 ### Options considered
 
@@ -147,9 +160,9 @@ The decision trades distributed resilience for centralized auditability, and aud
 - **Revisit / gap:** the spec specifies cross-tier precedence (intersection) but **not the intra-tier tie-break** — two equal-precedence rules within the same tier that contradict. Fail-closed implies deny-wins, but that should be stated, not inferred. Flag for TRUST.md.
 
 ### Action items
-1. [ ] State the intra-tier contradiction tie-break explicitly (recommend: deny-wins, consistent with fail-closed).
-2. [ ] Confirm §16.3 negative-test coverage is a hard ship gate, not advisory.
-3. [ ] Define the `Capability` ontology granularity in TRUST.md (see §5).
+1. [x] State the intra-tier contradiction tie-break explicitly — **done 2026-07-23**, deny-wins, stated under Decision above and restated normatively in `TRUST.md` §2.
+2. [ ] Confirm §16.3 negative-test coverage is a hard ship gate, not advisory. *(Open for the PolicyEngine, which does not exist in this repo. Note the precedent: the contract's own negative tests — a dropped backing event must raise `IncompleteProjection` — are already a hard CI gate in both implementations, so the pattern is established, not merely proposed.)*
+3. [ ] Define the `Capability` ontology granularity in TRUST.md (see §5). *(Framed as the open question in `TRUST.md` §3 — 2026-07-23. Framing is not resolution; the ontology itself remains undecided.)*
 
 ---
 

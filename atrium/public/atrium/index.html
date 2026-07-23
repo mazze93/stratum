@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="vellum" data-contrast="standard" data-motion="full">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Stratum — Atrium</title>
+<meta name="description" content="Stratum: an epistemic decision ledger. Append-only events, evidence-gated trust, deterministic Tessera projection. Everything on this screen is a projection of a real log." />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="stylesheet" href="/fonts/fonts.css" />
+<link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+
+<div class="app-shell">
+
+  <header class="top-bar">
+    <div class="brand">
+      <a class="wordmark-link" href="/" title="Back to the survey plate">
+        <svg viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" focusable="false">
+          <path d="M2 9 C8 7.5 14 10.5 20 9 C24 8 28 9.5 30 9 L30 14 C24 15.5 18 12.5 12 14 C8 15 4 13.5 2 14 Z" fill="var(--s-episodic)"/>
+          <path d="M2 15 C8 13.5 14 16.5 20 15 C24 14 28 15.5 30 15 L30 20 C24 21.5 18 18.5 12 20 C8 21 4 19.5 2 20 Z" fill="var(--s-session)"/>
+          <path d="M2 21 C8 19.5 14 22.5 20 21 C24 20 28 21.5 30 21 L30 27 C24 28.5 18 25.5 12 27 C8 28 4 26.5 2 27 Z" fill="var(--s-semantic)"/>
+        </svg>
+        <h1 class="wordmark">STRATUM</h1>
+      </a>
+      <span class="sub-mark">Atrium · Control Room</span>
+    </div>
+    <div class="log-context">
+      <span class="mono-label">LOG</span>
+      <span class="mono log-name" id="log-name">demo</span>
+      <span class="mono-label" id="epoch-label">EPOCH · —</span>
+      <span class="epi provisional" id="scrub-badge" hidden>viewing past epoch</span>
+    </div>
+    <div class="top-actions">
+      <a class="hbtn hbtn--link" href="/" title="Back to the survey plate">← Plate</a>
+      <a class="hbtn hbtn--link" href="https://github.com/mazze93/stratum" title="Source on GitHub">GitHub</a>
+      <a class="hbtn hbtn--link" href="https://mazzeleczzare.com/" title="Built by Mazze LeCzzare">Author</a>
+      <button class="hbtn" id="btn-refresh" title="Refetch projection">Refresh</button>
+      <button class="hbtn" id="btn-playground" title="Fork a sandbox you can write to">Fork playground</button>
+      <button class="hbtn" id="btn-export" title="Download the full event log (serialize_log)">Export</button>
+      <button class="hbtn" id="btn-token" title="Set bearer token for private logs">Token</button>
+      <button class="hbtn" id="btn-settings" aria-haspopup="dialog">Settings</button>
+    </div>
+  </header>
+
+  <div class="app-grid">
+
+    <!-- LEFT RAIL: Memory Depth Gauge -->
+    <aside class="panel panel-log" aria-label="Memory depth gauge">
+      <div class="strata-stack">
+        <div class="strata-layer s-3 xtall live">
+          <div class="s-visual"></div>
+          <div class="s-info">
+            <span class="s-name">EPISODIC</span>
+            <span class="s-meta">Event graph · supersession · the layer you are looking at</span>
+            <span class="s-stat mono" id="stat-episodic">—</span>
+          </div>
+        </div>
+        <div class="strata-layer s-1 planned">
+          <div class="s-visual"></div>
+          <div class="s-info">
+            <span class="s-name">WORKING <span class="v2chip">v2</span></span>
+            <span class="s-meta">Total decay · in context</span>
+          </div>
+        </div>
+        <div class="strata-layer s-2 planned">
+          <div class="s-visual"></div>
+          <div class="s-info">
+            <span class="s-name">SESSION <span class="v2chip">v2</span></span>
+            <span class="s-meta">Rolling summary · recency × salience</span>
+          </div>
+        </div>
+        <div class="strata-layer s-4 planned">
+          <div class="s-visual"></div>
+          <div class="s-info">
+            <span class="s-name">SEMANTIC <span class="v2chip">v2</span></span>
+            <span class="s-meta">Bounded · curator eviction</span>
+          </div>
+        </div>
+        <div class="strata-layer s-5 planned">
+          <div class="s-visual"></div>
+          <div class="s-info">
+            <span class="s-name">PREFERENCE <span class="v2chip">v2</span></span>
+            <span class="s-meta">Per-user · loaded eagerly</span>
+          </div>
+        </div>
+        <div class="strata-layer s-6 planned">
+          <div class="s-visual"></div>
+          <div class="s-info">
+            <span class="s-name">ARCHIVE <span class="v2chip">v2</span></span>
+            <span class="s-meta">Cold · on-demand rehydration</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="epoch-box">
+        <div class="mono-label">Epoch scrubber · deterministic replay</div>
+        <input type="range" id="epoch-scrub" min="0" max="0" step="1" value="0"
+               aria-label="Project the Tessera at an earlier epoch" />
+        <div class="scrub-row">
+          <span class="mono" id="scrub-val">—</span>
+          <button class="hbtn small" id="btn-scrub-head" hidden>Return to head</button>
+        </div>
+        <p class="rail-note">The projection is a pure function of the log at an epoch.
+        Drag backwards and watch decisions un-verify.</p>
+      </div>
+    </aside>
+
+    <!-- CENTER: The Atrium -->
+    <main class="panel panel-atrium" aria-label="Active workspace">
+      <div class="atrium-body">
+
+        <section class="arbitration" id="arbitration-block" role="alert" hidden>
+          <div class="arb-top">
+            <h2 class="arb-title">Human judgment required</h2>
+            <span class="epi blocked" id="arb-count">—</span>
+          </div>
+          <div id="arb-list" class="arb-list"></div>
+        </section>
+
+        <section aria-label="Recent decisions">
+          <div class="units-head">
+            <h2>Recent decisions</h2>
+            <span class="mono-label" id="decisions-count">—</span>
+          </div>
+          <div class="unit-list" id="decision-list"></div>
+        </section>
+
+        <section aria-label="Foreclosed options">
+          <div class="units-head">
+            <h2>Foreclosed options <span class="units-hint">ghost edges — roads deliberately not taken</span></h2>
+            <span class="mono-label" id="foreclosures-count">—</span>
+          </div>
+          <div class="unit-list" id="foreclosure-list"></div>
+        </section>
+
+      </div>
+    </main>
+
+    <!-- RIGHT RAIL: Ledger & Stream -->
+    <aside class="panel panel-roster" aria-label="Ledger and event stream">
+
+      <section>
+        <div class="roster-head">Authority tiers · live counts</div>
+        <div class="tier-legend" id="tier-legend"></div>
+      </section>
+
+      <section class="new-entry" id="new-entry-section">
+        <div class="roster-head">Record an event</div>
+        <form id="entry-form">
+          <div class="segmented small" role="radiogroup" aria-label="Event kind">
+            <label><input type="radio" name="ekind" value="decision" checked><span>Decision</span></label>
+            <label><input type="radio" name="ekind" value="foreclosure"><span>Foreclosure</span></label>
+          </div>
+          <textarea id="entry-narrative" rows="3" required
+            placeholder="What was decided — or which road is being closed?"></textarea>
+          <div class="entry-row">
+            <label class="entry-check mono-label" title="pending_evidence expects later verification with checked evidence">
+              <input type="checkbox" id="entry-pending" /> expects evidence
+            </label>
+            <button class="btn primary" type="submit">Append</button>
+          </div>
+          <p class="rail-note" id="entry-hint"></p>
+        </form>
+      </section>
+
+      <section class="telemetry">
+        <div class="roster-head">Event stream · the log itself</div>
+        <ul class="feed-list" id="feed-list"></ul>
+      </section>
+
+    </aside>
+  </div>
+
+  <footer class="sys-weather" aria-label="System conditions">
+    <div class="w-cell"><span class="w-label">Cirrus · Trust</span><span class="w-val" id="weather-cirrus">—</span></div>
+    <div class="w-cell"><span class="w-label">Cumulus · Agents</span><span class="w-val" id="weather-cumulus">—</span></div>
+    <div class="w-cell"><span class="w-label">Stratus · Log</span><span class="w-val" id="weather-stratus">—</span></div>
+    <div class="w-cell"><span class="w-label">Nimbus · Review</span><span class="w-val" id="weather-nimbus">—</span></div>
+  </footer>
+</div>
+
+<!-- EPISTEMIC INSPECTOR DRAWER -->
+<div class="inspector-drawer" id="inspector" aria-label="Epistemic inspector">
+  <div class="drawer-header">
+    <h2>Epistemic Inspector</h2>
+    <button class="x" id="inspector-close" aria-label="Close inspector">✕</button>
+  </div>
+  <div class="drawer-body" id="inspector-body"></div>
+</div>
+
+<!-- SETTINGS -->
+<dialog class="settings" id="settings-dialog" aria-label="Atrium settings">
+  <header><h2>Atrium Settings</h2><button class="x" id="settings-close" aria-label="Close settings">✕</button></header>
+  <form method="dialog" class="body" id="settings-form">
+    <fieldset>
+      <legend>Ground</legend>
+      <p class="hint">The paper the survey is drawn on. Plate is the survey sheet you arrived on; Blueprint is the dark control-room register. Until you pick one, the ground follows your system's light/dark setting.</p>
+      <div class="segmented" role="radiogroup" aria-label="Ground theme">
+        <label><input type="radio" name="theme" value="plate"><span>Plate</span></label>
+        <label><input type="radio" name="theme" value="vellum"><span>Vellum</span></label>
+        <label><input type="radio" name="theme" value="stone"><span>Stone</span></label>
+        <label><input type="radio" name="theme" value="nocturne"><span>Nocturne</span></label>
+        <label><input type="radio" name="theme" value="blueprint"><span>Blueprint</span></label>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>Daylight</legend>
+      <p class="hint">Brightness and warmth across the day. Auto follows your local clock.</p>
+      <div class="daylight">
+        <div class="gradient-rail" aria-hidden="true"></div>
+        <div class="row">
+          <input type="range" id="tone" min="0" max="100" step="1" value="20"
+                 aria-label="Daylight tone, 0 bright morning to 100 deep evening" />
+          <span class="val mono" id="tone-val">—</span>
+        </div>
+        <label class="auto"><input type="checkbox" id="tone-auto" /> Auto · circadian</label>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>Contrast</legend>
+      <div class="segmented" role="radiogroup" aria-label="Contrast">
+        <label><input type="radio" name="contrast" value="standard"><span>Standard</span></label>
+        <label><input type="radio" name="contrast" value="high"><span>High</span></label>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>Motion</legend>
+      <div class="segmented" role="radiogroup" aria-label="Motion">
+        <label><input type="radio" name="motion" value="full"><span>Full</span></label>
+        <label><input type="radio" name="motion" value="reduced"><span>Reduced</span></label>
+        <label><input type="radio" name="motion" value="still"><span>Still</span></label>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>Text size</legend>
+      <div class="segmented" role="radiogroup" aria-label="Text size">
+        <label><input type="radio" name="text" value="1"><span>A</span></label>
+        <label><input type="radio" name="text" value="1.12"><span>A+</span></label>
+        <label><input type="radio" name="text" value="1.25"><span>A++</span></label>
+      </div>
+    </fieldset>
+  </form>
+  <footer>
+    <button class="btn" id="settings-reset" type="button">Reset to system</button>
+    <button class="btn primary" id="settings-done" type="button">Done</button>
+  </footer>
+</dialog>
+
+<!-- TOKEN -->
+<dialog class="settings narrow" id="token-dialog" aria-label="Bearer token">
+  <header><h2>Bearer token</h2><button class="x" id="token-close" aria-label="Close">✕</button></header>
+  <div class="body">
+    <p class="hint">Required to read or write private logs (anything that isn't <span class="mono">demo</span> or a playground). Stored only in this browser.</p>
+    <input type="password" id="token-input" class="text-input" placeholder="paste token" autocomplete="off" />
+  </div>
+  <footer>
+    <button class="btn" id="token-clear" type="button">Clear</button>
+    <button class="btn primary" id="token-save" type="button">Save</button>
+  </footer>
+</dialog>
+
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<script type="module" src="/app.js"></script>
+</body>
+</html>

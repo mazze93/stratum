@@ -23,7 +23,7 @@ const failStatus = (r: Extract<AppendResult | SeedResult, { ok: false }>): 400 |
   r.kind === "parse" ? 400 : r.kind === "cap" ? 413 : 409;
 
 app.get("/api/health", (c) =>
-  c.json({ ok: true, service: "stratum", version: "0.3.0" }),
+  c.json({ ok: true, service: "stratum", version: "0.4.0" }),
 );
 
 /** Create a per-visitor sandbox log, cloned from the curated demo seed.

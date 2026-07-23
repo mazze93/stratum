@@ -74,6 +74,16 @@ html[data-motion="reduced"] .ambient { animation: none !important; }
 }
 .hbtn:hover { background: var(--paper-cool); transform: translateY(-1px); border-color: var(--ink-3); }
 .hbtn.small { min-height: 30px; font-size: .7rem; padding: .2rem .55rem; }
+/* Navigation out of the control room — the Atrium is a destination, not a
+   dead end: back to the plate, to the source, and to the author. */
+.hbtn--link { text-decoration: none; color: var(--ink-2); background: transparent; border-color: var(--line); }
+.hbtn--link:hover { color: var(--ink); background: var(--paper-cool); }
+.wordmark-link {
+  display: inline-flex; align-items: center; gap: .5rem;
+  text-decoration: none; color: inherit;
+}
+.wordmark-link:hover .wordmark { color: var(--accent-explain); }
+.wordmark-link:focus-visible { outline: 2px solid var(--accent-verify); outline-offset: 3px; }
 
 .btn {
   min-height: 40px; padding: .4rem .85rem; border: var(--hair) solid var(--line-strong);

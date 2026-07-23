@@ -1,255 +1,360 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="vellum" data-contrast="standard" data-motion="full">
+<html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Stratum — Atrium</title>
-<meta name="description" content="Stratum: an epistemic decision ledger. Append-only events, evidence-gated trust, deterministic Tessera projection. Everything on this screen is a projection of a real log." />
+<title>Stratum — epistemic decision ledger</title>
+<meta name="description" content="An append-only ledger for human + AI work. Decisions deposit as strata; status is derived, never stored; everything on screen is a projection of a real log." />
+<meta property="og:title" content="Stratum — epistemic decision ledger" />
+<meta property="og:description" content="The instrument doesn't know the destination. A navigator reads the instrument. A human decides where to sail." />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://stratum.mazzeleczzare.com/" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="stylesheet" href="/fonts/fonts.css" />
-<link rel="stylesheet" href="/styles.css" />
+<link rel="stylesheet" href="/landing.css" />
 </head>
-<body>
+<body class="plate">
 
-<div class="app-shell">
+<!-- ── Survey plate frame ─────────────────────────────────────────── -->
+<div class="sheet" id="sheet">
+  <div class="reg-mark reg-tl" aria-hidden="true"></div>
+  <div class="reg-mark reg-tr" aria-hidden="true"></div>
+  <div class="reg-mark reg-bl" aria-hidden="true"></div>
+  <div class="reg-mark reg-br" aria-hidden="true"></div>
 
-  <header class="top-bar">
-    <div class="brand">
-      <h1 class="wordmark">STRATUM</h1>
-      <span class="sub-mark">Atrium · Control Room</span>
-    </div>
-    <div class="log-context">
-      <span class="mono-label">LOG</span>
-      <span class="mono log-name" id="log-name">demo</span>
-      <span class="mono-label" id="epoch-label">EPOCH · —</span>
-      <span class="epi provisional" id="scrub-badge" hidden>viewing past epoch</span>
-    </div>
-    <div class="top-actions">
-      <button class="hbtn" id="btn-refresh" title="Refetch projection">Refresh</button>
-      <button class="hbtn" id="btn-playground" title="Fork a sandbox you can write to">Fork playground</button>
-      <button class="hbtn" id="btn-export" title="Download the full event log (serialize_log)">Export</button>
-      <button class="hbtn" id="btn-token" title="Set bearer token for private logs">Token</button>
-      <button class="hbtn" id="btn-settings" aria-haspopup="dialog">Settings</button>
-    </div>
+  <!-- Masthead -->
+  <header class="masthead">
+    <a class="mark" href="/" aria-label="Stratum home">
+      <svg viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" focusable="false">
+        <path d="M2 9 C8 7.5 14 10.5 20 9 C24 8 28 9.5 30 9 L30 14 C24 15.5 18 12.5 12 14 C8 15 4 13.5 2 14 Z" fill="#3E5A72"/>
+        <path d="M2 15 C8 13.5 14 16.5 20 15 C24 14 28 15.5 30 15 L30 20 C24 21.5 18 18.5 12 20 C8 21 4 19.5 2 20 Z" fill="#2E5D4B"/>
+        <path d="M2 15.6 C8 14.1 14 17.1 20 15.6 C24 14.6 28 16.1 30 15.6" fill="none" stroke="#58D68D" stroke-width="1.2"/>
+        <path d="M2 21 C8 19.5 14 22.5 20 21 C24 20 28 21.5 30 21 L30 27 C24 28.5 18 25.5 12 27 C8 28 4 26.5 2 27 Z" fill="#8C3B2E"/>
+      </svg>
+      <span>STRATUM</span>
+    </a>
+    <nav class="mast-nav" aria-label="Primary">
+      <a href="https://github.com/mazze93/stratum#readme">Docs</a>
+      <a href="https://github.com/mazze93/stratum/blob/main/docs/MEMORY_MODEL.md">Contract</a>
+      <a href="https://github.com/mazze93/stratum/blob/main/docs/DECISIONS.md">Decisions</a>
+      <a href="/atrium/">Atrium</a>
+      <a href="https://mazzeleczzare.com/">Author</a>
+      <a class="mast-ver" href="https://github.com/mazze93/stratum/releases">v0.4.0 <span aria-hidden="true">↗</span></a>
+      <a class="mast-gh" href="https://github.com/mazze93/stratum" aria-label="Source on GitHub">
+        <svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" aria-hidden="true" focusable="false">
+          <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/>
+        </svg>
+      </a>
+    </nav>
   </header>
 
-  <div class="app-grid">
-
-    <!-- LEFT RAIL: Memory Depth Gauge -->
-    <aside class="panel panel-log" aria-label="Memory depth gauge">
-      <div class="strata-stack">
-        <div class="strata-layer s-3 xtall live">
-          <div class="s-visual"></div>
-          <div class="s-info">
-            <span class="s-name">EPISODIC</span>
-            <span class="s-meta">Event graph · supersession · the layer you are looking at</span>
-            <span class="s-stat mono" id="stat-episodic">—</span>
-          </div>
-        </div>
-        <div class="strata-layer s-1 planned">
-          <div class="s-visual"></div>
-          <div class="s-info">
-            <span class="s-name">WORKING <span class="v2chip">v2</span></span>
-            <span class="s-meta">Total decay · in context</span>
-          </div>
-        </div>
-        <div class="strata-layer s-2 planned">
-          <div class="s-visual"></div>
-          <div class="s-info">
-            <span class="s-name">SESSION <span class="v2chip">v2</span></span>
-            <span class="s-meta">Rolling summary · recency × salience</span>
-          </div>
-        </div>
-        <div class="strata-layer s-4 planned">
-          <div class="s-visual"></div>
-          <div class="s-info">
-            <span class="s-name">SEMANTIC <span class="v2chip">v2</span></span>
-            <span class="s-meta">Bounded · curator eviction</span>
-          </div>
-        </div>
-        <div class="strata-layer s-5 planned">
-          <div class="s-visual"></div>
-          <div class="s-info">
-            <span class="s-name">PREFERENCE <span class="v2chip">v2</span></span>
-            <span class="s-meta">Per-user · loaded eagerly</span>
-          </div>
-        </div>
-        <div class="strata-layer s-6 planned">
-          <div class="s-visual"></div>
-          <div class="s-info">
-            <span class="s-name">ARCHIVE <span class="v2chip">v2</span></span>
-            <span class="s-meta">Cold · on-demand rehydration</span>
-          </div>
-        </div>
+  <!-- Hero: what it is, and how to run it -->
+  <section class="hero">
+    <div class="hero-say reveal">
+      <h1 class="titleplate-name">STRATUM</h1>
+      <p class="titleplate-sub">EPISTEMIC DECISION LEDGER</p>
+      <p class="titleplate-thesis">
+        An append-only ledger for human + AI work. Agentic systems conflate <em>generation</em> with
+        <em>authority</em>: without an evidence ledger, a generated conclusion becomes operational truth
+        merely because it was persisted or repeated — and every later decision inherits it. Stratum
+        stores immutable events and <em>derives</em> the rest. A decision is not authoritative until its
+        evidence is checked, and the record says which.
+      </p>
+      <p class="thesis-punch">
+        Every later decision inherits prior unchecked claims — unless the ledger says otherwise.
+      </p>
+      <div class="cta-row">
+        <button class="cta cta--primary" id="cta-playground" type="button">
+          FORK A LIVE LOG<span class="cta-sub">no install · real guards · one click</span>
+        </button>
+        <a class="cta" href="/atrium/">OPEN THE ATRIUM<span class="cta-sub">read the live instrument</span></a>
       </div>
+    </div>
 
-      <div class="epoch-box">
-        <div class="mono-label">Epoch scrubber · deterministic replay</div>
-        <input type="range" id="epoch-scrub" min="0" max="0" step="1" value="0"
-               aria-label="Project the Tessera at an earlier epoch" />
-        <div class="scrub-row">
-          <span class="mono" id="scrub-val">—</span>
-          <button class="hbtn small" id="btn-scrub-head" hidden>Return to head</button>
-        </div>
-        <p class="rail-note">The projection is a pure function of the log at an epoch.
-        Drag backwards and watch decisions un-verify.</p>
+    <div class="hero-run reveal">
+      <div class="term" aria-label="What using Stratum looks like">
+        <div class="term-bar"><i></i><i></i><i></i><span class="term-path">~/projects/stratum · zsh</span></div>
+        <pre class="term-body"><code><span class="p">$</span> stratum decide <span class="s">"Ship the landing page"</span> --pending
+<span class="c">at-001 · pending_evidence · not yet authoritative</span>
+<span class="p">$</span> stratum verify at-001 --kind url_check --ref <span class="s">"deployed @ 9f2c1ab"</span>
+<span class="ok">at-001 · validated · evidence checked</span>
+<span class="p">$</span> stratum tessera
+<span class="c">13 decisions · 3 verified · 4 foreclosed · epoch 19</span></code></pre>
       </div>
-    </aside>
-
-    <!-- CENTER: The Atrium -->
-    <main class="panel panel-atrium" aria-label="Active workspace">
-      <div class="atrium-body">
-
-        <section class="arbitration" id="arbitration-block" role="alert" hidden>
-          <div class="arb-top">
-            <h2 class="arb-title">Human judgment required</h2>
-            <span class="epi blocked" id="arb-count">—</span>
-          </div>
-          <div id="arb-list" class="arb-list"></div>
-        </section>
-
-        <section aria-label="Recent decisions">
-          <div class="units-head">
-            <h2>Recent decisions</h2>
-            <span class="mono-label" id="decisions-count">—</span>
-          </div>
-          <div class="unit-list" id="decision-list"></div>
-        </section>
-
-        <section aria-label="Foreclosed options">
-          <div class="units-head">
-            <h2>Foreclosed options <span class="units-hint">ghost edges — roads deliberately not taken</span></h2>
-            <span class="mono-label" id="foreclosures-count">—</span>
-          </div>
-          <div class="unit-list" id="foreclosure-list"></div>
-        </section>
-
+      <div class="install">
+        <code id="install-cmd">git clone https://github.com/mazze93/stratum &amp;&amp; cd stratum &amp;&amp; npm i &amp;&amp; npm run dev</code>
+        <button class="copy" id="install-copy" type="button" aria-label="Copy install command">COPY</button>
       </div>
-    </main>
+      <p class="install-alt micro dim">
+        Runs on Cloudflare Workers · zero-dependency CLI · <a href="https://github.com/mazze93/stratum#readme">more install methods</a>
+      </p>
+    </div>
+  </section>
 
-    <!-- RIGHT RAIL: Ledger & Stream -->
-    <aside class="panel panel-roster" aria-label="Ledger and event stream">
+  <!-- The section figure -->
+  <figure class="fig reveal" aria-describedby="fig-caption">
+    <div class="fig-well" id="fig-well">
+<!-- BEGIN GENERATED STRATA (scripts/render-strata-svg.mjs) — do not hand-edit -->
+<svg class="strata-fig" viewBox="0 0 1200 640" role="img" aria-label="Stratigraphic section of the genesis ledger at epoch 19: 13 decisions and 4 foreclosures rendered as deposited layers, colored by authority tier." font-family="IBM Plex Mono, ui-monospace, monospace">
+<defs>
+  <pattern id="hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(-32)">
+    <rect width="7" height="7" fill="none"/><line x1="0" y1="0" x2="0" y2="7" stroke="#0f1114" stroke-opacity=".55" stroke-width="2.2"/>
+  </pattern>
+  <pattern id="grain" width="4" height="4" patternUnits="userSpaceOnUse">
+    <circle cx="1" cy="1" r=".55" fill="#000" fill-opacity=".22"/><circle cx="3" cy="3" r=".45" fill="#fff" fill-opacity=".05"/>
+  </pattern>
+</defs>
+<g class="stratum stratum--authoritative_axiomatic" data-id="sb-000" tabindex="0" role="button" aria-label="sb-000, AXIOMATIC. Open record.">
+<path d="M96.0,560.9L114.7,562.1L133.3,562.3L152.0,560.4L170.7,557.2L189.3,554.5L208.0,553.8L226.7,554.6L245.3,555.3L264.0,555.4L282.7,555.6L301.3,557.1L320.0,560.0L338.7,562.6L357.3,563.2L376.0,561.6L394.7,559.5L413.3,558.3L432.0,557.8L450.7,556.9L469.3,555.0L488.0,553.0L506.7,552.8L525.3,554.8L544.0,557.8L562.7,560.0L581.3,560.5L600.0,560.4L618.7,561.0L637.3,561.9L656.0,561.9L674.7,559.8L693.3,556.5L712.0,554.0L730.7,553.5L749.3,554.6L768.0,555.6L786.7,555.8L805.3,556.1L824.0,557.7L842.7,560.6L861.3,562.9L880.0,563.2L898.7,561.3L917.3,559.0L936.0,557.7L954.7,557.3L973.3,556.5L992.0,554.7L992.0,606.0L973.3,606.0L954.7,606.0L936.0,606.0L917.3,606.0L898.7,606.0L880.0,606.0L861.3,606.0L842.7,606.0L824.0,606.0L805.3,606.0L786.7,606.0L768.0,606.0L749.3,606.0L730.7,606.0L712.0,606.0L693.3,606.0L674.7,606.0L656.0,606.0L637.3,606.0L618.7,606.0L600.0,606.0L581.3,606.0L562.7,606.0L544.0,606.0L525.3,606.0L506.7,606.0L488.0,606.0L469.3,606.0L450.7,606.0L432.0,606.0L413.3,606.0L394.7,606.0L376.0,606.0L357.3,606.0L338.7,606.0L320.0,606.0L301.3,606.0L282.7,606.0L264.0,606.0L245.3,606.0L226.7,606.0L208.0,606.0L189.3,606.0L170.7,606.0L152.0,606.0L133.3,606.0L114.7,606.0L96.0,606.0Z" fill="#8C3B2E" stroke="#5E2119" stroke-width="1" style="filter:brightness(1.07)"/>
+<path d="M96.0,560.9L114.7,562.1L133.3,562.3L152.0,560.4L170.7,557.2L189.3,554.5L208.0,553.8L226.7,554.6L245.3,555.3L264.0,555.4L282.7,555.6L301.3,557.1L320.0,560.0L338.7,562.6L357.3,563.2L376.0,561.6L394.7,559.5L413.3,558.3L432.0,557.8L450.7,556.9L469.3,555.0L488.0,553.0L506.7,552.8L525.3,554.8L544.0,557.8L562.7,560.0L581.3,560.5L600.0,560.4L618.7,561.0L637.3,561.9L656.0,561.9L674.7,559.8L693.3,556.5L712.0,554.0L730.7,553.5L749.3,554.6L768.0,555.6L786.7,555.8L805.3,556.1L824.0,557.7L842.7,560.6L861.3,562.9L880.0,563.2L898.7,561.3L917.3,559.0L936.0,557.7L954.7,557.3L973.3,556.5L992.0,554.7L992.0,606.0L973.3,606.0L954.7,606.0L936.0,606.0L917.3,606.0L898.7,606.0L880.0,606.0L861.3,606.0L842.7,606.0L824.0,606.0L805.3,606.0L786.7,606.0L768.0,606.0L749.3,606.0L730.7,606.0L712.0,606.0L693.3,606.0L674.7,606.0L656.0,606.0L637.3,606.0L618.7,606.0L600.0,606.0L581.3,606.0L562.7,606.0L544.0,606.0L525.3,606.0L506.7,606.0L488.0,606.0L469.3,606.0L450.7,606.0L432.0,606.0L413.3,606.0L394.7,606.0L376.0,606.0L357.3,606.0L338.7,606.0L320.0,606.0L301.3,606.0L282.7,606.0L264.0,606.0L245.3,606.0L226.7,606.0L208.0,606.0L189.3,606.0L170.7,606.0L152.0,606.0L133.3,606.0L114.7,606.0L96.0,606.0Z" fill="url(#grain)" pointer-events="none"/>
+<title>sb-000 · AXIOMATIC · Launch Stratum as a working prototype: full frontend and backend, production-quality Atrium, public deployment at stratum.mazzeleczzare.com, usable for daily d…</title>
+</g>
+<g class="stratum stratum--authoritative_verified" data-id="sb-001" tabindex="0" role="button" aria-label="sb-001, VERIFIED. Open record.">
+<path d="M96.0,522.7L114.7,517.5L133.3,514.9L152.0,515.6L170.7,516.1L189.3,514.9L208.0,514.8L226.7,518.5L245.3,523.8L264.0,526.2L282.7,525.7L301.3,525.6L320.0,527.3L338.7,527.4L357.3,523.6L376.0,518.5L394.7,516.2L413.3,516.6L432.0,516.1L450.7,514.0L469.3,513.8L488.0,517.7L506.7,522.7L525.3,524.8L544.0,524.6L562.7,525.6L581.3,528.0L600.0,528.3L618.7,524.4L637.3,519.7L656.0,517.7L674.7,517.7L693.3,516.2L712.0,513.5L730.7,513.1L749.3,516.9L768.0,521.5L786.7,523.2L805.3,523.4L824.0,525.4L842.7,528.5L861.3,528.8L880.0,525.1L898.7,520.9L917.3,519.3L936.0,518.9L954.7,516.6L973.3,513.1L992.0,512.7L992.0,554.7L973.3,556.5L954.7,557.3L936.0,557.7L917.3,559.0L898.7,561.3L880.0,563.2L861.3,562.9L842.7,560.6L824.0,557.7L805.3,556.1L786.7,555.8L768.0,555.6L749.3,554.6L730.7,553.5L712.0,554.0L693.3,556.5L674.7,559.8L656.0,561.9L637.3,561.9L618.7,561.0L600.0,560.4L581.3,560.5L562.7,560.0L544.0,557.8L525.3,554.8L506.7,552.8L488.0,553.0L469.3,555.0L450.7,556.9L432.0,557.8L413.3,558.3L394.7,559.5L376.0,561.6L357.3,563.2L338.7,562.6L320.0,560.0L301.3,557.1L282.7,555.6L264.0,555.4L245.3,555.3L226.7,554.6L208.0,553.8L189.3,554.5L170.7,557.2L152.0,560.4L133.3,562.3L114.7,562.1L96.0,560.9Z" fill="#2E5D4B" stroke="#1B3C2F" stroke-width="1" style="filter:brightness(1.01)"/>
+<path d="M96.0,522.7L114.7,517.5L133.3,514.9L152.0,515.6L170.7,516.1L189.3,514.9L208.0,514.8L226.7,518.5L245.3,523.8L264.0,526.2L282.7,525.7L301.3,525.6L320.0,527.3L338.7,527.4L357.3,523.6L376.0,518.5L394.7,516.2L413.3,516.6L432.0,516.1L450.7,514.0L469.3,513.8L488.0,517.7L506.7,522.7L525.3,524.8L544.0,524.6L562.7,525.6L581.3,528.0L600.0,528.3L618.7,524.4L637.3,519.7L656.0,517.7L674.7,517.7L693.3,516.2L712.0,513.5L730.7,513.1L749.3,516.9L768.0,521.5L786.7,523.2L805.3,523.4L824.0,525.4L842.7,528.5L861.3,528.8L880.0,525.1L898.7,520.9L917.3,519.3L936.0,518.9L954.7,516.6L973.3,513.1L992.0,512.7L992.0,554.7L973.3,556.5L954.7,557.3L936.0,557.7L917.3,559.0L898.7,561.3L880.0,563.2L861.3,562.9L842.7,560.6L824.0,557.7L805.3,556.1L786.7,555.8L768.0,555.6L749.3,554.6L730.7,553.5L712.0,554.0L693.3,556.5L674.7,559.8L656.0,561.9L637.3,561.9L618.7,561.0L600.0,560.4L581.3,560.5L562.7,560.0L544.0,557.8L525.3,554.8L506.7,552.8L488.0,553.0L469.3,555.0L450.7,556.9L432.0,557.8L413.3,558.3L394.7,559.5L376.0,561.6L357.3,563.2L338.7,562.6L320.0,560.0L301.3,557.1L282.7,555.6L264.0,555.4L245.3,555.3L226.7,554.6L208.0,553.8L189.3,554.5L170.7,557.2L152.0,560.4L133.3,562.3L114.7,562.1L96.0,560.9Z" fill="url(#grain)" pointer-events="none"/>
+<polyline points="96.0,523.9 114.7,518.7 133.3,516.1 152.0,516.8 170.7,517.3 189.3,516.1 208.0,516.0 226.7,519.7 245.3,525.0 264.0,527.4 282.7,526.9 301.3,526.8 320.0,528.5 338.7,528.6 357.3,524.8 376.0,519.7 394.7,517.4 413.3,517.8 432.0,517.3 450.7,515.2 469.3,515.0 488.0,518.9 506.7,523.9 525.3,526.0 544.0,525.8 562.7,526.8 581.3,529.2 600.0,529.5 618.7,525.6 637.3,520.9 656.0,518.9 674.7,518.9 693.3,517.4 712.0,514.7 730.7,514.3 749.3,518.1 768.0,522.7 786.7,524.4 805.3,524.6 824.0,526.6 842.7,529.7 861.3,530.0 880.0,526.3 898.7,522.1 917.3,520.5 936.0,520.1 954.7,517.8 973.3,514.3 992.0,513.9" fill="none" stroke="#58D68D" stroke-width="2.4" stroke-opacity=".95" pointer-events="none"/>
+<title>sb-001 · VERIFIED · The TypeScript port in core/ is the single runtime source of truth for Worker, CLI, and Atrium. The Python reference remains the semantics oracle; divergence i…</title>
+</g>
+<g class="stratum stratum--foreclosure" data-id="sb-002" tabindex="0" role="button" aria-label="sb-002, FORECLOSED. Open record.">
+<path d="M96.0,522.7L114.7,517.5L133.3,514.9L152.0,515.6L170.7,516.1L189.3,514.9L208.0,514.8L226.7,518.5L245.3,523.8L264.0,526.2L282.7,525.7L301.3,525.6L320.0,527.3L338.7,527.4L357.3,521.3L376.0,514.8L394.7,511.5L413.3,510.7L432.0,509.6L450.7,507.8L469.3,507.4L488.0,509.2L506.7,511.1L525.3,511.5L544.0,510.7L562.7,510.5L581.3,510.7L600.0,510.0L618.7,507.7L637.3,505.1L656.0,503.2L674.7,501.7L693.3,500.2L712.0,498.9L730.7,498.4L749.3,498.7L768.0,499.1L786.7,499.2L805.3,499.2L824.0,499.4L842.7,499.9L861.3,500.6L880.0,501.2L898.7,501.8L917.3,502.2L936.0,502.1L954.7,501.4L973.3,500.5L992.0,499.5L992.0,512.7L973.3,513.1L954.7,516.6L936.0,518.9L917.3,519.3L898.7,520.9L880.0,525.1L861.3,528.8L842.7,528.5L824.0,525.4L805.3,523.4L786.7,523.2L768.0,521.5L749.3,516.9L730.7,513.1L712.0,513.5L693.3,516.2L674.7,517.7L656.0,517.7L637.3,519.7L618.7,524.4L600.0,528.3L581.3,528.0L562.7,525.6L544.0,524.6L525.3,524.8L506.7,522.7L488.0,517.7L469.3,513.8L450.7,514.0L432.0,516.1L413.3,516.6L394.7,516.2L376.0,518.5L357.3,523.6L338.7,527.4L320.0,527.3L301.3,525.6L282.7,525.7L264.0,526.2L245.3,523.8L226.7,518.5L208.0,514.8L189.3,514.9L170.7,516.1L152.0,515.6L133.3,514.9L114.7,517.5L96.0,522.7Z" fill="#8E4A6B" stroke="#5E2B45" stroke-width="1" style="filter:brightness(0.89)"/>
+<path d="M96.0,522.7L114.7,517.5L133.3,514.9L152.0,515.6L170.7,516.1L189.3,514.9L208.0,514.8L226.7,518.5L245.3,523.8L264.0,526.2L282.7,525.7L301.3,525.6L320.0,527.3L338.7,527.4L357.3,521.3L376.0,514.8L394.7,511.5L413.3,510.7L432.0,509.6L450.7,507.8L469.3,507.4L488.0,509.2L506.7,511.1L525.3,511.5L544.0,510.7L562.7,510.5L581.3,510.7L600.0,510.0L618.7,507.7L637.3,505.1L656.0,503.2L674.7,501.7L693.3,500.2L712.0,498.9L730.7,498.4L749.3,498.7L768.0,499.1L786.7,499.2L805.3,499.2L824.0,499.4L842.7,499.9L861.3,500.6L880.0,501.2L898.7,501.8L917.3,502.2L936.0,502.1L954.7,501.4L973.3,500.5L992.0,499.5L992.0,512.7L973.3,513.1L954.7,516.6L936.0,518.9L917.3,519.3L898.7,520.9L880.0,525.1L861.3,528.8L842.7,528.5L824.0,525.4L805.3,523.4L786.7,523.2L768.0,521.5L749.3,516.9L730.7,513.1L712.0,513.5L693.3,516.2L674.7,517.7L656.0,517.7L637.3,519.7L618.7,524.4L600.0,528.3L581.3,528.0L562.7,525.6L544.0,524.6L525.3,524.8L506.7,522.7L488.0,517.7L469.3,513.8L450.7,514.0L432.0,516.1L413.3,516.6L394.7,516.2L376.0,518.5L357.3,523.6L338.7,527.4L320.0,527.3L301.3,525.6L282.7,525.7L264.0,526.2L245.3,523.8L226.7,518.5L208.0,514.8L189.3,514.9L170.7,516.1L152.0,515.6L133.3,514.9L114.7,517.5L96.0,522.7Z" fill="url(#grain)" pointer-events="none"/>
+<path d="M96.0,522.7L114.7,517.5L133.3,514.9L152.0,515.6L170.7,516.1L189.3,514.9L208.0,514.8L226.7,518.5L245.3,523.8L264.0,526.2L282.7,525.7L301.3,525.6L320.0,527.3L338.7,527.4L357.3,521.3L376.0,514.8L394.7,511.5L413.3,510.7L432.0,509.6L450.7,507.8L469.3,507.4L488.0,509.2L506.7,511.1L525.3,511.5L544.0,510.7L562.7,510.5L581.3,510.7L600.0,510.0L618.7,507.7L637.3,505.1L656.0,503.2L674.7,501.7L693.3,500.2L712.0,498.9L730.7,498.4L749.3,498.7L768.0,499.1L786.7,499.2L805.3,499.2L824.0,499.4L842.7,499.9L861.3,500.6L880.0,501.2L898.7,501.8L917.3,502.2L936.0,502.1L954.7,501.4L973.3,500.5L992.0,499.5L992.0,512.7L973.3,513.1L954.7,516.6L936.0,518.9L917.3,519.3L898.7,520.9L880.0,525.1L861.3,528.8L842.7,528.5L824.0,525.4L805.3,523.4L786.7,523.2L768.0,521.5L749.3,516.9L730.7,513.1L712.0,513.5L693.3,516.2L674.7,517.7L656.0,517.7L637.3,519.7L618.7,524.4L600.0,528.3L581.3,528.0L562.7,525.6L544.0,524.6L525.3,524.8L506.7,522.7L488.0,517.7L469.3,513.8L450.7,514.0L432.0,516.1L413.3,516.6L394.7,516.2L376.0,518.5L357.3,523.6L338.7,527.4L320.0,527.3L301.3,525.6L282.7,525.7L264.0,526.2L245.3,523.8L226.7,518.5L208.0,514.8L189.3,514.9L170.7,516.1L152.0,515.6L133.3,514.9L114.7,517.5L96.0,522.7Z" fill="url(#hatch)" pointer-events="none"/>
+<title>sb-002 · FORECLOSED · No frontend framework for Atrium v1. Hand-authored ES modules served as static assets; zero build step.</title>
+</g>
+<g class="stratum stratum--authoritative_verified" data-id="sb-003" tabindex="0" role="button" aria-label="sb-003, VERIFIED. Open record.">
+<path d="M96.0,455.4L114.7,456.1L133.3,456.3L152.0,455.3L170.7,453.8L189.3,453.1L208.0,454.3L226.7,457.0L245.3,460.0L264.0,461.8L282.7,462.2L301.3,461.8L320.0,462.1L338.7,463.6L357.3,465.8L376.0,467.1L394.7,466.7L413.3,464.5L432.0,461.8L450.7,460.1L469.3,459.7L488.0,459.9L506.7,459.4L525.3,457.5L544.0,454.8L562.7,452.7L581.3,452.5L600.0,454.0L618.7,456.2L637.3,457.5L656.0,457.7L674.7,457.4L693.3,457.8L712.0,459.9L730.7,462.9L749.3,465.5L768.0,466.5L786.7,465.6L805.3,464.1L824.0,463.2L842.7,463.5L861.3,464.2L880.0,464.0L898.7,462.1L917.3,459.0L936.0,456.1L954.7,454.6L973.3,454.9L992.0,455.8L992.0,499.5L973.3,500.5L954.7,501.4L936.0,502.1L917.3,502.2L898.7,501.8L880.0,501.2L861.3,500.6L842.7,499.9L824.0,499.4L805.3,499.2L786.7,499.2L768.0,499.1L749.3,498.7L730.7,498.4L712.0,498.9L693.3,500.2L674.7,501.7L656.0,503.2L637.3,505.1L618.7,507.7L600.0,510.0L581.3,510.7L562.7,510.5L544.0,510.7L525.3,511.5L506.7,511.1L488.0,509.2L469.3,507.4L450.7,507.8L432.0,509.6L413.3,510.7L394.7,511.5L376.0,514.8L357.3,521.3L338.7,527.4L320.0,527.3L301.3,525.6L282.7,525.7L264.0,526.2L245.3,523.8L226.7,518.5L208.0,514.8L189.3,514.9L170.7,516.1L152.0,515.6L133.3,514.9L114.7,517.5L96.0,522.7Z" fill="#2E5D4B" stroke="#1B3C2F" stroke-width="1" style="filter:brightness(1.08)"/>
+<path d="M96.0,455.4L114.7,456.1L133.3,456.3L152.0,455.3L170.7,453.8L189.3,453.1L208.0,454.3L226.7,457.0L245.3,460.0L264.0,461.8L282.7,462.2L301.3,461.8L320.0,462.1L338.7,463.6L357.3,465.8L376.0,467.1L394.7,466.7L413.3,464.5L432.0,461.8L450.7,460.1L469.3,459.7L488.0,459.9L506.7,459.4L525.3,457.5L544.0,454.8L562.7,452.7L581.3,452.5L600.0,454.0L618.7,456.2L637.3,457.5L656.0,457.7L674.7,457.4L693.3,457.8L712.0,459.9L730.7,462.9L749.3,465.5L768.0,466.5L786.7,465.6L805.3,464.1L824.0,463.2L842.7,463.5L861.3,464.2L880.0,464.0L898.7,462.1L917.3,459.0L936.0,456.1L954.7,454.6L973.3,454.9L992.0,455.8L992.0,499.5L973.3,500.5L954.7,501.4L936.0,502.1L917.3,502.2L898.7,501.8L880.0,501.2L861.3,500.6L842.7,499.9L824.0,499.4L805.3,499.2L786.7,499.2L768.0,499.1L749.3,498.7L730.7,498.4L712.0,498.9L693.3,500.2L674.7,501.7L656.0,503.2L637.3,505.1L618.7,507.7L600.0,510.0L581.3,510.7L562.7,510.5L544.0,510.7L525.3,511.5L506.7,511.1L488.0,509.2L469.3,507.4L450.7,507.8L432.0,509.6L413.3,510.7L394.7,511.5L376.0,514.8L357.3,521.3L338.7,527.4L320.0,527.3L301.3,525.6L282.7,525.7L264.0,526.2L245.3,523.8L226.7,518.5L208.0,514.8L189.3,514.9L170.7,516.1L152.0,515.6L133.3,514.9L114.7,517.5L96.0,522.7Z" fill="url(#grain)" pointer-events="none"/>
+<polyline points="96.0,456.6 114.7,457.3 133.3,457.5 152.0,456.5 170.7,455.0 189.3,454.3 208.0,455.5 226.7,458.2 245.3,461.2 264.0,463.0 282.7,463.4 301.3,463.0 320.0,463.3 338.7,464.8 357.3,467.0 376.0,468.3 394.7,467.9 413.3,465.7 432.0,463.0 450.7,461.3 469.3,460.9 488.0,461.1 506.7,460.6 525.3,458.7 544.0,456.0 562.7,453.9 581.3,453.7 600.0,455.2 618.7,457.4 637.3,458.7 656.0,458.9 674.7,458.6 693.3,459.0 712.0,461.1 730.7,464.1 749.3,466.7 768.0,467.7 786.7,466.8 805.3,465.3 824.0,464.4 842.7,464.7 861.3,465.4 880.0,465.2 898.7,463.3 917.3,460.2 936.0,457.3 954.7,455.8 973.3,456.1 992.0,457.0" fill="none" stroke="#58D68D" stroke-width="2.4" stroke-opacity=".95" pointer-events="none"/>
+<title>sb-003 · VERIFIED · One Durable Object per log is the single-writer gate: appends serialize in a single-threaded scope and every guard runs at one door. Infrastructure expression …</title>
+</g>
+<g class="stratum stratum--foreclosure" data-id="sb-004" tabindex="0" role="button" aria-label="sb-004, FORECLOSED. Open record.">
+<path d="M96.0,431.6L114.7,432.9L133.3,434.2L152.0,436.1L170.7,438.2L189.3,439.2L208.0,438.4L226.7,436.3L245.3,434.4L264.0,433.3L282.7,432.8L301.3,432.4L320.0,432.1L338.7,432.8L357.3,435.1L376.0,438.4L394.7,441.1L413.3,442.4L432.0,442.5L450.7,442.4L469.3,442.6L488.0,442.6L506.7,441.8L525.3,440.0L544.0,438.4L562.7,438.0L581.3,439.2L600.0,441.6L618.7,444.2L637.3,446.4L656.0,448.1L674.7,449.6L693.3,451.3L712.0,453.6L730.7,456.5L749.3,459.6L768.0,462.3L786.7,464.6L805.3,464.1L824.0,463.2L842.7,463.5L861.3,464.2L880.0,464.0L898.7,462.1L917.3,459.0L936.0,456.1L954.7,454.6L973.3,454.9L992.0,455.8L992.0,455.8L973.3,454.9L954.7,454.6L936.0,456.1L917.3,459.0L898.7,462.1L880.0,464.0L861.3,464.2L842.7,463.5L824.0,463.2L805.3,464.1L786.7,465.6L768.0,466.5L749.3,465.5L730.7,462.9L712.0,459.9L693.3,457.8L674.7,457.4L656.0,457.7L637.3,457.5L618.7,456.2L600.0,454.0L581.3,452.5L562.7,452.7L544.0,454.8L525.3,457.5L506.7,459.4L488.0,459.9L469.3,459.7L450.7,460.1L432.0,461.8L413.3,464.5L394.7,466.7L376.0,467.1L357.3,465.8L338.7,463.6L320.0,462.1L301.3,461.8L282.7,462.2L264.0,461.8L245.3,460.0L226.7,457.0L208.0,454.3L189.3,453.1L170.7,453.8L152.0,455.3L133.3,456.3L114.7,456.1L96.0,455.4Z" fill="#8E4A6B" stroke="#5E2B45" stroke-width="1" style="filter:brightness(0.89)"/>
+<path d="M96.0,431.6L114.7,432.9L133.3,434.2L152.0,436.1L170.7,438.2L189.3,439.2L208.0,438.4L226.7,436.3L245.3,434.4L264.0,433.3L282.7,432.8L301.3,432.4L320.0,432.1L338.7,432.8L357.3,435.1L376.0,438.4L394.7,441.1L413.3,442.4L432.0,442.5L450.7,442.4L469.3,442.6L488.0,442.6L506.7,441.8L525.3,440.0L544.0,438.4L562.7,438.0L581.3,439.2L600.0,441.6L618.7,444.2L637.3,446.4L656.0,448.1L674.7,449.6L693.3,451.3L712.0,453.6L730.7,456.5L749.3,459.6L768.0,462.3L786.7,464.6L805.3,464.1L824.0,463.2L842.7,463.5L861.3,464.2L880.0,464.0L898.7,462.1L917.3,459.0L936.0,456.1L954.7,454.6L973.3,454.9L992.0,455.8L992.0,455.8L973.3,454.9L954.7,454.6L936.0,456.1L917.3,459.0L898.7,462.1L880.0,464.0L861.3,464.2L842.7,463.5L824.0,463.2L805.3,464.1L786.7,465.6L768.0,466.5L749.3,465.5L730.7,462.9L712.0,459.9L693.3,457.8L674.7,457.4L656.0,457.7L637.3,457.5L618.7,456.2L600.0,454.0L581.3,452.5L562.7,452.7L544.0,454.8L525.3,457.5L506.7,459.4L488.0,459.9L469.3,459.7L450.7,460.1L432.0,461.8L413.3,464.5L394.7,466.7L376.0,467.1L357.3,465.8L338.7,463.6L320.0,462.1L301.3,461.8L282.7,462.2L264.0,461.8L245.3,460.0L226.7,457.0L208.0,454.3L189.3,453.1L170.7,453.8L152.0,455.3L133.3,456.3L114.7,456.1L96.0,455.4Z" fill="url(#grain)" pointer-events="none"/>
+<path d="M96.0,431.6L114.7,432.9L133.3,434.2L152.0,436.1L170.7,438.2L189.3,439.2L208.0,438.4L226.7,436.3L245.3,434.4L264.0,433.3L282.7,432.8L301.3,432.4L320.0,432.1L338.7,432.8L357.3,435.1L376.0,438.4L394.7,441.1L413.3,442.4L432.0,442.5L450.7,442.4L469.3,442.6L488.0,442.6L506.7,441.8L525.3,440.0L544.0,438.4L562.7,438.0L581.3,439.2L600.0,441.6L618.7,444.2L637.3,446.4L656.0,448.1L674.7,449.6L693.3,451.3L712.0,453.6L730.7,456.5L749.3,459.6L768.0,462.3L786.7,464.6L805.3,464.1L824.0,463.2L842.7,463.5L861.3,464.2L880.0,464.0L898.7,462.1L917.3,459.0L936.0,456.1L954.7,454.6L973.3,454.9L992.0,455.8L992.0,455.8L973.3,454.9L954.7,454.6L936.0,456.1L917.3,459.0L898.7,462.1L880.0,464.0L861.3,464.2L842.7,463.5L824.0,463.2L805.3,464.1L786.7,465.6L768.0,466.5L749.3,465.5L730.7,462.9L712.0,459.9L693.3,457.8L674.7,457.4L656.0,457.7L637.3,457.5L618.7,456.2L600.0,454.0L581.3,452.5L562.7,452.7L544.0,454.8L525.3,457.5L506.7,459.4L488.0,459.9L469.3,459.7L450.7,460.1L432.0,461.8L413.3,464.5L394.7,466.7L376.0,467.1L357.3,465.8L338.7,463.6L320.0,462.1L301.3,461.8L282.7,462.2L264.0,461.8L245.3,460.0L226.7,457.0L208.0,454.3L189.3,453.1L170.7,453.8L152.0,455.3L133.3,456.3L114.7,456.1L96.0,455.4Z" fill="url(#hatch)" pointer-events="none"/>
+<title>sb-004 · FORECLOSED · The simulated agent roster and mock telemetry are cut from Atrium v1. Everything rendered is a projection of a real log.</title>
+</g>
+<g class="stratum stratum--authoritative_verified" data-id="sb-005" tabindex="0" role="button" aria-label="sb-005, VERIFIED. Open record.">
+<path d="M96.0,407.9L114.7,408.2L133.3,407.9L152.0,407.4L170.7,406.3L189.3,404.3L208.0,402.3L226.7,401.1L245.3,400.4L264.0,399.8L282.7,400.1L301.3,401.6L320.0,403.4L338.7,404.8L357.3,406.3L376.0,407.8L394.7,408.6L413.3,408.0L432.0,406.9L450.7,405.8L469.3,404.3L488.0,402.1L506.7,400.6L525.3,400.2L544.0,400.2L562.7,400.4L581.3,401.5L600.0,403.6L618.7,405.4L637.3,406.6L656.0,407.7L674.7,408.5L693.3,408.2L712.0,406.8L730.7,405.2L749.3,403.9L768.0,402.2L786.7,400.5L805.3,399.8L824.0,400.2L842.7,400.9L861.3,401.8L880.0,403.6L898.7,405.7L917.3,407.2L936.0,407.8L954.7,408.1L973.3,408.1L992.0,406.9L992.0,455.8L973.3,454.9L954.7,454.6L936.0,456.1L917.3,459.0L898.7,462.1L880.0,464.0L861.3,464.2L842.7,463.5L824.0,463.2L805.3,464.1L786.7,464.6L768.0,462.3L749.3,459.6L730.7,456.5L712.0,453.6L693.3,451.3L674.7,449.6L656.0,448.1L637.3,446.4L618.7,444.2L600.0,441.6L581.3,439.2L562.7,438.0L544.0,438.4L525.3,440.0L506.7,441.8L488.0,442.6L469.3,442.6L450.7,442.4L432.0,442.5L413.3,442.4L394.7,441.1L376.0,438.4L357.3,435.1L338.7,432.8L320.0,432.1L301.3,432.4L282.7,432.8L264.0,433.3L245.3,434.4L226.7,436.3L208.0,438.4L189.3,439.2L170.7,438.2L152.0,436.1L133.3,434.2L114.7,432.9L96.0,431.6Z" fill="#2E5D4B" stroke="#1B3C2F" stroke-width="1" style="filter:brightness(0.96)"/>
+<path d="M96.0,407.9L114.7,408.2L133.3,407.9L152.0,407.4L170.7,406.3L189.3,404.3L208.0,402.3L226.7,401.1L245.3,400.4L264.0,399.8L282.7,400.1L301.3,401.6L320.0,403.4L338.7,404.8L357.3,406.3L376.0,407.8L394.7,408.6L413.3,408.0L432.0,406.9L450.7,405.8L469.3,404.3L488.0,402.1L506.7,400.6L525.3,400.2L544.0,400.2L562.7,400.4L581.3,401.5L600.0,403.6L618.7,405.4L637.3,406.6L656.0,407.7L674.7,408.5L693.3,408.2L712.0,406.8L730.7,405.2L749.3,403.9L768.0,402.2L786.7,400.5L805.3,399.8L824.0,400.2L842.7,400.9L861.3,401.8L880.0,403.6L898.7,405.7L917.3,407.2L936.0,407.8L954.7,408.1L973.3,408.1L992.0,406.9L992.0,455.8L973.3,454.9L954.7,454.6L936.0,456.1L917.3,459.0L898.7,462.1L880.0,464.0L861.3,464.2L842.7,463.5L824.0,463.2L805.3,464.1L786.7,464.6L768.0,462.3L749.3,459.6L730.7,456.5L712.0,453.6L693.3,451.3L674.7,449.6L656.0,448.1L637.3,446.4L618.7,444.2L600.0,441.6L581.3,439.2L562.7,438.0L544.0,438.4L525.3,440.0L506.7,441.8L488.0,442.6L469.3,442.6L450.7,442.4L432.0,442.5L413.3,442.4L394.7,441.1L376.0,438.4L357.3,435.1L338.7,432.8L320.0,432.1L301.3,432.4L282.7,432.8L264.0,433.3L245.3,434.4L226.7,436.3L208.0,438.4L189.3,439.2L170.7,438.2L152.0,436.1L133.3,434.2L114.7,432.9L96.0,431.6Z" fill="url(#grain)" pointer-events="none"/>
+<polyline points="96.0,409.1 114.7,409.4 133.3,409.1 152.0,408.6 170.7,407.5 189.3,405.5 208.0,403.5 226.7,402.3 245.3,401.6 264.0,401.0 282.7,401.3 301.3,402.8 320.0,404.6 338.7,406.0 357.3,407.5 376.0,409.0 394.7,409.8 413.3,409.2 432.0,408.1 450.7,407.0 469.3,405.5 488.0,403.3 506.7,401.8 525.3,401.4 544.0,401.4 562.7,401.6 581.3,402.7 600.0,404.8 618.7,406.6 637.3,407.8 656.0,408.9 674.7,409.7 693.3,409.4 712.0,408.0 730.7,406.4 749.3,405.1 768.0,403.4 786.7,401.7 805.3,401.0 824.0,401.4 842.7,402.1 861.3,403.0 880.0,404.8 898.7,406.9 917.3,408.4 936.0,409.0 954.7,409.3 973.3,409.3 992.0,408.1" fill="none" stroke="#58D68D" stroke-width="2.4" stroke-opacity=".95" pointer-events="none"/>
+<title>sb-005 · VERIFIED · Public GitHub repository from genesis: clean signed-or-marked history, no secrets in code, event data lives in Durable Object storage rather than git.</title>
+</g>
+<g class="stratum stratum--narrative" data-id="sb-007" tabindex="0" role="button" aria-label="sb-007, NARRATIVE. Open record.">
+<path d="M96.0,364.9L114.7,366.0L133.3,367.0L152.0,368.7L170.7,371.3L189.3,373.9L208.0,375.3L226.7,375.0L245.3,373.7L264.0,372.5L282.7,371.5L301.3,370.0L320.0,367.5L338.7,364.8L357.3,363.3L376.0,363.4L394.7,364.7L413.3,366.0L432.0,367.1L450.7,368.5L469.3,370.9L488.0,373.5L506.7,375.2L525.3,375.2L544.0,374.0L562.7,372.5L581.3,371.4L600.0,370.0L618.7,367.9L637.3,365.2L656.0,363.4L674.7,363.2L693.3,364.4L712.0,366.0L730.7,367.2L749.3,368.5L768.0,370.5L786.7,373.1L805.3,375.1L824.0,375.5L842.7,374.3L861.3,372.6L880.0,371.3L898.7,370.0L917.3,368.2L936.0,365.6L954.7,363.5L973.3,363.0L992.0,364.1L992.0,406.9L973.3,408.1L954.7,408.1L936.0,407.8L917.3,407.2L898.7,405.7L880.0,403.6L861.3,401.8L842.7,400.9L824.0,400.2L805.3,399.8L786.7,400.5L768.0,402.2L749.3,403.9L730.7,405.2L712.0,406.8L693.3,408.2L674.7,408.5L656.0,407.7L637.3,406.6L618.7,405.4L600.0,403.6L581.3,401.5L562.7,400.4L544.0,400.2L525.3,400.2L506.7,400.6L488.0,402.1L469.3,404.3L450.7,405.8L432.0,406.9L413.3,408.0L394.7,408.6L376.0,407.8L357.3,406.3L338.7,404.8L320.0,403.4L301.3,401.6L282.7,400.1L264.0,399.8L245.3,400.4L226.7,401.1L208.0,402.3L189.3,404.3L170.7,406.3L152.0,407.4L133.3,407.9L114.7,408.2L96.0,407.9Z" fill="#3E5A72" stroke="#263D52" stroke-width="1" style="filter:brightness(1.02)"/>
+<path d="M96.0,364.9L114.7,366.0L133.3,367.0L152.0,368.7L170.7,371.3L189.3,373.9L208.0,375.3L226.7,375.0L245.3,373.7L264.0,372.5L282.7,371.5L301.3,370.0L320.0,367.5L338.7,364.8L357.3,363.3L376.0,363.4L394.7,364.7L413.3,366.0L432.0,367.1L450.7,368.5L469.3,370.9L488.0,373.5L506.7,375.2L525.3,375.2L544.0,374.0L562.7,372.5L581.3,371.4L600.0,370.0L618.7,367.9L637.3,365.2L656.0,363.4L674.7,363.2L693.3,364.4L712.0,366.0L730.7,367.2L749.3,368.5L768.0,370.5L786.7,373.1L805.3,375.1L824.0,375.5L842.7,374.3L861.3,372.6L880.0,371.3L898.7,370.0L917.3,368.2L936.0,365.6L954.7,363.5L973.3,363.0L992.0,364.1L992.0,406.9L973.3,408.1L954.7,408.1L936.0,407.8L917.3,407.2L898.7,405.7L880.0,403.6L861.3,401.8L842.7,400.9L824.0,400.2L805.3,399.8L786.7,400.5L768.0,402.2L749.3,403.9L730.7,405.2L712.0,406.8L693.3,408.2L674.7,408.5L656.0,407.7L637.3,406.6L618.7,405.4L600.0,403.6L581.3,401.5L562.7,400.4L544.0,400.2L525.3,400.2L506.7,400.6L488.0,402.1L469.3,404.3L450.7,405.8L432.0,406.9L413.3,408.0L394.7,408.6L376.0,407.8L357.3,406.3L338.7,404.8L320.0,403.4L301.3,401.6L282.7,400.1L264.0,399.8L245.3,400.4L226.7,401.1L208.0,402.3L189.3,404.3L170.7,406.3L152.0,407.4L133.3,407.9L114.7,408.2L96.0,407.9Z" fill="url(#grain)" pointer-events="none"/>
+<title>sb-007 · NARRATIVE · Workflow event data lives on Cloudflare (Durable Object storage), bearer-gated. The sovereignty escape hatch is the contract itself: the export endpoint is ser…</title>
+</g>
+<g class="stratum stratum--foreclosure" data-id="sb-008" tabindex="0" role="button" aria-label="sb-008, FORECLOSED. Open record.">
+<path d="M96.0,364.9L114.7,366.0L133.3,367.0L152.0,368.7L170.7,371.3L189.3,373.9L208.0,375.3L226.7,375.0L245.3,373.7L264.0,372.5L282.7,371.5L301.3,370.0L320.0,367.5L338.7,364.8L357.3,363.3L376.0,363.4L394.7,362.7L413.3,361.9L432.0,361.0L450.7,360.7L469.3,361.0L488.0,360.9L506.7,360.1L525.3,359.1L544.0,357.9L562.7,356.2L581.3,354.6L600.0,353.8L618.7,353.5L637.3,352.4L656.0,351.1L674.7,350.9L693.3,351.8L712.0,352.0L730.7,350.9L749.3,350.1L768.0,350.3L786.7,350.2L805.3,348.6L824.0,346.8L842.7,346.3L861.3,345.9L880.0,344.5L898.7,342.8L917.3,342.5L936.0,343.1L954.7,342.8L973.3,341.9L992.0,342.1L992.0,364.1L973.3,363.0L954.7,363.5L936.0,365.6L917.3,368.2L898.7,370.0L880.0,371.3L861.3,372.6L842.7,374.3L824.0,375.5L805.3,375.1L786.7,373.1L768.0,370.5L749.3,368.5L730.7,367.2L712.0,366.0L693.3,364.4L674.7,363.2L656.0,363.4L637.3,365.2L618.7,367.9L600.0,370.0L581.3,371.4L562.7,372.5L544.0,374.0L525.3,375.2L506.7,375.2L488.0,373.5L469.3,370.9L450.7,368.5L432.0,367.1L413.3,366.0L394.7,364.7L376.0,363.4L357.3,363.3L338.7,364.8L320.0,367.5L301.3,370.0L282.7,371.5L264.0,372.5L245.3,373.7L226.7,375.0L208.0,375.3L189.3,373.9L170.7,371.3L152.0,368.7L133.3,367.0L114.7,366.0L96.0,364.9Z" fill="#8E4A6B" stroke="#5E2B45" stroke-width="1" style="filter:brightness(0.97)"/>
+<path d="M96.0,364.9L114.7,366.0L133.3,367.0L152.0,368.7L170.7,371.3L189.3,373.9L208.0,375.3L226.7,375.0L245.3,373.7L264.0,372.5L282.7,371.5L301.3,370.0L320.0,367.5L338.7,364.8L357.3,363.3L376.0,363.4L394.7,362.7L413.3,361.9L432.0,361.0L450.7,360.7L469.3,361.0L488.0,360.9L506.7,360.1L525.3,359.1L544.0,357.9L562.7,356.2L581.3,354.6L600.0,353.8L618.7,353.5L637.3,352.4L656.0,351.1L674.7,350.9L693.3,351.8L712.0,352.0L730.7,350.9L749.3,350.1L768.0,350.3L786.7,350.2L805.3,348.6L824.0,346.8L842.7,346.3L861.3,345.9L880.0,344.5L898.7,342.8L917.3,342.5L936.0,343.1L954.7,342.8L973.3,341.9L992.0,342.1L992.0,364.1L973.3,363.0L954.7,363.5L936.0,365.6L917.3,368.2L898.7,370.0L880.0,371.3L861.3,372.6L842.7,374.3L824.0,375.5L805.3,375.1L786.7,373.1L768.0,370.5L749.3,368.5L730.7,367.2L712.0,366.0L693.3,364.4L674.7,363.2L656.0,363.4L637.3,365.2L618.7,367.9L600.0,370.0L581.3,371.4L562.7,372.5L544.0,374.0L525.3,375.2L506.7,375.2L488.0,373.5L469.3,370.9L450.7,368.5L432.0,367.1L413.3,366.0L394.7,364.7L376.0,363.4L357.3,363.3L338.7,364.8L320.0,367.5L301.3,370.0L282.7,371.5L264.0,372.5L245.3,373.7L226.7,375.0L208.0,375.3L189.3,373.9L170.7,371.3L152.0,368.7L133.3,367.0L114.7,366.0L96.0,364.9Z" fill="url(#grain)" pointer-events="none"/>
+<path d="M96.0,364.9L114.7,366.0L133.3,367.0L152.0,368.7L170.7,371.3L189.3,373.9L208.0,375.3L226.7,375.0L245.3,373.7L264.0,372.5L282.7,371.5L301.3,370.0L320.0,367.5L338.7,364.8L357.3,363.3L376.0,363.4L394.7,362.7L413.3,361.9L432.0,361.0L450.7,360.7L469.3,361.0L488.0,360.9L506.7,360.1L525.3,359.1L544.0,357.9L562.7,356.2L581.3,354.6L600.0,353.8L618.7,353.5L637.3,352.4L656.0,351.1L674.7,350.9L693.3,351.8L712.0,352.0L730.7,350.9L749.3,350.1L768.0,350.3L786.7,350.2L805.3,348.6L824.0,346.8L842.7,346.3L861.3,345.9L880.0,344.5L898.7,342.8L917.3,342.5L936.0,343.1L954.7,342.8L973.3,341.9L992.0,342.1L992.0,364.1L973.3,363.0L954.7,363.5L936.0,365.6L917.3,368.2L898.7,370.0L880.0,371.3L861.3,372.6L842.7,374.3L824.0,375.5L805.3,375.1L786.7,373.1L768.0,370.5L749.3,368.5L730.7,367.2L712.0,366.0L693.3,364.4L674.7,363.2L656.0,363.4L637.3,365.2L618.7,367.9L600.0,370.0L581.3,371.4L562.7,372.5L544.0,374.0L525.3,375.2L506.7,375.2L488.0,373.5L469.3,370.9L450.7,368.5L432.0,367.1L413.3,366.0L394.7,364.7L376.0,363.4L357.3,363.3L338.7,364.8L320.0,367.5L301.3,370.0L282.7,371.5L264.0,372.5L245.3,373.7L226.7,375.0L208.0,375.3L189.3,373.9L170.7,371.3L152.0,368.7L133.3,367.0L114.7,366.0L96.0,364.9Z" fill="url(#hatch)" pointer-events="none"/>
+<title>sb-008 · FORECLOSED · Cloudflare Access as the v1 auth layer is foreclosed; a single bearer token (wrangler secret) gates writes and private reads.</title>
+</g>
+<g class="stratum stratum--narrative" data-id="sb-009" tabindex="0" role="button" aria-label="sb-009, NARRATIVE. Open record.">
+<path d="M96.0,306.4L114.7,306.8L133.3,307.5L152.0,308.1L170.7,308.8L189.3,310.5L208.0,312.9L226.7,315.2L245.3,316.1L264.0,314.6L282.7,311.2L301.3,307.4L320.0,305.0L338.7,304.8L357.3,306.5L376.0,308.8L394.7,310.7L413.3,311.7L432.0,312.5L450.7,313.4L469.3,314.3L488.0,314.3L506.7,312.8L525.3,309.7L544.0,306.2L562.7,304.1L581.3,304.4L600.0,307.0L618.7,310.5L637.3,313.2L656.0,314.3L674.7,314.0L693.3,313.2L712.0,312.4L730.7,311.7L749.3,310.5L768.0,308.3L786.7,306.0L805.3,304.6L824.0,305.3L842.7,308.2L861.3,312.1L880.0,315.1L898.7,316.0L917.3,314.7L936.0,312.3L954.7,310.1L973.3,308.8L992.0,308.1L992.0,342.1L973.3,341.9L954.7,342.8L936.0,343.1L917.3,342.5L898.7,342.8L880.0,344.5L861.3,345.9L842.7,346.3L824.0,346.8L805.3,348.6L786.7,350.2L768.0,350.3L749.3,350.1L730.7,350.9L712.0,352.0L693.3,351.8L674.7,350.9L656.0,351.1L637.3,352.4L618.7,353.5L600.0,353.8L581.3,354.6L562.7,356.2L544.0,357.9L525.3,359.1L506.7,360.1L488.0,360.9L469.3,361.0L450.7,360.7L432.0,361.0L413.3,361.9L394.7,362.7L376.0,363.4L357.3,363.3L338.7,364.8L320.0,367.5L301.3,370.0L282.7,371.5L264.0,372.5L245.3,373.7L226.7,375.0L208.0,375.3L189.3,373.9L170.7,371.3L152.0,368.7L133.3,367.0L114.7,366.0L96.0,364.9Z" fill="#3E5A72" stroke="#263D52" stroke-width="1" style="filter:brightness(0.96)"/>
+<path d="M96.0,306.4L114.7,306.8L133.3,307.5L152.0,308.1L170.7,308.8L189.3,310.5L208.0,312.9L226.7,315.2L245.3,316.1L264.0,314.6L282.7,311.2L301.3,307.4L320.0,305.0L338.7,304.8L357.3,306.5L376.0,308.8L394.7,310.7L413.3,311.7L432.0,312.5L450.7,313.4L469.3,314.3L488.0,314.3L506.7,312.8L525.3,309.7L544.0,306.2L562.7,304.1L581.3,304.4L600.0,307.0L618.7,310.5L637.3,313.2L656.0,314.3L674.7,314.0L693.3,313.2L712.0,312.4L730.7,311.7L749.3,310.5L768.0,308.3L786.7,306.0L805.3,304.6L824.0,305.3L842.7,308.2L861.3,312.1L880.0,315.1L898.7,316.0L917.3,314.7L936.0,312.3L954.7,310.1L973.3,308.8L992.0,308.1L992.0,342.1L973.3,341.9L954.7,342.8L936.0,343.1L917.3,342.5L898.7,342.8L880.0,344.5L861.3,345.9L842.7,346.3L824.0,346.8L805.3,348.6L786.7,350.2L768.0,350.3L749.3,350.1L730.7,350.9L712.0,352.0L693.3,351.8L674.7,350.9L656.0,351.1L637.3,352.4L618.7,353.5L600.0,353.8L581.3,354.6L562.7,356.2L544.0,357.9L525.3,359.1L506.7,360.1L488.0,360.9L469.3,361.0L450.7,360.7L432.0,361.0L413.3,361.9L394.7,362.7L376.0,363.4L357.3,363.3L338.7,364.8L320.0,367.5L301.3,370.0L282.7,371.5L264.0,372.5L245.3,373.7L226.7,375.0L208.0,375.3L189.3,373.9L170.7,371.3L152.0,368.7L133.3,367.0L114.7,366.0L96.0,364.9Z" fill="url(#grain)" pointer-events="none"/>
+<title>sb-009 · NARRATIVE · The numbering collision flagged in MEMORY_MODEL's header is resolved: the Event Epistemic Contract keeps its MEMORY_MODEL identity (it is a contract, not an AD…</title>
+</g>
+<g class="stratum stratum--narrative" data-id="sb-010" tabindex="0" role="button" aria-label="sb-010, NARRATIVE. Open record.">
+<path d="M96.0,282.2L114.7,280.1L133.3,278.9L152.0,278.6L170.7,278.6L189.3,278.4L208.0,277.6L226.7,276.6L245.3,276.3L264.0,277.0L282.7,278.9L301.3,281.2L320.0,283.1L338.7,284.0L357.3,284.0L376.0,283.8L394.7,283.9L413.3,284.5L432.0,285.1L450.7,285.0L469.3,283.8L488.0,281.6L506.7,279.3L525.3,277.7L544.0,277.2L562.7,277.5L581.3,277.9L600.0,277.9L618.7,277.5L637.3,277.3L656.0,277.9L674.7,279.5L693.3,281.8L712.0,283.9L730.7,285.1L749.3,285.2L768.0,284.5L786.7,283.9L805.3,283.7L824.0,283.9L842.7,283.9L861.3,282.9L880.0,281.0L898.7,278.7L917.3,276.9L936.0,276.2L954.7,276.6L973.3,277.6L992.0,278.4L992.0,308.1L973.3,308.8L954.7,310.1L936.0,312.3L917.3,314.7L898.7,316.0L880.0,315.1L861.3,312.1L842.7,308.2L824.0,305.3L805.3,304.6L786.7,306.0L768.0,308.3L749.3,310.5L730.7,311.7L712.0,312.4L693.3,313.2L674.7,314.0L656.0,314.3L637.3,313.2L618.7,310.5L600.0,307.0L581.3,304.4L562.7,304.1L544.0,306.2L525.3,309.7L506.7,312.8L488.0,314.3L469.3,314.3L450.7,313.4L432.0,312.5L413.3,311.7L394.7,310.7L376.0,308.8L357.3,306.5L338.7,304.8L320.0,305.0L301.3,307.4L282.7,311.2L264.0,314.6L245.3,316.1L226.7,315.2L208.0,312.9L189.3,310.5L170.7,308.8L152.0,308.1L133.3,307.5L114.7,306.8L96.0,306.4Z" fill="#3E5A72" stroke="#263D52" stroke-width="1" style="filter:brightness(1.07)"/>
+<path d="M96.0,282.2L114.7,280.1L133.3,278.9L152.0,278.6L170.7,278.6L189.3,278.4L208.0,277.6L226.7,276.6L245.3,276.3L264.0,277.0L282.7,278.9L301.3,281.2L320.0,283.1L338.7,284.0L357.3,284.0L376.0,283.8L394.7,283.9L413.3,284.5L432.0,285.1L450.7,285.0L469.3,283.8L488.0,281.6L506.7,279.3L525.3,277.7L544.0,277.2L562.7,277.5L581.3,277.9L600.0,277.9L618.7,277.5L637.3,277.3L656.0,277.9L674.7,279.5L693.3,281.8L712.0,283.9L730.7,285.1L749.3,285.2L768.0,284.5L786.7,283.9L805.3,283.7L824.0,283.9L842.7,283.9L861.3,282.9L880.0,281.0L898.7,278.7L917.3,276.9L936.0,276.2L954.7,276.6L973.3,277.6L992.0,278.4L992.0,308.1L973.3,308.8L954.7,310.1L936.0,312.3L917.3,314.7L898.7,316.0L880.0,315.1L861.3,312.1L842.7,308.2L824.0,305.3L805.3,304.6L786.7,306.0L768.0,308.3L749.3,310.5L730.7,311.7L712.0,312.4L693.3,313.2L674.7,314.0L656.0,314.3L637.3,313.2L618.7,310.5L600.0,307.0L581.3,304.4L562.7,304.1L544.0,306.2L525.3,309.7L506.7,312.8L488.0,314.3L469.3,314.3L450.7,313.4L432.0,312.5L413.3,311.7L394.7,310.7L376.0,308.8L357.3,306.5L338.7,304.8L320.0,305.0L301.3,307.4L282.7,311.2L264.0,314.6L245.3,316.1L226.7,315.2L208.0,312.9L189.3,310.5L170.7,308.8L152.0,308.1L133.3,307.5L114.7,306.8L96.0,306.4Z" fill="url(#grain)" pointer-events="none"/>
+<title>sb-010 · NARRATIVE · Flat npm workspaces (core, worker, cli, plus static atrium) rather than the packages/runtime path MEMORY_MODEL's carry-forward sketch used. Same intent, shallo…</title>
+</g>
+<g class="stratum stratum--narrative" data-id="sb-012" tabindex="0" role="button" aria-label="sb-012, NARRATIVE. Open record.">
+<path d="M96.0,242.5L114.7,245.6L133.3,247.6L152.0,248.1L170.7,247.8L189.3,247.8L208.0,249.1L226.7,251.6L245.3,254.2L264.0,255.5L282.7,254.6L301.3,252.1L320.0,249.3L338.7,247.4L357.3,246.9L376.0,247.3L394.7,247.2L413.3,245.7L432.0,243.0L450.7,240.1L469.3,238.5L488.0,239.0L506.7,241.2L525.3,243.8L544.0,245.5L562.7,245.8L581.3,245.4L600.0,245.5L618.7,247.1L637.3,250.0L656.0,253.1L674.7,255.0L693.3,254.9L712.0,253.0L730.7,250.7L749.3,249.2L768.0,249.1L786.7,249.6L805.3,249.6L824.0,248.0L842.7,245.0L861.3,241.6L880.0,239.4L898.7,239.2L917.3,240.7L936.0,242.7L954.7,244.0L973.3,243.9L992.0,243.2L992.0,278.4L973.3,277.6L954.7,276.6L936.0,276.2L917.3,276.9L898.7,278.7L880.0,281.0L861.3,282.9L842.7,283.9L824.0,283.9L805.3,283.7L786.7,283.9L768.0,284.5L749.3,285.2L730.7,285.1L712.0,283.9L693.3,281.8L674.7,279.5L656.0,277.9L637.3,277.3L618.7,277.5L600.0,277.9L581.3,277.9L562.7,277.5L544.0,277.2L525.3,277.7L506.7,279.3L488.0,281.6L469.3,283.8L450.7,285.0L432.0,285.1L413.3,284.5L394.7,283.9L376.0,283.8L357.3,284.0L338.7,284.0L320.0,283.1L301.3,281.2L282.7,278.9L264.0,277.0L245.3,276.3L226.7,276.6L208.0,277.6L189.3,278.4L170.7,278.6L152.0,278.6L133.3,278.9L114.7,280.1L96.0,282.2Z" fill="#3E5A72" stroke="#263D52" stroke-width="1" style="filter:brightness(0.94)"/>
+<path d="M96.0,242.5L114.7,245.6L133.3,247.6L152.0,248.1L170.7,247.8L189.3,247.8L208.0,249.1L226.7,251.6L245.3,254.2L264.0,255.5L282.7,254.6L301.3,252.1L320.0,249.3L338.7,247.4L357.3,246.9L376.0,247.3L394.7,247.2L413.3,245.7L432.0,243.0L450.7,240.1L469.3,238.5L488.0,239.0L506.7,241.2L525.3,243.8L544.0,245.5L562.7,245.8L581.3,245.4L600.0,245.5L618.7,247.1L637.3,250.0L656.0,253.1L674.7,255.0L693.3,254.9L712.0,253.0L730.7,250.7L749.3,249.2L768.0,249.1L786.7,249.6L805.3,249.6L824.0,248.0L842.7,245.0L861.3,241.6L880.0,239.4L898.7,239.2L917.3,240.7L936.0,242.7L954.7,244.0L973.3,243.9L992.0,243.2L992.0,278.4L973.3,277.6L954.7,276.6L936.0,276.2L917.3,276.9L898.7,278.7L880.0,281.0L861.3,282.9L842.7,283.9L824.0,283.9L805.3,283.7L786.7,283.9L768.0,284.5L749.3,285.2L730.7,285.1L712.0,283.9L693.3,281.8L674.7,279.5L656.0,277.9L637.3,277.3L618.7,277.5L600.0,277.9L581.3,277.9L562.7,277.5L544.0,277.2L525.3,277.7L506.7,279.3L488.0,281.6L469.3,283.8L450.7,285.0L432.0,285.1L413.3,284.5L394.7,283.9L376.0,283.8L357.3,284.0L338.7,284.0L320.0,283.1L301.3,281.2L282.7,278.9L264.0,277.0L245.3,276.3L226.7,276.6L208.0,277.6L189.3,278.4L170.7,278.6L152.0,278.6L133.3,278.9L114.7,280.1L96.0,282.2Z" fill="url(#grain)" pointer-events="none"/>
+<title>sb-012 · NARRATIVE · API surface v1: POST events (guarded append), GET projection at any epoch, GET events (export = serialize_log), GET event detail. Contract violations map to HT…</title>
+</g>
+<g class="stratum stratum--narrative" data-id="sb-013" tabindex="0" role="button" aria-label="sb-013, NARRATIVE. Open record.">
+<path d="M96.0,210.8L114.7,211.8L133.3,211.2L152.0,207.8L170.7,204.6L189.3,204.3L208.0,205.8L226.7,205.4L245.3,203.0L264.0,201.5L282.7,203.4L301.3,206.4L320.0,207.2L338.7,206.2L357.3,206.5L376.0,209.8L394.7,213.2L413.3,213.8L432.0,212.4L450.7,212.7L469.3,215.3L488.0,217.1L506.7,215.5L525.3,212.6L544.0,211.7L562.7,212.9L581.3,212.7L600.0,209.6L618.7,206.0L637.3,205.3L656.0,206.5L674.7,206.2L693.3,203.5L712.0,201.5L730.7,202.7L749.3,205.5L768.0,206.4L786.7,205.2L805.3,205.1L824.0,208.1L842.7,211.7L861.3,212.7L880.0,211.6L898.7,211.8L917.3,214.5L936.0,216.9L954.7,216.1L973.3,213.4L992.0,212.5L992.0,243.2L973.3,243.9L954.7,244.0L936.0,242.7L917.3,240.7L898.7,239.2L880.0,239.4L861.3,241.6L842.7,245.0L824.0,248.0L805.3,249.6L786.7,249.6L768.0,249.1L749.3,249.2L730.7,250.7L712.0,253.0L693.3,254.9L674.7,255.0L656.0,253.1L637.3,250.0L618.7,247.1L600.0,245.5L581.3,245.4L562.7,245.8L544.0,245.5L525.3,243.8L506.7,241.2L488.0,239.0L469.3,238.5L450.7,240.1L432.0,243.0L413.3,245.7L394.7,247.2L376.0,247.3L357.3,246.9L338.7,247.4L320.0,249.3L301.3,252.1L282.7,254.6L264.0,255.5L245.3,254.2L226.7,251.6L208.0,249.1L189.3,247.8L170.7,247.8L152.0,248.1L133.3,247.6L114.7,245.6L96.0,242.5Z" fill="#3E5A72" stroke="#263D52" stroke-width="1" style="filter:brightness(0.97)"/>
+<path d="M96.0,210.8L114.7,211.8L133.3,211.2L152.0,207.8L170.7,204.6L189.3,204.3L208.0,205.8L226.7,205.4L245.3,203.0L264.0,201.5L282.7,203.4L301.3,206.4L320.0,207.2L338.7,206.2L357.3,206.5L376.0,209.8L394.7,213.2L413.3,213.8L432.0,212.4L450.7,212.7L469.3,215.3L488.0,217.1L506.7,215.5L525.3,212.6L544.0,211.7L562.7,212.9L581.3,212.7L600.0,209.6L618.7,206.0L637.3,205.3L656.0,206.5L674.7,206.2L693.3,203.5L712.0,201.5L730.7,202.7L749.3,205.5L768.0,206.4L786.7,205.2L805.3,205.1L824.0,208.1L842.7,211.7L861.3,212.7L880.0,211.6L898.7,211.8L917.3,214.5L936.0,216.9L954.7,216.1L973.3,213.4L992.0,212.5L992.0,243.2L973.3,243.9L954.7,244.0L936.0,242.7L917.3,240.7L898.7,239.2L880.0,239.4L861.3,241.6L842.7,245.0L824.0,248.0L805.3,249.6L786.7,249.6L768.0,249.1L749.3,249.2L730.7,250.7L712.0,253.0L693.3,254.9L674.7,255.0L656.0,253.1L637.3,250.0L618.7,247.1L600.0,245.5L581.3,245.4L562.7,245.8L544.0,245.5L525.3,243.8L506.7,241.2L488.0,239.0L469.3,238.5L450.7,240.1L432.0,243.0L413.3,245.7L394.7,247.2L376.0,247.3L357.3,246.9L338.7,247.4L320.0,249.3L301.3,252.1L282.7,254.6L264.0,255.5L245.3,254.2L226.7,251.6L208.0,249.1L189.3,247.8L170.7,247.8L152.0,248.1L133.3,247.6L114.7,245.6L96.0,242.5Z" fill="url(#grain)" pointer-events="none"/>
+<title>sb-013 · NARRATIVE · Visitors get per-session playground logs cloned from the curated demo seed: write-open but capped, isolated per Durable Object, disposable. The canonical demo …</title>
+</g>
+<g class="stratum stratum--foreclosure" data-id="sb-014" tabindex="0" role="button" aria-label="sb-014, FORECLOSED. Open record.">
+<path d="M96.0,210.8L114.7,211.8L133.3,211.2L152.0,207.8L170.7,204.6L189.3,204.3L208.0,205.8L226.7,205.4L245.3,203.0L264.0,201.5L282.7,203.4L301.3,206.4L320.0,207.2L338.7,206.2L357.3,206.5L376.0,209.6L394.7,209.8L413.3,208.6L432.0,206.6L450.7,206.1L469.3,206.9L488.0,206.6L506.7,204.0L525.3,200.6L544.0,198.3L562.7,196.9L581.3,195.0L600.0,192.4L618.7,190.4L637.3,190.3L656.0,191.4L674.7,192.8L693.3,193.6L712.0,194.0L730.7,193.9L749.3,193.0L768.0,191.2L786.7,189.0L805.3,187.1L824.0,185.8L842.7,184.9L861.3,184.5L880.0,184.8L898.7,186.0L917.3,188.1L936.0,190.3L954.7,192.0L973.3,192.6L992.0,191.8L992.0,212.5L973.3,213.4L954.7,216.1L936.0,216.9L917.3,214.5L898.7,211.8L880.0,211.6L861.3,212.7L842.7,211.7L824.0,208.1L805.3,205.1L786.7,205.2L768.0,206.4L749.3,205.5L730.7,202.7L712.0,201.5L693.3,203.5L674.7,206.2L656.0,206.5L637.3,205.3L618.7,206.0L600.0,209.6L581.3,212.7L562.7,212.9L544.0,211.7L525.3,212.6L506.7,215.5L488.0,217.1L469.3,215.3L450.7,212.7L432.0,212.4L413.3,213.8L394.7,213.2L376.0,209.8L357.3,206.5L338.7,206.2L320.0,207.2L301.3,206.4L282.7,203.4L264.0,201.5L245.3,203.0L226.7,205.4L208.0,205.8L189.3,204.3L170.7,204.6L152.0,207.8L133.3,211.2L114.7,211.8L96.0,210.8Z" fill="#8E4A6B" stroke="#5E2B45" stroke-width="1" style="filter:brightness(0.89)"/>
+<path d="M96.0,210.8L114.7,211.8L133.3,211.2L152.0,207.8L170.7,204.6L189.3,204.3L208.0,205.8L226.7,205.4L245.3,203.0L264.0,201.5L282.7,203.4L301.3,206.4L320.0,207.2L338.7,206.2L357.3,206.5L376.0,209.6L394.7,209.8L413.3,208.6L432.0,206.6L450.7,206.1L469.3,206.9L488.0,206.6L506.7,204.0L525.3,200.6L544.0,198.3L562.7,196.9L581.3,195.0L600.0,192.4L618.7,190.4L637.3,190.3L656.0,191.4L674.7,192.8L693.3,193.6L712.0,194.0L730.7,193.9L749.3,193.0L768.0,191.2L786.7,189.0L805.3,187.1L824.0,185.8L842.7,184.9L861.3,184.5L880.0,184.8L898.7,186.0L917.3,188.1L936.0,190.3L954.7,192.0L973.3,192.6L992.0,191.8L992.0,212.5L973.3,213.4L954.7,216.1L936.0,216.9L917.3,214.5L898.7,211.8L880.0,211.6L861.3,212.7L842.7,211.7L824.0,208.1L805.3,205.1L786.7,205.2L768.0,206.4L749.3,205.5L730.7,202.7L712.0,201.5L693.3,203.5L674.7,206.2L656.0,206.5L637.3,205.3L618.7,206.0L600.0,209.6L581.3,212.7L562.7,212.9L544.0,211.7L525.3,212.6L506.7,215.5L488.0,217.1L469.3,215.3L450.7,212.7L432.0,212.4L413.3,213.8L394.7,213.2L376.0,209.8L357.3,206.5L338.7,206.2L320.0,207.2L301.3,206.4L282.7,203.4L264.0,201.5L245.3,203.0L226.7,205.4L208.0,205.8L189.3,204.3L170.7,204.6L152.0,207.8L133.3,211.2L114.7,211.8L96.0,210.8Z" fill="url(#grain)" pointer-events="none"/>
+<path d="M96.0,210.8L114.7,211.8L133.3,211.2L152.0,207.8L170.7,204.6L189.3,204.3L208.0,205.8L226.7,205.4L245.3,203.0L264.0,201.5L282.7,203.4L301.3,206.4L320.0,207.2L338.7,206.2L357.3,206.5L376.0,209.6L394.7,209.8L413.3,208.6L432.0,206.6L450.7,206.1L469.3,206.9L488.0,206.6L506.7,204.0L525.3,200.6L544.0,198.3L562.7,196.9L581.3,195.0L600.0,192.4L618.7,190.4L637.3,190.3L656.0,191.4L674.7,192.8L693.3,193.6L712.0,194.0L730.7,193.9L749.3,193.0L768.0,191.2L786.7,189.0L805.3,187.1L824.0,185.8L842.7,184.9L861.3,184.5L880.0,184.8L898.7,186.0L917.3,188.1L936.0,190.3L954.7,192.0L973.3,192.6L992.0,191.8L992.0,212.5L973.3,213.4L954.7,216.1L936.0,216.9L917.3,214.5L898.7,211.8L880.0,211.6L861.3,212.7L842.7,211.7L824.0,208.1L805.3,205.1L786.7,205.2L768.0,206.4L749.3,205.5L730.7,202.7L712.0,201.5L693.3,203.5L674.7,206.2L656.0,206.5L637.3,205.3L618.7,206.0L600.0,209.6L581.3,212.7L562.7,212.9L544.0,211.7L525.3,212.6L506.7,215.5L488.0,217.1L469.3,215.3L450.7,212.7L432.0,212.4L413.3,213.8L394.7,213.2L376.0,209.8L357.3,206.5L338.7,206.2L320.0,207.2L301.3,206.4L282.7,203.4L264.0,201.5L245.3,203.0L226.7,205.4L208.0,205.8L189.3,204.3L170.7,204.6L152.0,207.8L133.3,211.2L114.7,211.8L96.0,210.8Z" fill="url(#hatch)" pointer-events="none"/>
+<title>sb-014 · FORECLOSED · In-process Worker unit tests (vitest-pool-workers) are deferred for v1; the deployed API is verified by a live end-to-end smoke suite instead.</title>
+</g>
+<g class="stratum stratum--narrative" data-id="sb-015" tabindex="0" role="button" aria-label="sb-015, NARRATIVE. Open record.">
+<path d="M96.0,154.2L114.7,153.3L133.3,152.8L152.0,152.8L170.7,153.4L189.3,154.8L208.0,157.0L226.7,159.8L245.3,162.6L264.0,164.7L282.7,165.6L301.3,164.8L320.0,162.6L338.7,159.5L357.3,156.3L376.0,153.8L394.7,152.4L413.3,152.1L432.0,152.7L450.7,153.8L469.3,155.2L488.0,156.9L506.7,158.7L525.3,160.8L544.0,162.8L562.7,164.4L581.3,164.9L600.0,164.1L618.7,161.9L637.3,158.8L656.0,155.4L674.7,152.6L693.3,151.2L712.0,151.2L730.7,152.5L749.3,154.6L768.0,157.0L786.7,159.1L805.3,160.8L824.0,162.1L842.7,163.1L861.3,163.7L880.0,163.6L898.7,162.7L917.3,160.7L936.0,157.9L954.7,154.8L973.3,152.2L992.0,150.7L992.0,191.8L973.3,192.6L954.7,192.0L936.0,190.3L917.3,188.1L898.7,186.0L880.0,184.8L861.3,184.5L842.7,184.9L824.0,185.8L805.3,187.1L786.7,189.0L768.0,191.2L749.3,193.0L730.7,193.9L712.0,194.0L693.3,193.6L674.7,192.8L656.0,191.4L637.3,190.3L618.7,190.4L600.0,192.4L581.3,195.0L562.7,196.9L544.0,198.3L525.3,200.6L506.7,204.0L488.0,206.6L469.3,206.9L450.7,206.1L432.0,206.6L413.3,208.6L394.7,209.8L376.0,209.6L357.3,206.5L338.7,206.2L320.0,207.2L301.3,206.4L282.7,203.4L264.0,201.5L245.3,203.0L226.7,205.4L208.0,205.8L189.3,204.3L170.7,204.6L152.0,207.8L133.3,211.2L114.7,211.8L96.0,210.8Z" fill="#3E5A72" stroke="#263D52" stroke-width="1" style="filter:brightness(1.08)"/>
+<path d="M96.0,154.2L114.7,153.3L133.3,152.8L152.0,152.8L170.7,153.4L189.3,154.8L208.0,157.0L226.7,159.8L245.3,162.6L264.0,164.7L282.7,165.6L301.3,164.8L320.0,162.6L338.7,159.5L357.3,156.3L376.0,153.8L394.7,152.4L413.3,152.1L432.0,152.7L450.7,153.8L469.3,155.2L488.0,156.9L506.7,158.7L525.3,160.8L544.0,162.8L562.7,164.4L581.3,164.9L600.0,164.1L618.7,161.9L637.3,158.8L656.0,155.4L674.7,152.6L693.3,151.2L712.0,151.2L730.7,152.5L749.3,154.6L768.0,157.0L786.7,159.1L805.3,160.8L824.0,162.1L842.7,163.1L861.3,163.7L880.0,163.6L898.7,162.7L917.3,160.7L936.0,157.9L954.7,154.8L973.3,152.2L992.0,150.7L992.0,191.8L973.3,192.6L954.7,192.0L936.0,190.3L917.3,188.1L898.7,186.0L880.0,184.8L861.3,184.5L842.7,184.9L824.0,185.8L805.3,187.1L786.7,189.0L768.0,191.2L749.3,193.0L730.7,193.9L712.0,194.0L693.3,193.6L674.7,192.8L656.0,191.4L637.3,190.3L618.7,190.4L600.0,192.4L581.3,195.0L562.7,196.9L544.0,198.3L525.3,200.6L506.7,204.0L488.0,206.6L469.3,206.9L450.7,206.1L432.0,206.6L413.3,208.6L394.7,209.8L376.0,209.6L357.3,206.5L338.7,206.2L320.0,207.2L301.3,206.4L282.7,203.4L264.0,201.5L245.3,203.0L226.7,205.4L208.0,205.8L189.3,204.3L170.7,204.6L152.0,207.8L133.3,211.2L114.7,211.8L96.0,210.8Z" fill="url(#grain)" pointer-events="none"/>
+<title>sb-015 · NARRATIVE · Atrium arbitration actions are derived from the transition system at the event's current folded status — the UI can only offer what the guards would accept, an…</title>
+</g>
+<g class="stratum stratum--narrative" data-id="sb-016" tabindex="0" role="button" aria-label="sb-016, NARRATIVE. Open record.">
+<path d="M96.0,121.0L114.7,118.1L133.3,115.1L152.0,113.5L170.7,113.7L189.3,115.4L208.0,117.6L226.7,119.2L245.3,119.5L264.0,119.1L282.7,118.9L301.3,119.8L320.0,122.2L338.7,125.4L357.3,128.0L376.0,129.1L394.7,128.3L413.3,126.3L432.0,124.3L450.7,123.2L469.3,123.3L488.0,123.8L506.7,123.7L525.3,122.2L544.0,119.4L562.7,116.2L581.3,114.0L600.0,113.6L618.7,114.9L637.3,116.9L656.0,118.6L674.7,119.1L693.3,118.7L712.0,118.3L730.7,118.9L749.3,120.9L768.0,124.0L786.7,127.0L805.3,128.7L824.0,128.5L842.7,126.9L861.3,124.9L880.0,123.7L898.7,123.7L917.3,124.3L936.0,124.5L954.7,123.3L973.3,120.8L992.0,117.5L992.0,150.7L973.3,152.2L954.7,154.8L936.0,157.9L917.3,160.7L898.7,162.7L880.0,163.6L861.3,163.7L842.7,163.1L824.0,162.1L805.3,160.8L786.7,159.1L768.0,157.0L749.3,154.6L730.7,152.5L712.0,151.2L693.3,151.2L674.7,152.6L656.0,155.4L637.3,158.8L618.7,161.9L600.0,164.1L581.3,164.9L562.7,164.4L544.0,162.8L525.3,160.8L506.7,158.7L488.0,156.9L469.3,155.2L450.7,153.8L432.0,152.7L413.3,152.1L394.7,152.4L376.0,153.8L357.3,156.3L338.7,159.5L320.0,162.6L301.3,164.8L282.7,165.6L264.0,164.7L245.3,162.6L226.7,159.8L208.0,157.0L189.3,154.8L170.7,153.4L152.0,152.8L133.3,152.8L114.7,153.3L96.0,154.2Z" fill="#3E5A72" stroke="#263D52" stroke-width="1" style="filter:brightness(1.08)"/>
+<path d="M96.0,121.0L114.7,118.1L133.3,115.1L152.0,113.5L170.7,113.7L189.3,115.4L208.0,117.6L226.7,119.2L245.3,119.5L264.0,119.1L282.7,118.9L301.3,119.8L320.0,122.2L338.7,125.4L357.3,128.0L376.0,129.1L394.7,128.3L413.3,126.3L432.0,124.3L450.7,123.2L469.3,123.3L488.0,123.8L506.7,123.7L525.3,122.2L544.0,119.4L562.7,116.2L581.3,114.0L600.0,113.6L618.7,114.9L637.3,116.9L656.0,118.6L674.7,119.1L693.3,118.7L712.0,118.3L730.7,118.9L749.3,120.9L768.0,124.0L786.7,127.0L805.3,128.7L824.0,128.5L842.7,126.9L861.3,124.9L880.0,123.7L898.7,123.7L917.3,124.3L936.0,124.5L954.7,123.3L973.3,120.8L992.0,117.5L992.0,150.7L973.3,152.2L954.7,154.8L936.0,157.9L917.3,160.7L898.7,162.7L880.0,163.6L861.3,163.7L842.7,163.1L824.0,162.1L805.3,160.8L786.7,159.1L768.0,157.0L749.3,154.6L730.7,152.5L712.0,151.2L693.3,151.2L674.7,152.6L656.0,155.4L637.3,158.8L618.7,161.9L600.0,164.1L581.3,164.9L562.7,164.4L544.0,162.8L525.3,160.8L506.7,158.7L488.0,156.9L469.3,155.2L450.7,153.8L432.0,152.7L413.3,152.1L394.7,152.4L376.0,153.8L357.3,156.3L338.7,159.5L320.0,162.6L301.3,164.8L282.7,165.6L264.0,164.7L245.3,162.6L226.7,159.8L208.0,157.0L189.3,154.8L170.7,153.4L152.0,152.8L133.3,152.8L114.7,153.3L96.0,154.2Z" fill="url(#grain)" pointer-events="none"/>
+<title>sb-016 · NARRATIVE · The CLI is the primary daily capture surface: zero-dependency single file, one command per contract motion, config in ~/.config/stratum, exit code 2 reserved f…</title>
+</g>
+<g class="stratum stratum--narrative" data-id="sb-018" tabindex="0" role="button" aria-label="sb-018, NARRATIVE. Open record.">
+<path d="M96.0,94.7L114.7,95.7L133.3,97.5L152.0,98.2L170.7,96.4L189.3,92.7L208.0,89.1L226.7,87.3L245.3,87.6L264.0,88.5L282.7,88.2L301.3,86.2L320.0,83.8L338.7,83.1L357.3,85.0L376.0,88.6L394.7,91.7L413.3,92.9L432.0,92.4L450.7,92.0L469.3,93.4L488.0,96.3L506.7,99.0L525.3,99.7L544.0,97.8L562.7,94.7L581.3,92.4L600.0,92.0L618.7,92.6L637.3,92.5L656.0,90.3L674.7,86.7L693.3,83.8L712.0,83.1L730.7,84.9L749.3,87.4L768.0,88.6L786.7,88.2L805.3,87.3L824.0,88.0L842.7,90.8L861.3,94.7L880.0,97.7L898.7,98.1L917.3,96.6L936.0,95.0L954.7,94.9L973.3,96.2L992.0,97.2L992.0,117.5L973.3,120.8L954.7,123.3L936.0,124.5L917.3,124.3L898.7,123.7L880.0,123.7L861.3,124.9L842.7,126.9L824.0,128.5L805.3,128.7L786.7,127.0L768.0,124.0L749.3,120.9L730.7,118.9L712.0,118.3L693.3,118.7L674.7,119.1L656.0,118.6L637.3,116.9L618.7,114.9L600.0,113.6L581.3,114.0L562.7,116.2L544.0,119.4L525.3,122.2L506.7,123.7L488.0,123.8L469.3,123.3L450.7,123.2L432.0,124.3L413.3,126.3L394.7,128.3L376.0,129.1L357.3,128.0L338.7,125.4L320.0,122.2L301.3,119.8L282.7,118.9L264.0,119.1L245.3,119.5L226.7,119.2L208.0,117.6L189.3,115.4L170.7,113.7L152.0,113.5L133.3,115.1L114.7,118.1L96.0,121.0Z" fill="#3E5A72" stroke="#263D52" stroke-width="1" style="filter:brightness(1.03)"/>
+<path d="M96.0,94.7L114.7,95.7L133.3,97.5L152.0,98.2L170.7,96.4L189.3,92.7L208.0,89.1L226.7,87.3L245.3,87.6L264.0,88.5L282.7,88.2L301.3,86.2L320.0,83.8L338.7,83.1L357.3,85.0L376.0,88.6L394.7,91.7L413.3,92.9L432.0,92.4L450.7,92.0L469.3,93.4L488.0,96.3L506.7,99.0L525.3,99.7L544.0,97.8L562.7,94.7L581.3,92.4L600.0,92.0L618.7,92.6L637.3,92.5L656.0,90.3L674.7,86.7L693.3,83.8L712.0,83.1L730.7,84.9L749.3,87.4L768.0,88.6L786.7,88.2L805.3,87.3L824.0,88.0L842.7,90.8L861.3,94.7L880.0,97.7L898.7,98.1L917.3,96.6L936.0,95.0L954.7,94.9L973.3,96.2L992.0,97.2L992.0,117.5L973.3,120.8L954.7,123.3L936.0,124.5L917.3,124.3L898.7,123.7L880.0,123.7L861.3,124.9L842.7,126.9L824.0,128.5L805.3,128.7L786.7,127.0L768.0,124.0L749.3,120.9L730.7,118.9L712.0,118.3L693.3,118.7L674.7,119.1L656.0,118.6L637.3,116.9L618.7,114.9L600.0,113.6L581.3,114.0L562.7,116.2L544.0,119.4L525.3,122.2L506.7,123.7L488.0,123.8L469.3,123.3L450.7,123.2L432.0,124.3L413.3,126.3L394.7,128.3L376.0,129.1L357.3,128.0L338.7,125.4L320.0,122.2L301.3,119.8L282.7,118.9L264.0,119.1L245.3,119.5L226.7,119.2L208.0,117.6L189.3,115.4L170.7,113.7L152.0,113.5L133.3,115.1L114.7,118.1L96.0,121.0Z" fill="url(#grain)" pointer-events="none"/>
+<title>sb-018 · NARRATIVE · Stratum v0.3.0 is public: stratum.mazzeleczzare.com serves the Atrium over the deployed Worker; the demo log is seeded with this genesis trace — the system's f…</title>
+</g>
+<g class="stratum stratum--narrative" data-id="sb-019" tabindex="0" role="button" aria-label="sb-019, NARRATIVE. Open record.">
+<path d="M96.0,62.6L114.7,64.6L133.3,62.7L152.0,58.9L170.7,56.9L189.3,56.2L208.0,53.9L226.7,49.8L245.3,47.5L264.0,49.2L282.7,52.3L301.3,53.7L320.0,54.3L338.7,57.0L357.3,61.6L376.0,64.1L394.7,62.8L413.3,60.3L432.0,59.6L450.7,59.2L469.3,56.1L488.0,51.2L506.7,48.5L525.3,49.5L544.0,51.2L562.7,51.2L581.3,51.5L600.0,54.8L618.7,59.8L637.3,62.6L656.0,62.0L674.7,61.1L693.3,61.8L712.0,61.7L730.7,58.3L749.3,53.2L768.0,50.6L786.7,50.8L805.3,50.9L824.0,49.4L842.7,49.2L861.3,52.7L880.0,57.6L898.7,60.2L917.3,60.2L936.0,60.9L954.7,63.1L973.3,63.6L992.0,60.2L992.0,97.2L973.3,96.2L954.7,94.9L936.0,95.0L917.3,96.6L898.7,98.1L880.0,97.7L861.3,94.7L842.7,90.8L824.0,88.0L805.3,87.3L786.7,88.2L768.0,88.6L749.3,87.4L730.7,84.9L712.0,83.1L693.3,83.8L674.7,86.7L656.0,90.3L637.3,92.5L618.7,92.6L600.0,92.0L581.3,92.4L562.7,94.7L544.0,97.8L525.3,99.7L506.7,99.0L488.0,96.3L469.3,93.4L450.7,92.0L432.0,92.4L413.3,92.9L394.7,91.7L376.0,88.6L357.3,85.0L338.7,83.1L320.0,83.8L301.3,86.2L282.7,88.2L264.0,88.5L245.3,87.6L226.7,87.3L208.0,89.1L189.3,92.7L170.7,96.4L152.0,98.2L133.3,97.5L114.7,95.7L96.0,94.7Z" fill="#3E5A72" stroke="#263D52" stroke-width="1" style="filter:brightness(0.98)"/>
+<path d="M96.0,62.6L114.7,64.6L133.3,62.7L152.0,58.9L170.7,56.9L189.3,56.2L208.0,53.9L226.7,49.8L245.3,47.5L264.0,49.2L282.7,52.3L301.3,53.7L320.0,54.3L338.7,57.0L357.3,61.6L376.0,64.1L394.7,62.8L413.3,60.3L432.0,59.6L450.7,59.2L469.3,56.1L488.0,51.2L506.7,48.5L525.3,49.5L544.0,51.2L562.7,51.2L581.3,51.5L600.0,54.8L618.7,59.8L637.3,62.6L656.0,62.0L674.7,61.1L693.3,61.8L712.0,61.7L730.7,58.3L749.3,53.2L768.0,50.6L786.7,50.8L805.3,50.9L824.0,49.4L842.7,49.2L861.3,52.7L880.0,57.6L898.7,60.2L917.3,60.2L936.0,60.9L954.7,63.1L973.3,63.6L992.0,60.2L992.0,97.2L973.3,96.2L954.7,94.9L936.0,95.0L917.3,96.6L898.7,98.1L880.0,97.7L861.3,94.7L842.7,90.8L824.0,88.0L805.3,87.3L786.7,88.2L768.0,88.6L749.3,87.4L730.7,84.9L712.0,83.1L693.3,83.8L674.7,86.7L656.0,90.3L637.3,92.5L618.7,92.6L600.0,92.0L581.3,92.4L562.7,94.7L544.0,97.8L525.3,99.7L506.7,99.0L488.0,96.3L469.3,93.4L450.7,92.0L432.0,92.4L413.3,92.9L394.7,91.7L376.0,88.6L357.3,85.0L338.7,83.1L320.0,83.8L301.3,86.2L282.7,88.2L264.0,88.5L245.3,87.6L226.7,87.3L208.0,89.1L189.3,92.7L170.7,96.4L152.0,98.2L133.3,97.5L114.7,95.7L96.0,94.7Z" fill="url(#grain)" pointer-events="none"/>
+<title>sb-019 · NARRATIVE · The human-readable decision record (docs/DECISIONS.md) is a projection of this trace — generated, never hand-edited, drift-guarded in CI alongside the golden p…</title>
+</g>
+<line x1="996" y1="582.0" x2="1018" y2="582.0" stroke="#4a5158" stroke-width="1"/>
+<text class="stratum-label" data-id="sb-000" x="1024" y="585.5" font-size="11" fill="#9BA3AF">sb-000<tspan fill="#8C3B2E" dx="7">AXIOMATIC</tspan></text>
+<line x1="996" y1="539.4" x2="1018" y2="539.4" stroke="#4a5158" stroke-width="1"/>
+<text class="stratum-label" data-id="sb-001" x="1024" y="542.9" font-size="11" fill="#9BA3AF">sb-001<tspan fill="#2E5D4B" dx="7">VERIFIED</tspan></text>
+<line x1="996" y1="509.8" x2="1018" y2="509.8" stroke="#4a5158" stroke-width="1"/>
+<text class="stratum-label" data-id="sb-002" x="1024" y="513.3" font-size="11" fill="#9BA3AF">sb-002<tspan fill="#8E4A6B" dx="7">FORECLOSED</tspan></text>
+<line x1="996" y1="479.3" x2="1018" y2="479.3" stroke="#4a5158" stroke-width="1"/>
+<text class="stratum-label" data-id="sb-003" x="1024" y="482.8" font-size="11" fill="#9BA3AF">sb-003<tspan fill="#2E5D4B" dx="7">VERIFIED</tspan></text>
+<line x1="996" y1="446.7" x2="1018" y2="446.7" stroke="#4a5158" stroke-width="1"/>
+<text class="stratum-label" data-id="sb-004" x="1024" y="450.2" font-size="11" fill="#9BA3AF">sb-004<tspan fill="#8E4A6B" dx="7">FORECLOSED</tspan></text>
+<line x1="996" y1="418.8" x2="1018" y2="418.8" stroke="#4a5158" stroke-width="1"/>
+<text class="stratum-label" data-id="sb-005" x="1024" y="422.3" font-size="11" fill="#9BA3AF">sb-005<tspan fill="#2E5D4B" dx="7">VERIFIED</tspan></text>
+<line x1="996" y1="386.7" x2="1018" y2="386.7" stroke="#4a5158" stroke-width="1"/>
+<text class="stratum-label" data-id="sb-007" x="1024" y="390.2" font-size="11" fill="#9BA3AF">sb-007<tspan fill="#3E5A72" dx="7">NARRATIVE</tspan></text>
+<line x1="996" y1="357.3" x2="1018" y2="357.3" stroke="#4a5158" stroke-width="1"/>
+<text class="stratum-label" data-id="sb-008" x="1024" y="360.8" font-size="11" fill="#9BA3AF">sb-008<tspan fill="#8E4A6B" dx="7">FORECLOSED</tspan></text>
+<line x1="996" y1="327.7" x2="1018" y2="327.7" stroke="#4a5158" stroke-width="1"/>
+<text class="stratum-label" data-id="sb-009" x="1024" y="331.2" font-size="11" fill="#9BA3AF">sb-009<tspan fill="#3E5A72" dx="7">NARRATIVE</tspan></text>
+<line x1="996" y1="295.6" x2="1018" y2="295.6" stroke="#4a5158" stroke-width="1"/>
+<text class="stratum-label" data-id="sb-010" x="1024" y="299.1" font-size="11" fill="#9BA3AF">sb-010<tspan fill="#3E5A72" dx="7">NARRATIVE</tspan></text>
+<line x1="996" y1="264.0" x2="1018" y2="264.0" stroke="#4a5158" stroke-width="1"/>
+<text class="stratum-label" data-id="sb-012" x="1024" y="267.5" font-size="11" fill="#9BA3AF">sb-012<tspan fill="#3E5A72" dx="7">NARRATIVE</tspan></text>
+<line x1="996" y1="228.1" x2="1018" y2="228.1" stroke="#4a5158" stroke-width="1"/>
+<text class="stratum-label" data-id="sb-013" x="1024" y="231.6" font-size="11" fill="#9BA3AF">sb-013<tspan fill="#3E5A72" dx="7">NARRATIVE</tspan></text>
+<line x1="996" y1="198.4" x2="1018" y2="198.4" stroke="#4a5158" stroke-width="1"/>
+<text class="stratum-label" data-id="sb-014" x="1024" y="201.9" font-size="11" fill="#9BA3AF">sb-014<tspan fill="#8E4A6B" dx="7">FORECLOSED</tspan></text>
+<line x1="996" y1="172.8" x2="1018" y2="172.8" stroke="#4a5158" stroke-width="1"/>
+<text class="stratum-label" data-id="sb-015" x="1024" y="176.3" font-size="11" fill="#9BA3AF">sb-015<tspan fill="#3E5A72" dx="7">NARRATIVE</tspan></text>
+<line x1="996" y1="139.7" x2="1018" y2="139.7" stroke="#4a5158" stroke-width="1"/>
+<text class="stratum-label" data-id="sb-016" x="1024" y="143.2" font-size="11" fill="#9BA3AF">sb-016<tspan fill="#3E5A72" dx="7">NARRATIVE</tspan></text>
+<line x1="996" y1="106.2" x2="1018" y2="106.2" stroke="#4a5158" stroke-width="1"/>
+<text class="stratum-label" data-id="sb-018" x="1024" y="109.7" font-size="11" fill="#9BA3AF">sb-018<tspan fill="#3E5A72" dx="7">NARRATIVE</tspan></text>
+<line x1="996" y1="73.6" x2="1018" y2="73.6" stroke="#4a5158" stroke-width="1"/>
+<text class="stratum-label" data-id="sb-019" x="1024" y="77.1" font-size="11" fill="#9BA3AF">sb-019<tspan fill="#3E5A72" dx="7">NARRATIVE</tspan></text>
+<line x1="82" y1="56" x2="82" y2="606" stroke="#4a5158" stroke-width="1"/>
+<line x1="78" y1="600.0" x2="86" y2="600.0" stroke="#4a5158"/>
+<text x="72" y="603.5" font-size="10" fill="#5B636E" text-anchor="end">EPOCH 0</text>
+<line x1="78" y1="331.0" x2="86" y2="331.0" stroke="#4a5158"/>
+<text x="72" y="334.5" font-size="10" fill="#5B636E" text-anchor="end">EPOCH 9</text>
+<line x1="78" y1="66.0" x2="86" y2="66.0" stroke="#4a5158"/>
+<text x="72" y="69.5" font-size="10" fill="#5B636E" text-anchor="end">EPOCH 19</text>
+<text x="96" y="38" font-size="11" letter-spacing="2.5" fill="#9BA3AF">FIG. 1 — SECTION THROUGH THE LEDGER · EPOCH 19 · 13 DECISIONS · 4 FORECLOSURES</text>
+<rect x="96" y="56" width="896" height="550" fill="none" stroke="#434B54" stroke-width="1.2"/>
+</svg>
+<script type="application/json" id="strata-records">[{"id":"sb-000","type":"decision","agent_id":"mazze","schema_version":1,"birth_status":"ratified","claim":{"narrative":"Launch Stratum as a working prototype: full frontend and backend, production-quality Atrium, public deployment at stratum.mazzeleczzare.com, usable for daily decision capture. Build recorded in the system's own event format.","shadow":{"trace":"Human mandate, given out-of-band (session instruction, 2026-07-10). This is the genesis authority for the build: every subsequent event descends from it.","certainty":1,"tag":"TRACE"}},"evidence":[],"targets":[],"is_trust_root":true,"timestamp":"2026-07-10T01:55:00-04:00"},{"id":"sb-001","type":"decision","agent_id":"claude-opus-4.8","schema_version":1,"birth_status":"pending_evidence","claim":{"narrative":"The TypeScript port in core/ is the single runtime source of truth for Worker, CLI, and Atrium. The Python reference remains the semantics oracle; divergence is decided by the Python.","shadow":{"trace":"Considered running the Python directly in production (Workers Python runtime, or containerized). Rejected: doubles the deployment surface, and MEMORY_MODEL section 10 already directs the port ('the Python is a semantics check; port the rules into the runtime'). Validation pending: cross-implementation fingerprint test.","certainty":0.85,"tag":"TRACE"}},"evidence":[],"targets":[],"is_trust_root":false,"timestamp":"2026-07-10T02:05:00-04:00"},{"id":"sb-002","type":"foreclosure","agent_id":"claude-opus-4.8","schema_version":1,"birth_status":"asserted","claim":{"narrative":"No frontend framework for Atrium v1. Hand-authored ES modules served as static assets; zero build step.","shadow":{"trace":"Ghost edges: React 19 (the praxis-stack default), Astro. Both rejected for v1: the state-machine prototype is already 90 percent of the target UI in vanilla JS, a build chain adds failure modes to the demo path, and funding reviewers see the artifact not the toolchain. Reopen when Atrium needs client routing or shared component state across views.","certainty":0.8,"tag":"TRACE","ghost_edges":["react-19-frontend","astro-frontend"]}},"evidence":[],"targets":[],"is_trust_root":false,"timestamp":"2026-07-10T02:06:00-04:00"},{"id":"sb-003","type":"decision","agent_id":"claude-opus-4.8","schema_version":1,"birth_status":"pending_evidence","claim":{"narrative":"One Durable Object per log is the single-writer gate: appends serialize in a single-threaded scope and every guard runs at one door. Infrastructure expression of ADR-002's single-synchronous-gate principle.","shadow":{"trace":"Considered D1-only (simpler, queryable) and Workers KV (wrong shape entirely). D1 alone cannot guarantee seq assignment under concurrent writers without locking gymnastics; the DO's execution model gives ordering for free and colocates the contract guards with the append. Validation pending: live append/projection round-trip on the deployed Worker.","certainty":0.9,"tag":"TRACE","ghost_edges":["d1-only-storage","kv-storage"]}},"evidence":[],"targets":[],"is_trust_root":false,"timestamp":"2026-07-10T02:07:00-04:00"},{"id":"sb-004","type":"foreclosure","agent_id":"claude-opus-4.8","schema_version":1,"birth_status":"asserted","claim":{"narrative":"The simulated agent roster and mock telemetry are cut from Atrium v1. Everything rendered is a projection of a real log.","shadow":{"trace":"The prototype's roster looks alive and demos well, but a funding audience discovering simulated dashboards costs more trust than the panel earns. One sentence must hold everywhere: everything on screen is a projection of the real log. Reopen when the agent runtime exists and the roster can render real topology.","certainty":0.75,"tag":"TRACE","ghost_edges":["simulated-agent-roster","mock-telemetry-feed"]}},"evidence":[],"targets":[],"is_trust_root":false,"timestamp":"2026-07-10T02:08:00-04:00"},{"id":"sb-005","type":"decision","agent_id":"claude-opus-4.8","schema_version":1,"birth_status":"pending_evidence","claim":{"narrative":"Public GitHub repository from genesis: clean signed-or-marked history, no secrets in code, event data lives in Durable Object storage rather than git.","shadow":{"trace":"Considered private-first, public at polish. Rejected: the meridian precedent (mazze93/meridian public), the Fellows portfolio needs public work, and the recursive build story is itself the exhibit. Reversible by flipping visibility.","certainty":0.7,"tag":"TRACE"}},"evidence":[],"targets":[],"is_trust_root":false,"timestamp":"2026-07-10T02:09:00-04:00"},{"id":"sb-006","type":"verification","agent_id":"claude-opus-4.8","schema_version":1,"birth_status":"asserted","claim":{"narrative":"Repository exists, is public, and holds the genesis commit."},"evidence":[{"kind":"url_check","ref":"https://github.com/mazze93/stratum @ c7962f8","checked_at":"2026-07-10T02:10:00-04:00","signer":null}],"targets":["sb-005"],"is_trust_root":false,"timestamp":"2026-07-10T02:10:00-04:00"},{"id":"sb-007","type":"decision","agent_id":"claude-opus-4.8","schema_version":1,"birth_status":"asserted","claim":{"narrative":"Workflow event data lives on Cloudflare (Durable Object storage), bearer-gated. The sovereignty escape hatch is the contract itself: the export endpoint is serialize_log, and invariant I4 proves the full round-trip. Portability is a tested invariant, not a promise.","shadow":{"trace":"Tension with the local-first ethos of the wider Praxis stack was considered and is real. Chosen anyway because the mandate explicitly asks for a public deployed instance collecting workflow data, and I4 replay keeps exit costs near zero. Awaits human ratification as a strategic call.","certainty":0.65,"tag":"TRACE"}},"evidence":[],"targets":[],"is_trust_root":false,"timestamp":"2026-07-10T02:11:00-04:00"},{"id":"sb-008","type":"foreclosure","agent_id":"claude-opus-4.8","schema_version":1,"birth_status":"asserted","claim":{"narrative":"Cloudflare Access as the v1 auth layer is foreclosed; a single bearer token (wrangler secret) gates writes and private reads.","shadow":{"trace":"Access is the cleaner zero-trust story and the eventual answer for multi-user, but it drags zone-level IdP configuration into the critical path of a single-user prototype. Reopen at multi-user or org deployment.","certainty":0.8,"tag":"TRACE","ghost_edges":["cloudflare-access-auth"]}},"evidence":[],"targets":[],"is_trust_root":false,"timestamp":"2026-07-10T02:12:00-04:00"},{"id":"sb-009","type":"decision","agent_id":"claude-opus-4.8","schema_version":1,"birth_status":"asserted","claim":{"narrative":"The numbering collision flagged in MEMORY_MODEL's header is resolved: the Event Epistemic Contract keeps its MEMORY_MODEL identity (it is a contract, not an ADR); ADR-001 and ADR-002 in the architecture evaluation keep their numbers; new ADRs from this build begin at ADR-003.","shadow":{"trace":"Alternative: renumber the contract to ADR-003. Rejected because the document functions as a specification with an executable reference, not a point-in-time decision record.","certainty":0.85,"tag":"TRACE"}},"evidence":[],"targets":[],"is_trust_root":false,"timestamp":"2026-07-10T02:13:00-04:00"},{"id":"sb-010","type":"decision","agent_id":"claude-opus-4.8","schema_version":1,"birth_status":"asserted","claim":{"narrative":"Flat npm workspaces (core, worker, cli, plus static atrium) rather than the packages/runtime path MEMORY_MODEL's carry-forward sketch used. Same intent, shallower tree.","shadow":{"trace":"Deviation from the doc's literal phrasing, recorded so the doc and repo do not silently disagree. packages/* nesting buys nothing at three workspaces.","certainty":0.7,"tag":"RECON"}},"evidence":[],"targets":[],"is_trust_root":false,"timestamp":"2026-07-10T02:14:00-04:00"},{"id":"sb-011","type":"verification","agent_id":"claude-opus-4.8","schema_version":1,"birth_status":"asserted","claim":{"narrative":"TS port projects the genesis trace byte-identically to the Python oracle; 22/22 tests green including the 16 reference invariants."},"evidence":[{"kind":"test_exit","ref":"vitest cross-validation + invariants @ efed324","checked_at":"2026-07-10T03:03:00-04:00","signer":null}],"targets":["sb-001"],"is_trust_root":false,"timestamp":"2026-07-10T03:03:00-04:00"},{"id":"sb-012","type":"decision","agent_id":"claude-opus-4.8","schema_version":1,"birth_status":"asserted","claim":{"narrative":"API surface v1: POST events (guarded append), GET projection at any epoch, GET events (export = serialize_log), GET event detail. Contract violations map to HTTP 409, parse failures to 400 — the wire mirrors the guards.","shadow":{"trace":"Considered GraphQL and a generic query endpoint; both rejected as surface area without a consumer. The projection IS the query language.","certainty":0.8,"tag":"TRACE"}},"evidence":[],"targets":[],"is_trust_root":false,"timestamp":"2026-07-10T03:10:00-04:00"},{"id":"sb-013","type":"decision","agent_id":"claude-opus-4.8","schema_version":1,"birth_status":"asserted","claim":{"narrative":"Visitors get per-session playground logs cloned from the curated demo seed: write-open but capped, isolated per Durable Object, disposable. The canonical demo log stays read-only to the public.","shadow":{"trace":"Alternative was a single shared writable demo (vandalism magnet) or read-only-everything (kills the interactive arbitration demo). Per-visitor sandbox preserves both safety and the wow moment.","certainty":0.85,"tag":"TRACE"}},"evidence":[],"targets":[],"is_trust_root":false,"timestamp":"2026-07-10T03:11:00-04:00"},{"id":"sb-014","type":"foreclosure","agent_id":"claude-opus-4.8","schema_version":1,"birth_status":"asserted","claim":{"narrative":"In-process Worker unit tests (vitest-pool-workers) are deferred for v1; the deployed API is verified by a live end-to-end smoke suite instead.","shadow":{"trace":"Pool-workers config is real setup cost mid-sprint; the core carries the correctness weight (22 tests) and the Worker is a thin adapter. Reopen when the Worker grows logic of its own.","certainty":0.7,"tag":"TRACE","ghost_edges":["vitest-pool-workers-v1"]}},"evidence":[],"targets":[],"is_trust_root":false,"timestamp":"2026-07-10T03:12:00-04:00"},{"id":"sb-015","type":"decision","agent_id":"claude-opus-4.8","schema_version":1,"birth_status":"asserted","claim":{"narrative":"Atrium arbitration actions are derived from the transition system at the event's current folded status — the UI can only offer what the guards would accept, and a 409 is shown verbatim as the gate speaking. All rendered text is escaped (playground narratives are untrusted input). The epoch scrubber exposes deterministic replay as a first-class UI feature.","shadow":{"trace":"Alternative was hardcoding action menus per view, which is how the prototype's verified/axiomatic collapse happened in the first place: a UI asserting statuses the contract never granted. Deriving from TRANSITIONS makes that class of defect unrepresentable.","certainty":0.9,"tag":"TRACE"}},"evidence":[],"targets":[],"is_trust_root":false,"timestamp":"2026-07-10T04:05:00-04:00"},{"id":"sb-016","type":"decision","agent_id":"claude-opus-4.8","schema_version":1,"birth_status":"asserted","claim":{"narrative":"The CLI is the primary daily capture surface: zero-dependency single file, one command per contract motion, config in ~/.config/stratum, exit code 2 reserved for guard refusals so scripts can distinguish contract violations from transport errors. Supersession is one command performing the two-event motion (new decision + marker).","shadow":{"trace":"Considered an interactive TUI and a menu-driven flow; both rejected — ADHD-accessible means one command is one complete action, no navigation state to hold. The Atrium is the browse surface; the CLI is the write surface.","certainty":0.85,"tag":"TRACE"}},"evidence":[],"targets":[],"is_trust_root":false,"timestamp":"2026-07-10T04:25:00-04:00"},{"id":"sb-017","type":"verification","agent_id":"claude-opus-4.8","schema_version":1,"birth_status":"asserted","claim":{"narrative":"The Durable Object gate holds in production: live append/projection round-trip, 401 on unauthed private reads, 409 with the guard's message on an illegal append, playground isolation — all against the deployed instance."},"evidence":[{"kind":"url_check","ref":"https://stratum.mazzeleczzare.com/api/health @ v0a0e3539 — 200, TLS valid, guard refusal 409 observed","checked_at":"2026-07-10T04:45:00-04:00","signer":"claude-opus-4.8"}],"targets":["sb-003"],"is_trust_root":false,"timestamp":"2026-07-10T04:45:00-04:00"},{"id":"sb-018","type":"decision","agent_id":"claude-opus-4.8","schema_version":1,"birth_status":"asserted","claim":{"narrative":"Stratum v0.3.0 is public: stratum.mazzeleczzare.com serves the Atrium over the deployed Worker; the demo log is seeded with this genesis trace — the system's first dataset is the record of its own construction; the workspace log is live for daily capture.","shadow":{"trace":"The recursive seed was the launch thesis from the first planning pass: it closes MEMORY_MODEL section 8's named empirical risk with real data and gives the funding demo its opening line.","certainty":0.9,"tag":"TRACE"}},"evidence":[{"kind":"url_check","ref":"https://stratum.mazzeleczzare.com — Atrium HTML served, custom domain bound","checked_at":"2026-07-10T04:46:00-04:00","signer":"claude-opus-4.8"}],"targets":[],"is_trust_root":false,"timestamp":"2026-07-10T04:46:00-04:00"},{"id":"sb-019","type":"decision","agent_id":"claude-opus-4.8","schema_version":1,"birth_status":"asserted","claim":{"narrative":"The human-readable decision record (docs/DECISIONS.md) is a projection of this trace — generated, never hand-edited, drift-guarded in CI alongside the golden projection and both implementations' invariants. MIT license. The repo's own decision hygiene is enforced by the machinery it ships.","shadow":{"trace":"A hand-maintained DECISIONS.md was the obvious default and is how every other repo does it — rejected precisely because hand-maintained decision docs are the drift this system exists to end.","certainty":0.9,"tag":"TRACE"}},"evidence":[],"targets":[],"is_trust_root":false,"timestamp":"2026-07-10T05:05:00-04:00"}]</script>
+<script type="application/json" id="strata-frames">[{"epoch":0,"decisions":[{"id":"sb-000","authority":"authoritative_axiomatic","status":"ratified","revision_chain":["sb-000"]}],"foreclosures":[]},{"epoch":1,"decisions":[{"id":"sb-000","authority":"authoritative_axiomatic","status":"ratified","revision_chain":["sb-000"]},{"id":"sb-001","authority":"authoritative_provisional","status":"pending_evidence","revision_chain":["sb-001"]}],"foreclosures":[]},{"epoch":2,"decisions":[{"id":"sb-000","authority":"authoritative_axiomatic","status":"ratified","revision_chain":["sb-000"]},{"id":"sb-001","authority":"authoritative_provisional","status":"pending_evidence","revision_chain":["sb-001"]}],"foreclosures":[{"id":"sb-002","authority":"narrative","status":"asserted","active":true}]},{"epoch":3,"decisions":[{"id":"sb-000","authority":"authoritative_axiomatic","status":"ratified","revision_chain":["sb-000"]},{"id":"sb-001","authority":"authoritative_provisional","status":"pending_evidence","revision_chain":["sb-001"]},{"id":"sb-003","authority":"authoritative_provisional","status":"pending_evidence","revision_chain":["sb-003"]}],"foreclosures":[{"id":"sb-002","authority":"narrative","status":"asserted","active":true}]},{"epoch":4,"decisions":[{"id":"sb-000","authority":"authoritative_axiomatic","status":"ratified","revision_chain":["sb-000"]},{"id":"sb-001","authority":"authoritative_provisional","status":"pending_evidence","revision_chain":["sb-001"]},{"id":"sb-003","authority":"authoritative_provisional","status":"pending_evidence","revision_chain":["sb-003"]}],"foreclosures":[{"id":"sb-002","authority":"narrative","status":"asserted","active":true},{"id":"sb-004","authority":"narrative","status":"asserted","active":true}]},{"epoch":5,"decisions":[{"id":"sb-000","authority":"authoritative_axiomatic","status":"ratified","revision_chain":["sb-000"]},{"id":"sb-001","authority":"authoritative_provisional","status":"pending_evidence","revision_chain":["sb-001"]},{"id":"sb-003","authority":"authoritative_provisional","status":"pending_evidence","revision_chain":["sb-003"]},{"id":"sb-005","authority":"authoritative_provisional","status":"pending_evidence","revision_chain":["sb-005"]}],"foreclosures":[{"id":"sb-002","authority":"narrative","status":"asserted","active":true},{"id":"sb-004","authority":"narrative","status":"asserted","active":true}]},{"epoch":6,"decisions":[{"id":"sb-000","authority":"authoritative_axiomatic","status":"ratified","revision_chain":["sb-000"]},{"id":"sb-001","authority":"authoritative_provisional","status":"pending_evidence","revision_chain":["sb-001"]},{"id":"sb-003","authority":"authoritative_provisional","status":"pending_evidence","revision_chain":["sb-003"]},{"id":"sb-005","authority":"authoritative_verified","status":"validated","revision_chain":["sb-005"]}],"foreclosures":[{"id":"sb-002","authority":"narrative","status":"asserted","active":true},{"id":"sb-004","authority":"narrative","status":"asserted","active":true}]},{"epoch":7,"decisions":[{"id":"sb-000","authority":"authoritative_axiomatic","status":"ratified","revision_chain":["sb-000"]},{"id":"sb-001","authority":"authoritative_provisional","status":"pending_evidence","revision_chain":["sb-001"]},{"id":"sb-003","authority":"authoritative_provisional","status":"pending_evidence","revision_chain":["sb-003"]},{"id":"sb-005","authority":"authoritative_verified","status":"validated","revision_chain":["sb-005"]},{"id":"sb-007","authority":"narrative","status":"asserted","revision_chain":["sb-007"]}],"foreclosures":[{"id":"sb-002","authority":"narrative","status":"asserted","active":true},{"id":"sb-004","authority":"narrative","status":"asserted","active":true}]},{"epoch":8,"decisions":[{"id":"sb-000","authority":"authoritative_axiomatic","status":"ratified","revision_chain":["sb-000"]},{"id":"sb-001","authority":"authoritative_provisional","status":"pending_evidence","revision_chain":["sb-001"]},{"id":"sb-003","authority":"authoritative_provisional","status":"pending_evidence","revision_chain":["sb-003"]},{"id":"sb-005","authority":"authoritative_verified","status":"validated","revision_chain":["sb-005"]},{"id":"sb-007","authority":"narrative","status":"asserted","revision_chain":["sb-007"]}],"foreclosures":[{"id":"sb-002","authority":"narrative","status":"asserted","active":true},{"id":"sb-004","authority":"narrative","status":"asserted","active":true},{"id":"sb-008","authority":"narrative","status":"asserted","active":true}]},{"epoch":9,"decisions":[{"id":"sb-000","authority":"authoritative_axiomatic","status":"ratified","revision_chain":["sb-000"]},{"id":"sb-001","authority":"authoritative_provisional","status":"pending_evidence","revision_chain":["sb-001"]},{"id":"sb-003","authority":"authoritative_provisional","status":"pending_evidence","revision_chain":["sb-003"]},{"id":"sb-005","authority":"authoritative_verified","status":"validated","revision_chain":["sb-005"]},{"id":"sb-007","authority":"narrative","status":"asserted","revision_chain":["sb-007"]},{"id":"sb-009","authority":"narrative","status":"asserted","revision_chain":["sb-009"]}],"foreclosures":[{"id":"sb-002","authority":"narrative","status":"asserted","active":true},{"id":"sb-004","authority":"narrative","status":"asserted","active":true},{"id":"sb-008","authority":"narrative","status":"asserted","active":true}]},{"epoch":10,"decisions":[{"id":"sb-000","authority":"authoritative_axiomatic","status":"ratified","revision_chain":["sb-000"]},{"id":"sb-001","authority":"authoritative_provisional","status":"pending_evidence","revision_chain":["sb-001"]},{"id":"sb-003","authority":"authoritative_provisional","status":"pending_evidence","revision_chain":["sb-003"]},{"id":"sb-005","authority":"authoritative_verified","status":"validated","revision_chain":["sb-005"]},{"id":"sb-007","authority":"narrative","status":"asserted","revision_chain":["sb-007"]},{"id":"sb-009","authority":"narrative","status":"asserted","revision_chain":["sb-009"]},{"id":"sb-010","authority":"narrative","status":"asserted","revision_chain":["sb-010"]}],"foreclosures":[{"id":"sb-002","authority":"narrative","status":"asserted","active":true},{"id":"sb-004","authority":"narrative","status":"asserted","active":true},{"id":"sb-008","authority":"narrative","status":"asserted","active":true}]},{"epoch":11,"decisions":[{"id":"sb-000","authority":"authoritative_axiomatic","status":"ratified","revision_chain":["sb-000"]},{"id":"sb-001","authority":"authoritative_verified","status":"validated","revision_chain":["sb-001"]},{"id":"sb-003","authority":"authoritative_provisional","status":"pending_evidence","revision_chain":["sb-003"]},{"id":"sb-005","authority":"authoritative_verified","status":"validated","revision_chain":["sb-005"]},{"id":"sb-007","authority":"narrative","status":"asserted","revision_chain":["sb-007"]},{"id":"sb-009","authority":"narrative","status":"asserted","revision_chain":["sb-009"]},{"id":"sb-010","authority":"narrative","status":"asserted","revision_chain":["sb-010"]}],"foreclosures":[{"id":"sb-002","authority":"narrative","status":"asserted","active":true},{"id":"sb-004","authority":"narrative","status":"asserted","active":true},{"id":"sb-008","authority":"narrative","status":"asserted","active":true}]},{"epoch":12,"decisions":[{"id":"sb-000","authority":"authoritative_axiomatic","status":"ratified","revision_chain":["sb-000"]},{"id":"sb-001","authority":"authoritative_verified","status":"validated","revision_chain":["sb-001"]},{"id":"sb-003","authority":"authoritative_provisional","status":"pending_evidence","revision_chain":["sb-003"]},{"id":"sb-005","authority":"authoritative_verified","status":"validated","revision_chain":["sb-005"]},{"id":"sb-007","authority":"narrative","status":"asserted","revision_chain":["sb-007"]},{"id":"sb-009","authority":"narrative","status":"asserted","revision_chain":["sb-009"]},{"id":"sb-010","authority":"narrative","status":"asserted","revision_chain":["sb-010"]},{"id":"sb-012","authority":"narrative","status":"asserted","revision_chain":["sb-012"]}],"foreclosures":[{"id":"sb-002","authority":"narrative","status":"asserted","active":true},{"id":"sb-004","authority":"narrative","status":"asserted","active":true},{"id":"sb-008","authority":"narrative","status":"asserted","active":true}]},{"epoch":13,"decisions":[{"id":"sb-000","authority":"authoritative_axiomatic","status":"ratified","revision_chain":["sb-000"]},{"id":"sb-001","authority":"authoritative_verified","status":"validated","revision_chain":["sb-001"]},{"id":"sb-003","authority":"authoritative_provisional","status":"pending_evidence","revision_chain":["sb-003"]},{"id":"sb-005","authority":"authoritative_verified","status":"validated","revision_chain":["sb-005"]},{"id":"sb-007","authority":"narrative","status":"asserted","revision_chain":["sb-007"]},{"id":"sb-009","authority":"narrative","status":"asserted","revision_chain":["sb-009"]},{"id":"sb-010","authority":"narrative","status":"asserted","revision_chain":["sb-010"]},{"id":"sb-012","authority":"narrative","status":"asserted","revision_chain":["sb-012"]},{"id":"sb-013","authority":"narrative","status":"asserted","revision_chain":["sb-013"]}],"foreclosures":[{"id":"sb-002","authority":"narrative","status":"asserted","active":true},{"id":"sb-004","authority":"narrative","status":"asserted","active":true},{"id":"sb-008","authority":"narrative","status":"asserted","active":true}]},{"epoch":14,"decisions":[{"id":"sb-000","authority":"authoritative_axiomatic","status":"ratified","revision_chain":["sb-000"]},{"id":"sb-001","authority":"authoritative_verified","status":"validated","revision_chain":["sb-001"]},{"id":"sb-003","authority":"authoritative_provisional","status":"pending_evidence","revision_chain":["sb-003"]},{"id":"sb-005","authority":"authoritative_verified","status":"validated","revision_chain":["sb-005"]},{"id":"sb-007","authority":"narrative","status":"asserted","revision_chain":["sb-007"]},{"id":"sb-009","authority":"narrative","status":"asserted","revision_chain":["sb-009"]},{"id":"sb-010","authority":"narrative","status":"asserted","revision_chain":["sb-010"]},{"id":"sb-012","authority":"narrative","status":"asserted","revision_chain":["sb-012"]},{"id":"sb-013","authority":"narrative","status":"asserted","revision_chain":["sb-013"]}],"foreclosures":[{"id":"sb-002","authority":"narrative","status":"asserted","active":true},{"id":"sb-004","authority":"narrative","status":"asserted","active":true},{"id":"sb-008","authority":"narrative","status":"asserted","active":true},{"id":"sb-014","authority":"narrative","status":"asserted","active":true}]},{"epoch":15,"decisions":[{"id":"sb-000","authority":"authoritative_axiomatic","status":"ratified","revision_chain":["sb-000"]},{"id":"sb-001","authority":"authoritative_verified","status":"validated","revision_chain":["sb-001"]},{"id":"sb-003","authority":"authoritative_provisional","status":"pending_evidence","revision_chain":["sb-003"]},{"id":"sb-005","authority":"authoritative_verified","status":"validated","revision_chain":["sb-005"]},{"id":"sb-007","authority":"narrative","status":"asserted","revision_chain":["sb-007"]},{"id":"sb-009","authority":"narrative","status":"asserted","revision_chain":["sb-009"]},{"id":"sb-010","authority":"narrative","status":"asserted","revision_chain":["sb-010"]},{"id":"sb-012","authority":"narrative","status":"asserted","revision_chain":["sb-012"]},{"id":"sb-013","authority":"narrative","status":"asserted","revision_chain":["sb-013"]},{"id":"sb-015","authority":"narrative","status":"asserted","revision_chain":["sb-015"]}],"foreclosures":[{"id":"sb-002","authority":"narrative","status":"asserted","active":true},{"id":"sb-004","authority":"narrative","status":"asserted","active":true},{"id":"sb-008","authority":"narrative","status":"asserted","active":true},{"id":"sb-014","authority":"narrative","status":"asserted","active":true}]},{"epoch":16,"decisions":[{"id":"sb-000","authority":"authoritative_axiomatic","status":"ratified","revision_chain":["sb-000"]},{"id":"sb-001","authority":"authoritative_verified","status":"validated","revision_chain":["sb-001"]},{"id":"sb-003","authority":"authoritative_provisional","status":"pending_evidence","revision_chain":["sb-003"]},{"id":"sb-005","authority":"authoritative_verified","status":"validated","revision_chain":["sb-005"]},{"id":"sb-007","authority":"narrative","status":"asserted","revision_chain":["sb-007"]},{"id":"sb-009","authority":"narrative","status":"asserted","revision_chain":["sb-009"]},{"id":"sb-010","authority":"narrative","status":"asserted","revision_chain":["sb-010"]},{"id":"sb-012","authority":"narrative","status":"asserted","revision_chain":["sb-012"]},{"id":"sb-013","authority":"narrative","status":"asserted","revision_chain":["sb-013"]},{"id":"sb-015","authority":"narrative","status":"asserted","revision_chain":["sb-015"]},{"id":"sb-016","authority":"narrative","status":"asserted","revision_chain":["sb-016"]}],"foreclosures":[{"id":"sb-002","authority":"narrative","status":"asserted","active":true},{"id":"sb-004","authority":"narrative","status":"asserted","active":true},{"id":"sb-008","authority":"narrative","status":"asserted","active":true},{"id":"sb-014","authority":"narrative","status":"asserted","active":true}]},{"epoch":17,"decisions":[{"id":"sb-000","authority":"authoritative_axiomatic","status":"ratified","revision_chain":["sb-000"]},{"id":"sb-001","authority":"authoritative_verified","status":"validated","revision_chain":["sb-001"]},{"id":"sb-003","authority":"authoritative_verified","status":"validated","revision_chain":["sb-003"]},{"id":"sb-005","authority":"authoritative_verified","status":"validated","revision_chain":["sb-005"]},{"id":"sb-007","authority":"narrative","status":"asserted","revision_chain":["sb-007"]},{"id":"sb-009","authority":"narrative","status":"asserted","revision_chain":["sb-009"]},{"id":"sb-010","authority":"narrative","status":"asserted","revision_chain":["sb-010"]},{"id":"sb-012","authority":"narrative","status":"asserted","revision_chain":["sb-012"]},{"id":"sb-013","authority":"narrative","status":"asserted","revision_chain":["sb-013"]},{"id":"sb-015","authority":"narrative","status":"asserted","revision_chain":["sb-015"]},{"id":"sb-016","authority":"narrative","status":"asserted","revision_chain":["sb-016"]}],"foreclosures":[{"id":"sb-002","authority":"narrative","status":"asserted","active":true},{"id":"sb-004","authority":"narrative","status":"asserted","active":true},{"id":"sb-008","authority":"narrative","status":"asserted","active":true},{"id":"sb-014","authority":"narrative","status":"asserted","active":true}]},{"epoch":18,"decisions":[{"id":"sb-000","authority":"authoritative_axiomatic","status":"ratified","revision_chain":["sb-000"]},{"id":"sb-001","authority":"authoritative_verified","status":"validated","revision_chain":["sb-001"]},{"id":"sb-003","authority":"authoritative_verified","status":"validated","revision_chain":["sb-003"]},{"id":"sb-005","authority":"authoritative_verified","status":"validated","revision_chain":["sb-005"]},{"id":"sb-007","authority":"narrative","status":"asserted","revision_chain":["sb-007"]},{"id":"sb-009","authority":"narrative","status":"asserted","revision_chain":["sb-009"]},{"id":"sb-010","authority":"narrative","status":"asserted","revision_chain":["sb-010"]},{"id":"sb-012","authority":"narrative","status":"asserted","revision_chain":["sb-012"]},{"id":"sb-013","authority":"narrative","status":"asserted","revision_chain":["sb-013"]},{"id":"sb-015","authority":"narrative","status":"asserted","revision_chain":["sb-015"]},{"id":"sb-016","authority":"narrative","status":"asserted","revision_chain":["sb-016"]},{"id":"sb-018","authority":"narrative","status":"asserted","revision_chain":["sb-018"]}],"foreclosures":[{"id":"sb-002","authority":"narrative","status":"asserted","active":true},{"id":"sb-004","authority":"narrative","status":"asserted","active":true},{"id":"sb-008","authority":"narrative","status":"asserted","active":true},{"id":"sb-014","authority":"narrative","status":"asserted","active":true}]},{"epoch":19,"decisions":[{"id":"sb-000","authority":"authoritative_axiomatic","status":"ratified","revision_chain":["sb-000"]},{"id":"sb-001","authority":"authoritative_verified","status":"validated","revision_chain":["sb-001"]},{"id":"sb-003","authority":"authoritative_verified","status":"validated","revision_chain":["sb-003"]},{"id":"sb-005","authority":"authoritative_verified","status":"validated","revision_chain":["sb-005"]},{"id":"sb-007","authority":"narrative","status":"asserted","revision_chain":["sb-007"]},{"id":"sb-009","authority":"narrative","status":"asserted","revision_chain":["sb-009"]},{"id":"sb-010","authority":"narrative","status":"asserted","revision_chain":["sb-010"]},{"id":"sb-012","authority":"narrative","status":"asserted","revision_chain":["sb-012"]},{"id":"sb-013","authority":"narrative","status":"asserted","revision_chain":["sb-013"]},{"id":"sb-015","authority":"narrative","status":"asserted","revision_chain":["sb-015"]},{"id":"sb-016","authority":"narrative","status":"asserted","revision_chain":["sb-016"]},{"id":"sb-018","authority":"narrative","status":"asserted","revision_chain":["sb-018"]},{"id":"sb-019","authority":"narrative","status":"asserted","revision_chain":["sb-019"]}],"foreclosures":[{"id":"sb-002","authority":"narrative","status":"asserted","active":true},{"id":"sb-004","authority":"narrative","status":"asserted","active":true},{"id":"sb-008","authority":"narrative","status":"asserted","active":true},{"id":"sb-014","authority":"narrative","status":"asserted","active":true}]}]</script>
+<!-- END GENERATED STRATA -->
+    </div>
+    <!-- Deterministic replay, on the front page -->
+    <div class="scrub" id="scrub">
+      <div class="scrub-head">
+        <label class="micro" for="epoch">CORE DEPTH · DRAG TO REPLAY THE LEDGER</label>
+        <output class="scrub-out mono" id="epoch-out" for="epoch">EPOCH 19 · HEAD</output>
+      </div>
+      <input type="range" id="epoch" min="0" max="19" value="19" step="1"
+             aria-label="Epoch — drag back to replay the ledger and watch decisions un-verify" />
+      <p class="scrub-read micro" id="scrub-read">—</p>
+      <p class="scrub-note micro dim">
+        Every position is a real projection computed by the reference implementation — not an animation.
+        Drag left and watch verified decisions lose their evidence, and foreclosed roads reopen because
+        they had not been closed yet. <em>Status is a fold over the log, never a stored field.</em>
+      </p>
+    </div>
 
-      <section>
-        <div class="roster-head">Authority tiers · live counts</div>
-        <div class="tier-legend" id="tier-legend"></div>
-      </section>
+    <figcaption id="fig-caption" class="fig-caption">
+      <span class="micro">Real data — a section through <span id="fig-source">this repository’s own genesis ledger</span>, drawn from the projection.</span>
+      <span class="micro dim" id="fig-live">STATIC PLATE · LIVE PROJECTION UNREACHED</span>
+    </figcaption>
+    <p class="decode-line">
+      <b>Axiomatic</b> = trust root · <b>Verified</b> = evidence checked · <b>Pending</b> = awaiting evidence ·
+      <b>Foreclosed</b> = a road deliberately closed · <b>Narrative</b> = unverified interpretive layer
+    </p>
 
-      <section class="new-entry" id="new-entry-section">
-        <div class="roster-head">Record an event</div>
-        <form id="entry-form">
-          <div class="segmented small" role="radiogroup" aria-label="Event kind">
-            <label><input type="radio" name="ekind" value="decision" checked><span>Decision</span></label>
-            <label><input type="radio" name="ekind" value="foreclosure"><span>Foreclosure</span></label>
-          </div>
-          <textarea id="entry-narrative" rows="3" required
-            placeholder="What was decided — or which road is being closed?"></textarea>
-          <div class="entry-row">
-            <label class="entry-check mono-label" title="pending_evidence expects later verification with checked evidence">
-              <input type="checkbox" id="entry-pending" /> expects evidence
-            </label>
-            <button class="btn primary" type="submit">Append</button>
-          </div>
-          <p class="rail-note" id="entry-hint"></p>
-        </form>
-      </section>
+    <dl class="decode" aria-label="How to read the section">
+      <div class="decode-row">
+        <dt><i class="sw sw--axiomatic"></i>AXIOMATIC</dt>
+        <dd>Accepted premises. Trust roots and human ratifications — authoritative because an authority <em>declared</em> them, carrying no evidence by nature. The bedrock everything else rests on.</dd>
+      </div>
+      <div class="decode-row">
+        <dt><i class="sw sw--verified"></i>VERIFIED<i class="seam" aria-hidden="true"></i></dt>
+        <dd>Claims whose evidence was actually <em>checked</em> — a test exit, a merged commit, a signed approval. The bright seam marks where the check landed.</dd>
+      </div>
+      <div class="decode-row">
+        <dt><i class="sw sw--pending"></i>PENDING</dt>
+        <dd>Recorded and awaiting evidence. Cited is not checked: a reference with no verification stays here, however plausible it reads.</dd>
+      </div>
+      <div class="decode-row">
+        <dt><i class="sw sw--narrative"></i>NARRATIVE</dt>
+        <dd>Prose gloss. Recorded, never canonical — no amount of confidence or repetition promotes it. This is the layer that becomes “truth by persistence” in systems without a ledger.</dd>
+      </div>
+      <div class="decode-row">
+        <dt><i class="sw sw--foreclosure"></i>FORECLOSED</dt>
+        <dd>A road deliberately closed, kept in the record with its reason and its reopen condition. Distinct from <em>invalidation</em>, where evidence falls over — a foreclosure is a choice, not a refutation.</dd>
+      </div>
+    </dl>
+    <p class="decode-hint micro">Select any layer to open its record — claim, evidence, actor, and what closed it.</p>
+  </figure>
 
-      <section class="telemetry">
-        <div class="roster-head">Event stream · the log itself</div>
-        <ul class="feed-list" id="feed-list"></ul>
-      </section>
+  <!-- Audit panel — populated from the baked records (or the live log) -->
+  <aside class="audit" id="audit" hidden aria-labelledby="audit-id">
+    <header class="audit-head">
+      <div>
+        <span class="micro dim">RECORD</span>
+        <h2 id="audit-id" class="audit-title">—</h2>
+      </div>
+      <button class="audit-x" id="audit-close" type="button" aria-label="Close record">✕</button>
+    </header>
+    <div class="audit-body" id="audit-body"></div>
+  </aside>
 
-    </aside>
-  </div>
+  <!-- Navigator quote -->
+  <section class="quote reveal">
+    <blockquote>
+      <p>“The instrument doesn’t know the destination. It simply aligns itself with a field that is
+      otherwise invisible. A navigator reads the instrument. <em>A human decides where to sail.</em>”</p>
+    </blockquote>
+    <p class="quote-gloss micro">STRATUM IS THE INSTRUMENT. THE FIELD IS YOUR PROJECT’S DECISION HISTORY. YOU ARE THE NAVIGATOR.</p>
+  </section>
 
-  <footer class="sys-weather" aria-label="System conditions">
-    <div class="w-cell"><span class="w-label">Cirrus · Trust</span><span class="w-val" id="weather-cirrus">—</span></div>
-    <div class="w-cell"><span class="w-label">Cumulus · Agents</span><span class="w-val" id="weather-cumulus">—</span></div>
-    <div class="w-cell"><span class="w-label">Stratus · Log</span><span class="w-val" id="weather-stratus">—</span></div>
-    <div class="w-cell"><span class="w-label">Nimbus · Review</span><span class="w-val" id="weather-nimbus">—</span></div>
+  <!-- Survey notes -->
+  <section class="notes">
+    <article class="note reveal">
+      <h2><span class="note-no">I.</span> Evidence-gated trust</h2>
+      <p>Every event separates <span class="mono-inline">evidence</span> (checkable: file hashes, test exits,
+      signed approvals) from <span class="mono-inline">claim</span> (LLM prose). Prose never becomes
+      authoritative — no matter how confident it sounds. Evidence cited but unchecked stays cited,
+      not checked.</p>
+    </article>
+    <article class="note reveal">
+      <h2><span class="note-no">II.</span> Status is a fold</h2>
+      <p>No event stores a status field. <span class="mono-inline">validated</span>,
+      <span class="mono-inline">superseded</span>, <span class="mono-inline">disputed</span> are computed by
+      folding transition markers over the log — at any epoch. Drag the past back and watch decisions
+      un-verify. Replay is a proof, not a feature.</p>
+    </article>
+    <article class="note reveal">
+      <h2><span class="note-no">III.</span> The record keeps its shadows</h2>
+      <p>Each clean decision carries a <span class="mono-inline">shadow</span> — the oscillation and
+      discarded branches it had to bury to stay coherent — and foreclosed paths stay in the section as
+      lenses that pinch out. The map shows where you didn’t sail.</p>
+    </article>
+  </section>
+
+  <!-- Source register -->
+  <section class="instrument reveal">
+    <div class="cta-row">
+      <a class="cta" href="https://github.com/mazze93/stratum">SOURCE<span class="cta-sub">MIT · TypeScript core + Python oracle</span></a>
+      <a class="cta" href="https://github.com/mazze93/stratum/blob/main/docs/DECISIONS.md">THE RECORD<span class="cta-sub">every decision, generated from the traces</span></a>
+      <a class="cta" href="https://github.com/mazze93/stratum/blob/main/docs/MEMORY_MODEL.md">THE CONTRACT<span class="cta-sub">status is a fold · 16 invariants</span></a>
+    </div>
+  </section>
+
+  <!-- Colophon -->
+  <footer class="colophon">
+    <span class="micro dim">EVERYTHING ABOVE IS A PROJECTION OF A REAL LOG — INCLUDING THE FIGURE.</span>
+    <span class="micro dim">PLATE STYLE AFTER USGS/LANDSAT SURVEY SHEETS · TYPE: FRAUNCES / IBM PLEX MONO · MIT</span>
   </footer>
 </div>
 
-<!-- EPISTEMIC INSPECTOR DRAWER -->
-<div class="inspector-drawer" id="inspector" aria-label="Epistemic inspector">
-  <div class="drawer-header">
-    <h2>Epistemic Inspector</h2>
-    <button class="x" id="inspector-close" aria-label="Close inspector">✕</button>
-  </div>
-  <div class="drawer-body" id="inspector-body"></div>
-</div>
-
-<!-- SETTINGS -->
-<dialog class="settings" id="settings-dialog" aria-label="Atrium settings">
-  <header><h2>Atrium Settings</h2><button class="x" id="settings-close" aria-label="Close settings">✕</button></header>
-  <form method="dialog" class="body" id="settings-form">
-    <fieldset>
-      <legend>Ground</legend>
-      <p class="hint">The paper the survey is drawn on. Blueprint is the dark control-room register.</p>
-      <div class="segmented" role="radiogroup" aria-label="Ground theme">
-        <label><input type="radio" name="theme" value="vellum"><span>Vellum</span></label>
-        <label><input type="radio" name="theme" value="stone"><span>Stone</span></label>
-        <label><input type="radio" name="theme" value="nocturne"><span>Nocturne</span></label>
-        <label><input type="radio" name="theme" value="blueprint"><span>Blueprint</span></label>
-      </div>
-    </fieldset>
-    <fieldset>
-      <legend>Daylight</legend>
-      <p class="hint">Brightness and warmth across the day. Auto follows your local clock.</p>
-      <div class="daylight">
-        <div class="gradient-rail" aria-hidden="true"></div>
-        <div class="row">
-          <input type="range" id="tone" min="0" max="100" step="1" value="20"
-                 aria-label="Daylight tone, 0 bright morning to 100 deep evening" />
-          <span class="val mono" id="tone-val">—</span>
-        </div>
-        <label class="auto"><input type="checkbox" id="tone-auto" /> Auto · circadian</label>
-      </div>
-    </fieldset>
-    <fieldset>
-      <legend>Contrast</legend>
-      <div class="segmented" role="radiogroup" aria-label="Contrast">
-        <label><input type="radio" name="contrast" value="standard"><span>Standard</span></label>
-        <label><input type="radio" name="contrast" value="high"><span>High</span></label>
-      </div>
-    </fieldset>
-    <fieldset>
-      <legend>Motion</legend>
-      <div class="segmented" role="radiogroup" aria-label="Motion">
-        <label><input type="radio" name="motion" value="full"><span>Full</span></label>
-        <label><input type="radio" name="motion" value="reduced"><span>Reduced</span></label>
-        <label><input type="radio" name="motion" value="still"><span>Still</span></label>
-      </div>
-    </fieldset>
-    <fieldset>
-      <legend>Text size</legend>
-      <div class="segmented" role="radiogroup" aria-label="Text size">
-        <label><input type="radio" name="text" value="1"><span>A</span></label>
-        <label><input type="radio" name="text" value="1.12"><span>A+</span></label>
-        <label><input type="radio" name="text" value="1.25"><span>A++</span></label>
-      </div>
-    </fieldset>
-  </form>
-  <footer>
-    <button class="btn" id="settings-reset" type="button">Reset to system</button>
-    <button class="btn primary" id="settings-done" type="button">Done</button>
-  </footer>
-</dialog>
-
-<!-- TOKEN -->
-<dialog class="settings narrow" id="token-dialog" aria-label="Bearer token">
-  <header><h2>Bearer token</h2><button class="x" id="token-close" aria-label="Close">✕</button></header>
-  <div class="body">
-    <p class="hint">Required to read or write private logs (anything that isn't <span class="mono">demo</span> or a playground). Stored only in this browser.</p>
-    <input type="password" id="token-input" class="text-input" placeholder="paste token" autocomplete="off" />
-  </div>
-  <footer>
-    <button class="btn" id="token-clear" type="button">Clear</button>
-    <button class="btn primary" id="token-save" type="button">Save</button>
-  </footer>
-</dialog>
-
-<div class="toasts" id="toasts" aria-live="polite"></div>
-
-<script type="module" src="/app.js"></script>
+<script type="module" src="/landing.js"></script>
 </body>
 </html>

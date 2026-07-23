@@ -4,8 +4,9 @@
 
 **An epistemic decision ledger — evidence-gated trust for human + AI work.**
 
-Live: **[stratum.mazzeleczzare.com](https://stratum.mazzeleczzare.com)** — the demo log is the
-recorded trace of this repository's own construction.
+Live: **[stratum.mazzeleczzare.com](https://stratum.mazzeleczzare.com)** — the survey plate;
+the **[Atrium control room](https://stratum.mazzeleczzare.com/atrium/)** projects the demo log:
+the recorded trace of this repository's own construction.
 
 ---
 
@@ -75,7 +76,7 @@ The public demo is that trace. The first dataset in the system is the system.
 
 ### Try it
 
-The [live demo](https://stratum.mazzeleczzare.com) is read-only; **Fork playground**
+The [live demo](https://stratum.mazzeleczzare.com/atrium/) is read-only; **Fork playground**
 clones it into a private sandbox where writes run the full guards — append something
 illegal and the gate answers with the violation. Or locally:
 
@@ -141,10 +142,11 @@ working substrate to answer them on.
 
 ## Provenance
 
-Built in one supervised session, 2026-07-10. The git history is the checkpoint record;
-the genesis trace is the decision record; [docs/DECISIONS.md](docs/DECISIONS.md) is a
-projection of it. Status: working prototype in daily use — a v0.3.0 contract with a
-live gate, not a finished product.
+Built in one supervised session, 2026-07-10; public surface added 2026-07-23. The git
+history is the checkpoint record; the traces are the decision record;
+[docs/DECISIONS.md](docs/DECISIONS.md) is a projection of all three. Status: working
+prototype in daily use — v0.4.0, carrying the same event contract (unchanged since
+rev 3) behind a live gate. Not a finished product.
 
 ## License
 

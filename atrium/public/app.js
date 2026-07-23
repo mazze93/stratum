@@ -24,11 +24,17 @@ const TIER_LABELS = {
   narrative: ["narrative", "Narrative — asserted, not canonical"],
 };
 
+/* ?epoch=N pins the opening view — the landing plate's scrubber hands its
+   position over, so arriving here continues the same look at the record
+   rather than resetting to head. Clamped on load once head is known. */
+const _q = new URLSearchParams(location.search);
+const _epochParam = Number.parseInt(_q.get("epoch") ?? "", 10);
+
 const state = {
-  log: new URLSearchParams(location.search).get("log") || "demo",
+  log: _q.get("log") || "demo",
   projection: null,
   events: [],
-  epoch: null, // null = head; number = scrubbed (read-only view)
+  epoch: Number.isInteger(_epochParam) && _epochParam >= 0 ? _epochParam : null, // null = head
   head: -1,
 };
 
@@ -57,8 +63,21 @@ async function refresh() {
   state.projection = projection;
   state.events = events;
   state.head = events.length - 1;
+  /* A handed-over ?epoch beyond this log's head is meaningless — fall back to
+     head rather than rendering a pinned view of an epoch that doesn't exist. */
+  if (state.epoch !== null && state.epoch >= state.head) state.epoch = null;
   render();
+
+  /* ?event=ID deep-links a single record: the landing plate's audit panel
+     hands off to the canonical proof surface, landing on the exact record
+     rather than the front door. One-shot — cleared so Refresh doesn't reopen. */
+  const wanted = _q.get("event");
+  if (wanted && !_deepLinked) {
+    _deepLinked = true;
+    await openInspector(wanted).catch(() => {});
+  }
 }
+let _deepLinked = false;
 
 // ---------------------------------------------------------------- render
 

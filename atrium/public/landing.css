@@ -1,0 +1,440 @@
+/* ═══════════════════════════════════════════════════════════════════
+   STRATUM — landing plate
+   Pinned dark survey-poster (at-004: does NOT follow the circadian
+   engine). Palette keyed to the lithograph strata language; strata
+   fills live in strata-draw.js — tokens here mirror them for legend
+   and accents. AA-checked against --plate.
+   ═══════════════════════════════════════════════════════════════════ */
+:root {
+  --plate: #0c0e10;
+  --plate-well: #121416;
+  --frame: #434B54;
+  --frame-soft: #23272C;
+  --ink: #F0F2F5;
+  --ink-muted: #9BA3AF;
+  --ink-faint: #6E7681;      /* faintest text still AA-large on --plate */
+  --red: #E74C3C;
+  --seam: #58D68D;
+  --t-axiomatic: #8C3B2E;
+  --t-verified: #2E5D4B;
+  --t-pending: #B08A2E;
+  --t-narrative: #3E5A72;
+  --t-foreclosure: #8E4A6B;
+  --display: "Fraunces", Georgia, serif;
+  --body: "Archivo", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { background: #000; }
+body.plate {
+  margin: 0;
+  font-family: var(--body);
+  color: var(--ink);
+  background:
+    radial-gradient(120% 90% at 50% 0%, #14171a 0%, var(--plate) 55%),
+    var(--plate);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  padding: clamp(10px, 2.5vw, 34px);
+}
+/* film grain over the whole plate */
+body.plate::after {
+  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 3;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E");
+}
+
+/* ── Sheet & registration ─────────────────────────────────────────── */
+.sheet {
+  position: relative;
+  max-width: 1280px;
+  margin: 0 auto;
+  border: 1px solid var(--frame);
+  outline: 1px solid var(--frame-soft);
+  outline-offset: 5px;
+  padding: clamp(18px, 3.5vw, 56px) clamp(16px, 4vw, 64px);
+  display: flex; flex-direction: column; gap: clamp(34px, 5vh, 64px);
+}
+/* Flex and grid children default to min-width:auto, so any wide descendant
+   (the 700px-minimum figure, a long <pre>) pushes every sibling out and the
+   whole page scrolls sideways. Pin them to 0 and let the designated
+   overflow-x:auto containers do the scrolling instead. */
+.sheet > *, .hero > *, .hero-run > * { min-width: 0; }
+.reg-mark {
+  position: absolute; width: 14px; height: 14px; pointer-events: none;
+  border-color: var(--frame); border-style: solid; border-width: 0;
+}
+.reg-tl { top: -10px; left: -10px; border-top-width: 1px; border-left-width: 1px; }
+.reg-tr { top: -10px; right: -10px; border-top-width: 1px; border-right-width: 1px; }
+.reg-bl { bottom: -10px; left: -10px; border-bottom-width: 1px; border-left-width: 1px; }
+.reg-br { bottom: -10px; right: -10px; border-bottom-width: 1px; border-right-width: 1px; }
+
+.micro {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .22em;
+  color: var(--ink-muted); text-transform: uppercase;
+}
+.dim { color: var(--ink-faint); }
+.mono-inline { font-family: var(--mono); font-size: .92em; color: var(--seam); }
+
+/* ── Registers ────────────────────────────────────────────────────── */
+.register {
+  display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  border-bottom: 1px solid var(--frame-soft); padding-bottom: 14px;
+}
+.register-cell { display: flex; flex-direction: column; gap: 4px; }
+.register-cell--right { text-align: right; }
+
+/* ── Masthead ─────────────────────────────────────────────────────── */
+.masthead {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap;
+  border-bottom: 1px solid var(--frame-soft); padding-bottom: 14px;
+}
+.mark {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--mono); font-size: 14px; letter-spacing: .3em;
+  color: var(--ink); text-decoration: none;
+}
+.mast-nav { display: flex; align-items: center; gap: 6px 20px; flex-wrap: wrap; }
+.mast-nav a {
+  font-family: var(--mono); font-size: 12px; letter-spacing: .1em;
+  color: var(--ink-muted); text-decoration: none; padding: 6px 2px;
+}
+.mast-nav a:hover, .mast-nav a:focus-visible { color: var(--ink); }
+.mast-nav a:focus-visible { outline: 2px solid var(--seam); outline-offset: 2px; }
+.mast-ver { border: 1px solid var(--frame); padding: 5px 10px !important; color: var(--seam) !important; }
+.mast-ver:hover { border-color: var(--seam); }
+.mast-gh { display: inline-flex; align-items: center; color: var(--ink-muted); }
+.mast-gh:hover { color: var(--ink); }
+
+/* ── Hero ─────────────────────────────────────────────────────────── */
+.hero {
+  display: grid; gap: clamp(24px, 4vw, 52px);
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  align-items: start;
+}
+@media (max-width: 900px) { .hero { grid-template-columns: 1fr; } }
+.hero-say { display: grid; gap: 16px; }
+.hero-run { display: grid; gap: 12px; align-content: start; }
+/* STRATUM is one unbreakable word: its min-content width is the whole
+   wordmark, so an over-large clamp doesn't wrap — it overruns the column and
+   slides under the terminal. Sized to fit the narrower hero column instead of
+   the full sheet, and only allowed full scale once the hero is single-column. */
+.hero .titleplate-name { font-size: clamp(46px, 7.2vw, 104px); }
+@media (max-width: 900px) {
+  .hero .titleplate-name { font-size: clamp(56px, 13vw, 150px); }
+}
+
+/* Terminal transcript */
+.term { border: 1px solid var(--frame-soft); background: #0a0c0d; overflow: hidden; }
+.term-bar {
+  display: flex; align-items: center; gap: 7px;
+  padding: 10px 14px; background: #14181b; border-bottom: 1px solid var(--frame-soft);
+}
+.term-bar i { width: 10px; height: 10px; border-radius: 50%; background: #3a4148; flex: none; }
+.term-bar i:first-child { background: #8C3B2E; }
+.term-bar i:nth-child(2) { background: #B08A2E; }
+.term-bar i:nth-child(3) { background: #2E5D4B; }
+.term-path {
+  flex: 1; text-align: center; font-family: var(--mono); font-size: 11px;
+  color: var(--ink-faint); letter-spacing: .08em;
+}
+.term-body {
+  margin: 0; padding: 16px 18px; overflow-x: auto;
+  font-family: var(--mono); font-size: 12.5px; line-height: 1.85; color: var(--ink);
+}
+/* The transcript scrolls as a block; its own <code> must not report wider than
+   the scroller or the overflow audit can't tell a real break from a scroller. */
+.term-body code { display: inline-block; min-width: max-content; }
+.term-body .p { color: var(--seam); }
+.term-body .s { color: #c9a03a; }
+.term-body .c { color: var(--ink-faint); }
+.term-body .ok { color: var(--seam); }
+
+/* Install command + copy */
+.install {
+  display: flex; align-items: stretch; gap: 0;
+  border: 1px solid var(--frame); background: var(--plate-well);
+}
+.install code {
+  flex: 1; min-width: 0; padding: 14px 16px; overflow-x: auto; white-space: nowrap;
+  font-family: var(--mono); font-size: 12.5px; color: var(--ink);
+}
+.copy {
+  flex: none; padding: 0 18px; background: none; border: none;
+  border-left: 1px solid var(--frame); cursor: pointer;
+  font-family: var(--mono); font-size: 11px; letter-spacing: .14em; color: var(--ink-muted);
+}
+.copy:hover, .copy:focus-visible { background: #161a1d; color: var(--seam); }
+.copy:focus-visible { outline: 2px solid var(--seam); outline-offset: -2px; }
+.install-alt { margin: 0; }
+.install-alt a { color: var(--ink-muted); }
+.install-alt a:hover { color: var(--seam); }
+
+/* ── Epoch scrubber — deterministic replay ────────────────────────── */
+.scrub {
+  border: 1px solid var(--frame-soft); border-left: 2px solid var(--t-pending);
+  background: var(--plate-well); padding: 16px 18px; display: grid; gap: 10px;
+}
+.scrub-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.scrub-out { font-size: 13px; letter-spacing: .14em; color: var(--seam); }
+.scrub-out.is-past { color: var(--t-pending); }
+.scrub input[type=range] {
+  width: 100%; margin: 0; accent-color: var(--seam);
+  height: 28px; background: transparent; cursor: grab;
+}
+.scrub input[type=range]:active { cursor: grabbing; }
+.scrub input[type=range]:focus-visible { outline: 2px solid var(--seam); outline-offset: 4px; }
+.scrub-read { margin: 0; color: var(--ink); letter-spacing: .06em; }
+.scrub-note { margin: 0; line-height: 1.6; letter-spacing: .02em; text-transform: none; }
+.scrub-note em { color: var(--ink-muted); font-style: italic; }
+
+/* ── Title plate ──────────────────────────────────────────────────── */
+.titleplate { text-align: left; display: grid; gap: 18px; }
+.titleplate-name {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 300;
+  font-size: clamp(64px, 12.5vw, 176px);
+  line-height: .92;
+  letter-spacing: .045em;
+}
+.titleplate-sub {
+  margin: 0; font-family: var(--mono); font-size: clamp(12px, 1.6vw, 16px);
+  letter-spacing: .58em; color: var(--red);
+}
+.titleplate-thesis {
+  margin: 6px 0 0; max-width: 62ch; font-size: clamp(15px, 1.5vw, 18px);
+  color: var(--ink-muted);
+}
+.titleplate-thesis em { color: var(--ink); font-style: italic; font-family: var(--display); }
+
+/* ── Figure ───────────────────────────────────────────────────────── */
+.fig { margin: 0; display: grid; gap: 14px; }
+.fig-well {
+  background: var(--plate-well);
+  border: 1px solid var(--frame-soft);
+  padding: clamp(8px, 1.5vw, 20px);
+  overflow-x: auto;
+}
+.strata-fig { display: block; width: 100%; height: auto; min-width: 700px; }
+.stratum { transition: filter .15s ease; }
+.stratum:hover { filter: brightness(1.28) saturate(1.15); cursor: help; }
+.fig-caption { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+#fig-live.live { color: var(--seam); }
+
+/* ── Decoding layer ───────────────────────────────────────────────── */
+.decode {
+  margin: 0; padding: 16px 0 0;
+  border-top: 1px solid var(--frame-soft);
+  display: grid; gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+.decode-row { display: grid; grid-template-columns: 152px 1fr; gap: 4px 16px; align-items: baseline; }
+.decode dt {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .16em;
+  color: var(--ink); white-space: nowrap;
+}
+.decode dd { margin: 0; font-size: 14px; color: var(--ink-muted); line-height: 1.5; }
+.decode dd em { color: var(--ink); font-style: italic; }
+.decode-hint { margin: 14px 0 0; }
+@media (max-width: 620px) { .decode-row { grid-template-columns: 1fr; } }
+.sw { display: inline-block; width: 22px; height: 11px; margin-right: 8px; vertical-align: -1px; border: 1px solid rgba(0,0,0,.5); }
+.sw--axiomatic { background: var(--t-axiomatic); }
+.sw--verified { background: var(--t-verified); }
+.sw--pending { background: var(--t-pending); }
+.sw--narrative { background: var(--t-narrative); }
+.sw--foreclosure {
+  background: repeating-linear-gradient(-32deg, var(--t-foreclosure) 0 4px, #0f1114 4px 6px);
+}
+.seam { display: inline-block; width: 22px; height: 2px; background: var(--seam); vertical-align: 2px; margin-left: 6px; }
+
+/* ── Audit panel — the record behind a layer ──────────────────────── */
+.stratum { transition: filter .15s ease; }
+.stratum:focus-visible { outline: 2px solid var(--seam); outline-offset: -2px; }
+.stratum.is-selected { filter: brightness(1.35) saturate(1.2); }
+.stratum-label { cursor: pointer; }
+.stratum-label:hover { fill: var(--ink); }
+
+.audit {
+  border: 1px solid var(--frame); border-left: 2px solid var(--seam);
+  background: var(--plate-well);
+  padding: clamp(16px, 2.5vw, 28px);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .audit.open { animation: rise .3s cubic-bezier(.2,.7,.2,1) forwards; }
+}
+.audit-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+.audit-title { margin: 2px 0 0; font-family: var(--mono); font-size: clamp(20px, 2.4vw, 26px); letter-spacing: .06em; }
+.audit-x {
+  background: none; border: 1px solid var(--frame); color: var(--ink-muted);
+  width: 34px; height: 34px; flex: none; cursor: pointer; font-size: 14px;
+}
+.audit-x:hover, .audit-x:focus-visible { border-color: var(--seam); color: var(--ink); }
+.audit-x:focus-visible { outline: 2px solid var(--seam); outline-offset: 2px; }
+
+.audit-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 14px 0 4px; font-size: 12px; }
+.audit-actor { font-family: var(--mono); font-size: 12px; color: var(--ink); }
+.audit-badge {
+  font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase;
+  padding: 3px 8px; border: 1px solid var(--frame); color: var(--ink-muted);
+}
+.audit-badge--decision { border-color: var(--t-narrative); color: #9fc0dd; }
+.audit-badge--foreclosure { border-color: var(--t-foreclosure); color: #d8a3bf; }
+.audit-badge--verification { border-color: var(--seam); color: var(--seam); }
+.audit-badge--root { border-color: var(--t-axiomatic); color: #e0917f; }
+
+.audit-h {
+  margin: 22px 0 8px; font-family: var(--mono); font-size: 11px; letter-spacing: .2em;
+  text-transform: uppercase; color: var(--ink-faint);
+  border-bottom: 1px solid var(--frame-soft); padding-bottom: 6px;
+}
+.audit-claim { margin: 0; font-size: 16px; color: var(--ink); max-width: 74ch; }
+.audit-none { margin: 0; font-size: 14px; color: var(--ink-faint); font-style: italic; }
+.audit-why { margin: 6px 0 8px; font-size: 14px; color: var(--ink-muted); max-width: 74ch; }
+
+.audit-ev { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.audit-ev li {
+  display: grid; grid-template-columns: 108px 1fr auto; gap: 4px 14px; align-items: baseline;
+  padding: 8px 12px; background: #0a0c0d; border-left: 2px solid var(--frame);
+  font-size: 13px;
+}
+.audit-ev li.is-checked { border-left-color: var(--seam); }
+.audit-ev li.is-cited { border-left-color: var(--t-pending); }
+.audit-kind { font-family: var(--mono); font-size: 11px; letter-spacing: .1em; color: var(--ink-muted); }
+.audit-ref { color: var(--ink); word-break: break-word; }
+.audit-state { font-family: var(--mono); font-size: 11px; white-space: nowrap; }
+.is-checked .audit-state { color: var(--seam); }
+.is-cited .audit-state { color: var(--t-pending); }
+@media (max-width: 620px) { .audit-ev li { grid-template-columns: 1fr; } }
+
+.audit-trail { list-style: none; margin: 0; padding: 0; display: grid; gap: 16px; }
+.audit-trail > li { border-left: 1px solid var(--frame-soft); padding-left: 14px; }
+.audit-trail code { font-family: var(--mono); font-size: 12px; color: var(--ink); }
+
+.audit-ghosts { margin: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.ghost {
+  font-family: var(--mono); font-size: 12px; padding: 4px 10px;
+  border: 1px dashed var(--t-foreclosure); color: #d8a3bf; text-decoration: line-through;
+}
+.audit-shadow {
+  margin: 0 0 6px; font-size: 14.5px; color: var(--ink-muted); max-width: 76ch;
+  font-style: italic; border-left: 2px solid var(--t-foreclosure); padding-left: 14px;
+}
+
+/* Every record points at the canonical proof surface. */
+.audit-canon {
+  display: block; margin-top: 24px; padding: 14px 16px;
+  border: 1px solid var(--seam); text-decoration: none;
+  font-family: var(--mono); font-size: 13px; letter-spacing: .12em; color: var(--seam);
+  transition: background .15s ease;
+}
+.audit-canon:hover, .audit-canon:focus-visible { background: rgba(88,214,141,.08); }
+.audit-canon:focus-visible { outline: 2px solid var(--seam); outline-offset: 2px; }
+.audit-canon-sub {
+  display: block; margin-top: 5px; font-family: var(--body); font-size: 12.5px;
+  letter-spacing: .02em; color: var(--ink-muted); text-transform: none;
+}
+
+/* One-line legend — comprehension before admiration. */
+.decode-line {
+  margin: 14px 0 0; padding-top: 14px; border-top: 1px solid var(--frame-soft);
+  font-family: var(--mono); font-size: 12px; line-height: 1.9; color: var(--ink-muted);
+  letter-spacing: .04em;
+}
+.decode-line b { color: var(--ink); font-weight: 500; }
+
+/* The operational consequence, stated rather than implied. */
+.thesis-punch {
+  margin: 0; padding-left: 14px; border-left: 2px solid var(--red);
+  font-size: clamp(15px, 1.6vw, 17.5px); color: var(--ink);
+}
+
+/* ── Quote ────────────────────────────────────────────────────────── */
+.quote {
+  border-left: 2px solid var(--red);
+  padding: 6px 0 6px clamp(18px, 3vw, 40px);
+  display: grid; gap: 14px;
+  max-width: 66ch;
+}
+.quote blockquote { margin: 0; }
+.quote p:first-child {
+  margin: 0;
+  font-family: var(--display); font-weight: 300; font-style: italic;
+  font-size: clamp(22px, 3.2vw, 34px); line-height: 1.35;
+}
+.quote em { color: var(--seam); font-style: italic; }
+
+/* ── Notes ────────────────────────────────────────────────────────── */
+.notes {
+  display: grid; gap: clamp(20px, 3vw, 40px);
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+.note { border-top: 1px solid var(--frame-soft); padding-top: 18px; }
+.note h2 {
+  margin: 0 0 10px; font-family: var(--display); font-weight: 600;
+  font-size: clamp(19px, 2vw, 23px); letter-spacing: .01em;
+}
+.note-no { font-family: var(--mono); font-weight: 400; color: var(--red); margin-right: 10px; font-size: .85em; }
+.note p { margin: 0; color: var(--ink-muted); font-size: 15.5px; }
+
+/* ── Instrument register ──────────────────────────────────────────── */
+.instrument { display: grid; gap: 22px; }
+.cta-row { display: flex; flex-wrap: wrap; gap: 14px; }
+.cta {
+  flex: 1 1 220px; min-height: 64px;
+  display: flex; flex-direction: column; justify-content: center; gap: 4px;
+  padding: 14px 20px;
+  font-family: var(--mono); font-size: 13.5px; letter-spacing: .18em;
+  color: var(--ink); text-decoration: none; text-align: left;
+  background: var(--plate-well); border: 1px solid var(--frame);
+  transition: border-color .15s ease, background .15s ease, transform .15s ease;
+  cursor: pointer;
+}
+.cta:hover, .cta:focus-visible { border-color: var(--seam); background: #161a1d; transform: translateY(-2px); }
+.cta:focus-visible { outline: 2px solid var(--seam); outline-offset: 3px; }
+.cta--primary { border-color: var(--red); }
+.cta--primary:hover, .cta--primary:focus-visible { border-color: var(--seam); }
+.cta-sub { font-family: var(--body); font-size: 12.5px; letter-spacing: .02em; color: var(--ink-muted); text-transform: none; }
+.cta[disabled] { opacity: .55; cursor: progress; }
+
+.cli {
+  margin: 0; padding: 18px 22px; overflow-x: auto;
+  background: #0a0c0d; border: 1px solid var(--frame-soft);
+  font-family: var(--mono); font-size: 13px; line-height: 1.8; color: var(--ink-muted);
+}
+.cli code { font-family: inherit; }
+
+/* ── Colophon ─────────────────────────────────────────────────────── */
+.colophon {
+  display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+  border-top: 1px solid var(--frame-soft); padding-top: 16px;
+}
+
+/* ── Entry reveal (one orchestrated load; honors reduced motion) ──── */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal { opacity: 0; transform: translateY(14px); animation: rise .55s cubic-bezier(.2,.7,.2,1) forwards; }
+  .reveal:nth-of-type(1) { animation-delay: .05s; }
+  .titleplate.reveal { animation-delay: .12s; }
+  .fig.reveal { animation-delay: .24s; }
+  .quote.reveal { animation-delay: .38s; }
+  .notes .note:nth-child(1) { animation-delay: .46s; }
+  .notes .note:nth-child(2) { animation-delay: .52s; }
+  .notes .note:nth-child(3) { animation-delay: .58s; }
+  .instrument.reveal { animation-delay: .66s; }
+  @keyframes rise { to { opacity: 1; transform: none; } }
+}
+
+@media (max-width: 560px) {
+  .register-cell--right { text-align: left; }
+  .titleplate-sub { letter-spacing: .34em; font-size: 12px; }
+  /* The plate's own frame costs horizontal room that small screens need for
+     the figure; keep the register marks but let the sheet breathe. */
+  .sheet { outline: none; padding-left: 14px; padding-right: 14px; }
+  .masthead { gap: 10px; }
+  .mast-nav { gap: 4px 14px; }
+  .audit-meta { font-size: 11px; }
+  .term-body, .install code { font-size: 11.5px; }
+  /* Touch target floor for the scrubber thumb. */
+  .scrub input[type=range] { height: 44px; }
+}

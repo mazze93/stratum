@@ -26,3 +26,21 @@ jobs:
         run: npm run test:reference
       - name: Golden-trace validation
         run: npm run validate:trace
+
+      # Every recorded trace loads through the reference guards, not just the
+      # golden one — a dogfooding trace that violates the contract must fail
+      # the build, or the dogfooding proves nothing.
+      - name: All traces validate
+        run: |
+          for t in data/*-trace.jsonl; do
+            echo "── $t"
+            python3 scripts/validate-trace.py "$t"
+          done
+
+      # DECISIONS.md is a projection, not a document. If it drifts from the
+      # traces, someone hand-edited it or forgot to regenerate.
+      - name: docs/DECISIONS.md is in sync with the traces
+        run: |
+          python3 scripts/render-decisions.py > /tmp/decisions.expected
+          diff -u docs/DECISIONS.md /tmp/decisions.expected \
+            || { echo "::error::docs/DECISIONS.md is stale — regenerate with 'python3 scripts/render-decisions.py > docs/DECISIONS.md'"; exit 1; }
