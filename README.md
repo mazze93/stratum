@@ -4,8 +4,9 @@
 
 **An epistemic decision ledger — evidence-gated trust for human + AI work.**
 
-Live: **[stratum.mazzeleczzare.com](https://stratum.mazzeleczzare.com)** — the demo log is the
-recorded trace of this repository's own construction.
+Live: **[stratum.mazzeleczzare.com](https://stratum.mazzeleczzare.com)** — the survey plate;
+the **[Atrium control room](https://stratum.mazzeleczzare.com/atrium/)** projects the demo log:
+the recorded trace of this repository's own construction.
 
 ---
 
@@ -75,7 +76,7 @@ The public demo is that trace. The first dataset in the system is the system.
 
 ### Try it
 
-The [live demo](https://stratum.mazzeleczzare.com) is read-only; **Fork playground**
+The [live demo](https://stratum.mazzeleczzare.com/atrium/) is read-only; **Fork playground**
 clones it into a private sandbox where writes run the full guards — append something
 illegal and the gate answers with the violation. Or locally:
 

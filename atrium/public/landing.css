@@ -1,0 +1,211 @@
+/* ═══════════════════════════════════════════════════════════════════
+   STRATUM — landing plate
+   Pinned dark survey-poster (at-004: does NOT follow the circadian
+   engine). Palette keyed to the lithograph strata language; strata
+   fills live in strata-draw.js — tokens here mirror them for legend
+   and accents. AA-checked against --plate.
+   ═══════════════════════════════════════════════════════════════════ */
+:root {
+  --plate: #0c0e10;
+  --plate-well: #121416;
+  --frame: #434B54;
+  --frame-soft: #23272C;
+  --ink: #F0F2F5;
+  --ink-muted: #9BA3AF;
+  --ink-faint: #6E7681;      /* faintest text still AA-large on --plate */
+  --red: #E74C3C;
+  --seam: #58D68D;
+  --t-axiomatic: #8C3B2E;
+  --t-verified: #2E5D4B;
+  --t-pending: #B08A2E;
+  --t-narrative: #3E5A72;
+  --t-foreclosure: #8E4A6B;
+  --display: "Fraunces", Georgia, serif;
+  --body: "Archivo", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { background: #000; }
+body.plate {
+  margin: 0;
+  font-family: var(--body);
+  color: var(--ink);
+  background:
+    radial-gradient(120% 90% at 50% 0%, #14171a 0%, var(--plate) 55%),
+    var(--plate);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  padding: clamp(10px, 2.5vw, 34px);
+}
+/* film grain over the whole plate */
+body.plate::after {
+  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 3;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E");
+}
+
+/* ── Sheet & registration ─────────────────────────────────────────── */
+.sheet {
+  position: relative;
+  max-width: 1280px;
+  margin: 0 auto;
+  border: 1px solid var(--frame);
+  outline: 1px solid var(--frame-soft);
+  outline-offset: 5px;
+  padding: clamp(18px, 3.5vw, 56px) clamp(16px, 4vw, 64px);
+  display: flex; flex-direction: column; gap: clamp(34px, 5vh, 64px);
+}
+.reg-mark {
+  position: absolute; width: 14px; height: 14px; pointer-events: none;
+  border-color: var(--frame); border-style: solid; border-width: 0;
+}
+.reg-tl { top: -10px; left: -10px; border-top-width: 1px; border-left-width: 1px; }
+.reg-tr { top: -10px; right: -10px; border-top-width: 1px; border-right-width: 1px; }
+.reg-bl { bottom: -10px; left: -10px; border-bottom-width: 1px; border-left-width: 1px; }
+.reg-br { bottom: -10px; right: -10px; border-bottom-width: 1px; border-right-width: 1px; }
+
+.micro {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .22em;
+  color: var(--ink-muted); text-transform: uppercase;
+}
+.dim { color: var(--ink-faint); }
+.mono-inline { font-family: var(--mono); font-size: .92em; color: var(--seam); }
+
+/* ── Registers ────────────────────────────────────────────────────── */
+.register {
+  display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  border-bottom: 1px solid var(--frame-soft); padding-bottom: 14px;
+}
+.register-cell { display: flex; flex-direction: column; gap: 4px; }
+.register-cell--right { text-align: right; }
+
+/* ── Title plate ──────────────────────────────────────────────────── */
+.titleplate { text-align: left; display: grid; gap: 18px; }
+.titleplate-name {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 300;
+  font-size: clamp(64px, 12.5vw, 176px);
+  line-height: .92;
+  letter-spacing: .045em;
+}
+.titleplate-sub {
+  margin: 0; font-family: var(--mono); font-size: clamp(12px, 1.6vw, 16px);
+  letter-spacing: .58em; color: var(--red);
+}
+.titleplate-thesis {
+  margin: 6px 0 0; max-width: 62ch; font-size: clamp(15px, 1.5vw, 18px);
+  color: var(--ink-muted);
+}
+.titleplate-thesis em { color: var(--ink); font-style: italic; font-family: var(--display); }
+
+/* ── Figure ───────────────────────────────────────────────────────── */
+.fig { margin: 0; display: grid; gap: 14px; }
+.fig-well {
+  background: var(--plate-well);
+  border: 1px solid var(--frame-soft);
+  padding: clamp(8px, 1.5vw, 20px);
+  overflow-x: auto;
+}
+.strata-fig { display: block; width: 100%; height: auto; min-width: 700px; }
+.stratum { transition: filter .15s ease; }
+.stratum:hover { filter: brightness(1.28) saturate(1.15); cursor: help; }
+.fig-caption { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+#fig-live.live { color: var(--seam); }
+
+.legend {
+  list-style: none; margin: 0; padding: 12px 0 0;
+  display: flex; flex-wrap: wrap; gap: 10px 26px;
+  border-top: 1px solid var(--frame-soft);
+  font-family: var(--mono); font-size: 11px; letter-spacing: .14em; color: var(--ink-muted);
+}
+.legend .dim { letter-spacing: .02em; text-transform: none; }
+.sw { display: inline-block; width: 22px; height: 11px; margin-right: 8px; vertical-align: -1px; border: 1px solid rgba(0,0,0,.5); }
+.sw--axiomatic { background: var(--t-axiomatic); }
+.sw--verified { background: var(--t-verified); }
+.sw--pending { background: var(--t-pending); }
+.sw--narrative { background: var(--t-narrative); }
+.sw--foreclosure {
+  background: repeating-linear-gradient(-32deg, var(--t-foreclosure) 0 4px, #0f1114 4px 6px);
+}
+.seam { display: inline-block; width: 22px; height: 2px; background: var(--seam); vertical-align: 2px; margin-left: 6px; }
+
+/* ── Quote ────────────────────────────────────────────────────────── */
+.quote {
+  border-left: 2px solid var(--red);
+  padding: 6px 0 6px clamp(18px, 3vw, 40px);
+  display: grid; gap: 14px;
+  max-width: 66ch;
+}
+.quote blockquote { margin: 0; }
+.quote p:first-child {
+  margin: 0;
+  font-family: var(--display); font-weight: 300; font-style: italic;
+  font-size: clamp(22px, 3.2vw, 34px); line-height: 1.35;
+}
+.quote em { color: var(--seam); font-style: italic; }
+
+/* ── Notes ────────────────────────────────────────────────────────── */
+.notes {
+  display: grid; gap: clamp(20px, 3vw, 40px);
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+.note { border-top: 1px solid var(--frame-soft); padding-top: 18px; }
+.note h2 {
+  margin: 0 0 10px; font-family: var(--display); font-weight: 600;
+  font-size: clamp(19px, 2vw, 23px); letter-spacing: .01em;
+}
+.note-no { font-family: var(--mono); font-weight: 400; color: var(--red); margin-right: 10px; font-size: .85em; }
+.note p { margin: 0; color: var(--ink-muted); font-size: 15.5px; }
+
+/* ── Instrument register ──────────────────────────────────────────── */
+.instrument { display: grid; gap: 22px; }
+.cta-row { display: flex; flex-wrap: wrap; gap: 14px; }
+.cta {
+  flex: 1 1 220px; min-height: 64px;
+  display: flex; flex-direction: column; justify-content: center; gap: 4px;
+  padding: 14px 20px;
+  font-family: var(--mono); font-size: 13.5px; letter-spacing: .18em;
+  color: var(--ink); text-decoration: none; text-align: left;
+  background: var(--plate-well); border: 1px solid var(--frame);
+  transition: border-color .15s ease, background .15s ease, transform .15s ease;
+  cursor: pointer;
+}
+.cta:hover, .cta:focus-visible { border-color: var(--seam); background: #161a1d; transform: translateY(-2px); }
+.cta:focus-visible { outline: 2px solid var(--seam); outline-offset: 3px; }
+.cta--primary { border-color: var(--red); }
+.cta--primary:hover, .cta--primary:focus-visible { border-color: var(--seam); }
+.cta-sub { font-family: var(--body); font-size: 12.5px; letter-spacing: .02em; color: var(--ink-muted); text-transform: none; }
+.cta[disabled] { opacity: .55; cursor: progress; }
+
+.cli {
+  margin: 0; padding: 18px 22px; overflow-x: auto;
+  background: #0a0c0d; border: 1px solid var(--frame-soft);
+  font-family: var(--mono); font-size: 13px; line-height: 1.8; color: var(--ink-muted);
+}
+.cli code { font-family: inherit; }
+
+/* ── Colophon ─────────────────────────────────────────────────────── */
+.colophon {
+  display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+  border-top: 1px solid var(--frame-soft); padding-top: 16px;
+}
+
+/* ── Entry reveal (one orchestrated load; honors reduced motion) ──── */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal { opacity: 0; transform: translateY(14px); animation: rise .55s cubic-bezier(.2,.7,.2,1) forwards; }
+  .reveal:nth-of-type(1) { animation-delay: .05s; }
+  .titleplate.reveal { animation-delay: .12s; }
+  .fig.reveal { animation-delay: .24s; }
+  .quote.reveal { animation-delay: .38s; }
+  .notes .note:nth-child(1) { animation-delay: .46s; }
+  .notes .note:nth-child(2) { animation-delay: .52s; }
+  .notes .note:nth-child(3) { animation-delay: .58s; }
+  .instrument.reveal { animation-delay: .66s; }
+  @keyframes rise { to { opacity: 1; transform: none; } }
+}
+
+@media (max-width: 560px) {
+  .register-cell--right { text-align: left; }
+  .titleplate-sub { letter-spacing: .34em; }
+}
