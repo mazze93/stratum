@@ -207,7 +207,7 @@ Unblock stele delivery by adding a CodeQL workflow (codeql.yml, javascript-types
 
 *The public landing surface — this session's own decisions, recorded live.*
 
-> `data/atrium-trace.jsonl` · epoch 11 · 12 events · 10 decisions · 2 foreclosures
+> `data/atrium-trace.jsonl` · epoch 12 · 13 events · 11 decisions · 2 foreclosures
 
 ## Decisions
 
@@ -290,6 +290,14 @@ render-decisions.py renders every trace (genesis, stele, atrium) into docs/DECIS
 Release version bumps 0.3.0 -> 0.4.0 across root, core, worker, cli, the lockfile, and the /api/health payload. The event contract is NOT versioned by this: no schema, projection, or guard semantics changed this session, and the README provenance line now states both facts explicitly.
 
 > **Shadow [TRACE · certainty 0.9]** — Human chose the bump over staying at 0.3.0; the counter-argument (version tracks the contract, and the contract did not move) was correct on its merits, so it is preserved in the README wording rather than discarded — 'v0.4.0, carrying the same event contract (unchanged since rev 3)'. Historical v0.3.0 strings in docs/DECISIONS.md and the golden file were deliberately NOT touched: they are sb-018's immutable event narrative, not status text, and rewriting log content to match a current version is precisely the mutation this system exists to prevent. package-lock.json regenerated because CI runs npm ci, which fails on a lock that disagrees with package.json — caught locally rather than in a red build.
+
+### at-012 — ◐ PROVISIONAL · pending_evidence
+
+**claude-opus-4.8** · 2026-07-23T19:15:00-04:00
+
+The landing gains a decoding layer above the fold and a per-layer audit panel: selecting any stratum opens its full record — claim, evidence with checked-vs-cited state, actor identity, timestamps, every later event that acted on it (with that event's own evidence), roads not taken, and the buried shadow. Event records are baked inline alongside the figure so the panel works with no network.
+
+> **Shadow [TRACE · certainty 0.9]** — Human feedback: the plate read as a beautiful thesis statement rather than a credible decision-audit product, and named the missing piece exactly — selecting sb-014 should reveal claim, evidence, invalidating event, timestamps, actor identity, and reason. Two of the four requested tier definitions were corrected rather than shipped as given: 'narrative = provisional interpretation' conflates two distinct tiers (authoritative_provisional is separate and is now its own PENDING row), and 'foreclosed = invalidated by later evidence' describes invalidation, a different event type — a foreclosure is a deliberate choice with a reopen condition, not a refutation. Shipping either would have misdescribed the contract on the public surface. Records baked inline rather than fetched: the record behind a layer is part of the plate, not an enhancement, and the panel must not depend on an API that may be unreachable. Layers made focusable with role=button and Enter/Space handling; the right-register label is a second hit target because a 1-2px lens is not a realistic click target.
 
 ## Foreclosures — ghost edges
 

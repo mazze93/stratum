@@ -149,7 +149,10 @@ export function drawStrata(projection, opts = {}) {
        distinct beds, the way a real column alternates shale and siltstone. */
     const tintR = mulberry32(fnv1a(L.it.id + ":tint"));
     const tint = 0.88 + tintR() * 0.24;
-    parts.push(`<g class="${cls}" data-id="${esc(L.it.id)}">`);
+    parts.push(
+      `<g class="${cls}" data-id="${esc(L.it.id)}" tabindex="0" role="button" ` +
+        `aria-label="${esc(`${L.it.id}, ${t.label}. Open record.`)}">`
+    );
     parts.push(`<path d="${d}" fill="${t.fill}" stroke="${t.edge}" stroke-width="1" style="filter:brightness(${tint.toFixed(2)})"/>`);
     parts.push(`<path d="${d}" fill="url(#grain)" pointer-events="none"/>`);
     if (isLens) parts.push(`<path d="${d}" fill="url(#hatch)" pointer-events="none"/>`);
@@ -170,8 +173,10 @@ export function drawStrata(projection, opts = {}) {
     const t = it2tier(L.it);
     const yl = L.yMid;
     parts.push(`<line x1="${x1 + 4}" y1="${yl.toFixed(1)}" x2="${x1 + 26}" y2="${yl.toFixed(1)}" stroke="#4a5158" stroke-width="1"/>`);
+    /* The label is a second hit target for the same record — a 1-2px-tall
+       lens is not a realistic click target on its own. */
     parts.push(
-      `<text x="${x1 + 32}" y="${(yl + 3.5).toFixed(1)}" font-size="11" fill="#9BA3AF">${esc(L.it.id)}` +
+      `<text class="stratum-label" data-id="${esc(L.it.id)}" x="${x1 + 32}" y="${(yl + 3.5).toFixed(1)}" font-size="11" fill="#9BA3AF">${esc(L.it.id)}` +
         `<tspan fill="${t.fill}" dx="7">${t.label}</tspan></text>`
     );
   }
