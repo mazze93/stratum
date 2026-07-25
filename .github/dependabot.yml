@@ -1,0 +1,34 @@
+# Dependabot version updates. (Security updates are already enabled at the repo
+# level; this adds routine version bumps and, importantly, keeps the SHA-pinned
+# GitHub Actions current — pinning without Dependabot means pinned-and-rotting.)
+#
+# No Python ecosystem entry: the reference oracle and scripts are pure stdlib
+# (verified — no requirements.txt / pyproject). One npm entry covers all three
+# workspaces via the single root package-lock.json.
+version: 2
+
+updates:
+  # npm — root manifest + package-lock.json cover core/, worker/, cli/ workspaces.
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    groups:
+      # One PR for routine dev-tooling bumps instead of a swarm.
+      dev-dependencies:
+        dependency-type: development
+    commit-message:
+      prefix: "deps"
+      prefix-development: "deps-dev"
+
+  # GitHub Actions — keeps the pinned action SHAs in .github/workflows current.
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "ci"

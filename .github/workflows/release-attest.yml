@@ -1,0 +1,63 @@
+name: Release attestation
+
+# Sigstore-stamps a release. When a version tag is pushed, this bundles the
+# canonical artifacts and signs the bundle with cosign, keyless: the signing
+# certificate is short-lived and OIDC-bound to this workflow's identity, and the
+# signing event is recorded in the public Rekor transparency log. No long-lived
+# private key exists to leak; anyone can verify the signature and its timestamp
+# against Rekor. This is the "stamped, verifiable" layer that self-asserted commit
+# timestamps (metadata, per MEMORY_MODEL) can never provide.
+#
+# Commit/tag authenticity is the GPG layer (see SECURITY.md); this is the release
+# artifact layer. The two do not overlap and do not compete for the one signature
+# slot a git object has.
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+jobs:
+  attest:
+    name: Sign release artifacts (cosign keyless)
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write # OIDC token for keyless signing
+      contents: write # attach signatures to the GitHub Release
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Install cosign
+        uses: sigstore/cosign-installer@398d4b0eeef1380460a10c8013a76f728fb906ac # v3
+
+      # The canonical record this project exists to make verifiable: the CLI
+      # capture surface, the immutable traces, and the oracle's golden projection.
+      - name: Bundle canonical artifacts
+        run: |
+          tar -czf stratum-${{ github.ref_name }}.tar.gz \
+            cli/bin/stratum.mjs \
+            data/genesis-projection.golden.json \
+            data/*-trace.jsonl
+          sha256sum stratum-${{ github.ref_name }}.tar.gz > stratum-${{ github.ref_name }}.tar.gz.sha256
+
+      - name: Sign the bundle (keyless, Rekor-logged)
+        env:
+          COSIGN_YES: "true"
+        run: |
+          cosign sign-blob \
+            --output-signature   stratum-${{ github.ref_name }}.tar.gz.sig \
+            --output-certificate stratum-${{ github.ref_name }}.tar.gz.crt \
+            stratum-${{ github.ref_name }}.tar.gz
+
+      - name: Attach signature bundle to the release
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
+        with:
+          files: |
+            stratum-${{ github.ref_name }}.tar.gz
+            stratum-${{ github.ref_name }}.tar.gz.sha256
+            stratum-${{ github.ref_name }}.tar.gz.sig
+            stratum-${{ github.ref_name }}.tar.gz.crt

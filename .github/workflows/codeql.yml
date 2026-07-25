@@ -1,0 +1,57 @@
+name: CodeQL
+
+# Static analysis / code scanning. Advanced setup (a committed workflow, not the
+# API toggle) so the security config is versioned and reviewable — it lives in the
+# record like everything else here. Query suite is security-extended: this is a
+# public, MAX-posture repo with a deployed Worker surface, so the extra lower-
+# severity queries are worth the noise.
+#
+# Three analyses, one per language GitHub detects in this repo:
+#   - actions                 (the workflows themselves)
+#   - javascript-typescript   (core/, worker/, cli/, atrium/)
+#   - python                  (reference/ oracle, scripts/)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Weekly baseline scan so advisories published after a commit still surface.
+    - cron: "27 4 * * 1"
+
+# Least privilege: the analysis needs to read code and write SARIF results only.
+permissions:
+  contents: read
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write # upload SARIF to the code-scanning API
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [actions, javascript-typescript, python]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@4187e74d05793876e9989daffde9c3e66b4acd07 # v3
+        with:
+          languages: ${{ matrix.language }}
+          queries: security-extended
+
+      # No build step in this repo (vanilla ES modules, tsc --noEmit, stdlib
+      # Python), so autobuild is a no-op but harmless and future-proof.
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@4187e74d05793876e9989daffde9c3e66b4acd07 # v3
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@4187e74d05793876e9989daffde9c3e66b4acd07 # v3
+        with:
+          category: "/language:${{ matrix.language }}"
