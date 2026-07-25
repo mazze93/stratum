@@ -207,7 +207,7 @@ Unblock stele delivery by adding a CodeQL workflow (codeql.yml, javascript-types
 
 *The public landing surface — this session's own decisions, recorded live.*
 
-> `data/atrium-trace.jsonl` · epoch 32 · 33 events · 16 decisions · 2 foreclosures
+> `data/atrium-trace.jsonl` · epoch 33 · 34 events · 17 decisions · 2 foreclosures
 
 ## Decisions
 
@@ -340,6 +340,14 @@ Comprehension before admiration: a one-line legend sits directly under the figur
 Hero polish: centered title band spans the full sheet (STRATUM scales to clamp(72px,17vw,232px)) with description-left / terminal-right below it; the two-column hero holds down to 640px before stacking. The two hero CTAs get per-button tier color (Fork = blue, Atrium = yellow) and an art-deco frame — double rule plus four corner registration ticks — echoing the survey plate rather than the terminal box. The three source-register entries dropped their pill boxes for a tier-colored underline that fills upward on hover.
 
 > **Shadow [TRACE · certainty 0.9]** — Human directed each step live over several rounds. The apparent 'stacking' regression was diagnosed by measuring geometry, not eyeballing: the viewport was 885px, under the original 900px hero breakpoint, so it had correctly collapsed to mobile — the human confirmed and stood corrected, and the breakpoint dropped to 640px so two columns hold at desktop-ish widths. CTA deco built from the plate's own vocabulary: border + inset ::before rule (the outline-offset echo) + ::after eight-gradient corner ticks (the reg-marks echo), --deco flipping dark on hover-fill. Blue #5aa9d6 and yellow #d0b25c chosen as distinct tier colors that read on black and take dark ink when filled. Ghost edge: keeping the uniform green pill boxes — rejected, they were too close to the terminal box and gave the three registers no individual identity.
+
+### at-033 — ◐ PROVISIONAL · pending_evidence
+
+**claude-opus-4.8** · 2026-07-24T12:00:00-04:00
+
+Harden the public repo's supply chain and provenance. Code scanning: advanced CodeQL workflow (security-extended) over actions + javascript-typescript + python, on push/PR to main plus a weekly baseline. Dependabot: weekly npm and github-actions version updates (security updates already on). Third-party Actions SHA-pinned in ci.yml and the new workflows, with Dependabot keeping the pins current. SECURITY.md publishes a disclosure policy and a provenance contract. Branch protection on main: PR required (0 approvals, solo-safe), CI required, force-push and deletion blocked. Provenance is two independent layers: commits/tags stay GPG-signed (GitHub Verified once the key is registered) and required-signed-commits gates main; releases are Sigstore/cosign keyless-signed and Rekor-logged via release-attest.yml.
+
+> **Shadow [TRACE · certainty 0.9]** — Audit finding that motivated this: commits ARE gpg-signed and verify Good locally (ed25519 C641A68647D8A0FA), but GitHub reports every authored commit verified=false/unknown_key — the signing public key was never registered on the account (consistent with the 2026-07-15 fresh-machine rebuild). Signed, but not publicly verifiable. Ordering traps, same family as stele st-001 (a required code-scanning check with no scanner blocked all merges): CodeQL is added as a required status check only AFTER its first green run on main, and required-signed-commits is turned on only AFTER the gpg key is uploaded (GitHub treats unknown_key as unverified and would block the maintainer's own PRs). Both staged as gated follow-ups.
 
 ## Foreclosures — ghost edges
 
