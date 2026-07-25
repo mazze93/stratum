@@ -77,6 +77,19 @@ const newId = (prefix) =>
 
 async function call(s, path, opts = {}) {
   const headers = {};
+  // s.endpoint comes from a local config file / env / flag. Validate it through
+  // the URL constructor and restrict the scheme to http(s) before it reaches
+  // fetch — never let a config value drive a request to a file:, data:, or other
+  // non-network protocol.
+  let url;
+  try {
+    url = new URL(s.endpoint + path);
+  } catch {
+    fail(`invalid endpoint URL: ${s.endpoint}`);
+  }
+  if (url.protocol !== "http:" && url.protocol !== "https:") {
+    fail(`refusing endpoint with non-http(s) protocol '${url.protocol}' — ${s.endpoint}`);
+  }
   // Refuse to send the bearer token in plaintext. Local dev is exempt;
   // anything else over http:// needs an explicit opt-in.
   if (
@@ -91,7 +104,7 @@ async function call(s, path, opts = {}) {
   if (opts.body !== undefined) headers["content-type"] = "application/json";
   let res;
   try {
-    res = await fetch(s.endpoint + path, { ...opts, headers });
+    res = await fetch(url, { ...opts, headers });
   } catch (e) {
     fail(`cannot reach ${s.endpoint} — ${e.cause?.code || e.message}`);
   }

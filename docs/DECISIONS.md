@@ -207,7 +207,7 @@ Unblock stele delivery by adding a CodeQL workflow (codeql.yml, javascript-types
 
 *The public landing surface — this session's own decisions, recorded live.*
 
-> `data/atrium-trace.jsonl` · epoch 33 · 34 events · 17 decisions · 2 foreclosures
+> `data/atrium-trace.jsonl` · epoch 34 · 35 events · 18 decisions · 2 foreclosures
 
 ## Decisions
 
@@ -348,6 +348,16 @@ Hero polish: centered title band spans the full sheet (STRATUM scales to clamp(7
 Harden the public repo's supply chain and provenance. Code scanning: advanced CodeQL workflow (security-extended) over actions + javascript-typescript + python, on push/PR to main plus a weekly baseline. Dependabot: weekly npm and github-actions version updates (security updates already on). Third-party Actions SHA-pinned in ci.yml and the new workflows, with Dependabot keeping the pins current. SECURITY.md publishes a disclosure policy and a provenance contract. Branch protection on main: PR required (0 approvals, solo-safe), CI required, force-push and deletion blocked. Provenance is two independent layers: commits/tags stay GPG-signed (GitHub Verified once the key is registered) and required-signed-commits gates main; releases are Sigstore/cosign keyless-signed and Rekor-logged via release-attest.yml.
 
 > **Shadow [TRACE · certainty 0.9]** — Audit finding that motivated this: commits ARE gpg-signed and verify Good locally (ed25519 C641A68647D8A0FA), but GitHub reports every authored commit verified=false/unknown_key — the signing public key was never registered on the account (consistent with the 2026-07-15 fresh-machine rebuild). Signed, but not publicly verifiable. Ordering traps, same family as stele st-001 (a required code-scanning check with no scanner blocked all merges): CodeQL is added as a required status check only AFTER its first green run on main, and required-signed-commits is turned on only AFTER the gpg key is uploaded (GitHub treats unknown_key as unverified and would block the maintainer's own PRs). Both staged as gated follow-ups.
+
+### at-034 — ◐ PROVISIONAL · pending_evidence
+
+**claude-opus-4.8** · 2026-07-25T15:10:00-04:00
+
+Fix CodeQL CWE-200 alert js/file-access-to-http in cli/bin/stratum.mjs: s.endpoint (from the local config file / env / flag) flowed unvalidated into fetch(). call() now parses s.endpoint+path through the URL constructor, rejects any scheme other than http:/https: via fail(), and passes the validated URL object (not the raw string) to fetch.
+
+*Revision chain:* `at-033 → at-034`
+
+> **Shadow [TRACE · certainty 0.9]** — This is the first real finding the at-033 CodeQL setup surfaced — scanning earning its keep. URL(endpoint+path) preserves the existing concatenation semantics (paths are absolute, default endpoint has no base path) while adding the sanitizer CodeQL recognizes. Ghost edge: URL(path, endpoint) base-resolution form — rejected, it would silently drop a configured base-path prefix and change request targeting. Evidence lands when the CodeQL alert closes on the re-scan of this commit.
 
 ## Foreclosures — ghost edges
 
