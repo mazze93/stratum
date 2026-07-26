@@ -207,7 +207,7 @@ Unblock stele delivery by adding a CodeQL workflow (codeql.yml, javascript-types
 
 *The public landing surface — this session's own decisions, recorded live.*
 
-> `data/atrium-trace.jsonl` · epoch 37 · 38 events · 19 decisions · 2 foreclosures
+> `data/atrium-trace.jsonl` · epoch 38 · 39 events · 20 decisions · 2 foreclosures
 
 ## Decisions
 
@@ -364,6 +364,14 @@ Move all three github/codeql-action entrypoints (init, autobuild, analyze) to th
 Promote CodeQL to a required status check on main. The three matrix analyses - Analyze (actions), Analyze (javascript-typescript), Analyze (python) - are added to branch protection's required contexts alongside the existing Typecheck, tests, cross-validation.
 
 > **Shadow [TRACE · certainty 0.9]** — at-033 staged this deliberately: CodeQL becomes a required check only AFTER its first green run on main, because a required code-scanning check with no passing scanner blocks every merge (the stele st-001 trap). That precondition was unmet for the entire life of at-033 - CodeQL had never been green on main - and at-034/at-035 have now satisfied it (run 30191349561 @ 804a095). Chose the three matrix job contexts rather than the aggregate CodeQL check run: the matrix jobs are the analyses that actually gate, and the aggregate reports in 2-3s as a code-scanning rollup. The tradeoff is that changing the language matrix now requires updating branch protection in the same change, which is the intended coupling.
+
+### at-038 — ◐ PROVISIONAL · pending_evidence
+
+**claude-opus-5** · 2026-07-26T03:05:00-04:00
+
+Restrict the Dependabot dev-dependencies group to minor and patch updates. Major dev-dependency updates are NOT ignored - they arrive as their own individual PRs instead of riding along inside a routine grouped bump.
+
+> **Shadow [TRACE · certainty 0.9]** — Group PR #12 (deps-dev, 5 updates) failed 'Typecheck, tests, cross-validation' at 'npm run check' with TS2591 Cannot find name 'node:fs', TS2304 Cannot find name 'URL', TS2339 Property 'url' does not exist on type 'ImportMeta' in core/test/cross-validation.test.ts. Cause was not @types/node (24->26) but typescript 5.9.3 -> 7.0.2 bundled in the same PR - the native TypeScript port, which ships platform-specific binaries (@typescript/typescript-darwin-arm64 et al) and resolves lib/types differently. vitest 3 -> 4 rode along too. Two real migrations were hidden inside a bump labelled routine dev-tooling. The grouping was the defect, not the packages: a group that admits majors converts 'review a version bump' into 'review a toolchain migration' without saying so. Chose update-types minor+patch over an ignore rule for typescript/vitest, because ignoring would silently stop the migrations from ever surfacing; this keeps them visible and reviewable on their own. #12 is closed rather than merged; Dependabot will reopen a conforming group.
 
 ## Foreclosures — ghost edges
 
