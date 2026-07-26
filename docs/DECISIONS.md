@@ -207,7 +207,7 @@ Unblock stele delivery by adding a CodeQL workflow (codeql.yml, javascript-types
 
 *The public landing surface — this session's own decisions, recorded live.*
 
-> `data/atrium-trace.jsonl` · epoch 35 · 36 events · 18 decisions · 2 foreclosures
+> `data/atrium-trace.jsonl` · epoch 37 · 38 events · 19 decisions · 2 foreclosures
 
 ## Decisions
 
@@ -357,6 +357,14 @@ Move all three github/codeql-action entrypoints (init, autobuild, analyze) to th
 
 > **Shadow [TRACE · certainty 0.95]** — Discovered while sweeping open Dependabot PRs: all four (#8 codeql-analyze, #9 cosign-installer, #10 action-gh-release, #13 hono) failed the same three Analyze (actions|javascript-typescript|python) jobs, including bumps that touch no CI at all. The failing STEP was Autobuild, erroring 'Loaded a configuration file for version 3.37.3, but running version 4.37.3' - autobuild v4 cannot read the config written by init v3. main was already broken: HEAD c337f62 merged the autobuild-only bump (#6), which silently broke CodeQL for every subsequent PR. This is the Dependabot partial-bump hazard for multi-entrypoint actions: Dependabot models init/autobuild/analyze as independent dependencies and opens separate PRs, so merging one alone desynchronises the set and the breakage surfaces on unrelated PRs - the misattribution trap. Merging the open analyze bump (#8) alone would NOT have fixed this, since init would still be v3; #8 is subsumed by this change. Note at-033 (which introduced this CodeQL workflow) remains pending_evidence, so CodeQL had never had a green run on main to protect - consistent with at-033's own staging rule that CodeQL becomes a required check only after its first green run.
 
+### at-036 — ● VERIFIED · validated
+
+**claude-opus-5** · 2026-07-26T02:20:00-04:00
+
+Promote CodeQL to a required status check on main. The three matrix analyses - Analyze (actions), Analyze (javascript-typescript), Analyze (python) - are added to branch protection's required contexts alongside the existing Typecheck, tests, cross-validation.
+
+> **Shadow [TRACE · certainty 0.9]** — at-033 staged this deliberately: CodeQL becomes a required check only AFTER its first green run on main, because a required code-scanning check with no passing scanner blocks every merge (the stele st-001 trap). That precondition was unmet for the entire life of at-033 - CodeQL had never been green on main - and at-034/at-035 have now satisfied it (run 30191349561 @ 804a095). Chose the three matrix job contexts rather than the aggregate CodeQL check run: the matrix jobs are the analyses that actually gate, and the aggregate reports in 2-3s as a code-scanning rollup. The tradeoff is that changing the language matrix now requires updating branch protection in the same change, which is the intended coupling.
+
 ## Foreclosures — ghost edges
 
 ### at-004 — standing
@@ -397,6 +405,7 @@ docs/TRUST.md ships as a skeleton that RESOLVES the two decidable questions (den
 | `at-035` | `at-034` | https://github.com/mazze93/stratum/actions/runs/30191349561 - CodeQL on main @ 804a095: Analyze actions/javascript-typescript/python all success | 2026-07-26T01:35:00-04:00 |
 | `at-035` | `at-034` | https://github.com/mazze93/stratum/actions/runs/30178990744 - prior CodeQL on main @ c337f62: same three Analyze jobs failed (Autobuild: config v3.37.3 vs running v4.37.3) | 2026-07-26T01:35:00-04:00 |
 | `at-035` | `at-034` | .github/workflows/codeql.yml init+autobuild+analyze all @ e4fba868fa4b1b91e1fdab776edc8cfbe6e9fb81 # v4.37.3, merged as 804a0957b5e6340b32d459e242afc9b91574735a on main (PR #14) | 2026-07-26T01:35:00-04:00 |
+| `at-037` | `at-036` | GET /repos/mazze93/stratum/branches/main/protection -> required_status_checks.contexts = [Typecheck, tests, cross-validation; Analyze (actions); Analyze (javascript-typescript); Analyze (python)] | 2026-07-26T02:20:00-04:00 |
 
 ---
 
