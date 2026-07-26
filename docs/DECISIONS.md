@@ -207,7 +207,7 @@ Unblock stele delivery by adding a CodeQL workflow (codeql.yml, javascript-types
 
 *The public landing surface — this session's own decisions, recorded live.*
 
-> `data/atrium-trace.jsonl` · epoch 33 · 34 events · 17 decisions · 2 foreclosures
+> `data/atrium-trace.jsonl` · epoch 35 · 36 events · 18 decisions · 2 foreclosures
 
 ## Decisions
 
@@ -349,6 +349,14 @@ Harden the public repo's supply chain and provenance. Code scanning: advanced Co
 
 > **Shadow [TRACE · certainty 0.9]** — Audit finding that motivated this: commits ARE gpg-signed and verify Good locally (ed25519 C641A68647D8A0FA), but GitHub reports every authored commit verified=false/unknown_key — the signing public key was never registered on the account (consistent with the 2026-07-15 fresh-machine rebuild). Signed, but not publicly verifiable. Ordering traps, same family as stele st-001 (a required code-scanning check with no scanner blocked all merges): CodeQL is added as a required status check only AFTER its first green run on main, and required-signed-commits is turned on only AFTER the gpg key is uploaded (GitHub treats unknown_key as unverified and would block the maintainer's own PRs). Both staged as gated follow-ups.
 
+### at-034 — ● VERIFIED · validated
+
+**claude-opus-5** · 2026-07-26T01:05:00-04:00
+
+Move all three github/codeql-action entrypoints (init, autobuild, analyze) to the same v4.37.3 commit SHA e4fba868fa4b1b91e1fdab776edc8cfbe6e9fb81. The three are entrypoints in ONE repository and must move as a set; they had drifted apart, with autobuild on v4.37.3 while init and analyze stayed on the v3 SHA 4187e74d05793876e9989daffde9c3e66b4acd07.
+
+> **Shadow [TRACE · certainty 0.95]** — Discovered while sweeping open Dependabot PRs: all four (#8 codeql-analyze, #9 cosign-installer, #10 action-gh-release, #13 hono) failed the same three Analyze (actions|javascript-typescript|python) jobs, including bumps that touch no CI at all. The failing STEP was Autobuild, erroring 'Loaded a configuration file for version 3.37.3, but running version 4.37.3' - autobuild v4 cannot read the config written by init v3. main was already broken: HEAD c337f62 merged the autobuild-only bump (#6), which silently broke CodeQL for every subsequent PR. This is the Dependabot partial-bump hazard for multi-entrypoint actions: Dependabot models init/autobuild/analyze as independent dependencies and opens separate PRs, so merging one alone desynchronises the set and the breakage surfaces on unrelated PRs - the misattribution trap. Merging the open analyze bump (#8) alone would NOT have fixed this, since init would still be v3; #8 is subsumed by this change. Note at-033 (which introduced this CodeQL workflow) remains pending_evidence, so CodeQL had never had a green run on main to protect - consistent with at-033's own staging rule that CodeQL becomes a required check only after its first green run.
+
 ## Foreclosures — ghost edges
 
 ### at-004 — standing
@@ -386,6 +394,9 @@ docs/TRUST.md ships as a skeleton that RESOLVES the two decidable questions (den
 | `at-030` | `at-015` | https://stratum.mazzeleczzare.com/ scrubber: 3 green seams at epoch 19, 0 at epoch 5 (measured in-browser) | 2026-07-23T21:58:00-04:00 |
 | `at-031` | `at-016` | https://stratum.mazzeleczzare.com/ contains decode-line legend + audit-canon canonical links | 2026-07-23T21:58:30-04:00 |
 | `at-032` | `at-017` | https://stratum.mazzeleczzare.com/ hero-title centered; cta--fork #5aa9d6 + cta--atrium #d0b25c with corner-tick deco; real :hover floods blue, ink dark | 2026-07-23T21:59:00-04:00 |
+| `at-035` | `at-034` | https://github.com/mazze93/stratum/actions/runs/30191349561 - CodeQL on main @ 804a095: Analyze actions/javascript-typescript/python all success | 2026-07-26T01:35:00-04:00 |
+| `at-035` | `at-034` | https://github.com/mazze93/stratum/actions/runs/30178990744 - prior CodeQL on main @ c337f62: same three Analyze jobs failed (Autobuild: config v3.37.3 vs running v4.37.3) | 2026-07-26T01:35:00-04:00 |
+| `at-035` | `at-034` | .github/workflows/codeql.yml init+autobuild+analyze all @ e4fba868fa4b1b91e1fdab776edc8cfbe6e9fb81 # v4.37.3, merged as 804a0957b5e6340b32d459e242afc9b91574735a on main (PR #14) | 2026-07-26T01:35:00-04:00 |
 
 ---
 
