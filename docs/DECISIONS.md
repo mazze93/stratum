@@ -207,7 +207,7 @@ Unblock stele delivery by adding a CodeQL workflow (codeql.yml, javascript-types
 
 *The public landing surface — this session's own decisions, recorded live.*
 
-> `data/atrium-trace.jsonl` · epoch 33 · 34 events · 17 decisions · 2 foreclosures
+> `data/atrium-trace.jsonl` · epoch 34 · 35 events · 18 decisions · 2 foreclosures
 
 ## Decisions
 
@@ -348,6 +348,14 @@ Hero polish: centered title band spans the full sheet (STRATUM scales to clamp(7
 Harden the public repo's supply chain and provenance. Code scanning: advanced CodeQL workflow (security-extended) over actions + javascript-typescript + python, on push/PR to main plus a weekly baseline. Dependabot: weekly npm and github-actions version updates (security updates already on). Third-party Actions SHA-pinned in ci.yml and the new workflows, with Dependabot keeping the pins current. SECURITY.md publishes a disclosure policy and a provenance contract. Branch protection on main: PR required (0 approvals, solo-safe), CI required, force-push and deletion blocked. Provenance is two independent layers: commits/tags stay GPG-signed (GitHub Verified once the key is registered) and required-signed-commits gates main; releases are Sigstore/cosign keyless-signed and Rekor-logged via release-attest.yml.
 
 > **Shadow [TRACE · certainty 0.9]** — Audit finding that motivated this: commits ARE gpg-signed and verify Good locally (ed25519 C641A68647D8A0FA), but GitHub reports every authored commit verified=false/unknown_key — the signing public key was never registered on the account (consistent with the 2026-07-15 fresh-machine rebuild). Signed, but not publicly verifiable. Ordering traps, same family as stele st-001 (a required code-scanning check with no scanner blocked all merges): CodeQL is added as a required status check only AFTER its first green run on main, and required-signed-commits is turned on only AFTER the gpg key is uploaded (GitHub treats unknown_key as unverified and would block the maintainer's own PRs). Both staged as gated follow-ups.
+
+### at-034 — ◐ PROVISIONAL · pending_evidence
+
+**claude-opus-5** · 2026-07-26T01:05:00-04:00
+
+Move all three github/codeql-action entrypoints (init, autobuild, analyze) to the same v4.37.3 commit SHA e4fba868fa4b1b91e1fdab776edc8cfbe6e9fb81. The three are entrypoints in ONE repository and must move as a set; they had drifted apart, with autobuild on v4.37.3 while init and analyze stayed on the v3 SHA 4187e74d05793876e9989daffde9c3e66b4acd07.
+
+> **Shadow [TRACE · certainty 0.95]** — Discovered while sweeping open Dependabot PRs: all four (#8 codeql-analyze, #9 cosign-installer, #10 action-gh-release, #13 hono) failed the same three Analyze (actions|javascript-typescript|python) jobs, including bumps that touch no CI at all. The failing STEP was Autobuild, erroring 'Loaded a configuration file for version 3.37.3, but running version 4.37.3' - autobuild v4 cannot read the config written by init v3. main was already broken: HEAD c337f62 merged the autobuild-only bump (#6), which silently broke CodeQL for every subsequent PR. This is the Dependabot partial-bump hazard for multi-entrypoint actions: Dependabot models init/autobuild/analyze as independent dependencies and opens separate PRs, so merging one alone desynchronises the set and the breakage surfaces on unrelated PRs - the misattribution trap. Merging the open analyze bump (#8) alone would NOT have fixed this, since init would still be v3; #8 is subsumed by this change. Note at-033 (which introduced this CodeQL workflow) remains pending_evidence, so CodeQL had never had a green run on main to protect - consistent with at-033's own staging rule that CodeQL becomes a required check only after its first green run.
 
 ## Foreclosures — ghost edges
 
