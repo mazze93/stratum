@@ -16,9 +16,18 @@ updates:
       day: monday
     open-pull-requests-limit: 5
     groups:
-      # One PR for routine dev-tooling bumps instead of a swarm.
+      # One PR for routine dev-tooling bumps instead of a swarm — but MINOR and
+      # PATCH only. A grouped major hides a migration inside a routine bump:
+      # the 2026-07-26 group PR (#12) bundled typescript 5.9.3 -> 7.0.2 (the
+      # native port, which ships platform binaries) and vitest 3 -> 4 alongside
+      # three harmless bumps, and broke `npm run check` in core/ with
+      # "Cannot find name 'node:fs'". Majors are NOT ignored — they simply
+      # arrive as their own reviewable PRs instead of riding along.
       dev-dependencies:
         dependency-type: development
+        update-types:
+          - minor
+          - patch
     commit-message:
       prefix: "deps"
       prefix-development: "deps-dev"
