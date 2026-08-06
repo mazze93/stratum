@@ -207,7 +207,7 @@ Unblock stele delivery by adding a CodeQL workflow (codeql.yml, javascript-types
 
 *The public landing surface — this session's own decisions, recorded live.*
 
-> `data/atrium-trace.jsonl` · epoch 38 · 39 events · 20 decisions · 2 foreclosures
+> `data/atrium-trace.jsonl` · epoch 39 · 40 events · 21 decisions · 2 foreclosures
 
 ## Decisions
 
@@ -372,6 +372,16 @@ Promote CodeQL to a required status check on main. The three matrix analyses - A
 Restrict the Dependabot dev-dependencies group to minor and patch updates. Major dev-dependency updates are NOT ignored - they arrive as their own individual PRs instead of riding along inside a routine grouped bump.
 
 > **Shadow [TRACE · certainty 0.9]** — Group PR #12 (deps-dev, 5 updates) failed 'Typecheck, tests, cross-validation' at 'npm run check' with TS2591 Cannot find name 'node:fs', TS2304 Cannot find name 'URL', TS2339 Property 'url' does not exist on type 'ImportMeta' in core/test/cross-validation.test.ts. Cause was not @types/node (24->26) but typescript 5.9.3 -> 7.0.2 bundled in the same PR - the native TypeScript port, which ships platform-specific binaries (@typescript/typescript-darwin-arm64 et al) and resolves lib/types differently. vitest 3 -> 4 rode along too. Two real migrations were hidden inside a bump labelled routine dev-tooling. The grouping was the defect, not the packages: a group that admits majors converts 'review a version bump' into 'review a toolchain migration' without saying so. Chose update-types minor+patch over an ignore rule for typescript/vitest, because ignoring would silently stop the migrations from ever surfacing; this keeps them visible and reviewable on their own. #12 is closed rather than merged; Dependabot will reopen a conforming group.
+
+### at-039 — ◐ PROVISIONAL · pending_evidence
+
+**claude-sonnet-5** · 2026-08-06T06:46:00-04:00
+
+Add explicit compilerOptions.types: ["node"] to core/tsconfig.json. core previously relied on TypeScript automatic @types acquisition (no explicit types field) to bring in Node globals (node:fs imports, URL, ImportMeta.url) used by core/test/cross-validation.test.ts.
+
+*Revision chain:* `at-038 → at-039`
+
+> **Shadow [TRACE · certainty 0.9]** — at-038 restricted the dev-dependencies Dependabot group to minor/patch after grouped PR #12 (typescript 7.0.2 + vitest 4 + others) broke npm run check with TS2591/TS2304/TS2339 in core/test/cross-validation.test.ts, and attributed the break to typescript 7 alone. Re-tested empirically against the three individually-open major-bump PRs (#19 typescript 7.0.2, #21 @types/node 26.1.2, #22 vitest 4.1.10): each passes npm run check cleanly in isolation, and typescript 7 + @types/node 26 together also pass. The break only reproduces with typescript 7 + vitest 4 together, regardless of @types/node version (24.13.3 or 26.1.2 both fail identically) - so at-038s attribution to typescript alone was incomplete, and @types/node was never the culprit. Root cause: with no explicit types field, tsc falls back to automatic @types acquisition, and something in how typescript 7s native port walks node_modules/@types changes which globals get pulled in once vitest 4 (and its own vite 8 / @types chain) is also present. An explicit types: ["node"] removes the dependency on that fallback entirely, matching what the compiler error itself suggests (Try add node to the types field). Verified: with the fix applied on top of current main (typescript still 5.9.3), npm run check / npm test / npm run test:reference / npm run validate:trace / docs/DECISIONS.md staleness all pass unchanged - so this is safe to land now, before any of #19/#21/#22 merge, rather than only after a break is observed. worker/tsconfig.json already sets its own explicit types (@cloudflare/workers-types), which is why worker never surfaced this.
 
 ## Foreclosures — ghost edges
 
