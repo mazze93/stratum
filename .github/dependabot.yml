@@ -39,5 +39,15 @@ updates:
       interval: weekly
       day: monday
     open-pull-requests-limit: 5
+    groups:
+      # init/autobuild/analyze are entrypoints in ONE repository (github/codeql-action)
+      # and must move together. Dependabot models them as independent dependencies
+      # and previously opened separate PRs per entrypoint: c337f62 (#6) merged an
+      # autobuild-only bump, leaving init/analyze on the old major and breaking
+      # CodeQL on main — and from there, every unrelated PR (at-034/at-035;
+      # fixed by stratum#23). Grouping means one PR moves all three as a set.
+      codeql-action:
+        patterns:
+          - "github/codeql-action/*"
     commit-message:
       prefix: "ci"
