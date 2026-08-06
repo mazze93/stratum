@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@stratum/core": "*",
-    "hono": "^4.12.32"
+    "hono": "^4.12.34"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250620.0",
