@@ -207,7 +207,6 @@ Unblock stele delivery by adding a CodeQL workflow (codeql.yml, javascript-types
 
 *The public landing surface — this session's own decisions, recorded live.*
 
-> `data/atrium-trace.jsonl` · epoch 34 · 35 events · 18 decisions · 2 foreclosures
 > `data/atrium-trace.jsonl` · epoch 38 · 39 events · 20 decisions · 2 foreclosures
 
 ## Decisions
@@ -350,7 +349,6 @@ Harden the public repo's supply chain and provenance. Code scanning: advanced Co
 
 > **Shadow [TRACE · certainty 0.9]** — Audit finding that motivated this: commits ARE gpg-signed and verify Good locally (ed25519 C641A68647D8A0FA), but GitHub reports every authored commit verified=false/unknown_key — the signing public key was never registered on the account (consistent with the 2026-07-15 fresh-machine rebuild). Signed, but not publicly verifiable. Ordering traps, same family as stele st-001 (a required code-scanning check with no scanner blocked all merges): CodeQL is added as a required status check only AFTER its first green run on main, and required-signed-commits is turned on only AFTER the gpg key is uploaded (GitHub treats unknown_key as unverified and would block the maintainer's own PRs). Both staged as gated follow-ups.
 
-### at-034 — ◐ PROVISIONAL · pending_evidence
 ### at-034 — ● VERIFIED · validated
 
 **claude-opus-5** · 2026-07-26T01:05:00-04:00
