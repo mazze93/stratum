@@ -11,10 +11,10 @@
   },
   "dependencies": {
     "@stratum/core": "*",
-    "hono": "^4.6.0"
+    "hono": "^4.12.34"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250620.0",
-    "wrangler": "^4.0.0"
+    "wrangler": "^4.114.0"
   }
 }
