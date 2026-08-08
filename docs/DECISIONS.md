@@ -207,7 +207,7 @@ Unblock stele delivery by adding a CodeQL workflow (codeql.yml, javascript-types
 
 *The public landing surface — this session's own decisions, recorded live.*
 
-> `data/atrium-trace.jsonl` · epoch 39 · 40 events · 21 decisions · 2 foreclosures
+> `data/atrium-trace.jsonl` · epoch 40 · 41 events · 22 decisions · 2 foreclosures
 
 ## Decisions
 
@@ -375,13 +375,23 @@ Restrict the Dependabot dev-dependencies group to minor and patch updates. Major
 
 ### at-039 — ◐ PROVISIONAL · pending_evidence
 
+**claude-sonnet-5** · 2026-08-06T06:46:00-04:00
+
+Add explicit compilerOptions.types: ["node"] to core/tsconfig.json. core previously relied on TypeScript automatic @types acquisition (no explicit types field) to bring in Node globals (node:fs imports, URL, ImportMeta.url) used by core/test/cross-validation.test.ts.
+
+*Revision chain:* `at-038 → at-039`
+
+> **Shadow [TRACE · certainty 0.9]** — at-038 restricted the dev-dependencies Dependabot group to minor/patch after grouped PR #12 (typescript 7.0.2 + vitest 4 + others) broke npm run check with TS2591/TS2304/TS2339 in core/test/cross-validation.test.ts, and attributed the break to typescript 7 alone. Re-tested empirically against the three individually-open major-bump PRs (#19 typescript 7.0.2, #21 @types/node 26.1.2, #22 vitest 4.1.10): each passes npm run check cleanly in isolation, and typescript 7 + @types/node 26 together also pass. The break only reproduces with typescript 7 + vitest 4 together, regardless of @types/node version (24.13.3 or 26.1.2 both fail identically) - so at-038s attribution to typescript alone was incomplete, and @types/node was never the culprit. Root cause: with no explicit types field, tsc falls back to automatic @types acquisition, and something in how typescript 7s native port walks node_modules/@types changes which globals get pulled in once vitest 4 (and its own vite 8 / @types chain) is also present. An explicit types: ["node"] removes the dependency on that fallback entirely, matching what the compiler error itself suggests (Try add node to the types field). Verified: with the fix applied on top of current main (typescript still 5.9.3), npm run check / npm test / npm run test:reference / npm run validate:trace / docs/DECISIONS.md staleness all pass unchanged - so this is safe to land now, before any of #19/#21/#22 merge, rather than only after a break is observed. worker/tsconfig.json already sets its own explicit types (@cloudflare/workers-types), which is why worker never surfaced this.
+
+### at-040 — ◐ PROVISIONAL · pending_evidence
+
 **claude-opus-4.8** · 2026-07-25T15:10:00-04:00
 
 Fix CodeQL CWE-200 alert js/file-access-to-http in cli/bin/stratum.mjs: s.endpoint (from the local config file / env / flag) flowed unvalidated into fetch(). call() now parses s.endpoint+path through the URL constructor, rejects any scheme other than http:/https: via fail(), and passes the validated URL object (not the raw string) to fetch.
 
-*Revision chain:* `at-033 → at-039`
+*Revision chain:* `at-033 → at-040`
 
-> **Shadow [TRACE · certainty 0.9]** — This is the first real finding the at-033 CodeQL setup surfaced — scanning earning its keep. URL(endpoint+path) preserves the existing concatenation semantics (paths are absolute, default endpoint has no base path) while adding the sanitizer CodeQL recognizes. Ghost edge: URL(path, endpoint) base-resolution form — rejected, it would silently drop a configured base-path prefix and change request targeting. Evidence lands when the CodeQL alert closes on the re-scan of this commit.
+> **Shadow [TRACE · certainty 0.9]** — This is the first real finding the at-033 CodeQL setup surfaced — scanning earning its keep. URL(endpoint+path) preserves the existing concatenation semantics (paths are absolute, default endpoint has no base path) while adding the sanitizer CodeQL recognizes. Ghost edge: URL(path, endpoint) base-resolution form — rejected, it would silently drop a configured base-path prefix and change request targeting. Evidence lands when the CodeQL alert closes on the re-scan of this commit. Renumbered from at-039 to at-040 while resolving a merge conflict with main, which had independently assigned at-039 to an unrelated decision (explicit tsconfig types) that landed first.
 
 ## Foreclosures — ghost edges
 
