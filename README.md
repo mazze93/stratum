@@ -147,6 +147,10 @@ Open problems, named in the architecture evaluation and carried here honestly:
 These are the questions a trust layer for agentic systems has to answer; Stratum is a
 working substrate to answer them on.
 
+<p align="center">
+  <img alt="A pull quote from the live site: The instrument doesn't know the destination. It simply aligns itself with a field that is otherwise invisible. A navigator reads the instrument. A human decides where to sail. Stratum is the instrument. The field is your project's decision history. You are the navigator. Below it, three principles: I. Evidence-gated trust — claim and evidence are separate, prose never becomes authoritative. II. Status is a fold — validated, superseded, and disputed are computed at any epoch, never stored. III. The record keeps its shadows — every clean decision carries the oscillation and discarded branches it buried. Footer: everything above is a projection of a real log, including the figure. Plate style after USGS/Landsat survey sheets." src="./assets/closing.png" width="100%">
+</p>
+
 ## Provenance
 
 Built in one supervised session, 2026-07-10; public surface added 2026-07-23. The git
