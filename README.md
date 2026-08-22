@@ -12,6 +12,12 @@ Live: **[stratum.mazzeleczzare.com](https://stratum.mazzeleczzare.com)** — the
 the **[Atrium control room](https://stratum.mazzeleczzare.com/atrium/)** projects the demo log:
 the recorded trace of this repository's own construction.
 
+<p align="center">
+  <img alt="The Atrium control room, live, on the demo log at epoch 19. Six memory tiers rendered as a vertical depth gauge — Episodic (event graph, supersession, 20 events, head 19), Working, Session, Semantic, Preference, Archive — plus an epoch scrubber for deterministic replay, and controls for Plate, GitHub, Author, Refresh, Fork playground, Export, Token, and Settings." src="./assets/atrium.png" width="360">
+</p>
+
+<p align="center"><sub>The Atrium, live on a phone — <a href="https://stratum.mazzeleczzare.com/atrium/">stratum.mazzeleczzare.com/atrium/</a>.</sub></p>
+
 ---
 
 ## The problem
