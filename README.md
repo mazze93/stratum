@@ -79,6 +79,12 @@ The public demo is that trace. The first dataset in the system is the system.
 
 <p align="center"><sub>This is the actual figure the Worker serves at <a href="https://stratum.mazzeleczzare.com">stratum.mazzeleczzare.com</a> — a static render of <a href="data/genesis-trace.jsonl"><code>data/genesis-trace.jsonl</code></a>, reproduced here directly from the self-hosted source (<code>scripts/render-strata-svg.mjs</code>), not a screenshot.</sub></p>
 
+<p align="center">
+  <img alt="The Atrium's Epistemic Inspector, open on sb-019. Status: asserted. Authority: narrative. Agent: claude-opus-4.8. The clean record and, below it, the shadow trace it buried — 'a hand-maintained DECISIONS.md was the obvious default and is how every other repo does it — rejected precisely because hand-maintained decision docs are the drift this system exists to end' — tagged TRACE, certainty 0.90." src="./assets/inspector.png" width="100%">
+</p>
+
+<p align="center"><sub>The shadow trace, live: selecting any decision opens both its clean record and the alternatives it buried.</sub></p>
+
 ## What exists
 
 <p align="center">
