@@ -104,7 +104,7 @@ async function call(s, path, opts = {}) {
   if (opts.body !== undefined) headers["content-type"] = "application/json";
   let res;
   try {
-    res = await fetch(url, { ...opts, headers });
+    res = await fetch(url, { method: opts.method, body: opts.body, headers });
   } catch (e) {
     fail(`cannot reach ${s.endpoint} — ${e.cause?.code || e.message}`);
   }
