@@ -207,7 +207,7 @@ Unblock stele delivery by adding a CodeQL workflow (codeql.yml, javascript-types
 
 *The public landing surface — this session's own decisions, recorded live.*
 
-> `data/atrium-trace.jsonl` · epoch 33 · 34 events · 17 decisions · 2 foreclosures
+> `data/atrium-trace.jsonl` · epoch 40 · 41 events · 22 decisions · 2 foreclosures
 
 ## Decisions
 
@@ -349,6 +349,50 @@ Harden the public repo's supply chain and provenance. Code scanning: advanced Co
 
 > **Shadow [TRACE · certainty 0.9]** — Audit finding that motivated this: commits ARE gpg-signed and verify Good locally (ed25519 C641A68647D8A0FA), but GitHub reports every authored commit verified=false/unknown_key — the signing public key was never registered on the account (consistent with the 2026-07-15 fresh-machine rebuild). Signed, but not publicly verifiable. Ordering traps, same family as stele st-001 (a required code-scanning check with no scanner blocked all merges): CodeQL is added as a required status check only AFTER its first green run on main, and required-signed-commits is turned on only AFTER the gpg key is uploaded (GitHub treats unknown_key as unverified and would block the maintainer's own PRs). Both staged as gated follow-ups.
 
+### at-034 — ● VERIFIED · validated
+
+**claude-opus-5** · 2026-07-26T01:05:00-04:00
+
+Move all three github/codeql-action entrypoints (init, autobuild, analyze) to the same v4.37.3 commit SHA e4fba868fa4b1b91e1fdab776edc8cfbe6e9fb81. The three are entrypoints in ONE repository and must move as a set; they had drifted apart, with autobuild on v4.37.3 while init and analyze stayed on the v3 SHA 4187e74d05793876e9989daffde9c3e66b4acd07.
+
+> **Shadow [TRACE · certainty 0.95]** — Discovered while sweeping open Dependabot PRs: all four (#8 codeql-analyze, #9 cosign-installer, #10 action-gh-release, #13 hono) failed the same three Analyze (actions|javascript-typescript|python) jobs, including bumps that touch no CI at all. The failing STEP was Autobuild, erroring 'Loaded a configuration file for version 3.37.3, but running version 4.37.3' - autobuild v4 cannot read the config written by init v3. main was already broken: HEAD c337f62 merged the autobuild-only bump (#6), which silently broke CodeQL for every subsequent PR. This is the Dependabot partial-bump hazard for multi-entrypoint actions: Dependabot models init/autobuild/analyze as independent dependencies and opens separate PRs, so merging one alone desynchronises the set and the breakage surfaces on unrelated PRs - the misattribution trap. Merging the open analyze bump (#8) alone would NOT have fixed this, since init would still be v3; #8 is subsumed by this change. Note at-033 (which introduced this CodeQL workflow) remains pending_evidence, so CodeQL had never had a green run on main to protect - consistent with at-033's own staging rule that CodeQL becomes a required check only after its first green run.
+
+### at-036 — ● VERIFIED · validated
+
+**claude-opus-5** · 2026-07-26T02:20:00-04:00
+
+Promote CodeQL to a required status check on main. The three matrix analyses - Analyze (actions), Analyze (javascript-typescript), Analyze (python) - are added to branch protection's required contexts alongside the existing Typecheck, tests, cross-validation.
+
+> **Shadow [TRACE · certainty 0.9]** — at-033 staged this deliberately: CodeQL becomes a required check only AFTER its first green run on main, because a required code-scanning check with no passing scanner blocks every merge (the stele st-001 trap). That precondition was unmet for the entire life of at-033 - CodeQL had never been green on main - and at-034/at-035 have now satisfied it (run 30191349561 @ 804a095). Chose the three matrix job contexts rather than the aggregate CodeQL check run: the matrix jobs are the analyses that actually gate, and the aggregate reports in 2-3s as a code-scanning rollup. The tradeoff is that changing the language matrix now requires updating branch protection in the same change, which is the intended coupling.
+
+### at-038 — ◐ PROVISIONAL · pending_evidence
+
+**claude-opus-5** · 2026-07-26T03:05:00-04:00
+
+Restrict the Dependabot dev-dependencies group to minor and patch updates. Major dev-dependency updates are NOT ignored - they arrive as their own individual PRs instead of riding along inside a routine grouped bump.
+
+> **Shadow [TRACE · certainty 0.9]** — Group PR #12 (deps-dev, 5 updates) failed 'Typecheck, tests, cross-validation' at 'npm run check' with TS2591 Cannot find name 'node:fs', TS2304 Cannot find name 'URL', TS2339 Property 'url' does not exist on type 'ImportMeta' in core/test/cross-validation.test.ts. Cause was not @types/node (24->26) but typescript 5.9.3 -> 7.0.2 bundled in the same PR - the native TypeScript port, which ships platform-specific binaries (@typescript/typescript-darwin-arm64 et al) and resolves lib/types differently. vitest 3 -> 4 rode along too. Two real migrations were hidden inside a bump labelled routine dev-tooling. The grouping was the defect, not the packages: a group that admits majors converts 'review a version bump' into 'review a toolchain migration' without saying so. Chose update-types minor+patch over an ignore rule for typescript/vitest, because ignoring would silently stop the migrations from ever surfacing; this keeps them visible and reviewable on their own. #12 is closed rather than merged; Dependabot will reopen a conforming group.
+
+### at-039 — ◐ PROVISIONAL · pending_evidence
+
+**claude-sonnet-5** · 2026-08-06T06:46:00-04:00
+
+Add explicit compilerOptions.types: ["node"] to core/tsconfig.json. core previously relied on TypeScript automatic @types acquisition (no explicit types field) to bring in Node globals (node:fs imports, URL, ImportMeta.url) used by core/test/cross-validation.test.ts.
+
+*Revision chain:* `at-038 → at-039`
+
+> **Shadow [TRACE · certainty 0.9]** — at-038 restricted the dev-dependencies Dependabot group to minor/patch after grouped PR #12 (typescript 7.0.2 + vitest 4 + others) broke npm run check with TS2591/TS2304/TS2339 in core/test/cross-validation.test.ts, and attributed the break to typescript 7 alone. Re-tested empirically against the three individually-open major-bump PRs (#19 typescript 7.0.2, #21 @types/node 26.1.2, #22 vitest 4.1.10): each passes npm run check cleanly in isolation, and typescript 7 + @types/node 26 together also pass. The break only reproduces with typescript 7 + vitest 4 together, regardless of @types/node version (24.13.3 or 26.1.2 both fail identically) - so at-038s attribution to typescript alone was incomplete, and @types/node was never the culprit. Root cause: with no explicit types field, tsc falls back to automatic @types acquisition, and something in how typescript 7s native port walks node_modules/@types changes which globals get pulled in once vitest 4 (and its own vite 8 / @types chain) is also present. An explicit types: ["node"] removes the dependency on that fallback entirely, matching what the compiler error itself suggests (Try add node to the types field). Verified: with the fix applied on top of current main (typescript still 5.9.3), npm run check / npm test / npm run test:reference / npm run validate:trace / docs/DECISIONS.md staleness all pass unchanged - so this is safe to land now, before any of #19/#21/#22 merge, rather than only after a break is observed. worker/tsconfig.json already sets its own explicit types (@cloudflare/workers-types), which is why worker never surfaced this.
+
+### at-040 — ◐ PROVISIONAL · pending_evidence
+
+**claude-opus-4.8** · 2026-07-25T15:10:00-04:00
+
+Fix CodeQL CWE-200 alert js/file-access-to-http in cli/bin/stratum.mjs: s.endpoint (from the local config file / env / flag) flowed unvalidated into fetch(). call() now parses s.endpoint+path through the URL constructor, rejects any scheme other than http:/https: via fail(), and passes the validated URL object (not the raw string) to fetch.
+
+*Revision chain:* `at-033 → at-040`
+
+> **Shadow [TRACE · certainty 0.9]** — This is the first real finding the at-033 CodeQL setup surfaced — scanning earning its keep. URL(endpoint+path) preserves the existing concatenation semantics (paths are absolute, default endpoint has no base path) while adding the sanitizer CodeQL recognizes. Ghost edge: URL(path, endpoint) base-resolution form — rejected, it would silently drop a configured base-path prefix and change request targeting. Evidence lands when the CodeQL alert closes on the re-scan of this commit. Renumbered from at-039 to at-040 while resolving a merge conflict with main, which had independently assigned at-039 to an unrelated decision (explicit tsconfig types) that landed first.
+
 ## Foreclosures — ghost edges
 
 ### at-004 — standing
@@ -386,6 +430,10 @@ docs/TRUST.md ships as a skeleton that RESOLVES the two decidable questions (den
 | `at-030` | `at-015` | https://stratum.mazzeleczzare.com/ scrubber: 3 green seams at epoch 19, 0 at epoch 5 (measured in-browser) | 2026-07-23T21:58:00-04:00 |
 | `at-031` | `at-016` | https://stratum.mazzeleczzare.com/ contains decode-line legend + audit-canon canonical links | 2026-07-23T21:58:30-04:00 |
 | `at-032` | `at-017` | https://stratum.mazzeleczzare.com/ hero-title centered; cta--fork #5aa9d6 + cta--atrium #d0b25c with corner-tick deco; real :hover floods blue, ink dark | 2026-07-23T21:59:00-04:00 |
+| `at-035` | `at-034` | https://github.com/mazze93/stratum/actions/runs/30191349561 - CodeQL on main @ 804a095: Analyze actions/javascript-typescript/python all success | 2026-07-26T01:35:00-04:00 |
+| `at-035` | `at-034` | https://github.com/mazze93/stratum/actions/runs/30178990744 - prior CodeQL on main @ c337f62: same three Analyze jobs failed (Autobuild: config v3.37.3 vs running v4.37.3) | 2026-07-26T01:35:00-04:00 |
+| `at-035` | `at-034` | .github/workflows/codeql.yml init+autobuild+analyze all @ e4fba868fa4b1b91e1fdab776edc8cfbe6e9fb81 # v4.37.3, merged as 804a0957b5e6340b32d459e242afc9b91574735a on main (PR #14) | 2026-07-26T01:35:00-04:00 |
+| `at-037` | `at-036` | GET /repos/mazze93/stratum/branches/main/protection -> required_status_checks.contexts = [Typecheck, tests, cross-validation; Analyze (actions); Analyze (javascript-typescript); Analyze (python)] | 2026-07-26T02:20:00-04:00 |
 
 ---
 
