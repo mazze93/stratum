@@ -207,7 +207,7 @@ Unblock stele delivery by adding a CodeQL workflow (codeql.yml, javascript-types
 
 *The public landing surface — this session's own decisions, recorded live.*
 
-> `data/atrium-trace.jsonl` · epoch 40 · 41 events · 22 decisions · 2 foreclosures
+> `data/atrium-trace.jsonl` · epoch 45 · 46 events · 24 decisions · 2 foreclosures
 
 ## Decisions
 
@@ -383,7 +383,7 @@ Add explicit compilerOptions.types: ["node"] to core/tsconfig.json. core previou
 
 > **Shadow [TRACE · certainty 0.9]** — at-038 restricted the dev-dependencies Dependabot group to minor/patch after grouped PR #12 (typescript 7.0.2 + vitest 4 + others) broke npm run check with TS2591/TS2304/TS2339 in core/test/cross-validation.test.ts, and attributed the break to typescript 7 alone. Re-tested empirically against the three individually-open major-bump PRs (#19 typescript 7.0.2, #21 @types/node 26.1.2, #22 vitest 4.1.10): each passes npm run check cleanly in isolation, and typescript 7 + @types/node 26 together also pass. The break only reproduces with typescript 7 + vitest 4 together, regardless of @types/node version (24.13.3 or 26.1.2 both fail identically) - so at-038s attribution to typescript alone was incomplete, and @types/node was never the culprit. Root cause: with no explicit types field, tsc falls back to automatic @types acquisition, and something in how typescript 7s native port walks node_modules/@types changes which globals get pulled in once vitest 4 (and its own vite 8 / @types chain) is also present. An explicit types: ["node"] removes the dependency on that fallback entirely, matching what the compiler error itself suggests (Try add node to the types field). Verified: with the fix applied on top of current main (typescript still 5.9.3), npm run check / npm test / npm run test:reference / npm run validate:trace / docs/DECISIONS.md staleness all pass unchanged - so this is safe to land now, before any of #19/#21/#22 merge, rather than only after a break is observed. worker/tsconfig.json already sets its own explicit types (@cloudflare/workers-types), which is why worker never surfaced this.
 
-### at-040 — ◐ PROVISIONAL · pending_evidence
+### at-040 — ● VERIFIED · validated
 
 **claude-opus-4.8** · 2026-07-25T15:10:00-04:00
 
@@ -392,6 +392,26 @@ Fix CodeQL CWE-200 alert js/file-access-to-http in cli/bin/stratum.mjs: s.endpoi
 *Revision chain:* `at-033 → at-040`
 
 > **Shadow [TRACE · certainty 0.9]** — This is the first real finding the at-033 CodeQL setup surfaced — scanning earning its keep. URL(endpoint+path) preserves the existing concatenation semantics (paths are absolute, default endpoint has no base path) while adding the sanitizer CodeQL recognizes. Ghost edge: URL(path, endpoint) base-resolution form — rejected, it would silently drop a configured base-path prefix and change request targeting. Evidence lands when the CodeQL alert closes on the re-scan of this commit. Renumbered from at-039 to at-040 while resolving a merge conflict with main, which had independently assigned at-039 to an unrelated decision (explicit tsconfig types) that landed first.
+
+### at-042 — ● VERIFIED · validated
+
+**claude-sonnet-5** · 2026-08-24T17:18:00-04:00
+
+call()'s fetch stops spreading the caller's whole opts object; it passes only method and body explicitly. Every call() site was grepped and only ever passes those two fields, so the spread was closing no functionality — just an unconstrained surface CodeQL's js/file-access-to-http rule (alert #4) correctly flagged as an unproven path from opts into the request.
+
+*Revision chain:* `at-033 → at-040 → at-042`
+
+> **Shadow [TRACE · certainty 0.85]** — Rejected the allowlisted-origin approach a pasted CodeQL triage suggested (hardcoded ALLOWED_API_ORIGINS, --allow-external-endpoint flag): it would break the CLI's deliberate self-hosting design — settings() intentionally lets endpoint come from flag/env/config with only a default, per stratum's own decision at-016 (CLI is the write surface, config-driven). Developed independently of at-040 (URL-scheme validation) against the same alert; the two were reconciled in a merge conflict when both landed on main via PR #47 — at-040's URL() validation plus this opts-narrowing together close the alert from both the destination side and the request-shape side.
+
+### at-044 — ● VERIFIED · validated
+
+**claude-sonnet-5** · 2026-08-24T17:36:00-04:00
+
+Dismiss CodeQL alerts #5, #6, #7 (js/file-access-to-http) as false positives. All three re-flag cli/bin/stratum.mjs:107 (the fetch call), but the traced source in every case is loadConfig() reading ~/.config/stratum/config.json — s.endpoint and s.token, used to reach the user-configured sync destination. That is the CLI's intended job (settings(), at-016's config-driven write surface), not exfiltration; the rule's own guidance is to examine and confirm intended behavior rather than restructure it away.
+
+*Revision chain:* `at-033 → at-040 → at-042 → at-044`
+
+> **Shadow [TRACE · certainty 0.85]** — This is a downstream consequence of at-042/at-040 landing together: CodeQL re-analyzed the merged fetch(url, {method, body, headers}) call and opened three fresh instances of the same rule against the config-file source, distinct from the original alert #4 (already closed by the code fix) which pointed at the unconstrained opts spread itself. Considered restructuring the CLI to not read endpoint/token from a config file at all — rejected, that IS the CLI's design (zero-dependency config in ~/.config/stratum, per at-016). Considered an admin-override merge leaving the alerts open — rejected by the human (mazze) in favor of an explicit, documented dismissal so the audit trail states the reasoning rather than leaving it silent. Dismissal action itself required human confirmation: the harness's auto-mode classifier blocks an agent from unilaterally dismissing security alerts, and mazze confirmed via AskUserQuestion before any alert state changed.
 
 ## Foreclosures — ghost edges
 
@@ -434,6 +454,14 @@ docs/TRUST.md ships as a skeleton that RESOLVES the two decidable questions (den
 | `at-035` | `at-034` | https://github.com/mazze93/stratum/actions/runs/30178990744 - prior CodeQL on main @ c337f62: same three Analyze jobs failed (Autobuild: config v3.37.3 vs running v4.37.3) | 2026-07-26T01:35:00-04:00 |
 | `at-035` | `at-034` | .github/workflows/codeql.yml init+autobuild+analyze all @ e4fba868fa4b1b91e1fdab776edc8cfbe6e9fb81 # v4.37.3, merged as 804a0957b5e6340b32d459e242afc9b91574735a on main (PR #14) | 2026-07-26T01:35:00-04:00 |
 | `at-037` | `at-036` | GET /repos/mazze93/stratum/branches/main/protection -> required_status_checks.contexts = [Typecheck, tests, cross-validation; Analyze (actions); Analyze (javascript-typescript); Analyze (python)] | 2026-07-26T02:20:00-04:00 |
+| `at-041` | `at-040` | https://github.com/mazze93/stratum/commit/dd047aa | 2026-08-24T17:37:00-04:00 |
+| `at-041` | `at-040` | https://github.com/mazze93/stratum/pull/47 merged @ b7c3933 — CI and CodeQL both green | 2026-08-24T17:37:00-04:00 |
+| `at-043` | `at-042` | npm test — 26/26 passing on the resolved merge | 2026-08-24T17:27:00-04:00 |
+| `at-043` | `at-042` | https://github.com/mazze93/stratum/pull/47 — merged, CI+CodeQL green | 2026-08-24T17:37:00-04:00 |
+| `at-045` | `at-044` | https://github.com/mazze93/stratum/security/code-scanning/5 — state: dismissed, reason: false positive | 2026-08-24T17:36:29-04:00 |
+| `at-045` | `at-044` | https://github.com/mazze93/stratum/security/code-scanning/6 — state: dismissed, reason: false positive | 2026-08-24T17:36:31-04:00 |
+| `at-045` | `at-044` | https://github.com/mazze93/stratum/security/code-scanning/7 — state: dismissed, reason: false positive | 2026-08-24T17:36:32-04:00 |
+| `at-045` | `at-044` | https://github.com/mazze93/stratum/pull/47 — merged, mergedAt 2026-08-24T21:37:12Z | 2026-08-24T17:37:12-04:00 |
 
 ---
 
