@@ -47,7 +47,7 @@ The record's trustworthiness rests on more than prose. Two independent layers:
 
    ```sh
    cosign verify-blob \
-     --certificate <artifact>.crt --signature <artifact>.sig \
+     --bundle <artifact>.sigstore.json \
      --certificate-identity-regexp 'https://github.com/mazze93/stratum/.*' \
      --certificate-oidc-issuer https://token.actions.githubusercontent.com \
      <artifact>
