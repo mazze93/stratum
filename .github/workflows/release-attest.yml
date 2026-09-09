@@ -49,8 +49,7 @@ jobs:
           COSIGN_YES: "true"
         run: |
           cosign sign-blob \
-            --output-signature   stratum-${{ github.ref_name }}.tar.gz.sig \
-            --output-certificate stratum-${{ github.ref_name }}.tar.gz.crt \
+            --bundle stratum-${{ github.ref_name }}.tar.gz.sigstore.json \
             stratum-${{ github.ref_name }}.tar.gz
 
       - name: Attach signature bundle to the release
@@ -59,5 +58,4 @@ jobs:
           files: |
             stratum-${{ github.ref_name }}.tar.gz
             stratum-${{ github.ref_name }}.tar.gz.sha256
-            stratum-${{ github.ref_name }}.tar.gz.sig
-            stratum-${{ github.ref_name }}.tar.gz.crt
+            stratum-${{ github.ref_name }}.tar.gz.sigstore.json
