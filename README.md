@@ -1,5 +1,9 @@
 # Stratum
 
+<p align="center">
+  <img alt="Stratum — an epistemic decision ledger. Masthead nav (Docs, Contract, Decisions, Atrium, Author, v0.4.0, GitHub), the STRATUM wordmark, tagline, a terminal transcript of real CLI usage, a git-clone install command, and two CTAs: Fork a live log, Open the Atrium." src="./assets/hero.png" width="100%">
+</p>
+
 [![CI](https://github.com/mazze93/stratum/actions/workflows/ci.yml/badge.svg)](https://github.com/mazze93/stratum/actions/workflows/ci.yml)
 
 **An epistemic decision ledger — evidence-gated trust for human + AI work.**
@@ -7,6 +11,12 @@
 Live: **[stratum.mazzeleczzare.com](https://stratum.mazzeleczzare.com)** — the survey plate;
 the **[Atrium control room](https://stratum.mazzeleczzare.com/atrium/)** projects the demo log:
 the recorded trace of this repository's own construction.
+
+<p align="center">
+  <img alt="The Atrium control room, live, on the demo log at epoch 19. Six memory tiers rendered as a vertical depth gauge — Episodic (event graph, supersession, 20 events, head 19), Working, Session, Semantic, Preference, Archive — plus an epoch scrubber for deterministic replay, and controls for Plate, GitHub, Author, Refresh, Fork playground, Export, Token, and Settings." src="./assets/atrium.png" width="360">
+</p>
+
+<p align="center"><sub>The Atrium, live on a phone — <a href="https://stratum.mazzeleczzare.com/atrium/">stratum.mazzeleczzare.com/atrium/</a>.</sub></p>
 
 ---
 
@@ -63,16 +73,25 @@ with an honesty tag (`TRACE`/`RECON`) and a certainty weight.
 
 The public demo is that trace. The first dataset in the system is the system.
 
+<p align="center">
+  <img alt="Fig. 1 — Section through the ledger. Epoch 19, 13 decisions, 4 foreclosures. A stratigraphic cross-section of the genesis trace: axiomatic bedrock at the base, verified layers above it, narrative layers filling most of the section, and foreclosure seams running through as hatched bands. Every position is a real projection computed by the reference implementation, not an animation — dragging the core-depth scrubber left replays the ledger and watches verified decisions lose their evidence and foreclosed roads reopen." src="./assets/genesis-figure.png" width="100%">
+</p>
+
+<p align="center"><sub>This is the actual figure the Worker serves at <a href="https://stratum.mazzeleczzare.com">stratum.mazzeleczzare.com</a> — a static render of <a href="data/genesis-trace.jsonl"><code>data/genesis-trace.jsonl</code></a>, reproduced here directly from the self-hosted source (<code>scripts/render-strata-svg.mjs</code>), not a screenshot.</sub></p>
+
+<p align="center">
+  <img alt="The Atrium's Epistemic Inspector, open on sb-019. Status: asserted. Authority: narrative. Agent: claude-opus-4.8. The clean record and, below it, the shadow trace it buried — 'a hand-maintained DECISIONS.md was the obvious default and is how every other repo does it — rejected precisely because hand-maintained decision docs are the drift this system exists to end' — tagged TRACE, certainty 0.90." src="./assets/inspector.png" width="100%">
+</p>
+
+<p align="center"><sub>The shadow trace, live: selecting any decision opens both its clean record and the alternatives it buried.</sub></p>
+
 ## What exists
 
-| Piece | What it is |
-|---|---|
-| [`core/`](core/) | The contract in TypeScript — zero dependencies, runs in Workers, Node, and the browser. All 16 reference invariants pass, plus a golden-file test proving its projection is **byte-identical** to the Python oracle's. |
-| [`reference/`](reference/) | The Python semantics oracle (stdlib only). Any divergence between implementations is decided by this file. |
-| [`worker/`](worker/) | Cloudflare Worker + one Durable Object per log: appends serialize in a single-threaded scope and every guard runs at one door, before persistence. Contract violations map to HTTP 409 carrying the guard's own message — the wire refuses what the log refuses. |
-| [`atrium/`](atrium/) | The control room. No framework, no build step, self-hosted fonts, four-theme token engine, WCAG-AA floor. Everything on screen is a projection of a real log: arbitration actions are derived from the transition system at the event's folded status, the Inspector renders evidence (checked vs cited) and shadow traces, and the **epoch scrubber** is deterministic replay as UI — drag into the past and watch decisions un-verify. |
-| [`cli/`](cli/) | `stratum` — one command, one recorded decision. `decide` / `foreclose` / `verify --ref` / `ratify` / `dispute` / `tessera` / `export`. Exit code 2 is reserved for guard refusals, so scripts can distinguish contract violations from transport errors. |
-| [`docs/DECISIONS.md`](docs/DECISIONS.md) | The human-readable decision record — **generated from the trace**, never hand-edited. Both faces per decision: the clean record and the shadow it concealed. |
+<p align="center">
+  <img alt="What exists. core/: the contract in TypeScript, zero dependencies, byte-identical to the Python oracle. reference/: the Python semantics oracle, stdlib only. worker/: Cloudflare Worker plus one Durable Object per log, contract violations map to HTTP 409. atrium/: the control room, no framework, no build step, epoch scrubber is deterministic replay as UI. cli/: stratum command — decide, foreclose, verify, ratify, dispute, tessera, export. docs/DECISIONS.md: the human-readable decision record, generated from the trace, never hand-edited." src="./assets/what-exists.png" width="100%">
+</p>
+
+<p align="center"><sub><a href="core/"><code>core/</code></a> · <a href="reference/"><code>reference/</code></a> · <a href="worker/"><code>worker/</code></a> · <a href="atrium/"><code>atrium/</code></a> · <a href="cli/"><code>cli/</code></a> · <a href="docs/DECISIONS.md"><code>docs/DECISIONS.md</code></a></sub></p>
 
 ### Try it
 
@@ -139,6 +158,10 @@ Open problems, named in the architecture evaluation and carried here honestly:
 
 These are the questions a trust layer for agentic systems has to answer; Stratum is a
 working substrate to answer them on.
+
+<p align="center">
+  <img alt="A pull quote from the live site: The instrument doesn't know the destination. It simply aligns itself with a field that is otherwise invisible. A navigator reads the instrument. A human decides where to sail. Stratum is the instrument. The field is your project's decision history. You are the navigator. Below it, three principles: I. Evidence-gated trust — claim and evidence are separate, prose never becomes authoritative. II. Status is a fold — validated, superseded, and disputed are computed at any epoch, never stored. III. The record keeps its shadows — every clean decision carries the oscillation and discarded branches it buried. Footer: everything above is a projection of a real log, including the figure. Plate style after USGS/Landsat survey sheets." src="./assets/closing.png" width="100%">
+</p>
 
 ## Provenance
 
