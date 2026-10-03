@@ -16,9 +16,18 @@ updates:
       day: monday
     open-pull-requests-limit: 5
     groups:
-      # One PR for routine dev-tooling bumps instead of a swarm.
+      # One PR for routine dev-tooling bumps instead of a swarm — but MINOR and
+      # PATCH only. A grouped major hides a migration inside a routine bump:
+      # the 2026-07-26 group PR (#12) bundled typescript 5.9.3 -> 7.0.2 (the
+      # native port, which ships platform binaries) and vitest 3 -> 4 alongside
+      # three harmless bumps, and broke `npm run check` in core/ with
+      # "Cannot find name 'node:fs'". Majors are NOT ignored — they simply
+      # arrive as their own reviewable PRs instead of riding along.
       dev-dependencies:
         dependency-type: development
+        update-types:
+          - minor
+          - patch
     commit-message:
       prefix: "deps"
       prefix-development: "deps-dev"
@@ -30,5 +39,15 @@ updates:
       interval: weekly
       day: monday
     open-pull-requests-limit: 5
+    groups:
+      # init/autobuild/analyze are entrypoints in ONE repository (github/codeql-action)
+      # and must move together. Dependabot models them as independent dependencies
+      # and previously opened separate PRs per entrypoint: c337f62 (#6) merged an
+      # autobuild-only bump, leaving init/analyze on the old major and breaking
+      # CodeQL on main — and from there, every unrelated PR (at-034/at-035;
+      # fixed by stratum#23). Grouping means one PR moves all three as a set.
+      codeql-action:
+        patterns:
+          - "github/codeql-action/*"
     commit-message:
       prefix: "ci"
