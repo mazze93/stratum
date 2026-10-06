@@ -83,15 +83,63 @@ export const OVERTURNED: ReadonlySet<Status> = new Set([
 export const QUORUM = 2;
 export const MAX_CHAIN_DEPTH = 8;
 
+/**
+ * ADR-003 §3 (tp-002, tp-011). A v2 binding is what makes evidence
+ * re-checkable rather than merely asserted: a pinned recipe anyone can re-run
+ * and compare, or an artifact digest signed by a registered authority key.
+ */
+export interface ReproducibleCheck {
+  readonly type: "reproducible_check";
+  readonly command: string;
+  readonly repo: string;
+  /** 40-hex (SHA-1) or 64-hex (SHA-256) git object id the check ran against */
+  readonly commit: string;
+  readonly expectExit: number;
+  /** optional; shaped like Temenos's provenance envelope inputs[] */
+  readonly inputs: readonly { readonly id: string; readonly sha256: string }[];
+  /** optional; MUST digest deterministic output (a report file), never raw logs */
+  readonly outputSha256: string | null;
+}
+
+export interface SignedAttestation {
+  readonly type: "signed_attestation";
+  readonly subjectSha256: string;
+  readonly predicate: string;
+  readonly keyId: string;
+  readonly signature: string;
+}
+
+export type Binding = ReproducibleCheck | SignedAttestation;
+
+export const SHA256_HEX = /^[0-9a-f]{64}$/;
+export const GIT_OBJECT_ID = /^(?:[0-9a-f]{40}|[0-9a-f]{64})$/;
+export const SCHEMA_VERSIONS: ReadonlySet<number> = new Set([1, 2]);
+
 export interface Evidence {
   readonly kind: string;
   readonly ref: string;
-  /** null means CITED, not CHECKED — and only checked evidence counts, everywhere */
+  /**
+   * v1: null means CITED, not CHECKED — and only checked evidence counts.
+   * v2: metadata only. No v2 guard reads it (ADR-003 §3): a typed timestamp
+   * cannot tell "checked" from "cited", which is the defect v2 exists to fix.
+   */
   readonly checkedAt: string | null;
+  /** v1: a name, not a signature. v2: metadata only. */
   readonly signer: string | null;
+  /** v2 only; null for every v1 evidence entry */
+  readonly binding?: Binding | null;
 }
 
 export const isChecked = (e: Evidence): boolean => e.checkedAt !== null;
+
+/**
+ * v2 I1 currency: evidence counts toward validation only if it carries a
+ * binding that can count. A reproducible_check counts once well-formed (the
+ * parser enforced that). A signed_attestation counts only when its key is a
+ * live registry member and the signature verifies — the registry lands in
+ * phase 3, so until then an attestation is parsed but never counts.
+ */
+export const countsAsBound = (e: Evidence): boolean => e.binding?.type === "reproducible_check";
 
 export interface StratumEvent {
   readonly id: string;
@@ -111,6 +159,8 @@ export interface StratumEvent {
 
 export const hasCheckedEvidence = (e: StratumEvent): boolean =>
   e.evidence.some(isChecked);
+
+export const hasBoundEvidence = (e: StratumEvent): boolean => e.evidence.some(countsAsBound);
 
 export class ContractViolation extends Error {
   override name = "ContractViolation";

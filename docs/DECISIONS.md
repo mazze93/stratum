@@ -568,7 +568,7 @@ Reusing an existing cross-project Cloudflare API token for the stratum Worker's 
 
 *ADR-003: bound evidence, an authority registry, atomic persistence.*
 
-> `data/trust-trace.jsonl` · epoch 13 · 14 events · 11 decisions · 3 foreclosures
+> `data/trust-trace.jsonl` · epoch 15 · 16 events · 13 decisions · 3 foreclosures
 
 ## Decisions
 
@@ -663,6 +663,22 @@ Revision of tp-012 after a touchstone pass. Canonical numbers are IEEE-754 doubl
 *Revision chain:* `tp-009 → tp-012 → tp-013`
 
 > **Shadow [TRACE · certainty 0.85]** — Touchstone probed four boundaries the 52/52 suite didn't reach. P1 failed: a number of magnitude at least 2^53 passed loadLog but persistence refused it, so a production log already holding one would brick on first load after deploy. P2 failed: editing a stored row and then nulling every chain made the read-path backfill re-chain the tampered log. P3 held (middle deletion caught) and is now a test instead of an assertion. P4 held within scope (the chain authenticates normalized content, not bytes). The re-pass held: workerd migration served the oracle's genesis digest, a 1.73e18/1e300 append returned 201, and workerd and the oracle agree on fe2b04cf for that log. Perimeter: an attacker with storage write access can still recompute the whole chain (no secret), so only an anchor makes it tamper-proof rather than tamper-evident. TS parsing defaults missing is_trust_root to false where the oracle raises KeyError, a pre-existing leniency gap left for phase 2.
+
+### tp-014 — ◐ PROVISIONAL · pending_evidence
+
+**claude** · 2026-10-06T20:30-04:00
+
+Until the authority registry exists, v2 ratifications, v2 trust_root_revoked and v2 ratified trust-root births are refused outright, and both parsers are strict: evidence, targets and is_trust_root are required, and binding objects refuse unknown keys.
+
+> **Shadow [TRACE · certainty 0.85]** — Letting v2 authority acts through before phase 3 would either judge them by v1's signer strings (the retired primitive) or mint unsigned v2 roots that the registry would later have to grandfather. Fail-closed is the honest interim. Strictness closes the touchstone-found divergence where TS defaulted fields the oracle requires; strict binding keys enforce claude-stamp's re-derive-never-trust rule, so a supplied verified:true is a parse error. Verified safe for current writers: the CLI, the Atrium and Temenos all send every required field, and every trace has them.
+
+### tp-015 — ◐ PROVISIONAL · pending_evidence
+
+**claude** · 2026-10-06T20:31-04:00
+
+The CLI's default verification path is bound: `stratum verify <id> --run <cmd>` runs the check, pins the commit, refuses a dirty tree, records nothing on an unexpected exit, digests named inputs and a deterministic output file, and strips remote userinfo. `--ref` remains as legacy v1 and warns that it is unbound.
+
+> **Shadow [TRACE · certainty 0.85]** — The CLI's verify command used to manufacture the retired primitive itself: checked_at=new Date(), signer=agent. If binding is harder than not binding, writers won't bind, so the honest path has to be the easy path. Refusing a dirty tree is load-bearing, because a binding that pins a commit not containing the tested code is a lie with a SHA attached. Userinfo stripping matters because an https remote can embed a token and this record goes to a public ledger. Proven by cli/test/verify.test.ts against a real scratch repo whose remote carries a fake token.
 
 ## Foreclosures — ghost edges
 

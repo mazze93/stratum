@@ -91,7 +91,24 @@ is the §Perimeter narrowing that is actually possible. It moves trust from
 
 **Versioning:** `schema_version` 1 events keep the v1 guards byte-for-byte, so
 all four existing traces still load. `schema_version > 2` is a `ParseError`
-(fail-closed on unknown versions).
+(fail-closed on unknown versions). Evidence on a v1 event may not carry a
+binding. Until the registry exists (phase 3), v2 ratifications,
+`trust_root_revoked` events and ratified trust-root births are **refused**.
+They are never judged by v1's signer strings, and the log never mints
+unsigned v2 roots that the registry would later have to grandfather.
+
+**Parsing is strict in both implementations (phase 2).** `evidence`, `targets`
+and `is_trust_root` are required. The TS port used to default them, so it
+accepted logs the oracle rejected (found by touchstone). Binding objects
+refuse unknown keys, so a supplied `"verified": true` is a parse error and
+never a shortcut. That is the re-derive-never-trust rule from §8.
+
+**Writers: binding is the default path.** `stratum verify <id> --run "<cmd>"`
+runs the check itself. It pins the commit, refuses a dirty tree (the tested
+tree must *be* the pinned commit), records nothing on an unexpected exit
+code, digests `--input`/`--output` files, and strips userinfo from the remote
+URL so an embedded token never reaches the ledger. `--ref` still writes v1
+evidence, but it warns that the evidence is unbound.
 
 ## 4. Decision C — a real authority registry, built on the same log
 

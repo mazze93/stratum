@@ -8,6 +8,7 @@ import {
   ChainDepthExceeded,
   ContractViolation,
   EVIDENCE_SCOPED,
+  hasBoundEvidence,
   hasCheckedEvidence,
   isChecked,
   KNOWN_TYPES,
@@ -77,6 +78,12 @@ export class EpisodicLog {
     if (e.birthStatus === Status.Ratified && !e.isTrustRoot) {
       throw new ContractViolation(`${e.id} entered RATIFIED without is_trust_root`);
     }
+    if (e.schemaVersion >= 2 && e.birthStatus === Status.Ratified) {
+      // A v2 trust root must be the registry genesis or quorum-signed (ADR-003
+      // §4). Until the registry exists, refuse rather than mint unsigned roots
+      // that the registry would later have to grandfather.
+      throw new ContractViolation(`${e.id}: v2 trust roots require the authority registry (ADR-003 §4)`);
+    }
     // Lineage is single-parent in v1; reject silently-ambiguous diamonds at write time.
     if (e.targets.length > 1) {
       throw new ContractViolation(
@@ -104,9 +111,26 @@ export class EpisodicLog {
     if (!TRANSITIONS[cur].has(to)) {
       throw new ContractViolation(`illegal transition ${cur} -> ${to} on ${targetId}`);
     }
-    // I1: validation requires checked evidence on the verification event itself.
-    if (to === Status.Validated && !hasCheckedEvidence(t)) {
-      throw new ContractViolation(`I1: verification ${t.id} carries no checked evidence`);
+    // I1: validation requires evidence on the verification event itself.
+    // v1: checked evidence (checked_at != null). v2: BOUND evidence — a typed
+    // timestamp no longer counts (ADR-003 §3, tp-002).
+    if (to === Status.Validated) {
+      if (t.schemaVersion >= 2) {
+        if (!hasBoundEvidence(t)) {
+          throw new ContractViolation(
+            `I1: v2 verification ${t.id} carries no bound evidence (checked_at is metadata in v2)`,
+          );
+        }
+      } else if (!hasCheckedEvidence(t)) {
+        throw new ContractViolation(`I1: verification ${t.id} carries no checked evidence`);
+      }
+    }
+    // v2 authority acts need registry signatures (ADR-003 §4). Until phase 3
+    // they are refused — never silently judged by v1's signer strings.
+    if (t.schemaVersion >= 2 && (t.type === "ratification" || t.type === "trust_root_revoked")) {
+      throw new ContractViolation(
+        `${t.id}: v2 ${t.type} requires the authority registry (ADR-003 §4)`,
+      );
     }
     // Quorum: RATIFIED -> CONTRADICTED only via trust_root_revoked, counting
     // only CHECKED policy-authority signatures (cited != checked, especially here).

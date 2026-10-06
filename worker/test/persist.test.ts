@@ -53,7 +53,7 @@ const decision = (id: string) =>
     schema_version: 1,
     birth_status: "pending_evidence",
     evidence: [],
-    targets: [],
+    targets: [], is_trust_root: false,
   });
 
 describe("PersistentLog — memory is never ahead of storage (tp-001)", () => {
@@ -101,7 +101,7 @@ describe("PersistentLog — memory is never ahead of storage (tp-001)", () => {
       schema_version: 1,
       birth_status: "pending_evidence",
       evidence: [],
-      targets: [],
+      targets: [], is_trust_root: false,
     }));
     store.failInsertAt = 2;
     expect(() => p.seedIfEmpty(records)).toThrow("injected storage failure");
@@ -117,8 +117,8 @@ describe("PersistentLog — memory is never ahead of storage (tp-001)", () => {
     const store = new FakeStore();
     const p = new PersistentLog(store);
     const bad = [
-      { id: "x", type: "decision", agent_id: "t", schema_version: 1, birth_status: "pending_evidence", evidence: [], targets: [] },
-      { id: "x", type: "decision", agent_id: "t", schema_version: 1, birth_status: "pending_evidence", evidence: [], targets: [] },
+      { id: "x", type: "decision", agent_id: "t", schema_version: 1, birth_status: "pending_evidence", evidence: [], targets: [], is_trust_root: false },
+      { id: "x", type: "decision", agent_id: "t", schema_version: 1, birth_status: "pending_evidence", evidence: [], targets: [], is_trust_root: false },
     ];
     expect(() => p.seedIfEmpty(bad)).toThrow(ContractViolation);
     expect(store.inserts).toBe(0);
@@ -195,7 +195,7 @@ describe("PersistentLog — hash chain in storage (tp-009)", () => {
     const big = recordToEvent({
       id: "big", type: "decision", agent_id: "t", schema_version: 1,
       birth_status: "pending_evidence", claim: { ns: 1730000000000000000, sci: 1e300 },
-      evidence: [], targets: [],
+      evidence: [], targets: [], is_trust_root: false,
     });
     expect(() => p.append(big)).not.toThrow();
     expect(new PersistentLog(store).headDigest).toBe(p.headDigest);
