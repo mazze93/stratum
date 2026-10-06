@@ -557,7 +557,7 @@ Reusing an existing cross-project Cloudflare API token for the stratum Worker's 
 
 *ADR-003: bound evidence, an authority registry, atomic persistence.*
 
-> `data/trust-trace.jsonl` · epoch 8 · 9 events · 6 decisions · 3 foreclosures
+> `data/trust-trace.jsonl` · epoch 11 · 12 events · 9 decisions · 3 foreclosures
 
 ## Decisions
 
@@ -608,6 +608,30 @@ Signing uses RFC 8785 JCS canonical bytes with a cross-implementation golden fix
 Proposed: v1 validated events whose verification markers carry only unbound evidence project as authoritative_provisional with binding 'unbound'; status stays validated. A v2 re-verification edge (validated to validated, bound evidence only) lets a legacy decision be re-bound without rewriting history.
 
 > **Shadow [TRACE · certainty 0.6]** — The one change that reinterprets the existing ledger, so it is born asserted (a proposal) and waits on mazze's ratification (ADR-003 section 7). Grandfathering contradicts the mandate; a fifth tier spreads into the figure, legend and every reader's model for a state a binding field already expresses. Follows the axiomatic/verified-split precedent: when trust kinds differ, show the difference. Changes the genesis golden deliberately.
+
+### tp-009 — ◐ PROVISIONAL · pending_evidence
+
+**claude** · 2026-10-06T20:00-04:00
+
+The Durable Object stores a per-row hash chain, sha256(prev || JCS(record)) from a 64-zero genesis, and exposes the head digest. The chain lives in the storage layer; event records stay seq-free and v1 traces are untouched.
+
+> **Shadow [TRACE · certainty 0.8]** — Borrowed from claude-stamp's ledger-stamp.sh. The guards catch an incoherent log on load but not a coherent truncation or swap; a chain makes every edit, deletion or reorder break from that row on, and gives a log one content address that evidence and anchors can cite. Off-system anchoring (claude-stamp's forward-only hub, fork = 409 + incident) is deliberately not wired here because it needs a witness outside the system, which is a deploy decision.
+
+### tp-010 — ◐ PROVISIONAL · pending_evidence
+
+**claude** · 2026-10-06T20:01-04:00
+
+Registry signatures use SSHSIG (OpenSSH PROTOCOL.sshsig) with namespace 'stratum' over Ed25519, accepting ssh-ed25519 and sk-ssh-ed25519@openssh.com keys; for sk keys the guard requires the user-presence flag. Verification is pure computation and never executes ssh-keygen.
+
+> **Shadow [TRACE · certainty 0.75]** — Borrowed from claude-stamp's gated installer: hardware-key signers pinned in allowed_signers, namespace-bound to git. A YubiKey authority's signature proves a physical touch, the nearest available answer to 'distinct keys are not distinct people'. The namespace blocks cross-protocol replay between git commit signatures and registry signatures. Never shelling out follows verify-release.py's rule that root never runs tools whose behaviour the input can steer; here, the guard must stay pure and synchronous.
+
+### tp-011 — ◐ PROVISIONAL · pending_evidence
+
+**claude** · 2026-10-06T20:02-04:00
+
+Phase 2 publishes schemas/event.v2.schema.json as the normative machine-readable v2 wire contract, and reproducible_check gains optional inputs[{id, sha256}] shaped like Temenos's provenance envelope. output_sha256 becomes optional and must digest deterministic output.
+
+> **Shadow [TRACE · certainty 0.8]** — Borrowed from Temenos's authority order (schemas above policy, tests and ADRs), so the ADR's prose is not the only definition of the wire format. Temenos is a live v1 writer that stamps checked_at=now, signer='aletheia', the retired primitive; matching its inputs shape gives it a migration path that needs no translation (its own ADR). output_sha256 can't be required: vitest output contains timings, which phase 1 found.
 
 ## Foreclosures — ghost edges
 

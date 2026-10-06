@@ -59,7 +59,8 @@ remain but become **metadata**: no v2 guard reads them.
  "binding": {"type": "reproducible_check",
              "command": "npm test", "repo": "github.com/mazze93/stratum",
              "commit": "<40-hex git SHA>", "expect_exit": 0,
-             "output_sha256": "<64-hex>"}}
+             "inputs": [{"id": "trace", "sha256": "<64-hex>"}],   // optional
+             "output_sha256": "<64-hex>"}}                       // optional
 
 // signed: an artifact digest signed by a registered authority key (§4)
 {"kind": "artifact", "ref": "dist/stratum.mjs",
@@ -67,6 +68,13 @@ remain but become **metadata**: no v2 guard reads them.
              "subject_sha256": "<64-hex>", "predicate": "built-from:<commit>",
              "key_id": "<registry key id>", "signature": "<base64 ed25519>"}}
 ```
+
+`inputs` deliberately follows the shape of Temenos's provenance envelope
+(`inputs[].{id, sha256}`), so a Temenos verdict can carry its gate run as a
+reproducible check without translation. `output_sha256`, when present, must
+be a digest of **deterministic** output, such as a JSON report or a file
+artifact. A digest of raw test output is useless because runners print
+timings. When it is absent, the exit code is the pinned result.
 
 **v2 I1:** a v2 `verification` reaches `validated` only if it carries at least
 one evidence entry with a **well-formed** binding. An attestation binding counts
@@ -128,7 +136,18 @@ pins the canonical bytes, and both implementations are tested against it,
 exactly like the projection golden. The attestation payload is the JCS form
 of `{predicate, ref, subject_sha256}`.
 
-**Signature scheme:** Ed25519 (RFC 8032). The Python oracle carries a
+**Signature scheme:** Ed25519 (RFC 8032), carried in **SSHSIG** form
+(OpenSSH `PROTOCOL.sshsig`) with namespace `stratum`. Registry keys may be
+`ssh-ed25519` or `sk-ssh-ed25519@openssh.com`. That second type means a
+hardware key (YubiKey) can be a registry authority, and its signature proves
+a physical touch. That is the property claude-stamp's gated installer relies
+on, and an authority that is a person touching a device is the only honest
+answer to §4's "distinct keys are not distinct people." The namespace
+blocks cross-protocol replay: a git commit signature can't be presented as
+a registry signature, or the reverse. Verification is pure computation. For
+`sk-` keys the signed bytes are `sha256(application) ‖ flags ‖ counter ‖
+sha256(message)`, the guard requires the user-presence flag, and `ssh-keygen`
+is never executed. The Python oracle carries a
 self-contained RFC 8032 verifier written against stdlib `hashlib`. The oracle
 is an executable spec, and CI runs bare `python3`, so it gets no pip step.
 The TS side uses whatever *synchronous* Ed25519 verify works in Node and
@@ -141,8 +160,9 @@ and if it brings a dependency into `core/`, it gets its own trace event
 | Phase | Scope | Changes how existing traces project? |
 |---|---|---|
 | 1 | Atomic DO persistence + fault-injection test | No |
-| 2 | v2 evidence binding: types, wire format, guards in both implementations, version gate | No (v1 untouched) |
-| 3 | JCS + Ed25519 in both implementations, canonical golden, authority registry guards | No (v1 untouched) |
+| 1b | Hash-chained persistence + exposed head digest (§8) | No (adds a field to `stats`) |
+| 2 | v2 evidence binding: types, wire format, guards in both implementations, version gate, `schemas/event.v2.schema.json` | No (v1 untouched) |
+| 3 | JCS + SSHSIG/Ed25519 (incl. `sk-`) in both implementations, canonical golden, authority registry guards | No (v1 untouched) |
 | 4 | **Projection of legacy evidence** (§7) | **Yes. Waits on mazze.** |
 | 5 | MEMORY_MODEL rev 4, TRUST.md, this trace's verification events using v2 bindings | — |
 
@@ -171,7 +191,58 @@ There are three options:
 Both 2 and 3 change `data/genesis-projection.golden.json`. That gets
 regenerated deliberately, with this section cited in the commit.
 
-## 8. Consequences
+## 8. Inspiration: claude-stamp and Temenos
+
+Two sibling repos already solve parts of this. Borrowed, with credit:
+
+**From claude-stamp (`mazze93/claude-stamp`):**
+
+- **A hash chain over persisted rows.** Each stamp row hashes
+  `prev + canonical JSON` from a 64-zero genesis, so an edit, deletion or
+  reorder breaks the chain from that row on. Stratum's guards catch an
+  *incoherent* log on load. A coherent but *truncated or swapped* log passes
+  them. Phase 1b adds a per-row chain hash in the DO
+  (`sha256(prev ‖ JCS(record))`) and exposes the head digest. That gives a
+  log one content address that evidence, attestations and anchors can cite.
+  The chain lives in the storage layer, not the event: records stay
+  `seq`-free, and v1 traces need no rewrite.
+- **Forward-only anchoring.** claude-stamp's anchor sends its head to
+  checkmate's hub, which accepts only strict extensions and records a fork as
+  a 409 plus an incident. Stratum's head digest is exactly what such a
+  witness needs. Wiring an anchor is **not** in this ADR. It needs an
+  off-system witness, and that is a deploy decision (recorded as a
+  reopenable ghost edge).
+- **Re-derive, never trust.** `verify-release.py` re-derives every value the
+  exporter supplied: "it can only cause failure." That is the rule for
+  bindings. The guard checks formats and digests and verifies signatures
+  itself. It never accepts a supplied "verified: true" or a precomputed
+  result.
+- **Hardware-key signers and namespace binding.** These became the §5
+  SSHSIG decision.
+- **A single trust-root step.** The gated installer's `bootstrap` pins signer
+  and verifier once, after which every update must chain from it. That is
+  §4's genesis set.
+
+**From Temenos (`mazze93/temenos`):**
+
+- **Temenos is a live v1 writer.** `temenos/policy.py` stamps
+  `checked_at: now, signer: "aletheia"` on its gate evidence, which is
+  exactly the primitive this ADR retires. Its events are born `asserted`, so
+  v1 compatibility (§3) keeps them loading, and §7 does not change how they
+  project. The migration path: its gate run becomes a v2
+  `reproducible_check` (Aletheia commit + input `sha256` + deterministic
+  verdict digest), and that is why `inputs` matches its provenance envelope.
+  That change belongs to Temenos, in its own ADR.
+- **Schemas first.** Temenos puts machine-readable schemas above policy,
+  tests and ADRs. Phase 2 publishes `schemas/event.v2.schema.json` as the
+  normative wire contract that consumers validate against, so that this ADR's
+  prose isn't the only definition of the format.
+- **Don't collapse evaluations into one score.** Temenos keeps
+  deterministic, behavioral, model and human evaluation separate. §7's
+  per-entry `binding` field keeps the trust kinds of evidence separate in the
+  same way. A single tier would collapse them.
+
+## 9. Consequences
 
 - The contract's strongest claim ("only checked evidence counts") becomes
   something the engine can mechanically tell apart, for v2.
