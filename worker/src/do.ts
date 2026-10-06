@@ -32,7 +32,7 @@ import { PersistentLog } from "./persist.js";
 const MAX_EVENTS = 5000;
 
 export type AppendResult =
-  | { ok: true; event: EventRecord; seq: number; head: number }
+  | { ok: true; event: EventRecord; seq: number; head: number; head_digest: string }
   | { ok: false; kind: "parse" | "violation" | "cap"; message: string };
 
 export type SeedResult =
@@ -58,19 +58,36 @@ export class StratumLogDO extends DurableObject<Env> {
         `CREATE TABLE IF NOT EXISTS events (
            seq    INTEGER PRIMARY KEY,
            id     TEXT NOT NULL UNIQUE,
-           record TEXT NOT NULL
+           record TEXT NOT NULL,
+           chain  TEXT
          )`,
       );
+      // Pre-chain tables (tp-009): add the column; PersistentLog backfills it once.
+      const cols = ctx.storage.sql.exec<{ name: string }>("PRAGMA table_info(events)").toArray();
+      if (!cols.some((c) => c.name === "chain")) {
+        ctx.storage.sql.exec("ALTER TABLE events ADD COLUMN chain TEXT");
+      }
     });
     const sql = ctx.storage.sql;
     this.store = new PersistentLog({
       readAll: () =>
         sql
-          .exec<{ record: string }>("SELECT record FROM events ORDER BY seq")
+          .exec<{ seq: number; record: string; chain: string | null }>(
+            "SELECT seq, record, chain FROM events ORDER BY seq",
+          )
           .toArray()
-          .map((r) => JSON.parse(r.record) as unknown),
-      insert: (seq, id, record) => {
-        sql.exec("INSERT INTO events (seq, id, record) VALUES (?, ?, ?)", seq, id, record);
+          .map((r) => ({ seq: r.seq, record: JSON.parse(r.record) as unknown, chain: r.chain })),
+      insert: (seq, id, record, chain) => {
+        sql.exec(
+          "INSERT INTO events (seq, id, record, chain) VALUES (?, ?, ?, ?)",
+          seq,
+          id,
+          record,
+          chain,
+        );
+      },
+      setChain: (seq, chain) => {
+        sql.exec("UPDATE events SET chain = ? WHERE seq = ?", chain, seq);
       },
       // Rolls back on throw (SQLite-backed DO API). Implicit write coalescing
       // alone would still commit rows written before a caught exception.
@@ -88,8 +105,14 @@ export class StratumLogDO extends DurableObject<Env> {
       return { ok: false, kind: "cap", message: `log is at its ${MAX_EVENTS}-event cap` };
     }
     try {
-      const sequenced = this.store.append(recordToEvent(raw));
-      return { ok: true, event: eventToRecord(sequenced), seq: sequenced.seq, head: sequenced.seq };
+      const { event, chain } = this.store.append(recordToEvent(raw));
+      return {
+        ok: true,
+        event: eventToRecord(event),
+        seq: event.seq,
+        head: event.seq,
+        head_digest: chain,
+      };
     } catch (e) {
       // Guard failure: memory untouched (append throws before push). Storage
       // failure: rolled back, cache dropped, rethrown — see persist.ts.
@@ -143,8 +166,9 @@ export class StratumLogDO extends DurableObject<Env> {
     return { ok: true, seeded: true, events: this.store.log.head + 1 };
   }
 
-  stats(): { events: number; head: number } {
+  /** The log's content address at its head (tp-009) — what anchors and evidence cite. */
+  stats(): { events: number; head: number; head_digest: string } {
     const log = this.ensureLog();
-    return { events: log.head + 1, head: log.head };
+    return { events: log.head + 1, head: log.head, head_digest: this.store.headDigest };
   }
 }

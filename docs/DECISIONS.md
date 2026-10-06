@@ -557,7 +557,7 @@ Reusing an existing cross-project Cloudflare API token for the stratum Worker's 
 
 *ADR-003: bound evidence, an authority registry, atomic persistence.*
 
-> `data/trust-trace.jsonl` · epoch 11 · 12 events · 9 decisions · 3 foreclosures
+> `data/trust-trace.jsonl` · epoch 12 · 13 events · 10 decisions · 3 foreclosures
 
 ## Decisions
 
@@ -632,6 +632,16 @@ Registry signatures use SSHSIG (OpenSSH PROTOCOL.sshsig) with namespace 'stratum
 Phase 2 publishes schemas/event.v2.schema.json as the normative machine-readable v2 wire contract, and reproducible_check gains optional inputs[{id, sha256}] shaped like Temenos's provenance envelope. output_sha256 becomes optional and must digest deterministic output.
 
 > **Shadow [TRACE · certainty 0.8]** — Borrowed from Temenos's authority order (schemas above policy, tests and ADRs), so the ADR's prose is not the only definition of the wire format. Temenos is a live v1 writer that stamps checked_at=now, signer='aletheia', the retired primitive; matching its inputs shape gives it a migration path that needs no translation (its own ADR). output_sha256 can't be required: vitest output contains timings, which phase 1 found.
+
+### tp-012 — ◐ PROVISIONAL · pending_evidence
+
+**claude** · 2026-10-06T19:55:00-04:00
+
+Revision of tp-009: the storage hash chain detects an edited, reordered, or middle-deleted log, but NOT a dropped tail, since a prefix is itself a valid chain. Only an off-system witness of the head digest closes that. Head digest = chain over the normalized wire records (load, then serialize), so a trace file and a DO seeded from it share one content address. SHA-256 and JCS are hand-written, synchronous and dependency-free in core, and pinned against NIST vectors, node:crypto, and the oracle.
+
+*Revision chain:* `tp-009 → tp-012`
+
+> **Shadow [TRACE · certainty 0.85]** — tp-009's shadow implied the chain catches truncation. Writing the persistence tests disproved it: dropping the last row leaves a valid prefix chain. Recorded as a revision rather than an edit because events are immutable (the at-013 precedent: re-record, never rewrite). Normalized-records digest: trace files carry fields the wire format may drop, so raw-row digests would never match a seeded DO. Hand-written hashing: crypto.subtle is async and guards are synchronous; workerd runs without nodejs_compat; the data is public, so timing side channels are out of scope; correctness is pinned differentially.
 
 ## Foreclosures — ghost edges
 

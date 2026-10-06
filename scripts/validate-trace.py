@@ -20,6 +20,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "reference"))
 
+from canonical import log_digest  # noqa: E402
 from tessera_projection import (  # noqa: E402
     authoritative_fingerprint,
     load_log,
@@ -54,6 +55,7 @@ def main() -> int:
     for tier, n in sorted(tiers.items()):
         print(f"  {tier:28s} {n}")
     print(f"fingerprint entries {len(fp)}")
+    print(f"head digest {log_digest(log)}")
     print("OK — trace loads clean; every guard passed; projection is total.")
     return 0
 
