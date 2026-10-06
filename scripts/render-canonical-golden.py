@@ -24,6 +24,8 @@ CASES = [
     ("string escapes", ["x\u2028\u0007\"\\\u00e9\U0001F600\t\n\r\b\f\u001f\u007f"]),
     ("numbers", [0, -0.0, 1.0, 0.7, 1e15, 1e-7, 1e-6, 123e-20, 1.5e-300, 5e-324,
                  0.1 + 0.2, -0.000001, 9007199254740991, 4.35, 1 / 3, 1.23456e-5, 2.5e-7]),
+    ("large magnitudes are IEEE doubles, not refusals (touchstone P1)",
+     [1e21, 1.5e300, 9007199254740993, 1730000000000000000, -1e16, 2**64]),
     ("nesting and literals", {"z": {"y": [True, False, None, [], {}]}, "a": ""}),
     ("an event record", {
         "id": "tp-001", "type": "decision", "agent_id": "claude", "schema_version": 1,
@@ -35,10 +37,7 @@ CASES = [
 
 # Refused by both implementations (fail-closed). JSON can't carry NaN or a
 # lone surrogate portably, so those are tested in code, not here.
-REFUSED = [
-    ("integer-valued double above 2^53", 1e21),
-    ("integer above the safe range", 9007199254740993),
-]
+REFUSED: list = []  # nothing JSON-representable is refused; see the tests for NaN/surrogates
 
 
 def main() -> int:

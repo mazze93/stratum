@@ -165,13 +165,40 @@ describe("PersistentLog — hash chain in storage (tp-009)", () => {
     expect(truncated.headDigest).not.toBe(fullHead);
   });
 
-  test("pre-chain storage is backfilled once, all-or-nothing", () => {
+  test("migrateLegacy chains a pre-chain table to the same head", () => {
     const { store, p } = seeded();
     const want = p.headDigest;
     for (const r of store.rows) r.chain = null;
-    const reloaded = new PersistentLog(store);
-    expect(reloaded.headDigest).toBe(want);
+    const migrated = new PersistentLog(store);
+    store.transaction(() => migrated.migrateLegacy());
+    expect(migrated.headDigest).toBe(want);
     expect(store.rows.every((r) => r.chain !== null)).toBe(true);
+  });
+
+  test("touchstone P2: editing a row then nulling every chain is a break, not a backfill", () => {
+    const { store } = seeded();
+    store.rows[1]!.record = store.rows[1]!.record.replace('"agent_id":"t"', '"agent_id":"forged"');
+    for (const r of store.rows) r.chain = null;
+    expect(() => new PersistentLog(store).log).toThrow(/chain break at seq 0/);
+  });
+
+  test("touchstone P3: deleting a middle row and renumbering is a break", () => {
+    const { store } = seeded();
+    store.rows.splice(1, 1);
+    store.rows[1]!.seq = 1;
+    expect(() => new PersistentLog(store).log).toThrow(/chain break at seq 1/);
+  });
+
+  test("touchstone P1: a large-magnitude number persists and chains (no deploy-day brick)", () => {
+    const store = new FakeStore();
+    const p = new PersistentLog(store);
+    const big = recordToEvent({
+      id: "big", type: "decision", agent_id: "t", schema_version: 1,
+      birth_status: "pending_evidence", claim: { ns: 1730000000000000000, sci: 1e300 },
+      evidence: [], targets: [],
+    });
+    expect(() => p.append(big)).not.toThrow();
+    expect(new PersistentLog(store).headDigest).toBe(p.headDigest);
   });
 
   test("a partly unchained store is a break, not a backfill", () => {

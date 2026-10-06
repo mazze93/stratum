@@ -62,11 +62,6 @@ export class StratumLogDO extends DurableObject<Env> {
            chain  TEXT
          )`,
       );
-      // Pre-chain tables (tp-009): add the column; PersistentLog backfills it once.
-      const cols = ctx.storage.sql.exec<{ name: string }>("PRAGMA table_info(events)").toArray();
-      if (!cols.some((c) => c.name === "chain")) {
-        ctx.storage.sql.exec("ALTER TABLE events ADD COLUMN chain TEXT");
-      }
     });
     const sql = ctx.storage.sql;
     this.store = new PersistentLog({
@@ -92,6 +87,18 @@ export class StratumLogDO extends DurableObject<Env> {
       // Rolls back on throw (SQLite-backed DO API). Implicit write coalescing
       // alone would still commit rows written before a caught exception.
       transaction: (fn) => ctx.storage.transactionSync(fn),
+    });
+    ctx.blockConcurrencyWhile(async () => {
+      // Pre-chain table (tp-009): add the column and chain every row in ONE
+      // transaction. The missing column is the only thing that authorizes
+      // chaining; afterwards an unchained row is a break (touchstone P2).
+      const cols = sql.exec<{ name: string }>("PRAGMA table_info(events)").toArray();
+      if (!cols.some((c) => c.name === "chain")) {
+        ctx.storage.transactionSync(() => {
+          sql.exec("ALTER TABLE events ADD COLUMN chain TEXT");
+          this.store.migrateLegacy();
+        });
+      }
     });
   }
 

@@ -31,7 +31,7 @@ import {
 export interface StoredRow {
   seq: number;
   record: unknown;
-  /** null only for rows written before the chain existed (backfilled once) */
+  /** null only in a pre-chain table, before migrateLegacy() runs */
   chain: string | null;
 }
 
@@ -66,19 +66,33 @@ export class PersistentLog {
     let prev = GENESIS_DIGEST;
     for (const record of serializeLog(log)) links.push((prev = chainLink(prev, record)));
 
-    const unchained = rows.filter((r) => r.chain === null).length;
-    if (unchained === rows.length && rows.length > 0) {
-      // Storage from before the chain existed: backfill, all-or-nothing.
-      this.store.transaction(() => rows.forEach((r, i) => this.store.setChain(r.seq, links[i]!)));
-    } else {
-      rows.forEach((r, i) => {
-        if (r.chain !== links[i]) {
-          throw new ContractViolation(`chain break at seq ${r.seq}: stored log was altered`);
-        }
-      });
-    }
+    // No backfill on the read path: an unchained row here is a break, never a
+    // reason to re-chain — otherwise nulling every chain launders an edit
+    // (touchstone P2). Legacy tables are chained once, by migrateLegacy().
+    rows.forEach((r, i) => {
+      if (r.chain !== links[i]) {
+        throw new ContractViolation(`chain break at seq ${r.seq}: stored log was altered`);
+      }
+    });
     this.cache = { log, head: prev };
     return this.cache;
+  }
+
+  /**
+   * One-time migration of a table written before the chain existed. The caller
+   * runs this in the SAME transaction as the schema change that adds the chain
+   * column, so "the column is missing" — not "the data is null" — is what
+   * authorizes chaining. Every guard re-runs; a corrupt legacy log rolls back.
+   */
+  migrateLegacy(): void {
+    const rows = this.store.readAll();
+    const log = loadLog(rows.map((r) => r.record));
+    let prev = GENESIS_DIGEST;
+    serializeLog(log).forEach((record, i) => {
+      prev = chainLink(prev, record);
+      this.store.setChain(rows[i]!.seq, prev);
+    });
+    this.cache = null;
   }
 
   /**

@@ -5,8 +5,9 @@ Reference twin of core/src/canonical.ts and core/src/chain.ts (ADR-003 §5, §8)
 Both implementations must emit byte-identical output; data/canonical.golden.json
 pins them, tested from both sides.
 
-Stdlib only (hashlib, json). Fail-closed: non-finite numbers, integers outside
-the IEEE-754 safe range, lone surrogates and non-JSON values are refused.
+Stdlib only (hashlib, json). Fail-closed: non-finite numbers, lone surrogates
+and non-JSON values are refused. Numbers are IEEE-754 doubles (I-JSON): an int
+beyond 2^53 is rounded to the double JS would parse, so both sides agree.
 """
 
 from __future__ import annotations
@@ -66,13 +67,14 @@ def _num(x) -> str:
     if isinstance(x, bool):
         raise CanonicalError("canonical: bool reached the number path")
     if isinstance(x, int):
-        if abs(x) > _SAFE:
-            raise CanonicalError("canonical: integer outside the safe range")
-        return str(x)
+        if abs(x) <= _SAFE:
+            return str(x)
+        try:
+            x = float(x)  # the double JSON.parse would have produced (I-JSON)
+        except OverflowError:
+            raise CanonicalError("canonical: integer beyond the double range")
     if not math.isfinite(x):
         raise CanonicalError("canonical: non-finite number")
-    if x.is_integer() and abs(x) > _SAFE:
-        raise CanonicalError("canonical: integer outside the safe range")
     return _es_number(x)
 
 

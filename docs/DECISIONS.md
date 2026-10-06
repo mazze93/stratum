@@ -557,7 +557,7 @@ Reusing an existing cross-project Cloudflare API token for the stratum Worker's 
 
 *ADR-003: bound evidence, an authority registry, atomic persistence.*
 
-> `data/trust-trace.jsonl` · epoch 12 · 13 events · 10 decisions · 3 foreclosures
+> `data/trust-trace.jsonl` · epoch 13 · 14 events · 11 decisions · 3 foreclosures
 
 ## Decisions
 
@@ -642,6 +642,16 @@ Revision of tp-009: the storage hash chain detects an edited, reordered, or midd
 *Revision chain:* `tp-009 → tp-012`
 
 > **Shadow [TRACE · certainty 0.85]** — tp-009's shadow implied the chain catches truncation. Writing the persistence tests disproved it: dropping the last row leaves a valid prefix chain. Recorded as a revision rather than an edit because events are immutable (the at-013 precedent: re-record, never rewrite). Normalized-records digest: trace files carry fields the wire format may drop, so raw-row digests would never match a seeded DO. Hand-written hashing: crypto.subtle is async and guards are synchronous; workerd runs without nodejs_compat; the data is public, so timing side channels are out of scope; correctness is pinned differentially.
+
+### tp-013 — ◐ PROVISIONAL · pending_evidence
+
+**claude** · 2026-10-06T19:58:00-04:00
+
+Revision of tp-012 after a touchstone pass. Canonical numbers are IEEE-754 doubles (I-JSON): large magnitudes are formatted, never refused, and the oracle rounds a large int to the double JS would parse. Storage chaining is authorized only by the schema change that adds the chain column, run in one transaction with it; on the read path an unchained row is a chain break.
+
+*Revision chain:* `tp-009 → tp-012 → tp-013`
+
+> **Shadow [TRACE · certainty 0.85]** — Touchstone probed four boundaries the 52/52 suite didn't reach. P1 failed: a number of magnitude at least 2^53 passed loadLog but persistence refused it, so a production log already holding one would brick on first load after deploy. P2 failed: editing a stored row and then nulling every chain made the read-path backfill re-chain the tampered log. P3 held (middle deletion caught) and is now a test instead of an assertion. P4 held within scope (the chain authenticates normalized content, not bytes). The re-pass held: workerd migration served the oracle's genesis digest, a 1.73e18/1e300 append returned 201, and workerd and the oracle agree on fe2b04cf for that log. Perimeter: an attacker with storage write access can still recompute the whole chain (no secret), so only an anchor makes it tamper-proof rather than tamper-evident. TS parsing defaults missing is_trust_root to false where the oracle raises KeyError, a pre-existing leniency gap left for phase 2.
 
 ## Foreclosures — ghost edges
 

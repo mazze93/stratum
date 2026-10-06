@@ -6,8 +6,9 @@
  * reference twin is reference/canonical.py; core/test/canonical.test.ts pins
  * both against data/canonical.golden.json.
  *
- * Refused rather than guessed (fail-closed): non-finite numbers, integers
- * outside the IEEE-754 safe range, lone surrogates, and non-JSON values.
+ * Refused rather than guessed (fail-closed): non-finite numbers, lone
+ * surrogates, and non-JSON values. Numbers are IEEE-754 doubles (I-JSON):
+ * the oracle rounds a large Python int to the double JS would have parsed.
  */
 
 import { ContractViolation } from "./contract.js";
@@ -29,10 +30,9 @@ function str(s: string): string {
 
 function num(n: number): string {
   if (!Number.isFinite(n)) throw new ContractViolation("canonical: non-finite number");
-  if (Number.isInteger(n) && !Number.isSafeInteger(n)) {
-    throw new ContractViolation("canonical: integer outside the safe range");
-  }
-  // ES Number::toString is RFC 8785 §3.2.2.3; -0 serializes as 0.
+  // ES Number::toString is RFC 8785 §3.2.2.3; -0 serializes as 0. Every number
+  // is an IEEE-754 double here (I-JSON) — large magnitudes are formatted, not
+  // refused, or a record the contract accepts could never be persisted.
   return Object.is(n, -0) ? "0" : String(n);
 }
 
