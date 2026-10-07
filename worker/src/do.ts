@@ -26,6 +26,7 @@ import {
   type Tessera,
 } from "@stratum/core";
 import type { Env } from "./env.js";
+import { loadFailure } from "./errors.js";
 import { PersistentLog } from "./persist.js";
 
 /** Per-log event cap — a cheap abuse guard, generous for real use. */
@@ -103,7 +104,12 @@ export class StratumLogDO extends DurableObject<Env> {
   }
 
   private ensureLog(): EpisodicLog {
-    return this.store.log;
+    try {
+      return this.store.log;
+    } catch (e) {
+      // Fail closed, but legibly: the Worker maps this prefix to a JSON 500.
+      throw loadFailure(e);
+    }
   }
 
   appendEvent(raw: unknown): AppendResult {
