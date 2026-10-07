@@ -42,6 +42,10 @@ TRACES = [
      "Cross-project use: STELE decisions routed through Stratum."),
     ("atrium-trace.jsonl", "Public launch",
      "The public landing surface — this session's own decisions, recorded live."),
+    ("workspace-trace.jsonl", "Workspace",
+     "~/Projects container decisions, compiled from the workspace journal."),
+    ("trust-trace.jsonl", "Trust primitives",
+     "ADR-003: bound evidence, an authority registry, atomic persistence."),
 ]
 
 
