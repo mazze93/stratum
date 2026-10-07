@@ -469,7 +469,7 @@ docs/TRUST.md ships as a skeleton that RESOLVES the two decidable questions (den
 
 *~/Projects container decisions, compiled from the workspace journal.*
 
-> `data/workspace-trace.jsonl` · epoch 10 · 11 events · 9 decisions · 1 foreclosures
+> `data/workspace-trace.jsonl` · epoch 11 · 12 events · 10 decisions · 1 foreclosures
 
 ## Decisions
 
@@ -544,6 +544,14 @@ Connect the deployed stratum Cloudflare Worker to github.com/mazze93/stratum via
 The official stratum checkout at ~/Projects/cognitive/stratum is a fresh clone of origin/main, re-created via `scripts/ws missing`; the previous checkout is retired.
 
 > **Shadow [TRACE · certainty 0.9]** — The old clone had drifted: local main was 18 commits behind origin, HEAD was on `4-mobile-bugs` (a branch whose only commit had already landed as #65 / b97f0b1), and seven stale local branches. Corroborated before retiring it: every unmerged-looking branch was either squash-merged (harden-security-scanning → #5, worktree-codeql-fetch-opts → #47 per at-043, feat/workspace-trace and record-fetch-opts-decisions → main), still on the remote, or a regenerable Dependabot bump (pr12). Only local-only state — cli/mise.toml (deliberately untracked per 7a615b1), .claude/settings.local.json, .remember/ logs — was carried across. Same path, so the registry entry (WORKSPACE.md, ws REGISTRY) is unchanged and needs no edit. Old clone moved outside ~/Projects to ~/stratum.pre-reclone-2026-10-06 rather than deleted; its deletion is mazze's call. Reverse: move it back.
+
+### wt-011 — ◐ PROVISIONAL · pending_evidence
+
+**claude** · 2026-10-07T15:25:00-04:00
+
+Force sharp to ^0.35.5 with a root npm `overrides` entry, closing Dependabot alert #24 (GHSA-wq5f-xc86-pv6w: librsvg memory bug, possible RCE on glibc Linux). sharp is dev-only and transitive (worker → wrangler 4.147.0 → miniflare, which pins sharp exactly at 0.35.4); 0.35.5 ships librsvg 2.63.2.
+
+> **Shadow [TRACE · certainty 0.9]** — Even the latest wrangler (4.148.0) still pins sharp 0.35.4, so a wrangler bump cannot fix it yet. Touchstone probes: (1) adding the override and running `npm install` exits 0 but leaves the locked 0.35.4 in place — the lockfile must be re-resolved (`npm update sharp`), or the fix is a no-op that looks applied; (2) after the re-resolve, all 17 @img/sharp-* platform packages are at 0.35.5 and all 10 libvips packages at 1.3.4 in package-lock.json; (3) a clean `npm ci` in node:24-bookworm (Debian glibc 2.36, the platform the RCE targets and CI runs on) loads sharp 0.35.5 with rsvg 2.63.2, and vitest passes 80/80; (4) `wrangler dev` serves health, head and the landing page. The override is a range, not an exact pin, so a later miniflare pin of 0.35.6+ is not downgraded. Reopen: once miniflare pins sharp >=0.35.5, delete the override — a stale override is rot.
 
 ## Foreclosures — ghost edges
 
