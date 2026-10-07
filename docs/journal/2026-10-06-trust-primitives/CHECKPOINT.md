@@ -1,5 +1,5 @@
 # CHECKPOINT — trust-primitives burst
-Last updated: 2026-10-06
+Last updated: 2026-10-07 — handoff: stratum_export_2026-10-07.md
 
 - [x] 0 ADR-003 + trust-trace (tp-000..008) + renderer registers workspace/trust traces
 - [x] 1 Atomic DO persistence + fault-injection test (tp-001) — PR #74
@@ -8,7 +8,7 @@ Last updated: 2026-10-06
 - [ ] **Reordered (tp-019, mazze-approved):**
   - [x] R1 Stack landed: #72, #75 (f34d190), #76 (9270736); prod verified (demo head == oracle). Incident fix #78 awaiting merge; tp-022 awaiting mazze.
   - [ ] R2 Anchor the log head off-system (claude-stamp / checkmate forward-only hub)
-  - [x] R3 Re-checker + weekly CI job; output_path added; first run 4/4 reproduced (tp-023..029) — PR pending
+  - [x] R3 Re-checker + weekly CI job; output_path added; 4/4 reproduced locally AND in CI — merged #79 (253a26a)
   - [ ] R4 Authority registry — per-log quorum fixed at genesis; single hardware key allowed for single-human logs, labeled (tp-003, tp-004, tp-010)
   - [ ] R5 Temenos → v2 evidence (first external writer)
   - [ ] R6 MEMORY_MODEL rev 4, TRUST.md, verification events with v2 bindings
