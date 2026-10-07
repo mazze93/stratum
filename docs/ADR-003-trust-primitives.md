@@ -198,10 +198,12 @@ Two sibling repos already solve parts of this. Borrowed, with credit:
 **From claude-stamp (`mazze93/claude-stamp`):**
 
 - **A hash chain over persisted rows.** Each stamp row hashes
-  `prev + canonical JSON` from a 64-zero genesis, so an edit, deletion or
-  reorder breaks the chain from that row on. Stratum's guards catch an
-  *incoherent* log on load. A coherent but *truncated or swapped* log passes
-  them. Phase 1b adds a per-row chain hash in the DO
+  `prev + canonical JSON` from a 64-zero genesis, so an edit, a reorder, or a
+  deletion from the middle breaks the chain from that row on. Stratum's guards
+  catch an *incoherent* log on load; a coherent but *edited or swapped* log
+  passes them. **Limit:** a dropped *tail* is undetectable locally, because a
+  prefix is itself a valid chain. Only an off-system witness of the head digest
+  closes that, which is the anchor below (`tp-012` corrects `tp-009` on this). Phase 1b adds a per-row chain hash in the DO
   (`sha256(prev ‖ JCS(record))`) and exposes the head digest. That gives a
   log one content address that evidence, attestations and anchors can cite.
   The chain lives in the storage layer, not the event: records stay

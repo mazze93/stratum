@@ -40,3 +40,6 @@ export {
   serializeLog,
 } from "./serialize.js";
 export type { EventRecord, EvidenceRecord } from "./serialize.js";
+export { canonicalBytes, canonicalize } from "./canonical.js";
+export { chainDigest, chainLink, GENESIS_DIGEST } from "./chain.js";
+export { sha256, sha256Hex, toHex } from "./sha256.js";

@@ -74,6 +74,11 @@ app.get("/api/logs/:logId/events", async (c) =>
   c.json(await stub(c.env, c.req.param("logId")).exportEvents()),
 );
 
+/** Content address of the log at its head: {events, head, head_digest} (tp-009). */
+app.get("/api/logs/:logId/head", async (c) =>
+  c.json(await stub(c.env, c.req.param("logId")).stats()),
+);
+
 app.get("/api/logs/:logId/events/:eventId", async (c) => {
   const detail = await stub(c.env, c.req.param("logId")).eventDetail(
     c.req.param("eventId"),
