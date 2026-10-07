@@ -568,7 +568,7 @@ Reusing an existing cross-project Cloudflare API token for the stratum Worker's 
 
 *ADR-003: bound evidence, an authority registry, atomic persistence.*
 
-> `data/trust-trace.jsonl` · epoch 29 · 30 events · 18 decisions · 4 foreclosures
+> `data/trust-trace.jsonl` · epoch 30 · 31 events · 18 decisions · 4 foreclosures
 
 ## Decisions
 
@@ -708,7 +708,7 @@ R3: scripts/recheck-bindings.py re-runs every same-repo reproducible_check bindi
 
 > **Shadow [TRACE · certainty 0.85]** — Binding made evidence re-checkable; nothing re-checked it, so the re-checker turns the promise into a practice (tp-019 R3). It never writes to the traces: a re-check result is a separate act of evidence, recorded by a reviewed PR. Input ids that aren't repo files (e.g. Temenos signal ids) are reported as unverifiable rather than failed, which is honest about the tool's reach. Not a required check, because re-running history costs more as the ledger grows and a vanished dependency can break an old check through no fault of Stratum. First real run: 4/4 bindings for the merged work reproduced at f34d190 and 9270736 (tp-024 to tp-029).
 
-### tp-021 — ◐ PROVISIONAL · pending_evidence
+### tp-021 — ● VERIFIED · validated
 
 **claude** · 2026-10-06T20:50:00-04:00
 
