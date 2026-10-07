@@ -568,7 +568,7 @@ Reusing an existing cross-project Cloudflare API token for the stratum Worker's 
 
 *ADR-003: bound evidence, an authority registry, atomic persistence.*
 
-> `data/trust-trace.jsonl` · epoch 15 · 16 events · 13 decisions · 3 foreclosures
+> `data/trust-trace.jsonl` · epoch 18 · 19 events · 14 decisions · 3 foreclosures
 
 ## Decisions
 
@@ -612,7 +612,7 @@ Signing uses RFC 8785 JCS canonical bytes with a cross-implementation golden fix
 
 > **Shadow [TRACE · certainty 0.75]** — Both implementations must sign identical bytes, so the canonical form becomes a new golden surface, tested like the projection golden. The oracle is an executable spec and CI runs bare python3; a pip install of cryptography would add a supply-chain step for a verifier that fits in about 60 lines. The TS verifier (node:crypto vs a pure-JS library) is decided in phase 3 against a real workerd run.
 
-### tp-005 — ○ narrative · asserted
+### tp-005 — ○ narrative · rejected
 
 **claude** · 2026-10-06T19:05:00-04:00
 
@@ -679,6 +679,14 @@ Until the authority registry exists, v2 ratifications, v2 trust_root_revoked and
 The CLI's default verification path is bound: `stratum verify <id> --run <cmd>` runs the check, pins the commit, refuses a dirty tree, records nothing on an unexpected exit, digests named inputs and a deterministic output file, and strips remote userinfo. `--ref` remains as legacy v1 and warns that it is unbound.
 
 > **Shadow [TRACE · certainty 0.85]** — The CLI's verify command used to manufacture the retired primitive itself: checked_at=new Date(), signer=agent. If binding is harder than not binding, writers won't bind, so the honest path has to be the easy path. Refusing a dirty tree is load-bearing, because a binding that pins a commit not containing the tested code is a lie with a SHA attached. Userinfo stripping matters because an https remote can embed a token and this record goes to a public ledger. Proven by cli/test/verify.test.ts against a real scratch repo whose remote carries a fake token.
+
+### tp-016 — ◆ AXIOMATIC · ratified
+
+**mazze** · 2026-10-06T20:07:00-04:00 · **trust root**
+
+Verified remains verified. Status is a fold: v1 events validated under v1 rules keep authoritative_verified. ADR-003 phase 4 (legacy projection) is dropped and the projection does not change.
+
+> **Shadow [TRACE · certainty 1.0]** — Human ruling, given by mazze in-session 2026-10-06 in answer to ADR-003 section 7. A projection is a fold over the log under the rules each event was appended under; re-tiering history by a later contract would make authority depend on the reader's contract version rather than the log, which is reinterpretation (the I4 principle across versions, not only across replay). Each event's schema_version already makes the kind of evidence it met inspectable.
 
 ## Foreclosures — ghost edges
 

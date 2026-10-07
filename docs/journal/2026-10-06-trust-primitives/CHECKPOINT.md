@@ -6,7 +6,7 @@ Last updated: 2026-10-06
 - [x] 1b Hash-chained persistence + head digest (tp-009, revised by tp-012, tp-013) — PR #75
 - [x] 2 v2 evidence binding + schemas/event.v2.schema.json + CLI --run (tp-002, tp-011, tp-014, tp-015) — PR pending
 - [ ] 3 JCS + SSHSIG/Ed25519 (incl. sk-) + authority registry (tp-003, tp-004, tp-010)
-- [ ] 4 Legacy projection — **blocked on mazze** (tp-005)
+- [x] 4 Legacy projection — DROPPED by ruling: "verified remains verified; status is a fold" (tp-016; tp-005 rejected)
 - [ ] 5 MEMORY_MODEL rev 4, TRUST.md, verification events with v2 bindings
 
 ## Resume
