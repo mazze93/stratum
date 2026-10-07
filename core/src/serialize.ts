@@ -11,6 +11,7 @@ import {
   Binding,
   Evidence,
   GIT_OBJECT_ID,
+  isRepoRelativePath,
   ParseError,
   SCHEMA_VERSIONS,
   SHA256_HEX,
@@ -28,6 +29,7 @@ export type BindingRecord =
       expect_exit: number;
       inputs?: { id: string; sha256: string }[];
       output_sha256?: string;
+      output_path?: string;
     }
   | {
       type: "signed_attestation";
@@ -97,7 +99,7 @@ function bindingToRecord(b: Binding): BindingRecord {
     commit: b.commit,
     expect_exit: b.expectExit,
     ...(b.inputs.length > 0 ? { inputs: b.inputs.map((i) => ({ id: i.id, sha256: i.sha256 })) } : {}),
-    ...(b.outputSha256 !== null ? { output_sha256: b.outputSha256 } : {}),
+    ...(b.outputSha256 !== null ? { output_sha256: b.outputSha256, output_path: b.outputPath! } : {}),
   };
 }
 
@@ -118,7 +120,7 @@ function parseBinding(x: unknown, ctx: string): Binding {
   }
   const r = x as Record<string, unknown>;
   if (r["type"] === "reproducible_check") {
-    onlyKeys(r, ["type", "command", "repo", "commit", "expect_exit", "inputs", "output_sha256"], ctx);
+    onlyKeys(r, ["type", "command", "repo", "commit", "expect_exit", "inputs", "output_sha256", "output_path"], ctx);
     if (!nonEmpty(r["command"])) throw new ParseError(`${ctx}: command must be a non-empty string`);
     if (!nonEmpty(r["repo"])) throw new ParseError(`${ctx}: repo must be a non-empty string`);
     if (typeof r["commit"] !== "string" || !GIT_OBJECT_ID.test(r["commit"])) {
@@ -146,6 +148,14 @@ function parseBinding(x: unknown, ctx: string): Binding {
     if (out !== null && (typeof out !== "string" || !SHA256_HEX.test(out))) {
       throw new ParseError(`${ctx}: output_sha256 must be 64 lowercase hex`);
     }
+    const outPath = r["output_path"] ?? null;
+    if ((out === null) !== (outPath === null)) {
+      // a digest without its file can't be re-checked; a file without a digest pins nothing
+      throw new ParseError(`${ctx}: output_sha256 and output_path go together`);
+    }
+    if (outPath !== null && !isRepoRelativePath(outPath)) {
+      throw new ParseError(`${ctx}: output_path must be a repo-relative path inside the checkout`);
+    }
     return {
       type: "reproducible_check",
       command: r["command"],
@@ -154,6 +164,7 @@ function parseBinding(x: unknown, ctx: string): Binding {
       expectExit: ex,
       inputs,
       outputSha256: out,
+      outputPath: outPath,
     };
   }
   if (r["type"] === "signed_attestation") {

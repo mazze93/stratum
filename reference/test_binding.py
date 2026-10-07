@@ -103,6 +103,10 @@ def test_malformed_bindings_rejected():
         ({**CHECK, "verified": True}, "unknown field"),           # no supplied verdicts
         ({**ATTEST, "subject_sha256": "c" * 63}, "subject_sha256"),
         ({**ATTEST, "key_id": ""}, "key_id"),
+        ({**CHECK, "output_sha256": "b" * 64}, "go together"),
+        ({**CHECK, "output_path": "out.json"}, "go together"),
+        ({**CHECK, "output_sha256": "b" * 64, "output_path": "../escape.json"}, "output_path"),
+        ({**CHECK, "output_sha256": "b" * 64, "output_path": "/etc/passwd"}, "output_path"),
         ({"type": "vibes"}, "unknown binding type"),
         ("npm test", "binding must be an object"),
     ]

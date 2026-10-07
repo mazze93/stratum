@@ -114,6 +114,10 @@ describe("v2 evidence binding (ADR-003 §3)", () => {
       [{ ...CHECK, verified: true }, "unknown field"],
       [{ ...ATTEST, subject_sha256: "c".repeat(63) }, "subject_sha256"],
       [{ ...ATTEST, key_id: "" }, "key_id"],
+      [{ ...CHECK, output_sha256: "b".repeat(64) }, "go together"],
+      [{ ...CHECK, output_path: "out.json" }, "go together"],
+      [{ ...CHECK, output_sha256: "b".repeat(64), output_path: "../escape.json" }, "output_path"],
+      [{ ...CHECK, output_sha256: "b".repeat(64), output_path: "/etc/passwd" }, "output_path"],
       [{ type: "vibes" }, "unknown binding type"],
       ["npm test", "binding must be an object"],
     ];

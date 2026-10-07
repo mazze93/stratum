@@ -103,6 +103,14 @@ _SHA256_HEX = re.compile(r"[0-9a-f]{64}")
 _GIT_OBJECT_ID = re.compile(r"[0-9a-f]{40}|[0-9a-f]{64}")
 
 
+def is_repo_relative_path(p) -> bool:
+    """Resolvable inside a clean checkout: non-empty, not absolute, no backslash
+    or NUL, no empty / "." / ".." segments — it can never point outside."""
+    if not isinstance(p, str) or not p or p.startswith("/") or "\\" in p or "\0" in p:
+        return False
+    return all(seg not in ("", ".", "..") for seg in p.split("/"))
+
+
 # ---------------------------------------------------------------------------
 # Section 2 — Immutable evidence and events
 # ---------------------------------------------------------------------------
@@ -116,6 +124,7 @@ class ReproducibleCheck:
     expect_exit: int
     inputs: tuple = ()                # ((id, sha256), ...) — Temenos provenance shape
     output_sha256: Optional[str] = None   # digest of DETERMINISTIC output only
+    output_path: Optional[str] = None     # repo-relative; present iff output_sha256 is
     type: str = "reproducible_check"
 
 
@@ -434,6 +443,7 @@ def _binding_to_record(b) -> dict:
         out["inputs"] = [{"id": i, "sha256": h} for i, h in b.inputs]
     if b.output_sha256 is not None:
         out["output_sha256"] = b.output_sha256
+        out["output_path"] = b.output_path
     return out
 
 
@@ -472,7 +482,8 @@ def _parse_binding(x, ctx: str):
         raise ParseError(f"{ctx}: binding must be an object")
     t = x.get("type")
     if t == "reproducible_check":
-        _only_keys(x, {"type", "command", "repo", "commit", "expect_exit", "inputs", "output_sha256"}, ctx)
+        _only_keys(x, {"type", "command", "repo", "commit", "expect_exit", "inputs", "output_sha256",
+                       "output_path"}, ctx)
         if not _nonempty(x.get("command")):
             raise ParseError(f"{ctx}: command must be a non-empty string")
         if not _nonempty(x.get("repo")):
@@ -504,8 +515,14 @@ def _parse_binding(x, ctx: str):
         out = x.get("output_sha256")
         if out is not None and (not isinstance(out, str) or not _SHA256_HEX.fullmatch(out)):
             raise ParseError(f"{ctx}: output_sha256 must be 64 lowercase hex")
+        op = x.get("output_path")
+        if (out is None) != (op is None):
+            # a digest without its file can't be re-checked; a file without a digest pins nothing
+            raise ParseError(f"{ctx}: output_sha256 and output_path go together")
+        if op is not None and not is_repo_relative_path(op):
+            raise ParseError(f"{ctx}: output_path must be a repo-relative path inside the checkout")
         return ReproducibleCheck(command=x["command"], repo=x["repo"], commit=c, expect_exit=ex,
-                                 inputs=tuple(inputs), output_sha256=out)
+                                 inputs=tuple(inputs), output_sha256=out, output_path=op)
     if t == "signed_attestation":
         _only_keys(x, {"type", "subject_sha256", "predicate", "key_id", "signature"}, ctx)
         h = x.get("subject_sha256")

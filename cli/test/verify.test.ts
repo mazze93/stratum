@@ -57,6 +57,7 @@ describe("stratum verify --run (ADR-003 §3)", () => {
     expect(b.expect_exit).toBe(0);
     expect(b.inputs).toEqual([{ id: "fixture", sha256: createHash("sha256").update("fixture input\n").digest("hex") }]);
     expect(b.output_sha256).toBe(createHash("sha256").update('{"ok":true}\n').digest("hex"));
+    expect(b.output_path).toBe("report.json");
 
     const log = loadLog([
       { id: "d-1", type: "decision", agent_id: "t", schema_version: 2, birth_status: "pending_evidence",
@@ -64,6 +65,15 @@ describe("stratum verify --run (ADR-003 §3)", () => {
       rec,
     ]);
     expect(log.statusAt("d-1", log.head)).toBe(Status.Validated);
+  });
+
+  test("output_path is repo-relative even when run from a subdirectory", () => {
+    sh(["mkdir", "-p", "sub"]);
+    const r = spawnSync("node", [CLI, "verify", "d-1", "--run", "echo x > ../report.json", "--output", "../report.json", "--dry-run"], {
+      cwd: join(repo, "sub"), encoding: "utf8", env: { ...process.env, HOME: home, NO_COLOR: "1" },
+    });
+    expect(r.status, r.stderr).toBe(0);
+    expect(JSON.parse(r.stdout).evidence[0].binding.output_path).toBe("report.json");
   });
 
   test("never writes remote userinfo (an embedded token) into the record", () => {
