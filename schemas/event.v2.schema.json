@@ -1,0 +1,251 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/mazze93/stratum/schemas/event.v2.schema.json",
+  "title": "Stratum event record (wire form, schema_version 1 and 2)",
+  "description": "Normative machine-readable wire contract (ADR-003 §3, tp-011). Structural only: the transition guards (I1 and the rest), the status fold, and signature verification live in core/ and reference/. core/test/schema.test.ts keeps this file and the parsers in step.",
+  "type": "object",
+  "required": [
+    "id",
+    "type",
+    "agent_id",
+    "schema_version",
+    "birth_status",
+    "evidence",
+    "targets",
+    "is_trust_root"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "type": {
+      "enum": [
+        "decision",
+        "foreclosure",
+        "invalidation",
+        "verification",
+        "supersession",
+        "contradiction",
+        "ratification",
+        "rejection",
+        "dispute",
+        "trust_root_revoked"
+      ]
+    },
+    "agent_id": {
+      "type": "string"
+    },
+    "schema_version": {
+      "enum": [
+        1,
+        2
+      ]
+    },
+    "birth_status": {
+      "enum": [
+        "asserted",
+        "pending_evidence",
+        "validated",
+        "contradicted",
+        "superseded",
+        "ratified",
+        "disputed",
+        "rejected"
+      ]
+    },
+    "claim": {
+      "type": "object",
+      "description": "Prose. Never authoritative."
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/evidence"
+      }
+    },
+    "targets": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "is_trust_root": {
+      "type": "boolean"
+    },
+    "timestamp": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Metadata. Ignored by every projection path."
+    }
+  },
+  "if": {
+    "properties": {
+      "schema_version": {
+        "const": 1
+      }
+    }
+  },
+  "then": {
+    "properties": {
+      "evidence": {
+        "items": {
+          "not": {
+            "required": [
+              "binding"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "evidence": {
+      "type": "object",
+      "required": [
+        "kind",
+        "ref"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string"
+        },
+        "ref": {
+          "type": "string"
+        },
+        "checked_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "v1: null = cited, not checked. v2: metadata only."
+        },
+        "signer": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "v1: a name, not a signature. v2: metadata only."
+        },
+        "binding": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/reproducible_check"
+            },
+            {
+              "$ref": "#/$defs/signed_attestation"
+            }
+          ]
+        }
+      }
+    },
+    "reproducible_check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "command",
+        "repo",
+        "commit",
+        "expect_exit"
+      ],
+      "properties": {
+        "type": {
+          "const": "reproducible_check"
+        },
+        "command": {
+          "type": "string",
+          "minLength": 1
+        },
+        "repo": {
+          "type": "string",
+          "minLength": 1
+        },
+        "commit": {
+          "type": "string",
+          "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+        },
+        "expect_exit": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 255
+        },
+        "inputs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "sha256"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "sha256": {
+                "$ref": "#/$defs/sha256"
+              }
+            }
+          }
+        },
+        "output_sha256": {
+          "$ref": "#/$defs/sha256",
+          "description": "Digest of DETERMINISTIC output (a report file), never raw logs. Requires output_path."
+        },
+        "output_path": {
+          "type": "string",
+          "pattern": "^(?!/)(?!.*/$)(?!.*(?:^|/)\\.{1,2}(?:/|$))(?!.*//)[^\\\\\\u0000]+$",
+          "description": "Repo-relative path of the output file, resolvable inside a clean checkout; no absolute paths, '.' or '..' segments. Requires output_sha256."
+        }
+      },
+      "dependentRequired": {
+        "output_sha256": [
+          "output_path"
+        ],
+        "output_path": [
+          "output_sha256"
+        ]
+      }
+    },
+    "signed_attestation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "subject_sha256",
+        "predicate",
+        "key_id",
+        "signature"
+      ],
+      "properties": {
+        "type": {
+          "const": "signed_attestation"
+        },
+        "subject_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "predicate": {
+          "type": "string",
+          "minLength": 1
+        },
+        "key_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "signature": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Verified against the authority registry (ADR-003 §4–5, phase 3)."
+        }
+      }
+    }
+  }
+}

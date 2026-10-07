@@ -36,7 +36,7 @@ axiom this system depends on; it does not eliminate it. See MEMORY_MODEL
 
 from __future__ import annotations
 
-import dataclasses
+import re
 from dataclasses import dataclass, field, replace
 from enum import Enum
 from typing import Optional
@@ -98,6 +98,17 @@ class Authority(str, Enum):
 
 QUORUM = 2
 MAX_CHAIN_DEPTH = 8
+SCHEMA_VERSIONS = {1, 2}
+_SHA256_HEX = re.compile(r"[0-9a-f]{64}")
+_GIT_OBJECT_ID = re.compile(r"[0-9a-f]{40}|[0-9a-f]{64}")
+
+
+def is_repo_relative_path(p) -> bool:
+    """Resolvable inside a clean checkout: non-empty, not absolute, no backslash
+    or NUL, no empty / "." / ".." segments — it can never point outside."""
+    if not isinstance(p, str) or not p or p.startswith("/") or "\\" in p or "\0" in p:
+        return False
+    return all(seg not in ("", ".", "..") for seg in p.split("/"))
 
 
 # ---------------------------------------------------------------------------
@@ -105,15 +116,46 @@ MAX_CHAIN_DEPTH = 8
 # ---------------------------------------------------------------------------
 
 @dataclass(frozen=True)
+class ReproducibleCheck:
+    """ADR-003 §3 — a pinned recipe anyone can re-run and compare."""
+    command: str
+    repo: str
+    commit: str                       # full 40- or 64-hex git object id
+    expect_exit: int
+    inputs: tuple = ()                # ((id, sha256), ...) — Temenos provenance shape
+    output_sha256: Optional[str] = None   # digest of DETERMINISTIC output only
+    output_path: Optional[str] = None     # repo-relative; present iff output_sha256 is
+    type: str = "reproducible_check"
+
+
+@dataclass(frozen=True)
+class SignedAttestation:
+    """ADR-003 §3 — an artifact digest signed by a registered authority key."""
+    subject_sha256: str
+    predicate: str
+    key_id: str
+    signature: str
+    type: str = "signed_attestation"
+
+
+@dataclass(frozen=True)
 class Evidence:
     kind: str
     ref: str
+    # v1: None = CITED, not CHECKED. v2: metadata only — no v2 guard reads it.
     checked_at: Optional[str] = None
-    signer: Optional[str] = None
+    signer: Optional[str] = None      # v1: a name, not a signature. v2: metadata.
+    binding: Optional[object] = None  # v2 only: ReproducibleCheck | SignedAttestation
 
     @property
     def is_checked(self) -> bool:
         return self.checked_at is not None
+
+    @property
+    def counts_as_bound(self) -> bool:
+        # A signed_attestation counts only once the registry (phase 3) can
+        # verify its key and signature; until then it never counts.
+        return isinstance(self.binding, ReproducibleCheck)
 
 
 @dataclass(frozen=True)
@@ -134,6 +176,10 @@ class Event:
     def has_checked_evidence(self) -> bool:
         return any(e.is_checked for e in self.evidence)
 
+    @property
+    def has_bound_evidence(self) -> bool:
+        return any(e.counts_as_bound for e in self.evidence)
+
 
 # ---------------------------------------------------------------------------
 # Section 3 — Errors
@@ -152,6 +198,10 @@ class IncompleteProjection(ContractViolation):
 
 
 class ReinterpretationError(ContractViolation):
+    pass
+
+
+class ParseError(ContractViolation):
     pass
 
 
@@ -200,6 +250,10 @@ class EpisodicLog:
             raise ContractViolation(f"{e.id} illegal entry status {e.birth_status.value}")
         if e.birth_status is Status.RATIFIED and not e.is_trust_root:
             raise ContractViolation(f"{e.id} entered RATIFIED without is_trust_root")
+        if e.schema_version >= 2 and e.birth_status is Status.RATIFIED:
+            # v2 roots must be registry genesis or quorum-signed (ADR-003 §4);
+            # refuse until the registry exists rather than mint unsigned roots.
+            raise ContractViolation(f"{e.id}: v2 trust roots require the authority registry (ADR-003 §4)")
         # Lineage is single-parent in v1. Multi-parent DAGs are an explicit
         # extension; reject silently-ambiguous diamonds at write time.
         if len(e.targets) > 1:
@@ -221,9 +275,20 @@ class EpisodicLog:
         to = _TRANSITION_EFFECT[t.type]
         if to not in _TRANSITIONS[cur]:
             raise ContractViolation(f"illegal transition {cur.value} -> {to.value} on {target_id}")
-        # I1: validation requires checked evidence on the verification event.
-        if to is Status.VALIDATED and not t.has_checked_evidence:
-            raise ContractViolation(f"I1: verification {t.id} carries no checked evidence")
+        # I1: validation requires evidence on the verification event itself.
+        # v1: checked (checked_at != None). v2: BOUND — a typed timestamp no
+        # longer counts (ADR-003 §3, tp-002).
+        if to is Status.VALIDATED:
+            if t.schema_version >= 2:
+                if not t.has_bound_evidence:
+                    raise ContractViolation(
+                        f"I1: v2 verification {t.id} carries no bound evidence (checked_at is metadata in v2)")
+            elif not t.has_checked_evidence:
+                raise ContractViolation(f"I1: verification {t.id} carries no checked evidence")
+        # v2 authority acts need registry signatures (ADR-003 §4): refused
+        # until phase 3, never judged by v1's signer strings.
+        if t.schema_version >= 2 and t.type in ("ratification", "trust_root_revoked"):
+            raise ContractViolation(f"{t.id}: v2 {t.type} requires the authority registry (ADR-003 §4)")
         # Quorum: RATIFIED -> CONTRADICTED only via trust_root_revoked, and ONLY
         # counting CHECKED policy-authority signatures (cited != checked, even
         # here -- especially here).
@@ -368,24 +433,145 @@ def require_authoritative(log: EpisodicLog, field_kind: str, event_id: str,
 # Section 6 — Serialization (the persisted form) and replay
 # ---------------------------------------------------------------------------
 
+def _binding_to_record(b) -> dict:
+    if isinstance(b, SignedAttestation):
+        return {"type": b.type, "subject_sha256": b.subject_sha256, "predicate": b.predicate,
+                "key_id": b.key_id, "signature": b.signature}
+    out = {"type": b.type, "command": b.command, "repo": b.repo, "commit": b.commit,
+           "expect_exit": b.expect_exit}
+    if b.inputs:
+        out["inputs"] = [{"id": i, "sha256": h} for i, h in b.inputs]
+    if b.output_sha256 is not None:
+        out["output_sha256"] = b.output_sha256
+        out["output_path"] = b.output_path
+    return out
+
+
+def _evidence_to_record(x: Evidence) -> dict:
+    out = {"kind": x.kind, "ref": x.ref, "checked_at": x.checked_at, "signer": x.signer}
+    if x.binding is not None:           # absent on v1: v1 wire bytes unchanged
+        out["binding"] = _binding_to_record(x.binding)
+    return out
+
+
 def event_to_record(e: Event) -> dict:
     """Persisted form. `seq` is intentionally omitted; reload reassigns it by
     append order, proving the log's order is self-describing."""
     return {
         "id": e.id, "type": e.type, "agent_id": e.agent_id,
         "schema_version": e.schema_version, "birth_status": e.birth_status.value,
-        "claim": e.claim, "evidence": [dataclasses.asdict(x) for x in e.evidence],
+        "claim": e.claim, "evidence": [_evidence_to_record(x) for x in e.evidence],
         "targets": list(e.targets), "is_trust_root": e.is_trust_root,
         "timestamp": e.timestamp,
     }
 
 
+def _nonempty(v) -> bool:
+    return isinstance(v, str) and len(v) > 0
+
+
+def _only_keys(r: dict, allowed: set, ctx: str) -> None:
+    for k in r:
+        if k not in allowed:
+            raise ParseError(f"{ctx}: unknown field {k!r}")
+
+
+def _parse_binding(x, ctx: str):
+    """Strict: unknown keys refused, every field re-derived and format-checked."""
+    if not isinstance(x, dict):
+        raise ParseError(f"{ctx}: binding must be an object")
+    t = x.get("type")
+    if t == "reproducible_check":
+        _only_keys(x, {"type", "command", "repo", "commit", "expect_exit", "inputs", "output_sha256",
+                       "output_path"}, ctx)
+        if not _nonempty(x.get("command")):
+            raise ParseError(f"{ctx}: command must be a non-empty string")
+        if not _nonempty(x.get("repo")):
+            raise ParseError(f"{ctx}: repo must be a non-empty string")
+        c = x.get("commit")
+        if not isinstance(c, str) or not _GIT_OBJECT_ID.fullmatch(c):
+            raise ParseError(f"{ctx}: commit must be a full 40- or 64-hex git object id")
+        ex = x.get("expect_exit")
+        if isinstance(ex, bool) or not isinstance(ex, int) or not 0 <= ex <= 255:
+            if not (isinstance(ex, float) and ex.is_integer() and 0 <= ex <= 255):
+                raise ParseError(f"{ctx}: expect_exit must be an integer 0..255")
+            ex = int(ex)   # JSON 0.0 / 0 are the same number to JS
+        raw = x.get("inputs", [])
+        if raw is None:
+            raw = []
+        if not isinstance(raw, list):
+            raise ParseError(f"{ctx}: inputs must be an array")
+        inputs = []
+        for n, i in enumerate(raw):
+            if not isinstance(i, dict):
+                raise ParseError(f"{ctx}: inputs[{n}] must be an object")
+            _only_keys(i, {"id", "sha256"}, f"{ctx} inputs[{n}]")
+            if not _nonempty(i.get("id")):
+                raise ParseError(f"{ctx}: inputs[{n}].id must be a non-empty string")
+            h = i.get("sha256")
+            if not isinstance(h, str) or not _SHA256_HEX.fullmatch(h):
+                raise ParseError(f"{ctx}: inputs[{n}].sha256 must be 64 lowercase hex")
+            inputs.append((i["id"], h))
+        out = x.get("output_sha256")
+        if out is not None and (not isinstance(out, str) or not _SHA256_HEX.fullmatch(out)):
+            raise ParseError(f"{ctx}: output_sha256 must be 64 lowercase hex")
+        op = x.get("output_path")
+        if (out is None) != (op is None):
+            # a digest without its file can't be re-checked; a file without a digest pins nothing
+            raise ParseError(f"{ctx}: output_sha256 and output_path go together")
+        if op is not None and not is_repo_relative_path(op):
+            raise ParseError(f"{ctx}: output_path must be a repo-relative path inside the checkout")
+        return ReproducibleCheck(command=x["command"], repo=x["repo"], commit=c, expect_exit=ex,
+                                 inputs=tuple(inputs), output_sha256=out, output_path=op)
+    if t == "signed_attestation":
+        _only_keys(x, {"type", "subject_sha256", "predicate", "key_id", "signature"}, ctx)
+        h = x.get("subject_sha256")
+        if not isinstance(h, str) or not _SHA256_HEX.fullmatch(h):
+            raise ParseError(f"{ctx}: subject_sha256 must be 64 lowercase hex")
+        for k in ("predicate", "key_id", "signature"):
+            if not _nonempty(x.get(k)):
+                raise ParseError(f"{ctx}: {k} must be a non-empty string")
+        return SignedAttestation(subject_sha256=h, predicate=x["predicate"],
+                                 key_id=x["key_id"], signature=x["signature"])
+    raise ParseError(f"{ctx}: unknown binding type {t!r}")
+
+
+def _parse_evidence(x, ctx: str, schema_version: int) -> Evidence:
+    if not isinstance(x, dict):
+        raise ParseError(f"{ctx}: evidence entry not an object")
+    if not isinstance(x.get("kind"), str) or not isinstance(x.get("ref"), str):
+        raise ParseError(f"{ctx}: evidence.kind and evidence.ref must be strings")
+    ca, sg = x.get("checked_at"), x.get("signer")
+    if ca is not None and not isinstance(ca, str):
+        raise ParseError(f"{ctx}: evidence.checked_at must be string or null")
+    if sg is not None and not isinstance(sg, str):
+        raise ParseError(f"{ctx}: evidence.signer must be string or null")
+    b = x.get("binding")
+    if b is not None:
+        if schema_version < 2:
+            raise ParseError(f"{ctx}: binding requires schema_version 2")
+        b = _parse_binding(b, f"{ctx} binding")
+    return Evidence(kind=x["kind"], ref=x["ref"], checked_at=ca, signer=sg, binding=b)
+
+
 def record_to_event(r: dict) -> Event:
+    ctx = f"event {r.get('id', '<no id>')}"
+    sv = r.get("schema_version")
+    if isinstance(sv, bool) or sv not in SCHEMA_VERSIONS:
+        # fail-closed on versions this build doesn't know (ADR-003 §3)
+        raise ParseError(f"{ctx}: schema_version {sv!r} unsupported")
+    if not isinstance(r.get("evidence"), list):
+        raise ParseError(f"{ctx}: evidence must be an array")
+    if not isinstance(r.get("targets"), list) or not all(isinstance(t, str) for t in r["targets"]):
+        raise ParseError(f"{ctx}: targets must be an array of strings")
+    if not isinstance(r.get("is_trust_root"), bool):
+        raise ParseError(f"{ctx}: is_trust_root must be a boolean")
     return Event(
         id=r["id"], type=r["type"], agent_id=r["agent_id"],
-        schema_version=r["schema_version"], birth_status=Status(r["birth_status"]),
+        schema_version=int(sv), birth_status=Status(r["birth_status"]),
         claim=dict(r.get("claim") or {}),
-        evidence=tuple(Evidence(**x) for x in r["evidence"]),
+        evidence=tuple(_parse_evidence(x, f"{ctx} evidence[{i}]", int(sv))
+                       for i, x in enumerate(r["evidence"])),
         targets=tuple(r["targets"]), is_trust_root=r["is_trust_root"],
         timestamp=r.get("timestamp"),
     )

@@ -9,9 +9,11 @@
  * Env overrides: STRATUM_ENDPOINT, STRATUM_TOKEN, STRATUM_LOG, STRATUM_AGENT
  */
 
+import { spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
-import { join } from "node:path";
+import { isAbsolute, join, relative, resolve, sep } from "node:path";
 
 const CONFIG_DIR = join(homedir(), ".config", "stratum");
 const CONFIG_PATH = join(CONFIG_DIR, "config.json");
@@ -136,6 +138,84 @@ function record(s, type, extra) {
   };
 }
 
+// -- v2 reproducible-check binding (ADR-003 §3) ------------------------------
+
+const git = (args, cwd) => {
+  const r = spawnSync("git", args, { cwd, encoding: "utf8" });
+  return r.status === 0 ? r.stdout.trim() : null;
+};
+
+const sha256File = (path) => createHash("sha256").update(readFileSync(path)).digest("hex");
+
+/**
+ * Canonical repo identity from a remote URL — host/path, no scheme, no
+ * ".git", and NEVER userinfo: an https remote can embed a token
+ * (https://user:TOKEN@host/…), and this string is written to a public ledger.
+ */
+function normalizeRepo(url) {
+  let u = String(url).trim();
+  const scp = u.match(/^[^@/]+@([^:/]+):(.+)$/); // git@github.com:owner/repo.git
+  if (scp) u = `${scp[1]}/${scp[2]}`;
+  else {
+    try {
+      const parsed = new URL(u);
+      u = `${parsed.hostname}${parsed.port ? `:${parsed.port}` : ""}${parsed.pathname}`;
+    } catch {
+      return null;
+    }
+  }
+  return u.replace(/\.git$/, "").replace(/\/+$/, "") || null;
+}
+
+/**
+ * Run a check and bind its result: the command, the exact commit it ran
+ * against, the exit code, and digests of named inputs / a deterministic
+ * output file. Refuses a dirty tree — a binding pins a commit, so the tree
+ * that was tested must BE that commit, or the evidence is a lie.
+ */
+function runBoundCheck(flags) {
+  const cwd = process.cwd();
+  const top = git(["rev-parse", "--show-toplevel"], cwd);
+  if (top === null) fail("--run needs a git repository: a binding pins the commit the check ran against");
+  const dirty = git(["status", "--porcelain"], top);
+  if (dirty) fail("working tree is dirty — commit or stash first: the tested tree must be the pinned commit");
+  const commit = git(["rev-parse", "HEAD"], top);
+  const repo = flags.repo ? String(flags.repo) : normalizeRepo(git(["remote", "get-url", "origin"], top) || "");
+  if (!repo) fail("no origin remote to name the repo — pass --repo host/owner/name");
+  const expectExit = flags["expect-exit"] === undefined ? 0 : Number(flags["expect-exit"]);
+  if (!Number.isInteger(expectExit) || expectExit < 0 || expectExit > 255) fail("--expect-exit must be 0..255");
+
+  const inputs = flags.input
+    ? String(flags.input).split(",").map((pair) => {
+        const at = pair.indexOf("=");
+        if (at <= 0) fail(`--input expects id=path[,id=path…], got "${pair}"`);
+        return { id: pair.slice(0, at), sha256: sha256File(resolve(cwd, pair.slice(at + 1))) };
+      })
+    : [];
+
+  const command = String(flags.run);
+  console.error(color.dim(`$ ${command}   (at ${commit.slice(0, 12)})`));
+  const r = spawnSync(command, { cwd, shell: true, stdio: "inherit" });
+  const exit = r.status ?? 255;
+  if (exit !== expectExit) fail(`check failed: exit ${exit}, expected ${expectExit} — nothing recorded`);
+  if (git(["rev-parse", "HEAD"], top) !== commit) fail("HEAD moved during the check — nothing recorded");
+  if (git(["status", "--porcelain"], top)) {
+    console.error(color.gold("!") + " the check left the tree dirty; the binding still pins the commit it started from");
+  }
+  const binding = { type: "reproducible_check", command, repo, commit, expect_exit: expectExit };
+  if (inputs.length) binding.inputs = inputs;
+  if (flags.output) {
+    // Stored repo-relative (never cwd-relative or absolute) so a re-checker can
+    // find the same file in a clean checkout of the pinned commit.
+    const abs = resolve(cwd, String(flags.output));
+    const rel = relative(top, abs);
+    if (!rel || rel.startsWith("..") || isAbsolute(rel)) fail("--output must be a file inside the repository");
+    binding.output_sha256 = sha256File(abs);
+    binding.output_path = rel.split(sep).join("/");
+  }
+  return binding;
+}
+
 function fail(msg, code = 1) {
   console.error(color.red("✗") + " " + msg);
   process.exit(code);
@@ -201,13 +281,40 @@ const commands = {
   async verify(pos, flags) {
     const s = settings(flags);
     const [target] = pos;
-    if (!target || !flags.ref) fail('usage: stratum verify <event-id> --ref "what you checked" [--kind test_exit]');
-    const rec = record(s, "verification", {
-      targets: [target],
-      evidence: [{ kind: String(flags.kind || "human_attestation"), ref: String(flags.ref), checked_at: new Date().toISOString(), signer: s.agent }],
-    });
+    if (!target || (!flags.run && !flags.ref)) {
+      fail('usage: stratum verify <event-id> --run "<check command>" [--expect-exit 0] [--input id=path,…] [--output report.json] [--repo host/owner/name] [--dry-run]\n' +
+           '       stratum verify <event-id> --ref "what you checked"   (legacy v1: unbound)');
+    }
+    let rec;
+    if (flags.run) {
+      // v2: the check is run HERE and its result bound — the default path.
+      const binding = runBoundCheck(flags);
+      rec = record(s, "verification", {
+        schema_version: 2,
+        targets: [target],
+        evidence: [{
+          kind: String(flags.kind || "test_exit"),
+          ref: binding.command,
+          checked_at: new Date().toISOString(), // metadata only in v2
+          signer: s.agent,                       // metadata only in v2
+          binding,
+        }],
+      });
+    } else {
+      console.error(color.gold("!") + " --ref writes UNBOUND v1 evidence: checked_at is a typed timestamp, not a check (ADR-003). Prefer --run.");
+      rec = record(s, "verification", {
+        targets: [target],
+        evidence: [{ kind: String(flags.kind || "human_attestation"), ref: String(flags.ref), checked_at: new Date().toISOString(), signer: s.agent }],
+      });
+    }
+    if (flags["dry-run"]) {
+      console.log(JSON.stringify(rec, null, 2));
+      return;
+    }
     await appendEvent(s, rec);
-    ok(`${target} → validated · checked "${flags.ref}"`);
+    ok(flags.run
+      ? `${target} → validated · bound to ${rec.evidence[0].binding.commit.slice(0, 12)} (exit ${rec.evidence[0].binding.expect_exit})`
+      : `${target} → validated · ${color.gold("unbound")} "${flags.ref}"`);
   },
 
   async ratify(pos, flags) {
@@ -310,7 +417,9 @@ const HELP = `${color.bold("stratum")} — one command, one recorded decision
   ${color.bold("write")}
     decide "…"            record a decision   [--pending] [--supersedes id] [--shadow "…"]
     foreclose "…"         close a road        [--shadow "…"]
-    verify <id> --ref "…" attach CHECKED evidence → validated   [--kind test_exit]
+    verify <id> --run "…" run a check, bind it to the commit → validated (v2)
+                          [--expect-exit 0] [--input id=path,…] [--output report.json] [--dry-run]
+    verify <id> --ref "…" legacy v1: unbound evidence (a typed timestamp)
     ratify <id>           human ratification → ${color.gold("axiomatic")}
     dispute | reject | contradict <id>
   ${color.bold("read")}
