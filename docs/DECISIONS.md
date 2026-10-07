@@ -568,7 +568,7 @@ Reusing an existing cross-project Cloudflare API token for the stratum Worker's 
 
 *ADR-003: bound evidence, an authority registry, atomic persistence.*
 
-> `data/trust-trace.jsonl` · epoch 13 · 14 events · 11 decisions · 3 foreclosures
+> `data/trust-trace.jsonl` · epoch 20 · 21 events · 15 decisions · 4 foreclosures
 
 ## Decisions
 
@@ -612,7 +612,7 @@ Signing uses RFC 8785 JCS canonical bytes with a cross-implementation golden fix
 
 > **Shadow [TRACE · certainty 0.75]** — Both implementations must sign identical bytes, so the canonical form becomes a new golden surface, tested like the projection golden. The oracle is an executable spec and CI runs bare python3; a pip install of cryptography would add a supply-chain step for a verifier that fits in about 60 lines. The TS verifier (node:crypto vs a pure-JS library) is decided in phase 3 against a real workerd run.
 
-### tp-005 — ○ narrative · asserted
+### tp-005 — ○ narrative · rejected
 
 **claude** · 2026-10-06T19:05:00-04:00
 
@@ -664,6 +664,40 @@ Revision of tp-012 after a touchstone pass. Canonical numbers are IEEE-754 doubl
 
 > **Shadow [TRACE · certainty 0.85]** — Touchstone probed four boundaries the 52/52 suite didn't reach. P1 failed: a number of magnitude at least 2^53 passed loadLog but persistence refused it, so a production log already holding one would brick on first load after deploy. P2 failed: editing a stored row and then nulling every chain made the read-path backfill re-chain the tampered log. P3 held (middle deletion caught) and is now a test instead of an assertion. P4 held within scope (the chain authenticates normalized content, not bytes). The re-pass held: workerd migration served the oracle's genesis digest, a 1.73e18/1e300 append returned 201, and workerd and the oracle agree on fe2b04cf for that log. Perimeter: an attacker with storage write access can still recompute the whole chain (no secret), so only an anchor makes it tamper-proof rather than tamper-evident. TS parsing defaults missing is_trust_root to false where the oracle raises KeyError, a pre-existing leniency gap left for phase 2.
 
+### tp-014 — ◐ PROVISIONAL · pending_evidence
+
+**claude** · 2026-10-06T20:30-04:00
+
+Until the authority registry exists, v2 ratifications, v2 trust_root_revoked and v2 ratified trust-root births are refused outright, and both parsers are strict: evidence, targets and is_trust_root are required, and binding objects refuse unknown keys.
+
+> **Shadow [TRACE · certainty 0.85]** — Letting v2 authority acts through before phase 3 would either judge them by v1's signer strings (the retired primitive) or mint unsigned v2 roots that the registry would later have to grandfather. Fail-closed is the honest interim. Strictness closes the touchstone-found divergence where TS defaulted fields the oracle requires; strict binding keys enforce claude-stamp's re-derive-never-trust rule, so a supplied verified:true is a parse error. Verified safe for current writers: the CLI, the Atrium and Temenos all send every required field, and every trace has them.
+
+### tp-015 — ◐ PROVISIONAL · pending_evidence
+
+**claude** · 2026-10-06T20:31-04:00
+
+The CLI's default verification path is bound: `stratum verify <id> --run <cmd>` runs the check, pins the commit, refuses a dirty tree, records nothing on an unexpected exit, digests named inputs and a deterministic output file, and strips remote userinfo. `--ref` remains as legacy v1 and warns that it is unbound.
+
+> **Shadow [TRACE · certainty 0.85]** — The CLI's verify command used to manufacture the retired primitive itself: checked_at=new Date(), signer=agent. If binding is harder than not binding, writers won't bind, so the honest path has to be the easy path. Refusing a dirty tree is load-bearing, because a binding that pins a commit not containing the tested code is a lie with a SHA attached. Userinfo stripping matters because an https remote can embed a token and this record goes to a public ledger. Proven by cli/test/verify.test.ts against a real scratch repo whose remote carries a fake token.
+
+### tp-016 — ◆ AXIOMATIC · ratified
+
+**mazze** · 2026-10-06T20:07:00-04:00 · **trust root**
+
+Verified remains verified. Status is a fold: v1 events validated under v1 rules keep authoritative_verified. ADR-003 phase 4 (legacy projection) is dropped and the projection does not change.
+
+> **Shadow [TRACE · certainty 1.0]** — Human ruling, given by mazze in-session 2026-10-06 in answer to ADR-003 section 7. A projection is a fold over the log under the rules each event was appended under; re-tiering history by a later contract would make authority depend on the reader's contract version rather than the log, which is reinterpretation (the I4 principle across versions, not only across replay). Each event's schema_version already makes the kind of evidence it met inspectable.
+
+### tp-019 — ◐ PROVISIONAL · pending_evidence
+
+**claude** · 2026-10-06T20:30:00-04:00
+
+Loop reordered, approved by mazze: (1) land the PR stack on main with CI green; (2) anchor the log head off-system; (3) a CI re-checker that re-runs reproducible_check bindings at their pinned commits and records the results; (4) only then the authority registry, scoped to a per-log quorum fixed at genesis that allows a single hardware key for a single-human log, labeled as such; (5) migrate Temenos to v2 as the first external writer.
+
+*Revision chain:* `tp-003 → tp-019`
+
+> **Shadow [TRACE · certainty 0.8]** — From the project assessment. Binding makes evidence re-checkable but nothing re-checks it yet, so the re-checker turns the promise into a practice. Without an anchor the chain is only tamper-evident, and a dropped tail is invisible. A QUORUM=2 registry with one human is theater (two keys, one person) or agents holding authority keys (generation becoming authority), so the honest version is fixed per log at genesis. A ledger read only by its author is a journal, which makes Temenos the external test.
+
 ## Foreclosures — ghost edges
 
 ### tp-006 — standing
@@ -689,6 +723,14 @@ Shared-secret HMAC signatures and a pip-installed crypto library in CI are forec
 *Ghost edges:* ~~`hmac-shared-secret`~~ · ~~`pip-cryptography-in-ci`~~
 
 > **Shadow [TRACE · certainty 0.85]** — HMAC needs the verifier to hold the signing secret, so a registry of verify-only keys is impossible and every verifier becomes a forger. A CI pip step adds an unpinned supply-chain edge to the oracle for something stdlib can do. Reopen if the RFC 8032 oracle proves too slow for CI-sized traces.
+
+### tp-020 — standing
+
+Stacked PRs (a PR based on another unmerged PR's branch) are foreclosed for this work: one PR per phase, based on main, the next started only after the previous lands.
+
+*Ghost edges:* ~~`stacked-pr-chain`~~
+
+> **Shadow [TRACE · certainty 0.9]** — The stack stranded work and hid it from CI. CI runs only on PRs targeting main, so #74 to #76 never ran it, and my local green was the only gate. #74 was merged into its stacked base after #73 had been squash-merged into main, so phase 1 never reached main until a merge plus a retarget recovered it. Stacking also forced a force-push and a diff3-marker cleanup earlier. Reopen only if CI is configured to run on all PR bases.
 
 ## Checked-evidence ledger
 

@@ -15,7 +15,7 @@
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:reference": "cd reference && python3 test_tessera_projection.py && python3 test_canonical.py",
+    "test:reference": "cd reference && python3 test_tessera_projection.py && python3 test_canonical.py && python3 test_binding.py",
     "validate:trace": "python3 scripts/validate-trace.py",
     "check": "npm run check --workspaces --if-present",
     "dev": "npm run dev --workspace worker",

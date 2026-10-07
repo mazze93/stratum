@@ -1,6 +1,6 @@
 # ADR-003 — Bound evidence, an authority registry, atomic persistence
 
-**Status:** Proposed — phased; one phase per PR (see §6)
+**Status:** Accepted — phased; one phase per PR (see §6). §7 decided 2026-10-06.
 **Date:** 2026-10-06
 **Relates to:** `MEMORY_MODEL.md` §1, §5, §7, §10 (rev 3 → rev 4 as phases land); `TRUST.md` §1
 **Trace:** `data/trust-trace.jsonl` (`tp-*`) — this ADR's decisions, recorded as they are made
@@ -91,7 +91,24 @@ is the §Perimeter narrowing that is actually possible. It moves trust from
 
 **Versioning:** `schema_version` 1 events keep the v1 guards byte-for-byte, so
 all four existing traces still load. `schema_version > 2` is a `ParseError`
-(fail-closed on unknown versions).
+(fail-closed on unknown versions). Evidence on a v1 event may not carry a
+binding. Until the registry exists (phase 3), v2 ratifications,
+`trust_root_revoked` events and ratified trust-root births are **refused**.
+They are never judged by v1's signer strings, and the log never mints
+unsigned v2 roots that the registry would later have to grandfather.
+
+**Parsing is strict in both implementations (phase 2).** `evidence`, `targets`
+and `is_trust_root` are required. The TS port used to default them, so it
+accepted logs the oracle rejected (found by touchstone). Binding objects
+refuse unknown keys, so a supplied `"verified": true` is a parse error and
+never a shortcut. That is the re-derive-never-trust rule from §8.
+
+**Writers: binding is the default path.** `stratum verify <id> --run "<cmd>"`
+runs the check itself. It pins the commit, refuses a dirty tree (the tested
+tree must *be* the pinned commit), records nothing on an unexpected exit
+code, digests `--input`/`--output` files, and strips userinfo from the remote
+URL so an embedded token never reaches the ledger. `--ref` still writes v1
+evidence, but it warns that the evidence is unbound.
 
 ## 4. Decision C — a real authority registry, built on the same log
 
@@ -163,33 +180,32 @@ and if it brings a dependency into `core/`, it gets its own trace event
 | 1b | Hash-chained persistence + exposed head digest (§8) | No (adds a field to `stats`) |
 | 2 | v2 evidence binding: types, wire format, guards in both implementations, version gate, `schemas/event.v2.schema.json` | No (v1 untouched) |
 | 3 | JCS + SSHSIG/Ed25519 (incl. `sk-`) in both implementations, canonical golden, authority registry guards | No (v1 untouched) |
-| 4 | **Projection of legacy evidence** (§7) | **Yes. Waits on mazze.** |
+| 4 | ~~Projection of legacy evidence~~ — **dropped** (§7, `tp-016`) | No |
 | 5 | MEMORY_MODEL rev 4, TRUST.md, this trace's verification events using v2 bindings | — |
 
-## 7. Open — how v1 `validated` events project (needs mazze)
+## 7. Decided — v1 `validated` events stay verified (`tp-016`)
 
-All existing `authoritative_verified` decisions earned that tier on
-`checked_at` alone, which is the primitive this ADR calls insufficient.
-There are three options:
+**Ruling (mazze, 2026-10-06): "verified remains verified. Status is a fold."**
 
-1. **Grandfather.** Tier unchanged. Contradicts the directive: the history
-   would keep presenting typed timestamps as verified.
-2. **Recommended: demote, visibly, with a way back.** Status stays `validated`.
-   The fold and the history do not change. The authority tier becomes
-   `authoritative_verified` only if some verification marker on the event
-   carries **bound** evidence. Otherwise it is `authoritative_provisional`,
-   and each projected entry gains `binding: "unbound" | "reproducible_check"
-   | "signed_attestation"`. The way back is a re-verification edge
-   (`validated → validated`, v2 `verification` with bound evidence only), so
-   a legacy decision can be re-bound without rewriting history. This follows
-   the precedent of the axiomatic/verified split: when trust kinds differ, show
-   the difference rather than collapse it.
-3. **New tier** (`authoritative_declared`). Honest, but a fifth tier spreads
-   into the landing figure, the Atrium legend, and every reader's mental
-   model, for a state that option 2 already expresses.
+A projection is a fold over the log under the rules each event was appended
+under. A v1 decision validated by v1-checked evidence met the contract that
+was in force, so it keeps `authoritative_verified`. Re-tiering history by a
+later contract would make an event's authority depend on *which contract
+version is reading the log*, not on the log. That is reinterpretation, the
+thing I4 forbids, applied across contract versions rather than across
+replay. Each event's `schema_version` already makes the kind of evidence it
+met inspectable to anyone who asks.
 
-Both 2 and 3 change `data/genesis-projection.golden.json`. That gets
-regenerated deliberately, with this section cited in the commit.
+Consequences:
+
+- **Phase 4 is dropped.** The projection shape and
+  `data/genesis-projection.golden.json` do not change.
+- The proposal (`tp-005`: demote to provisional, add `binding: "unbound"`,
+  add a re-verification edge) is recorded as disputed, then rejected
+  (`tp-017`, `tp-018`), with its ghost edges kept on `tp-016`.
+- The v2 strictness is **forward-only**, which is what ADR-003 changes: new
+  evidence can no longer validate on a typed timestamp. The existing record
+  is not rewritten.
 
 ## 8. Inspiration: claude-stamp and Temenos
 
@@ -240,16 +256,17 @@ Two sibling repos already solve parts of this. Borrowed, with credit:
   normative wire contract that consumers validate against, so that this ADR's
   prose isn't the only definition of the format.
 - **Don't collapse evaluations into one score.** Temenos keeps
-  deterministic, behavioral, model and human evaluation separate. §7's
-  per-entry `binding` field keeps the trust kinds of evidence separate in the
-  same way. A single tier would collapse them.
+  deterministic, behavioral, model and human evaluation separate. Here that
+  is the per-event `schema_version` plus the binding *type* on v2 evidence.
+  The kind of evidence behind a decision stays inspectable without the
+  authority tier being re-scored after the fact (§7).
 
 ## 9. Consequences
 
 - The contract's strongest claim ("only checked evidence counts") becomes
   something the engine can mechanically tell apart, for v2.
-- v1 traces remain loadable forever. Their *trust* is phase 4's question,
-  answered in the open rather than by accident.
+- v1 traces remain loadable forever, and keep the authority they earned under
+  the contract they were written to (§7).
 - New permanent surfaces: the canonical-bytes golden, a crypto verifier in two
   languages, and an RFC 8032 implementation the oracle must keep correct
   (pinned by RFC test vectors).
