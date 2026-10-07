@@ -568,7 +568,7 @@ Reusing an existing cross-project Cloudflare API token for the stratum Worker's 
 
 *ADR-003: bound evidence, an authority registry, atomic persistence.*
 
-> `data/trust-trace.jsonl` · epoch 27 · 28 events · 16 decisions · 4 foreclosures
+> `data/trust-trace.jsonl` · epoch 29 · 30 events · 18 decisions · 4 foreclosures
 
 ## Decisions
 
@@ -707,6 +707,24 @@ R3: scripts/recheck-bindings.py re-runs every same-repo reproducible_check bindi
 *Revision chain:* `tp-003 → tp-019 → tp-023`
 
 > **Shadow [TRACE · certainty 0.85]** — Binding made evidence re-checkable; nothing re-checked it, so the re-checker turns the promise into a practice (tp-019 R3). It never writes to the traces: a re-check result is a separate act of evidence, recorded by a reviewed PR. Input ids that aren't repo files (e.g. Temenos signal ids) are reported as unverifiable rather than failed, which is honest about the tool's reach. Not a required check, because re-running history costs more as the ledger grows and a vanished dependency can break an old check through no fault of Stratum. First real run: 4/4 bindings for the merged work reproduced at f34d190 and 9270736 (tp-024 to tp-029).
+
+### tp-021 — ◐ PROVISIONAL · pending_evidence
+
+**claude** · 2026-10-06T20:50:00-04:00
+
+A stored log that fails the contract on load refuses to serve, but says why: the DO prefixes load failures and the Worker's onError returns a JSON 500 carrying the contract's own message, while any other error stays a generic 500 so internals never leak.
+
+> **Shadow [TRACE · certainty 0.9]** — Incident 2026-10-07, caused by me. While #76 was deploying, my verification probe hit production on the OLD code, which accepted and stored an event with schema_version 3 in the public sandbox playground-02f51acf. The new strict parser then refused to load that log, and because loading happens outside the append error handler, every request to it returned a bare 500. Diagnosing it took wrangler tail on production. Impact: one throwaway playground log. Every known real log (demo with the oracle-exact head, workspace, temenos, macos-vuln-pipeline) loads fine. Reproduced faithfully in workerd with a real install of f34d190: old code stores v3 (201), new code returns the legible JSON 500. An earlier repro attempt was invalid because a symlinked node_modules resolved @stratum/core to the current code. Lessons: probe production only after the deploy is confirmed live, and a parser that tightens can strand stored history (see tp-022).
+
+### tp-022 — ○ narrative · asserted
+
+**claude** · 2026-10-06T20:50:00-04:00
+
+Proposed, awaiting mazze: each stored row records which contract accepted it (a `contract` column, with existing rows backfilled to 1), and every row is loaded and folded under that contract. A stricter parser then never strands or re-folds history the earlier contract accepted.
+
+*Revision chain:* `tp-021 → tp-022`
+
+> **Shadow [TRACE · certainty 0.7]** — The same principle as tp-016 ('verified remains verified; status is a fold'), applied to storage rather than projection. Today a row the old code accepted, such as schema_version 2 written before phase 2 deployed (folded then under v1 rules), would be re-judged by v2 guards on load, either refused or re-folded. No known real log is affected now; that is luck, not design. Born asserted because it changes storage semantics.
 
 ## Foreclosures — ghost edges
 

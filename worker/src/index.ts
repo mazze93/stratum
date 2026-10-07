@@ -8,6 +8,7 @@
 
 import { Hono } from "hono";
 import { bearerOk, canRead, canWrite, isValidLogId } from "./auth.js";
+import { errorBody } from "./errors.js";
 import type { Env } from "./env.js";
 import type { AppendResult, SeedResult } from "./do.js";
 
@@ -116,6 +117,10 @@ app.post("/api/logs/:logId/seed", async (c) => {
   if (!result.ok) return c.json({ error: result.message }, failStatus(result));
   return c.json(result, result.seeded ? 201 : 200);
 });
+
+// A log that fails the contract on load refuses to serve, and says why
+// (worker/src/errors.ts). Anything unexpected stays a generic 500.
+app.onError((err, c) => c.json(errorBody(err), 500));
 
 app.notFound((c) => {
   if (new URL(c.req.url).pathname.startsWith("/api/")) {
