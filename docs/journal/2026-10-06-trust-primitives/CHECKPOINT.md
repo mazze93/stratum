@@ -6,9 +6,9 @@ Last updated: 2026-10-06
 - [x] 1b Hash-chained persistence + head digest (tp-009, revised by tp-012, tp-013) — PR #75
 - [x] 2 v2 evidence binding + schemas/event.v2.schema.json + CLI --run (tp-002, tp-011, tp-014, tp-015) — PR pending
 - [ ] **Reordered (tp-019, mazze-approved):**
-  - [ ] R1 Land the stack on main with CI green — #72 fixed; #75 retargeted to main (phases 1+1b); #76 next
+  - [x] R1 Stack landed: #72, #75 (f34d190), #76 (9270736); prod verified (demo head == oracle). Incident fix #78 awaiting merge; tp-022 awaiting mazze.
   - [ ] R2 Anchor the log head off-system (claude-stamp / checkmate forward-only hub)
-  - [ ] R3 CI re-checker: re-run reproducible_check bindings at their pinned commits, record results
+  - [x] R3 Re-checker + weekly CI job; output_path added; first run 4/4 reproduced (tp-023..029) — PR pending
   - [ ] R4 Authority registry — per-log quorum fixed at genesis; single hardware key allowed for single-human logs, labeled (tp-003, tp-004, tp-010)
   - [ ] R5 Temenos → v2 evidence (first external writer)
   - [ ] R6 MEMORY_MODEL rev 4, TRUST.md, verification events with v2 bindings

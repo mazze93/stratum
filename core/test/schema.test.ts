@@ -9,6 +9,7 @@ import { readFileSync } from "node:fs";
 import { describe, expect, test } from "vitest";
 import {
   GIT_OBJECT_ID,
+  isRepoRelativePath,
   KNOWN_TYPES,
   ParseError,
   SCHEMA_VERSIONS,
@@ -51,6 +52,15 @@ describe("event.v2.schema.json agrees with the parsers", () => {
     }
   });
 
+  test("output_path: the schema's pattern agrees with the parser, and the pair is mutual", () => {
+    const rc = defs.reproducible_check as Json;
+    expect(rc.dependentRequired).toEqual({ output_sha256: ["output_path"], output_path: ["output_sha256"] });
+    const re = new RegExp(rc.properties.output_path.pattern as string);
+    const samples = ["out.json", "reports/vitest.json", "a/b/c.txt", ".hidden", "a..b/c",
+      "", "/abs", "../up", "a/../b", "a/./b", "./a", "a//b", "a/", "a\\b", "a\u0000b"];
+    for (const s of samples) expect(re.test(s), JSON.stringify(s)).toBe(isRepoRelativePath(s));
+  });
+
   test("binding key sets are strict in both places", () => {
     const ev = (binding: Json): Json => ({
       id: "x", type: "decision", agent_id: "a", schema_version: 2, birth_status: "asserted",
@@ -60,7 +70,7 @@ describe("event.v2.schema.json agrees with the parsers", () => {
     const full: Record<string, Json> = {
       reproducible_check: {
         type: "reproducible_check", command: "c", repo: "r", commit: "a".repeat(40),
-        expect_exit: 0, inputs: [], output_sha256: "b".repeat(64),
+        expect_exit: 0, inputs: [], output_sha256: "b".repeat(64), output_path: "reports/out.json",
       },
       signed_attestation: {
         type: "signed_attestation", subject_sha256: "c".repeat(64), predicate: "p", key_id: "k", signature: "s",

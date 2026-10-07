@@ -99,6 +99,8 @@ export interface ReproducibleCheck {
   readonly inputs: readonly { readonly id: string; readonly sha256: string }[];
   /** optional; MUST digest deterministic output (a report file), never raw logs */
   readonly outputSha256: string | null;
+  /** repo-relative path of that output file — present iff outputSha256 is, or it can't be re-checked */
+  readonly outputPath: string | null;
 }
 
 export interface SignedAttestation {
@@ -114,6 +116,17 @@ export type Binding = ReproducibleCheck | SignedAttestation;
 export const SHA256_HEX = /^[0-9a-f]{64}$/;
 export const GIT_OBJECT_ID = /^(?:[0-9a-f]{40}|[0-9a-f]{64})$/;
 export const SCHEMA_VERSIONS: ReadonlySet<number> = new Set([1, 2]);
+
+/**
+ * A repo-relative path a re-checker can resolve inside a clean worktree:
+ * non-empty, not absolute, no backslashes or NUL, no empty / "." / ".."
+ * segments — so it can never point outside the checkout.
+ */
+export function isRepoRelativePath(p: unknown): p is string {
+  if (typeof p !== "string" || p.length === 0 || p.startsWith("/")) return false;
+  if (p.includes("\\") || p.includes("\0")) return false;
+  return p.split("/").every((seg) => seg !== "" && seg !== "." && seg !== "..");
+}
 
 export interface Evidence {
   readonly kind: string;

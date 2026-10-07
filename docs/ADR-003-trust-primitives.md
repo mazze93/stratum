@@ -60,7 +60,8 @@ remain but become **metadata**: no v2 guard reads them.
              "command": "npm test", "repo": "github.com/mazze93/stratum",
              "commit": "<40-hex git SHA>", "expect_exit": 0,
              "inputs": [{"id": "trace", "sha256": "<64-hex>"}],   // optional
-             "output_sha256": "<64-hex>"}}                       // optional
+             "output_sha256": "<64-hex>",                        // optional, with…
+             "output_path": "reports/vitest.json"}}              // …its repo-relative file
 
 // signed: an artifact digest signed by a registered authority key (§4)
 {"kind": "artifact", "ref": "dist/stratum.mjs",
@@ -74,7 +75,16 @@ remain but become **metadata**: no v2 guard reads them.
 reproducible check without translation. `output_sha256`, when present, must
 be a digest of **deterministic** output, such as a JSON report or a file
 artifact. A digest of raw test output is useless because runners print
-timings. When it is absent, the exit code is the pinned result.
+timings. When it is absent, the exit code is the pinned result. `output_path`
+names that file, repo-relative with no `..`. It's required alongside the digest,
+because a digest without its file can't be re-checked. Building the re-checker
+exposed that gap (`tp-023`).
+
+**Re-checked, not just re-checkable (R3).** `scripts/recheck-bindings.py`
+re-runs every same-repo binding at its pinned commit in a clean worktree and
+re-derives the exit code and the digests. `.github/workflows/recheck.yml` runs
+it weekly, on demand, and when traces change. A failure there is a finding to
+triage, not a gate. The re-checker never writes to the traces.
 
 **v2 I1:** a v2 `verification` reaches `validated` only if it carries at least
 one evidence entry with a **well-formed** binding. An attestation binding counts

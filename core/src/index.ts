@@ -7,6 +7,7 @@ export {
   GIT_OBJECT_ID,
   hasBoundEvidence,
   hasCheckedEvidence,
+  isRepoRelativePath,
   IncompleteProjection,
   isChecked,
   KNOWN_TYPES,

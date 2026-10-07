@@ -1,0 +1,39 @@
+name: Re-check bindings
+
+# ADR-003 R3 (tp-023): a reproducible_check binding is a promise that anyone
+# can re-run the pinned command at the pinned commit and get the pinned result.
+# This job keeps that promise: it re-runs every same-repo binding in the traces
+# in a clean worktree and fails if any of them doesn't reproduce.
+#
+# Not a required check: it re-runs historical commits, so its cost grows with
+# the ledger, and a dependency that vanishes from the registry can break an old
+# check without anything here being wrong. A failure is a finding to triage,
+# never something to auto-fix.
+
+on:
+  schedule:
+    - cron: "17 6 * * 1" # Mondays 06:17 UTC
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - "data/*-trace.jsonl"
+      - "scripts/recheck-bindings.py"
+
+permissions:
+  contents: read
+
+jobs:
+  recheck:
+    name: Re-run reproducible_check bindings
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0 # bindings pin historical commits
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+      - name: Re-run every binding at its pinned commit
+        run: python3 scripts/recheck-bindings.py --repo github.com/mazze93/stratum
