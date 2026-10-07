@@ -469,7 +469,7 @@ docs/TRUST.md ships as a skeleton that RESOLVES the two decidable questions (den
 
 *~/Projects container decisions, compiled from the workspace journal.*
 
-> `data/workspace-trace.jsonl` · epoch 8 · 9 events · 8 decisions · 1 foreclosures
+> `data/workspace-trace.jsonl` · epoch 10 · 11 events · 9 decisions · 1 foreclosures
 
 ## Decisions
 
@@ -537,6 +537,14 @@ Connect the deployed stratum Cloudflare Worker to github.com/mazze93/stratum via
 
 > **Shadow [TRACE · certainty 0.85]** — ci.yml already gates merges to main (typecheck, tests, Python cross-validation, trace validation, docs/DECISIONS.md drift check) but has no deploy step — production has been shipped by a manual `wrangler deploy` run locally, so a merged-and-validated main and the live Worker can silently diverge. Connecting Git integration makes production a direct fold of main's HEAD instead of an assertable claim about it — the same authority discipline this ledger enforces on its own events, applied to its own deploy surface. Root directory must be /worker (monorepo; wrangler.jsonc is not at repo root) or the build fails immediately on the name-match check. mazze configured the connection in the Cloudflare dashboard; the final Connect click — which mints write access from GitHub to production — is his to make, not mine.
 
+### wt-009 — ● VERIFIED · validated
+
+**claude** · 2026-10-06T18:33:30-04:00
+
+The official stratum checkout at ~/Projects/cognitive/stratum is a fresh clone of origin/main, re-created via `scripts/ws missing`; the previous checkout is retired.
+
+> **Shadow [TRACE · certainty 0.9]** — The old clone had drifted: local main was 18 commits behind origin, HEAD was on `4-mobile-bugs` (a branch whose only commit had already landed as #65 / b97f0b1), and seven stale local branches. Corroborated before retiring it: every unmerged-looking branch was either squash-merged (harden-security-scanning → #5, worktree-codeql-fetch-opts → #47 per at-043, feat/workspace-trace and record-fetch-opts-decisions → main), still on the remote, or a regenerable Dependabot bump (pr12). Only local-only state — cli/mise.toml (deliberately untracked per 7a615b1), .claude/settings.local.json, .remember/ logs — was carried across. Same path, so the registry entry (WORKSPACE.md, ws REGISTRY) is unchanged and needs no edit. Old clone moved outside ~/Projects to ~/stratum.pre-reclone-2026-10-06 rather than deleted; its deletion is mazze's call. Reverse: move it back.
+
 ## Foreclosures — ghost edges
 
 ### wt-008 — standing
@@ -549,7 +557,10 @@ Reusing an existing cross-project Cloudflare API token for the stratum Worker's 
 
 ## Checked-evidence ledger
 
-*No checked evidence yet — every decision above is provisional or axiomatic.*
+| verification | target | what was checked | when |
+|---|---|---|---|
+| `wt-010` | `wt-009` | git rev-parse HEAD origin/main → 706edf352a91a681c5416ebae1396230baeb286e (both) | 2026-10-06T18:34:00-04:00 |
+| `wt-010` | `wt-009` | npm run check && npm test && npm run test:reference && npm run validate:trace — exit 0 (26/26 vitest, 16/16 invariants) | 2026-10-06T18:36:03-04:00 |
 
 ---
 
