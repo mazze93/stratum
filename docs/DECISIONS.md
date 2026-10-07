@@ -568,7 +568,7 @@ Reusing an existing cross-project Cloudflare API token for the stratum Worker's 
 
 *ADR-003: bound evidence, an authority registry, atomic persistence.*
 
-> `data/trust-trace.jsonl` · epoch 18 · 19 events · 14 decisions · 3 foreclosures
+> `data/trust-trace.jsonl` · epoch 20 · 21 events · 15 decisions · 4 foreclosures
 
 ## Decisions
 
@@ -688,6 +688,16 @@ Verified remains verified. Status is a fold: v1 events validated under v1 rules 
 
 > **Shadow [TRACE · certainty 1.0]** — Human ruling, given by mazze in-session 2026-10-06 in answer to ADR-003 section 7. A projection is a fold over the log under the rules each event was appended under; re-tiering history by a later contract would make authority depend on the reader's contract version rather than the log, which is reinterpretation (the I4 principle across versions, not only across replay). Each event's schema_version already makes the kind of evidence it met inspectable.
 
+### tp-019 — ◐ PROVISIONAL · pending_evidence
+
+**claude** · 2026-10-06T20:30:00-04:00
+
+Loop reordered, approved by mazze: (1) land the PR stack on main with CI green; (2) anchor the log head off-system; (3) a CI re-checker that re-runs reproducible_check bindings at their pinned commits and records the results; (4) only then the authority registry, scoped to a per-log quorum fixed at genesis that allows a single hardware key for a single-human log, labeled as such; (5) migrate Temenos to v2 as the first external writer.
+
+*Revision chain:* `tp-003 → tp-019`
+
+> **Shadow [TRACE · certainty 0.8]** — From the project assessment. Binding makes evidence re-checkable but nothing re-checks it yet, so the re-checker turns the promise into a practice. Without an anchor the chain is only tamper-evident, and a dropped tail is invisible. A QUORUM=2 registry with one human is theater (two keys, one person) or agents holding authority keys (generation becoming authority), so the honest version is fixed per log at genesis. A ledger read only by its author is a journal, which makes Temenos the external test.
+
 ## Foreclosures — ghost edges
 
 ### tp-006 — standing
@@ -713,6 +723,14 @@ Shared-secret HMAC signatures and a pip-installed crypto library in CI are forec
 *Ghost edges:* ~~`hmac-shared-secret`~~ · ~~`pip-cryptography-in-ci`~~
 
 > **Shadow [TRACE · certainty 0.85]** — HMAC needs the verifier to hold the signing secret, so a registry of verify-only keys is impossible and every verifier becomes a forger. A CI pip step adds an unpinned supply-chain edge to the oracle for something stdlib can do. Reopen if the RFC 8032 oracle proves too slow for CI-sized traces.
+
+### tp-020 — standing
+
+Stacked PRs (a PR based on another unmerged PR's branch) are foreclosed for this work: one PR per phase, based on main, the next started only after the previous lands.
+
+*Ghost edges:* ~~`stacked-pr-chain`~~
+
+> **Shadow [TRACE · certainty 0.9]** — The stack stranded work and hid it from CI. CI runs only on PRs targeting main, so #74 to #76 never ran it, and my local green was the only gate. #74 was merged into its stacked base after #73 had been squash-merged into main, so phase 1 never reached main until a merge plus a retarget recovered it. Stacking also forced a force-push and a diff3-marker cleanup earlier. Reopen only if CI is configured to run on all PR bases.
 
 ## Checked-evidence ledger
 
