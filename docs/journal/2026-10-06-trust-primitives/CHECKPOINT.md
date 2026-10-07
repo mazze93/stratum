@@ -1,14 +1,14 @@
 # CHECKPOINT — trust-primitives burst
-Last updated: 2026-10-07 — handoff: stratum_export_2026-10-07.md
+Last updated: 2026-10-07 — handoff: stratum_export_2026-10-07.md (merged #80)
 
 - [x] 0 ADR-003 + trust-trace (tp-000..008) + renderer registers workspace/trust traces
 - [x] 1 Atomic DO persistence + fault-injection test (tp-001) — PR #74
 - [x] 1b Hash-chained persistence + head digest (tp-009, revised by tp-012, tp-013) — PR #75
-- [x] 2 v2 evidence binding + schemas/event.v2.schema.json + CLI --run (tp-002, tp-011, tp-014, tp-015) — PR pending
+- [x] 2 v2 evidence binding + schemas/event.v2.schema.json + CLI --run (tp-002, tp-011, tp-014, tp-015) — PR #76
 - [ ] **Reordered (tp-019, mazze-approved):**
-  - [x] R1 Stack landed: #72, #75 (f34d190), #76 (9270736); prod verified (demo head == oracle). Incident fix #78 awaiting merge; tp-022 awaiting mazze.
+  - [x] R1 Stack landed: #72, #75 (f34d190), #76 (9270736); prod verified (demo head == oracle). Incident fix #78 merged (tp-021), verified on bound evidence by tp-030 (#81, c102931). tp-022 awaiting mazze.
   - [ ] R2 Anchor the log head off-system (claude-stamp / checkmate forward-only hub)
-  - [x] R3 Re-checker + weekly CI job; output_path added; 4/4 reproduced locally AND in CI — merged #79 (253a26a)
+  - [x] R3 Re-checker + weekly CI job; output_path added; merged #79 (253a26a); now 5/5 reproduced in CI incl. tp-030
   - [ ] R4 Authority registry — per-log quorum fixed at genesis; single hardware key allowed for single-human logs, labeled (tp-003, tp-004, tp-010)
   - [ ] R5 Temenos → v2 evidence (first external writer)
   - [ ] R6 MEMORY_MODEL rev 4, TRUST.md, verification events with v2 bindings
