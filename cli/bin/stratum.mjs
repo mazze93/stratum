@@ -13,7 +13,7 @@ import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
-import { join, resolve } from "node:path";
+import { isAbsolute, join, relative, resolve, sep } from "node:path";
 
 const CONFIG_DIR = join(homedir(), ".config", "stratum");
 const CONFIG_PATH = join(CONFIG_DIR, "config.json");
@@ -204,7 +204,15 @@ function runBoundCheck(flags) {
   }
   const binding = { type: "reproducible_check", command, repo, commit, expect_exit: expectExit };
   if (inputs.length) binding.inputs = inputs;
-  if (flags.output) binding.output_sha256 = sha256File(resolve(cwd, String(flags.output)));
+  if (flags.output) {
+    // Stored repo-relative (never cwd-relative or absolute) so a re-checker can
+    // find the same file in a clean checkout of the pinned commit.
+    const abs = resolve(cwd, String(flags.output));
+    const rel = relative(top, abs);
+    if (!rel || rel.startsWith("..") || isAbsolute(rel)) fail("--output must be a file inside the repository");
+    binding.output_sha256 = sha256File(abs);
+    binding.output_path = rel.split(sep).join("/");
+  }
   return binding;
 }
 

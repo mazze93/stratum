@@ -568,7 +568,7 @@ Reusing an existing cross-project Cloudflare API token for the stratum Worker's 
 
 *ADR-003: bound evidence, an authority registry, atomic persistence.*
 
-> `data/trust-trace.jsonl` · epoch 20 · 21 events · 15 decisions · 4 foreclosures
+> `data/trust-trace.jsonl` · epoch 27 · 28 events · 16 decisions · 4 foreclosures
 
 ## Decisions
 
@@ -580,7 +580,7 @@ Trust-primitive hardening decisions route through this trace: data/trust-trace.j
 
 > **Shadow [TRACE · certainty 1.0]** — Human mandate, given by mazze in-session 2026-10-06 and run as a self-paced /loop, with an explicit reminder that stratum dogfoods itself. A new per-session trace rather than growing genesis, because genesis is the cross-validation golden fixture and must not churn with session work.
 
-### tp-001 — ◐ PROVISIONAL · pending_evidence
+### tp-001 — ● VERIFIED · validated
 
 **claude** · 2026-10-06T19:01:00-04:00
 
@@ -588,7 +588,7 @@ Worker persistence is atomic: every Durable Object write runs inside ctx.storage
 
 > **Shadow [TRACE · certainty 0.9]** — Defect: appendEvent pushed to the in-memory EpisodicLog before the SQL INSERT, so a throwing INSERT left the cache ahead of storage until eviction. seedIfEmpty looped INSERTs with no explicit transaction. Implicit write coalescing does not save a caught exception mid-loop: earlier rows still commit. transactionSync rolls back on throw (Cloudflare SQLite storage API docs). Scope is the Worker only; the JSONL traces are hand- or script-written and reviewed in PRs. Reverse: revert worker/src/do.ts and worker/src/persist.ts.
 
-### tp-002 — ◐ PROVISIONAL · pending_evidence
+### tp-002 — ● VERIFIED · validated
 
 **claude** · 2026-10-06T19:02:00-04:00
 
@@ -636,7 +636,7 @@ Registry signatures use SSHSIG (OpenSSH PROTOCOL.sshsig) with namespace 'stratum
 
 > **Shadow [TRACE · certainty 0.75]** — Borrowed from claude-stamp's gated installer: hardware-key signers pinned in allowed_signers, namespace-bound to git. A YubiKey authority's signature proves a physical touch, the nearest available answer to 'distinct keys are not distinct people'. The namespace blocks cross-protocol replay between git commit signatures and registry signatures. Never shelling out follows verify-release.py's rule that root never runs tools whose behaviour the input can steer; here, the guard must stay pure and synchronous.
 
-### tp-011 — ◐ PROVISIONAL · pending_evidence
+### tp-011 — ● VERIFIED · validated
 
 **claude** · 2026-10-06T20:02-04:00
 
@@ -654,7 +654,7 @@ Revision of tp-009: the storage hash chain detects an edited, reordered, or midd
 
 > **Shadow [TRACE · certainty 0.85]** — tp-009's shadow implied the chain catches truncation. Writing the persistence tests disproved it: dropping the last row leaves a valid prefix chain. Recorded as a revision rather than an edit because events are immutable (the at-013 precedent: re-record, never rewrite). Normalized-records digest: trace files carry fields the wire format may drop, so raw-row digests would never match a seeded DO. Hand-written hashing: crypto.subtle is async and guards are synchronous; workerd runs without nodejs_compat; the data is public, so timing side channels are out of scope; correctness is pinned differentially.
 
-### tp-013 — ◐ PROVISIONAL · pending_evidence
+### tp-013 — ● VERIFIED · validated
 
 **claude** · 2026-10-06T19:58:00-04:00
 
@@ -664,7 +664,7 @@ Revision of tp-012 after a touchstone pass. Canonical numbers are IEEE-754 doubl
 
 > **Shadow [TRACE · certainty 0.85]** — Touchstone probed four boundaries the 52/52 suite didn't reach. P1 failed: a number of magnitude at least 2^53 passed loadLog but persistence refused it, so a production log already holding one would brick on first load after deploy. P2 failed: editing a stored row and then nulling every chain made the read-path backfill re-chain the tampered log. P3 held (middle deletion caught) and is now a test instead of an assertion. P4 held within scope (the chain authenticates normalized content, not bytes). The re-pass held: workerd migration served the oracle's genesis digest, a 1.73e18/1e300 append returned 201, and workerd and the oracle agree on fe2b04cf for that log. Perimeter: an attacker with storage write access can still recompute the whole chain (no secret), so only an anchor makes it tamper-proof rather than tamper-evident. TS parsing defaults missing is_trust_root to false where the oracle raises KeyError, a pre-existing leniency gap left for phase 2.
 
-### tp-014 — ◐ PROVISIONAL · pending_evidence
+### tp-014 — ● VERIFIED · validated
 
 **claude** · 2026-10-06T20:30-04:00
 
@@ -672,7 +672,7 @@ Until the authority registry exists, v2 ratifications, v2 trust_root_revoked and
 
 > **Shadow [TRACE · certainty 0.85]** — Letting v2 authority acts through before phase 3 would either judge them by v1's signer strings (the retired primitive) or mint unsigned v2 roots that the registry would later have to grandfather. Fail-closed is the honest interim. Strictness closes the touchstone-found divergence where TS defaulted fields the oracle requires; strict binding keys enforce claude-stamp's re-derive-never-trust rule, so a supplied verified:true is a parse error. Verified safe for current writers: the CLI, the Atrium and Temenos all send every required field, and every trace has them.
 
-### tp-015 — ◐ PROVISIONAL · pending_evidence
+### tp-015 — ● VERIFIED · validated
 
 **claude** · 2026-10-06T20:31-04:00
 
@@ -697,6 +697,16 @@ Loop reordered, approved by mazze: (1) land the PR stack on main with CI green; 
 *Revision chain:* `tp-003 → tp-019`
 
 > **Shadow [TRACE · certainty 0.8]** — From the project assessment. Binding makes evidence re-checkable but nothing re-checks it yet, so the re-checker turns the promise into a practice. Without an anchor the chain is only tamper-evident, and a dropped tail is invisible. A QUORUM=2 registry with one human is theater (two keys, one person) or agents holding authority keys (generation becoming authority), so the honest version is fixed per log at genesis. A ledger read only by its author is a journal, which makes Temenos the external test.
+
+### tp-023 — ◐ PROVISIONAL · pending_evidence
+
+**claude** · 2026-10-06T21:14:00-04:00
+
+R3: scripts/recheck-bindings.py re-runs every same-repo reproducible_check binding at its pinned commit in a clean detached worktree, comparing the exit code, the output digest and file-input digests, and re-deriving rather than trusting each value. A weekly, on-demand and on-trace-change CI job runs it as a finding, not a required check. Building it exposed that output_sha256 without a path can't be re-checked, so the binding gains output_path (repo-relative, no '..', required alongside output_sha256) in both implementations, the schema and the CLI.
+
+*Revision chain:* `tp-003 → tp-019 → tp-023`
+
+> **Shadow [TRACE · certainty 0.85]** — Binding made evidence re-checkable; nothing re-checked it, so the re-checker turns the promise into a practice (tp-019 R3). It never writes to the traces: a re-check result is a separate act of evidence, recorded by a reviewed PR. Input ids that aren't repo files (e.g. Temenos signal ids) are reported as unverifiable rather than failed, which is honest about the tool's reach. Not a required check, because re-running history costs more as the ledger grows and a vanished dependency can break an old check through no fault of Stratum. First real run: 4/4 bindings for the merged work reproduced at f34d190 and 9270736 (tp-024 to tp-029).
 
 ## Foreclosures — ghost edges
 
