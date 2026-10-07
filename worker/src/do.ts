@@ -13,20 +13,20 @@
 import { DurableObject } from "cloudflare:workers";
 import {
   ContractViolation,
-  EpisodicLog,
   ParseError,
   Status,
   authorityOf,
   eventToRecord,
-  loadLog,
   projectTessera,
   recordToEvent,
   revisionChain,
   serializeLog,
+  type EpisodicLog,
   type EventRecord,
   type Tessera,
 } from "@stratum/core";
 import type { Env } from "./env.js";
+import { PersistentLog } from "./persist.js";
 
 /** Per-log event cap — a cheap abuse guard, generous for real use. */
 const MAX_EVENTS = 5000;
@@ -49,7 +49,7 @@ export interface EventDetail {
 }
 
 export class StratumLogDO extends DurableObject<Env> {
-  private log: EpisodicLog | null = null;
+  private readonly store: PersistentLog;
 
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env);
@@ -62,16 +62,24 @@ export class StratumLogDO extends DurableObject<Env> {
          )`,
       );
     });
+    const sql = ctx.storage.sql;
+    this.store = new PersistentLog({
+      readAll: () =>
+        sql
+          .exec<{ record: string }>("SELECT record FROM events ORDER BY seq")
+          .toArray()
+          .map((r) => JSON.parse(r.record) as unknown),
+      insert: (seq, id, record) => {
+        sql.exec("INSERT INTO events (seq, id, record) VALUES (?, ?, ?)", seq, id, record);
+      },
+      // Rolls back on throw (SQLite-backed DO API). Implicit write coalescing
+      // alone would still commit rows written before a caught exception.
+      transaction: (fn) => ctx.storage.transactionSync(fn),
+    });
   }
 
   private ensureLog(): EpisodicLog {
-    if (this.log === null) {
-      const rows = this.ctx.storage.sql
-        .exec<{ record: string }>("SELECT record FROM events ORDER BY seq")
-        .toArray();
-      this.log = loadLog(rows.map((r) => JSON.parse(r.record) as unknown));
-    }
-    return this.log;
+    return this.store.log;
   }
 
   appendEvent(raw: unknown): AppendResult {
@@ -80,17 +88,11 @@ export class StratumLogDO extends DurableObject<Env> {
       return { ok: false, kind: "cap", message: `log is at its ${MAX_EVENTS}-event cap` };
     }
     try {
-      const sequenced = log.append(recordToEvent(raw));
-      const record = eventToRecord(sequenced);
-      this.ctx.storage.sql.exec(
-        "INSERT INTO events (seq, id, record) VALUES (?, ?, ?)",
-        sequenced.seq,
-        sequenced.id,
-        JSON.stringify(record),
-      );
-      return { ok: true, event: record, seq: sequenced.seq, head: log.head };
+      const sequenced = this.store.append(recordToEvent(raw));
+      return { ok: true, event: eventToRecord(sequenced), seq: sequenced.seq, head: sequenced.seq };
     } catch (e) {
-      // The in-memory log is untouched on guard failure (append throws before push).
+      // Guard failure: memory untouched (append throws before push). Storage
+      // failure: rolled back, cache dropped, rethrown — see persist.ts.
       if (e instanceof ParseError) return { ok: false, kind: "parse", message: e.message };
       if (e instanceof ContractViolation) {
         return { ok: false, kind: "violation", message: e.message };
@@ -128,9 +130,9 @@ export class StratumLogDO extends DurableObject<Env> {
     if (records.length >= MAX_EVENTS) {
       return { ok: false, kind: "cap", message: `seed exceeds ${MAX_EVENTS}-event cap` };
     }
-    let seeded: EpisodicLog;
     try {
-      seeded = loadLog(records); // every guard runs; a bad seed rejects atomically
+      // every guard runs first; then all rows commit in one transaction, or none
+      this.store.seedIfEmpty(records);
     } catch (e) {
       if (e instanceof ParseError) return { ok: false, kind: "parse", message: e.message };
       if (e instanceof ContractViolation) {
@@ -138,16 +140,7 @@ export class StratumLogDO extends DurableObject<Env> {
       }
       throw e;
     }
-    for (const record of serializeLog(seeded)) {
-      this.ctx.storage.sql.exec(
-        "INSERT INTO events (seq, id, record) VALUES (?, ?, ?)",
-        seeded.get(record.id).seq,
-        record.id,
-        JSON.stringify(record),
-      );
-    }
-    this.log = seeded;
-    return { ok: true, seeded: true, events: seeded.head + 1 };
+    return { ok: true, seeded: true, events: this.store.log.head + 1 };
   }
 
   stats(): { events: number; head: number } {
