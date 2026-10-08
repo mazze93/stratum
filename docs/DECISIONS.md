@@ -469,7 +469,7 @@ docs/TRUST.md ships as a skeleton that RESOLVES the two decidable questions (den
 
 *~/Projects container decisions, compiled from the workspace journal.*
 
-> `data/workspace-trace.jsonl` · epoch 11 · 12 events · 10 decisions · 1 foreclosures
+> `data/workspace-trace.jsonl` · epoch 12 · 13 events · 10 decisions · 1 foreclosures
 
 ## Decisions
 
@@ -545,7 +545,7 @@ The official stratum checkout at ~/Projects/cognitive/stratum is a fresh clone o
 
 > **Shadow [TRACE · certainty 0.9]** — The old clone had drifted: local main was 18 commits behind origin, HEAD was on `4-mobile-bugs` (a branch whose only commit had already landed as #65 / b97f0b1), and seven stale local branches. Corroborated before retiring it: every unmerged-looking branch was either squash-merged (harden-security-scanning → #5, worktree-codeql-fetch-opts → #47 per at-043, feat/workspace-trace and record-fetch-opts-decisions → main), still on the remote, or a regenerable Dependabot bump (pr12). Only local-only state — cli/mise.toml (deliberately untracked per 7a615b1), .claude/settings.local.json, .remember/ logs — was carried across. Same path, so the registry entry (WORKSPACE.md, ws REGISTRY) is unchanged and needs no edit. Old clone moved outside ~/Projects to ~/stratum.pre-reclone-2026-10-06 rather than deleted; its deletion is mazze's call. Reverse: move it back.
 
-### wt-011 — ◐ PROVISIONAL · pending_evidence
+### wt-011 — ● VERIFIED · validated
 
 **claude** · 2026-10-07T15:25:00-04:00
 
