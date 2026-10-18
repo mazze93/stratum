@@ -1,0 +1,178 @@
+{
+  "scope": "artifact_validation_only",
+  "result": "pass",
+  "packaging": {
+    "result": "pass",
+    "scope": "packaging_schema_traceability_and_integrity_only",
+    "application_acceptance_status": "planned_not_run",
+    "source_units": 197,
+    "normative_units": 153,
+    "requirements": 47,
+    "work_packages": 24,
+    "acceptance_tests": 28,
+    "topological_order": [
+      "WP00",
+      "WP01",
+      "WP02",
+      "WP03",
+      "WP04",
+      "WP05",
+      "WP06",
+      "WP07",
+      "WP08",
+      "WP09",
+      "WP10",
+      "WP11",
+      "WP12",
+      "WP13",
+      "WP14",
+      "WP15",
+      "WP16",
+      "WP17",
+      "WP18",
+      "WP19",
+      "WP20",
+      "WP21",
+      "WP22",
+      "WP23"
+    ],
+    "docx_sha256": "3682b38a090b94cc290eecc9f083296379edbe0180f7320646124ac8e8af559d",
+    "contract_sha256": "9261ba3033f065721ed49aa4aec7a9030a9e5ef9b053ecdb5f4beaadba3b898f"
+  },
+  "controls": [
+    {
+      "name": "complete_bundle_validates",
+      "result": "pass"
+    },
+    {
+      "name": "dangling_work_dependency",
+      "result": "pass",
+      "rejected_reason": "WP00 dependencies: dangling references ['WP99']"
+    },
+    {
+      "name": "dependency_cycle",
+      "result": "pass",
+      "rejected_reason": "Work graph cycle at WP00"
+    },
+    {
+      "name": "missing_requirement",
+      "result": "pass",
+      "rejected_reason": "Uncovered normative source units ['S03.B02.R01']"
+    },
+    {
+      "name": "missing_normative_coverage",
+      "result": "pass",
+      "rejected_reason": "Uncovered normative source units ['S01.B01']"
+    },
+    {
+      "name": "premature_task_completion",
+      "result": "pass",
+      "rejected_reason": "$.work_packages[0].status: const mismatch"
+    },
+    {
+      "name": "planned_test_claimed_passed",
+      "result": "pass",
+      "rejected_reason": "$.acceptance_tests[0].status: const mismatch"
+    },
+    {
+      "name": "unrecognized_schema_field",
+      "result": "pass",
+      "rejected_reason": "$: unknown field unexpected"
+    },
+    {
+      "name": "authorization_scope_changed",
+      "result": "pass",
+      "rejected_reason": "This artifact cannot grant implementation permission"
+    },
+    {
+      "name": "source_text_changed",
+      "result": "pass",
+      "rejected_reason": "Source unit inventory digest mismatch"
+    },
+    {
+      "name": "altered_embedded_payload",
+      "result": "pass",
+      "rejected_reason": "Embedded hash mismatch implementation-contract.json"
+    },
+    {
+      "name": "extraction_path_traversal",
+      "result": "pass",
+      "rejected_reason": "Unsafe, unknown or duplicate embedded filename"
+    },
+    {
+      "name": "docx_only_extraction_round_trip",
+      "result": "pass"
+    },
+    {
+      "name": "existing_extraction_destination",
+      "result": "pass",
+      "rejected_reason": "Extraction destination must not already exist"
+    },
+    {
+      "name": "visible_specification_drift",
+      "result": "pass",
+      "rejected_reason": "DOCX source unit does not match S01.B01"
+    }
+  ],
+  "application_acceptance": "All A01-A28 are planned and unrun for this proposed integration.",
+  "typescript_contract_check": {
+    "result": "pass",
+    "scope": "proposed_type_surface_only",
+    "compiler": "TypeScript 7.0.2 from existing Stratum dev dependency, invoked with bundled Node",
+    "compiler_path": "/Users/daedalus/Projects/cognitive/stratum/node_modules/typescript/bin/tsc",
+    "flags": [
+      "--noEmit",
+      "--strict",
+      "--skipLibCheck",
+      "--target",
+      "es2022",
+      "--module",
+      "esnext",
+      "--moduleResolution",
+      "bundler"
+    ],
+    "expected_type_errors": 8,
+    "fixture": "decision-extension.typecheck.ts",
+    "not_evidence_of": "runtime schemas, shared kernel or application integration being implemented"
+  },
+  "document_review": {
+    "result": "pass",
+    "page_count": 20,
+    "visually_inspected_current_pages": [
+      1,
+      2,
+      17,
+      18,
+      19,
+      20
+    ],
+    "pixel_identical_to_previously_reviewed_pages": [
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16
+    ],
+    "template_parts_preserved": [
+      "styles",
+      "numbering",
+      "theme",
+      "headers",
+      "footers",
+      "footnotes",
+      "fonts",
+      "media",
+      "section_page_setup"
+    ],
+    "application_repositories_modified": false
+  }
+}

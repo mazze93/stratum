@@ -1,0 +1,64 @@
+{
+  "format": "checkmate-stratum.bundle-manifest.v1",
+  "document": "Checkmate and Stratum Joint Implementation Specification.docx",
+  "embedded_part": "customXml/checkmate-stratum-handoff.xml",
+  "contract_sha256": "9261ba3033f065721ed49aa4aec7a9030a9e5ef9b053ecdb5f4beaadba3b898f",
+  "files": [
+    {
+      "path": "CLAUDE_CODE_HANDOFF.md",
+      "sha256": "e70292a385e6dd35a7e4d4fe5f684ce6be0c2e2d3652a37751943ce873acba6d",
+      "bytes": 4458
+    },
+    {
+      "path": "Checkmate and Stratum Joint Implementation Specification.docx",
+      "sha256": "3682b38a090b94cc290eecc9f083296379edbe0180f7320646124ac8e8af559d",
+      "bytes": 621518
+    },
+    {
+      "path": "checkmate-review-evidence-2026-10-16.md",
+      "sha256": "403d265db8749df167ef5f621ee48c854e34df49ab2d4b9728ecfdada4a62fda",
+      "bytes": 4679
+    },
+    {
+      "path": "checkmate-review-probes.test.ts",
+      "sha256": "620fe467c04c5d79e01c7ab58937514b47bb44bb9488e76f95b6a6199a9ecc0a",
+      "bytes": 3345
+    },
+    {
+      "path": "decision-extension.contract.ts",
+      "sha256": "26dd7ca9f67667e13454778974e75b8111bf750d9661bd36f3663fe065b8d3ee",
+      "bytes": 7318
+    },
+    {
+      "path": "decision-extension.typecheck.ts",
+      "sha256": "1ca5068204fccd9c18d59310c70a02ec368c617e795b7bd8037155f543a59ba1",
+      "bytes": 1966
+    },
+    {
+      "path": "implementation-contract.json",
+      "sha256": "9261ba3033f065721ed49aa4aec7a9030a9e5ef9b053ecdb5f4beaadba3b898f",
+      "bytes": 243865
+    },
+    {
+      "path": "implementation-contract.schema.json",
+      "sha256": "4cac134f970dc980cb11281d37f40f35ef5495d420e4b220cb77dc09af311424",
+      "bytes": 23495
+    },
+    {
+      "path": "specification.md",
+      "sha256": "c28437efacb444fc281c5243a49c574d5a6374dc31152762cda105aff5cad7c0",
+      "bytes": 51830
+    },
+    {
+      "path": "validate_handoff.py",
+      "sha256": "bf729cc1662079343ae783dba67093843c85d1b917787d440e33f240e931e1bb",
+      "bytes": 16081
+    },
+    {
+      "path": "validation-receipt.json",
+      "sha256": "8d6a0c5b30df3ed0da9922cf577675191031137a82ba45b46fba6f0c5cc48bef",
+      "bytes": 4419
+    }
+  ],
+  "manifest_exclusion": "This manifest excludes itself to avoid a circular hash. Hashes are integrity checks against this supplied bundle, not signatures or an independent trust root."
+}

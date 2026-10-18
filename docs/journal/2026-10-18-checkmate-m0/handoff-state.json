@@ -1,0 +1,29 @@
+{
+  "contract_sha256": "9261ba3033f065721ed49aa4aec7a9030a9e5ef9b053ecdb5f4beaadba3b898f",
+  "docx_sha256": "3682b38a090b94cc290eecc9f083296379edbe0180f7320646124ac8e8af559d",
+  "authorization": "mazze 2026-10-18: implement M0 (WP00-WP04); vendored tarball distribution; no deploy",
+  "work_packages": {
+    "WP00": {
+      "status": "in_progress",
+      "receipts": [
+        {
+          "work_package_id": "WP00",
+          "repository": "stratum",
+          "commit_or_worktree_revision": "d5a526b3bd57ead2bd0eb9217eef76f72e9276db",
+          "started_at": "2026-10-18T13:05:00Z",
+          "finished_at": "2026-10-18T13:12:00Z",
+          "commands_run": ["npm run check", "npm test", "npm run test:reference", "python3 scripts/validate-trace.py data/<each>-trace.jsonl"],
+          "exit_codes": [0, 0, 0, 0],
+          "artifact_paths_and_sha256": [],
+          "acceptance_ids": [],
+          "limitations": ["Baseline only: vitest 9 files / 80 tests; reference 16/16 invariants, 5/5 canonical, 10/10 v2 binding, 9/9 re-checker; 5 traces valid. Untracked AGENTS.md and cli/mise.toml preserved."],
+          "review_basis": "main == spec baseline d5a526b; no drift"
+        }
+      ]
+    },
+    "WP01": { "status": "not_started", "receipts": [] },
+    "WP02": { "status": "not_started", "receipts": [] },
+    "WP03": { "status": "not_started", "receipts": [] },
+    "WP04": { "status": "not_started", "receipts": [] }
+  }
+}
