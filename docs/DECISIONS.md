@@ -469,7 +469,7 @@ docs/TRUST.md ships as a skeleton that RESOLVES the two decidable questions (den
 
 *~/Projects container decisions, compiled from the workspace journal.*
 
-> `data/workspace-trace.jsonl` · epoch 12 · 13 events · 10 decisions · 1 foreclosures
+> `data/workspace-trace.jsonl` · epoch 15 · 16 events · 11 decisions · 2 foreclosures
 
 ## Decisions
 
@@ -553,6 +553,14 @@ Force sharp to ^0.35.5 with a root npm `overrides` entry, closing Dependabot ale
 
 > **Shadow [TRACE · certainty 0.9]** — Even the latest wrangler (4.148.0) still pins sharp 0.35.4, so a wrangler bump cannot fix it yet. Touchstone probes: (1) adding the override and running `npm install` exits 0 but leaves the locked 0.35.4 in place — the lockfile must be re-resolved (`npm update sharp`), or the fix is a no-op that looks applied; (2) after the re-resolve, all 17 @img/sharp-* platform packages are at 0.35.5 and all 10 libvips packages at 1.3.4 in package-lock.json; (3) a clean `npm ci` in node:24-bookworm (Debian glibc 2.36, the platform the RCE targets and CI runs on) loads sharp 0.35.5 with rsvg 2.63.2, and vitest passes 80/80; (4) `wrangler dev` serves health, head and the landing page. The override is a range, not an exact pin, so a later miniflare pin of 0.35.6+ is not downgraded. Reopen: once miniflare pins sharp >=0.35.5, delete the override — a stale override is rot.
 
+### wt-013 — ● VERIFIED · validated
+
+**claude-opus-5.5** · 2026-10-21T14:13:13-04:00
+
+AGENTS.md is a tracked symlink to CLAUDE.md: one instruction source for every agent, which cannot drift.
+
+> **Shadow [TRACE · certainty 0.95]** — Owner decision 2026-10-21 ("agents should point to claude.md and that's that"). The untracked AGENTS.md here was a Codex-renamed copy of CLAUDE.md with no unique content; across three repos every such copy had already drifted within ten days.
+
 ## Foreclosures — ghost edges
 
 ### wt-008 — standing
@@ -563,12 +571,22 @@ Reusing an existing cross-project Cloudflare API token for the stratum Worker's 
 
 > **Shadow [TRACE · certainty 0.8]** — The Connect-to-a-repository dialog defaulted the API token field to `mazze-leczzare-blog build token` — an existing token from an unrelated project, already flagged by Cloudflare's own UI as missing email-routing permissions, evidence the default was picked by recency rather than scope. Letting a stratum production deploy run on another project's credential is the kind of scope leak this ledger's evidence-gated trust model exists to name, even outside the log itself. Switched to Create new token. Reopen only if Cloudflare starts scoping the token suggestion by project/zone instead of defaulting to most-recently-used.
 
+### wt-014 — standing
+
+Not chosen: a maintained AGENTS.md copy, or a one-line stub telling agents to read CLAUDE.md.
+
+*Ghost edges:* ~~`agents-md-copy`~~ · ~~`agents-md-stub`~~
+
+> **Shadow [TRACE · certainty 0.85]** — A copy drifts by construction (the evidence for wt-013). A stub relies on the agent taking an extra read step and leaves the auto-loaded file content-free. Reopen if an agent harness refuses to follow symlinks.
+
 ## Checked-evidence ledger
 
 | verification | target | what was checked | when |
 |---|---|---|---|
 | `wt-010` | `wt-009` | git rev-parse HEAD origin/main → 706edf352a91a681c5416ebae1396230baeb286e (both) | 2026-10-06T18:34:00-04:00 |
 | `wt-010` | `wt-009` | npm run check && npm test && npm run test:reference && npm run validate:trace — exit 0 (26/26 vitest, 16/16 invariants) | 2026-10-06T18:36:03-04:00 |
+| `wt-015` | `wt-013` | git ls-files -s AGENTS.md → 120000 681311eb9cf453d0faddf3aacaec7357e97ba8e9 0	AGENTS.md | 2026-10-21T14:13:13-04:00 |
+| `wt-015` | `wt-013` | readlink AGENTS.md → CLAUDE.md; head -1 AGENTS.md → '# CLAUDE.md' — exit 0 | 2026-10-21T14:13:13-04:00 |
 
 ---
 
