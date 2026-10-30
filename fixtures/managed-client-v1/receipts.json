@@ -1,0 +1,79 @@
+{
+ "receipt": {
+  "receipt_id": "rcpt-1",
+  "client_id": "checkmate",
+  "log_id": "cm-afac5fff4142a7d096d00004cedcded9",
+  "revision_id": "rev-impact-1",
+  "scope_digest": "c64a0b40f7f59230576189a6878ac448ce105018dc367e192a3323a38453e9cf",
+  "recipe_sha256": "349cf9e0eb880e78daeb20ffe5b49d809da3673560886a4da48ed8939e6034b5",
+  "manifest_sha256": "3d62e9fdd96191c2baf008ab2e859fa6eec6854f08e404b548bc272edfc871d5",
+  "environment_sha256": "30441b3680f0205aafb8c9cc114d68faeb2a3532380e142ab7e3b8fe89f7a2b9",
+  "inputs": [
+   {
+    "id": "trace",
+    "sha256": "4772231eba2e36f81377ffdbedaae96e1a97814675271ab22bea34731bc099d2"
+   }
+  ],
+  "outputs": [
+   {
+    "id": "report",
+    "sha256": "2d311ac4ccbbd454e5ed6676f6279a6a1ffe6e47d43a2bf281455a65d149f40b"
+   }
+  ],
+  "exit_code": 0,
+  "resources": {
+   "wall_ms": 1200,
+   "max_rss_bytes": 52428800
+  },
+  "outcome": "completed",
+  "verifier_key_id": "fixture-verifier-1",
+  "policy_digest": "8eba2103e833bfb73008139cb86472070cea61c2078e541ccfc67d0380b80c45",
+  "oracle_sha256": "eb774cc25b981f5bfa035f6fd2a7ccd802107fd2d570acc0601471edec627b62"
+ },
+ "oracle_result": {
+  "oracle_version": "fixture-oracle/1",
+  "oracle_sha256": "3b6608635c80da9ffd3d593750718a732aea91353e47c32b9d16616ee45755cd",
+  "predicate": "Synthetic fixture: the observed trace matches the declared interpretation.",
+  "controls": [
+   {
+    "id": "ctl-negative-1",
+    "kind": "negative",
+    "expected": "no match",
+    "observed": "no match"
+   }
+  ],
+  "result": "supported",
+  "limitations": [
+   "Synthetic fixture; proves encoding only."
+  ]
+ },
+ "receipt_sha256": "c2dc128f2f9b0856251c785e0a0eadab274a2b60f0a52d7212b351b3fef6cc2c",
+ "signing_sha256": "e2677c5470733b04e7d478007b09570b5ce09dd5e523bd52d7c77b7ee711e003",
+ "rebound": [
+  {
+   "field": "client_id",
+   "value": "other-client",
+   "signing_sha256": "dd2b044082d89e507cf6b9779d033ca0dd1c75ca1ce88b99beb5888591eddcea"
+  },
+  {
+   "field": "log_id",
+   "value": "cm-766efe2ffc683c0fca4f6f8a2c5eb781",
+   "signing_sha256": "5338d9d5352582113ffd221a91c8e187dd8bcdc57c8320fe694a07f4bc238d4d"
+  },
+  {
+   "field": "revision_id",
+   "value": "rev-impact-2",
+   "signing_sha256": "344c5ac1e0e5b8ca82c7dfa5b972b4f431f019b1a6e29bb388f62a3c89af7928"
+  },
+  {
+   "field": "scope_digest",
+   "value": "30ef562755b802c80e58538ea79f30dbf043e57bea86572e3fb34abb9c5da420",
+   "signing_sha256": "c2268cfa69a9ebc754912d8c7f4686415906e2bbc0f27b624a861d442fca1976"
+  },
+  {
+   "field": "policy_digest",
+   "value": "670a2c5069909b2a56ca53d826ca3fb29a67f78da2b48787c23f0d2eee9b8199",
+   "signing_sha256": "a1b8f6f30982bb486a6ced9821b2763757d2535d11ce0f148aa6730131381c89"
+  }
+ ]
+}

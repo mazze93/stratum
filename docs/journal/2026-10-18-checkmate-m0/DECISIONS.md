@@ -67,3 +67,33 @@ it to equal the envelope's value; digests change, so a new bundle.
 join. The WIP chose a newline (SSHSIG-style framing), and the test pins the exact
 bytes on both sides. · Reverse: change both implementations and the pinned bytes
 before any verifier signs (M2).
+
+**2026-10-30 · S1b: schema field names allocated here; NEEDS MAZZE REVIEW before
+any producer emits them.** The spec names what each record holds but not its
+field names or enums. These were chosen in this burst, are pinned by
+`core/test/managed-schema.test.ts`, and change only with a new bundle digest.
+- `execution_receipt` (C05): `receipt_id, client_id, log_id, revision_id,
+  scope_digest, recipe_sha256, manifest_sha256, environment_sha256, inputs[],
+  outputs[], exit_code (null if not completed), resources{wall_ms,
+  max_rss_bytes}, outcome, verifier_key_id, policy_digest, oracle_sha256`.
+  `outcome` ∈ completed / timed_out / unavailable / skipped is the EXECUTION
+  outcome only, per §5 step 4 ("unavailable, timed out, skipped and
+  inconclusive remain distinct"). Inconclusive is an oracle result, not a run outcome.
+- `oracle_result` (C05): `oracle_version, oracle_sha256, predicate,
+  controls[≥1]{id, kind: negative|positive, expected, observed}, result:
+  supported|unsupported|inconclusive, limitations[]`. At least one control is
+  required because a passing exit code is not a supported predicate.
+- `acknowledgment` (C03) and `refusal` follow the spec's field lists verbatim.
+- event v3: v2 + top-level `requires[]` (typed edges, ≤32, separate from
+  `targets`) + optional `revision{claim_id, scope_digest, obligations,
+  source_event_id}` (C04; the event id is the revision id) + an `executed_check`
+  binding `{recipe: reproducible_check, receipt_sha256, oracle_sha256,
+  attestation: signed_attestation}`. A v3 `verification` must contain an
+  `executed_check`: that is the structural form of "a bare reproducible_check is
+  a recipe" (§6, WP01 exit criterion).
+- Not decided here: dependency-depth enforcement (needs the log, M2), the
+  research profile's obligation catalogue (fixture obligations are placeholders),
+  and how `attestation` is verified (registry, M2).
+· Why: WP01 must freeze these before M1 wires either client. · Reverse: edit
+the schemas and fixtures; nothing reads or emits v3, so no stored data depends
+on them.

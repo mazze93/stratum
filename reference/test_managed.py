@@ -71,6 +71,17 @@ def test_schema_3_is_not_readable():
         raise AssertionError(f"reader accepted: {c['name']}")
 
 
+def test_receipt_fixtures():
+    rx = json.loads((DIR / "receipts.json").read_text())
+    sha = lambda b: hashlib.sha256(b).hexdigest()
+    assert rx["receipt"]["oracle_sha256"] == sha(canonical_bytes(rx["oracle_result"]))
+    assert sha(canonical_bytes(rx["receipt"])) == rx["receipt_sha256"]
+    assert sha(m.receipt_signing_bytes(rx["receipt"])) == rx["signing_sha256"]
+    for r in rx["rebound"]:
+        d = sha(m.receipt_signing_bytes({**rx["receipt"], r["field"]: r["value"]}))
+        assert d == r["signing_sha256"] and d != rx["signing_sha256"], r["field"]
+
+
 def test_receipt_signing_bytes():
     assert m.receipt_signing_bytes({"b": 1, "a": "x"}) == b'stratum execution receipt 1\n{"a":"x","b":1}'
 

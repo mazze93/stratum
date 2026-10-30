@@ -1,0 +1,718 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/mazze93/stratum/schemas/managed-client.v1.schema.json",
+  "title": "Stratum managed client protocol 1 (joint spec v1.1, C01-C05)",
+  "description": "Frozen M0 wire contract. Structural only: canonical digests, the client/ingress match and edge rules live in core/src/managed.ts and reference/managed.py. core/test/managed-schema.test.ts keeps this file and the decoders in step. The root validates a command; the other records are $defs.",
+  "$ref": "#/$defs/command",
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "required_edge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "revision_id",
+        "scope_digest"
+      ],
+      "properties": {
+        "revision_id": {
+          "$ref": "#/$defs/id"
+        },
+        "scope_digest": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "claim_revision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "claim_id",
+        "revision_id",
+        "proposition",
+        "scope_digest",
+        "obligations",
+        "requires"
+      ],
+      "properties": {
+        "claim_id": {
+          "$ref": "#/$defs/id"
+        },
+        "revision_id": {
+          "$ref": "#/$defs/id"
+        },
+        "proposition": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 8000,
+          "description": "Not blank (JS String.prototype.trim). Length counts UTF-16 code units."
+        },
+        "scope_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "obligations": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 64,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "requires": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "$ref": "#/$defs/required_edge"
+          },
+          "description": "Same-log prerequisite revisions. No self edge, no duplicate revision_id (decoder-enforced)."
+        }
+      }
+    },
+    "command": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "protocol",
+        "client_id",
+        "case_id",
+        "source_event_id",
+        "command_id",
+        "prior_command_id",
+        "operation",
+        "expected_head_digest",
+        "payload_digest",
+        "payload"
+      ],
+      "properties": {
+        "protocol": {
+          "const": 1
+        },
+        "client_id": {
+          "$ref": "#/$defs/id",
+          "description": "Must equal the client the gate authenticated; otherwise forbidden."
+        },
+        "case_id": {
+          "$ref": "#/$defs/id"
+        },
+        "source_event_id": {
+          "$ref": "#/$defs/id"
+        },
+        "command_id": {
+          "$ref": "#/$defs/id"
+        },
+        "prior_command_id": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Predecessor after a head conflict; never equal to command_id."
+        },
+        "operation": {
+          "enum": [
+            "register_claim",
+            "register_evidence",
+            "request_verification",
+            "apply_verification",
+            "invalidate_evidence",
+            "revise_claim",
+            "dispute_claim"
+          ]
+        },
+        "expected_head_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "payload_digest": {
+          "$ref": "#/$defs/sha256",
+          "description": "sha256(JCS({domain:'stratum.managed.payload.v1', operation, payload: normalized}))."
+        },
+        "payload": {
+          "type": "object"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "operation": {
+                "const": "register_claim"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "payload": {
+                "$ref": "#/$defs/payload_register_claim"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "operation": {
+                "const": "register_evidence"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "payload": {
+                "$ref": "#/$defs/payload_register_evidence"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "operation": {
+                "const": "request_verification"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "payload": {
+                "$ref": "#/$defs/payload_request_verification"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "operation": {
+                "const": "apply_verification"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "payload": {
+                "$ref": "#/$defs/payload_apply_verification"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "operation": {
+                "const": "invalidate_evidence"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "payload": {
+                "$ref": "#/$defs/payload_invalidate_evidence"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "operation": {
+                "const": "revise_claim"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "payload": {
+                "$ref": "#/$defs/payload_revise_claim"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "operation": {
+                "const": "dispute_claim"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "payload": {
+                "$ref": "#/$defs/payload_dispute_claim"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "payload_register_claim": {
+      "$ref": "#/$defs/claim_revision"
+    },
+    "payload_register_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidence_id",
+        "artifact_sha256",
+        "size_bytes",
+        "media_type",
+        "private_locator",
+        "recipe_sha256",
+        "environment_sha256",
+        "retention_class"
+      ],
+      "properties": {
+        "evidence_id": {
+          "$ref": "#/$defs/id"
+        },
+        "artifact_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "size_bytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "media_type": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9!#$&^_.+-]*/[a-z0-9][a-z0-9!#$&^_.+-]*$"
+        },
+        "private_locator": {
+          "type": "string",
+          "maxLength": 512,
+          "pattern": "^(?!file:)[a-z][a-z0-9+.-]*://[\\x21-\\x7e]+$",
+          "description": "A durable scheme://locator; never a local file or scratch path."
+        },
+        "recipe_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "environment_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "retention_class": {
+          "enum": [
+            "case",
+            "permanent"
+          ]
+        }
+      }
+    },
+    "payload_request_verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "revision_id",
+        "evidence_ids",
+        "recipe_sha256"
+      ],
+      "properties": {
+        "revision_id": {
+          "$ref": "#/$defs/id"
+        },
+        "evidence_ids": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 64,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "recipe_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "payload_apply_verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "revision_id",
+        "receipt_ref",
+        "oracle_ref",
+        "attestation_ref"
+      ],
+      "properties": {
+        "revision_id": {
+          "$ref": "#/$defs/id"
+        },
+        "receipt_ref": {
+          "$ref": "#/$defs/id"
+        },
+        "oracle_ref": {
+          "$ref": "#/$defs/id"
+        },
+        "attestation_ref": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
+    "payload_invalidate_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidence_id",
+        "reason",
+        "evidence_refs"
+      ],
+      "properties": {
+        "evidence_id": {
+          "$ref": "#/$defs/id"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000,
+          "description": "Not blank (JS String.prototype.trim). Length counts UTF-16 code units."
+        },
+        "evidence_refs": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 64,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        }
+      }
+    },
+    "payload_revise_claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "prior_revision_id",
+        "transition",
+        "revision"
+      ],
+      "properties": {
+        "prior_revision_id": {
+          "$ref": "#/$defs/id"
+        },
+        "transition": {
+          "enum": [
+            "supersede",
+            "reject_and_relink",
+            "dispute_and_relink"
+          ]
+        },
+        "revision": {
+          "$ref": "#/$defs/claim_revision"
+        }
+      }
+    },
+    "payload_dispute_claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "revision_id",
+        "reason"
+      ],
+      "properties": {
+        "revision_id": {
+          "$ref": "#/$defs/id"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000,
+          "description": "Not blank (JS String.prototype.trim). Length counts UTF-16 code units."
+        }
+      }
+    },
+    "acknowledgment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "command_id",
+        "payload_digest",
+        "event_ids",
+        "accepted_seq",
+        "accepted_head_digest",
+        "disposition"
+      ],
+      "properties": {
+        "command_id": {
+          "$ref": "#/$defs/id"
+        },
+        "payload_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "event_ids": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "All and only the committed batch."
+        },
+        "accepted_seq": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "accepted_head_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "disposition": {
+          "enum": [
+            "accepted",
+            "original_acknowledgment"
+          ]
+        }
+      }
+    },
+    "refusal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "enum": [
+            "invalid_contract",
+            "unsupported_version",
+            "unauthorized",
+            "forbidden",
+            "head_conflict",
+            "idempotency_conflict",
+            "dependency_blocked",
+            "evidence_rejected",
+            "unavailable"
+          ]
+        },
+        "message": {
+          "type": "string",
+          "description": "Never echoes payload values."
+        }
+      }
+    },
+    "execution_receipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "receipt_id",
+        "client_id",
+        "log_id",
+        "revision_id",
+        "scope_digest",
+        "recipe_sha256",
+        "manifest_sha256",
+        "environment_sha256",
+        "inputs",
+        "outputs",
+        "exit_code",
+        "resources",
+        "outcome",
+        "verifier_key_id",
+        "policy_digest",
+        "oracle_sha256"
+      ],
+      "properties": {
+        "receipt_id": {
+          "$ref": "#/$defs/id"
+        },
+        "client_id": {
+          "$ref": "#/$defs/id"
+        },
+        "log_id": {
+          "type": "string",
+          "pattern": "^cm-[0-9a-f]{32}$"
+        },
+        "revision_id": {
+          "$ref": "#/$defs/id"
+        },
+        "scope_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "recipe_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "manifest_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "environment_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "inputs": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "sha256"
+            ],
+            "properties": {
+              "id": {
+                "$ref": "#/$defs/id"
+              },
+              "sha256": {
+                "$ref": "#/$defs/sha256"
+              }
+            }
+          }
+        },
+        "outputs": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "sha256"
+            ],
+            "properties": {
+              "id": {
+                "$ref": "#/$defs/id"
+              },
+              "sha256": {
+                "$ref": "#/$defs/sha256"
+              }
+            }
+          }
+        },
+        "exit_code": {
+          "oneOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "null when the run did not complete."
+        },
+        "resources": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "wall_ms",
+            "max_rss_bytes"
+          ],
+          "properties": {
+            "wall_ms": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "max_rss_bytes": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "outcome": {
+          "enum": [
+            "completed",
+            "timed_out",
+            "unavailable",
+            "skipped"
+          ],
+          "description": "Execution outcome only. Whether the claim is supported is the oracle's result, never this field."
+        },
+        "verifier_key_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "policy_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "oracle_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      },
+      "description": "Signed as 'stratum execution receipt 1' + '\\n' + JCS(receipt). Reuse for another client, log, revision, scope or policy fails because each is inside the signed bytes."
+    },
+    "oracle_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "oracle_version",
+        "oracle_sha256",
+        "predicate",
+        "controls",
+        "result",
+        "limitations"
+      ],
+      "properties": {
+        "oracle_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "oracle_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "predicate": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000,
+          "description": "Not blank (JS String.prototype.trim). Length counts UTF-16 code units."
+        },
+        "controls": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "kind",
+              "expected",
+              "observed"
+            ],
+            "properties": {
+              "id": {
+                "$ref": "#/$defs/id"
+              },
+              "kind": {
+                "enum": [
+                  "negative",
+                  "positive"
+                ]
+              },
+              "expected": {
+                "type": "string",
+                "minLength": 1
+              },
+              "observed": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "description": "At least one discriminating control; a passing exit code is not a supported predicate."
+        },
+        "result": {
+          "enum": [
+            "supported",
+            "unsupported",
+            "inconclusive"
+          ]
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  }
+}

@@ -200,6 +200,42 @@ def reader_cases():
     return out
 
 
+def receipt_fixtures():
+    """C05 shapes and the bytes a verifier would sign. Synthetic: no real run, no real key."""
+    oracle = {
+        "oracle_version": "fixture-oracle/1", "oracle_sha256": d("oracle/impl"),
+        "predicate": "Synthetic fixture: the observed trace matches the declared interpretation.",
+        "controls": [{"id": "ctl-negative-1", "kind": "negative", "expected": "no match",
+                      "observed": "no match"}],
+        "result": "supported", "limitations": ["Synthetic fixture; proves encoding only."],
+    }
+    receipt = {
+        "receipt_id": "rcpt-1", "client_id": CLIENT, "log_id": LOG_ID, "revision_id": "rev-impact-1",
+        "scope_digest": d("scope/impact/1"), "recipe_sha256": d("recipe/static"),
+        "manifest_sha256": d("manifest/ev-static-1"), "environment_sha256": d("environment/macos-27"),
+        "inputs": [{"id": "trace", "sha256": d("input/trace")}],
+        "outputs": [{"id": "report", "sha256": d("output/report")}],
+        "exit_code": 0, "resources": {"wall_ms": 1200, "max_rss_bytes": 52428800},
+        "outcome": "completed", "verifier_key_id": "fixture-verifier-1", "policy_digest": d("policy/1"),
+        "oracle_sha256": hashlib.sha256(canonical_bytes(oracle)).hexdigest(),
+    }
+    signing = lambda r: hashlib.sha256(m.receipt_signing_bytes(r)).hexdigest()
+    base = signing(receipt)
+    rebound = []
+    for field, value in [("client_id", "other-client"), ("log_id", "cm-" + d("other-log")[:32]),
+                         ("revision_id", "rev-impact-2"), ("scope_digest", d("scope/impact/2")),
+                         ("policy_digest", d("policy/2"))]:
+        digest = signing({**receipt, field: value})
+        if digest == base:
+            raise SystemExit(f"receipt signing bytes do not bind {field}")
+        rebound.append({"field": field, "value": value, "signing_sha256": digest})
+    return {
+        "receipt": receipt, "oracle_result": oracle,
+        "receipt_sha256": hashlib.sha256(canonical_bytes(receipt)).hexdigest(),
+        "signing_sha256": base, "rebound": rebound,
+    }
+
+
 def render() -> dict[str, bytes]:
     commands = {
         "bundle": BUNDLE, "protocol": m.MANAGED_PROTOCOL, "log_id": LOG_ID,
@@ -211,7 +247,10 @@ def render() -> dict[str, bytes]:
         "valid": valid_cases(), "invalid": invalid_cases(), "readers": reader_cases(),
         "non_managed_log_id": {"log_id": "checkmate", "expect_code": "invalid_contract"},
     }
-    files = {"commands.json": (json.dumps(commands, indent=1, ensure_ascii=False) + "\n").encode()}
+    files = {
+        "commands.json": (json.dumps(commands, indent=1, ensure_ascii=False) + "\n").encode(),
+        "receipts.json": (json.dumps(receipt_fixtures(), indent=1) + "\n").encode(),
+    }
     digests = {name: hashlib.sha256(b).hexdigest() for name, b in sorted(files.items())}
     manifest = {"bundle": BUNDLE, "generator": "scripts/render-managed-fixtures.py", "files": digests,
                 "bundle_digest": hashlib.sha256(canonical_bytes({"bundle": BUNDLE, "files": digests})).hexdigest()}
