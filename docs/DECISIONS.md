@@ -469,7 +469,7 @@ docs/TRUST.md ships as a skeleton that RESOLVES the two decidable questions (den
 
 *~/Projects container decisions, compiled from the workspace journal.*
 
-> `data/workspace-trace.jsonl` · epoch 18 · 19 events · 12 decisions · 3 foreclosures
+> `data/workspace-trace.jsonl` · epoch 20 · 21 events · 13 decisions · 3 foreclosures
 
 ## Decisions
 
@@ -569,6 +569,14 @@ cli/mise.toml (a single line, aube = "latest") is deleted from the working tree,
 
 > **Shadow [TRACE · certainty 0.95]** — Corroborated before acting rather than inferred from the diff: git log --all shows no history for the path in any ref; the bytes are identical to the archived copy, so the Jul 23 mtime is a preserved copy date, not recent work; 7a615b1 (2026-09-06, present only in the archived clone) records why it was left untracked, an unpinned tool version being a choice to make consciously; nothing in cli/, core/, worker/, scripts/, package.json or .github references aube; CI pins node 24 and package.json engines say node >=20, so no toolchain file is consumed. The sibling repos checkmate and stele do track a mise.toml, but those pin node/pnpm/python and define tasks; this one pinned one unrelated tool. Deleted on mazze's instruction ('I don't use aube, delete it'). 7a615b1 stays reachable only through the archived clone, so deleting that clone would orphan the citations in wt-009 and the 2026-10-07 journal export; that deletion is still mazze's call.
 
+### wt-019 — ● VERIFIED · validated
+
+**claude-sonnet-5.5** · 2026-10-30T04:01:49-04:00
+
+Two CLAUDE.md drift findings from the 2026-10-29 audit are corrected. stratum/CLAUDE.md no longer hardcodes actions/checkout@v5 and setup-node@v5 as the current Node-24 majors (CI pins v7 of both) and now points at .github/workflows/ as the source of truth; its stale 'maintainer's gpg key' wording is updated to the registered SSH signing key. praxis/CLAUDE.md now says lib/state.sh and bin/_cognitive.sh live in the sibling repo cognitive/daedalus-switch, where they exist. The matching memory file github-actions-pinning.md is updated outside the repo.
+
+> **Shadow [TRACE · certainty 0.9]** — Found by /workspace:claude-md-audit (docs/audits/claude-md-audit-2026-10-29.md in the workspace container): the scanner flagged 13 of 21 live files, 11 were false positives on hand verification, 2 were real. The praxis finding was third-recurrence (also 2026-07-15 and 2026-08-14), which is why it is fixed rather than re-noted. The stratum action-version drift was invisible to the scanner, which checks only that backticked paths exist. Chose to remove the hardcoded version numbers rather than bump v5 to v7: the numbers drifted precisely because Dependabot moves the pins, so any number written into prose is rot waiting to happen. Fixed the gpg wording in the same line because it was the other half of one sentence and the signing gap it described closed (SSH key registered on GitHub; recent stratum commits verify). The praxis edit lands in a different repo; this decision records it for the ledger but does not track it.
+
 ## Foreclosures — ghost edges
 
 ### wt-008 — standing
@@ -605,6 +613,8 @@ cli/mise.toml is neither pinned-and-tracked nor gitignored; it is removed outrig
 | `wt-015` | `wt-013` | readlink AGENTS.md → CLAUDE.md; head -1 AGENTS.md → '# CLAUDE.md' — exit 0 | 2026-10-21T14:13:13-04:00 |
 | `wt-018` | `wt-016` | test ! -e cli/mise.toml; git log --all --oneline -- cli/mise.toml (empty); git grep aube -- cli core worker scripts package.json .github (empty) — exit 0 | 2026-10-29T23:13:10-04:00 |
 | `wt-018` | `wt-016` | archive cli/mise.toml sha256 217bad5a28195e6adcba24f381698546bbc06ff09d45cd8603c892a204d06ee2 (24 bytes), restore source for wt-016 | 2026-10-29T23:13:10-04:00 |
+| `wt-020` | `wt-019` | grep -c '@v5' CLAUDE.md -> 0; grep -c "maintainer's gpg key" CLAUDE.md -> 0; ci.yml uses: actions/checkout and actions/setup-node pinned with '# v7.x' comments — exit 0 | 2026-10-30T04:01:49-04:00 |
+| `wt-020` | `wt-019` | test -e cognitive/daedalus-switch/lib/state.sh && test -e cognitive/daedalus-switch/bin/_cognitive.sh; grep -c 'cognitive/daedalus-switch' cognitive/praxis/CLAUDE.md -> 1 — exit 0 | 2026-10-30T04:01:49-04:00 |
 
 ---
 
