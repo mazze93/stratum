@@ -469,7 +469,7 @@ docs/TRUST.md ships as a skeleton that RESOLVES the two decidable questions (den
 
 *~/Projects container decisions, compiled from the workspace journal.*
 
-> `data/workspace-trace.jsonl` · epoch 15 · 16 events · 11 decisions · 2 foreclosures
+> `data/workspace-trace.jsonl` · epoch 18 · 19 events · 12 decisions · 3 foreclosures
 
 ## Decisions
 
@@ -561,6 +561,14 @@ AGENTS.md is a tracked symlink to CLAUDE.md: one instruction source for every ag
 
 > **Shadow [TRACE · certainty 0.95]** — Owner decision 2026-10-21 ("agents should point to claude.md and that's that"). The untracked AGENTS.md here was a Codex-renamed copy of CLAUDE.md with no unique content; across three repos every such copy had already drifted within ten days.
 
+### wt-016 — ● VERIFIED · validated
+
+**claude-sonnet-5.5** · 2026-10-29T23:13:10-04:00
+
+cli/mise.toml (a single line, aube = "latest") is deleted from the working tree, closing the choice that 7a615b1 left deliberately open and that wt-009 carried across the re-clone. mazze does not use aube; the file was never in git history. Recoverable from the retired clone at ~/Projects/archive/stratum.pre-reclone-2026-10-06-home-2026-10-12/cli/mise.toml (sha256 217bad5a28195e6adcba24f381698546bbc06ff09d45cd8603c892a204d06ee2).
+
+> **Shadow [TRACE · certainty 0.95]** — Corroborated before acting rather than inferred from the diff: git log --all shows no history for the path in any ref; the bytes are identical to the archived copy, so the Jul 23 mtime is a preserved copy date, not recent work; 7a615b1 (2026-09-06, present only in the archived clone) records why it was left untracked, an unpinned tool version being a choice to make consciously; nothing in cli/, core/, worker/, scripts/, package.json or .github references aube; CI pins node 24 and package.json engines say node >=20, so no toolchain file is consumed. The sibling repos checkmate and stele do track a mise.toml, but those pin node/pnpm/python and define tasks; this one pinned one unrelated tool. Deleted on mazze's instruction ('I don't use aube, delete it'). 7a615b1 stays reachable only through the archived clone, so deleting that clone would orphan the citations in wt-009 and the 2026-10-07 journal export; that deletion is still mazze's call.
+
 ## Foreclosures — ghost edges
 
 ### wt-008 — standing
@@ -579,6 +587,14 @@ Not chosen: a maintained AGENTS.md copy, or a one-line stub telling agents to re
 
 > **Shadow [TRACE · certainty 0.85]** — A copy drifts by construction (the evidence for wt-013). A stub relies on the agent taking an extra read step and leaves the auto-loaded file content-free. Reopen if an agent harness refuses to follow symlinks.
 
+### wt-017 — standing
+
+cli/mise.toml is neither pinned-and-tracked nor gitignored; it is removed outright.
+
+*Ghost edges:* ~~`pin-and-track-aube`~~ · ~~`gitignore-cli-mise-toml`~~
+
+> **Shadow [TRACE · certainty 0.85]** — Pin-and-track would commit a toolchain file with no consumer. Gitignoring would keep an unused file on disk and hide it from status, which is how it survived two clones unexamined. Reopen if cli/ gains a real toolchain requirement: then track a mise.toml with exact versions, as checkmate and stele do.
+
 ## Checked-evidence ledger
 
 | verification | target | what was checked | when |
@@ -587,6 +603,8 @@ Not chosen: a maintained AGENTS.md copy, or a one-line stub telling agents to re
 | `wt-010` | `wt-009` | npm run check && npm test && npm run test:reference && npm run validate:trace — exit 0 (26/26 vitest, 16/16 invariants) | 2026-10-06T18:36:03-04:00 |
 | `wt-015` | `wt-013` | git ls-files -s AGENTS.md → 120000 681311eb9cf453d0faddf3aacaec7357e97ba8e9 0	AGENTS.md | 2026-10-21T14:13:13-04:00 |
 | `wt-015` | `wt-013` | readlink AGENTS.md → CLAUDE.md; head -1 AGENTS.md → '# CLAUDE.md' — exit 0 | 2026-10-21T14:13:13-04:00 |
+| `wt-018` | `wt-016` | test ! -e cli/mise.toml; git log --all --oneline -- cli/mise.toml (empty); git grep aube -- cli core worker scripts package.json .github (empty) — exit 0 | 2026-10-29T23:13:10-04:00 |
+| `wt-018` | `wt-016` | archive cli/mise.toml sha256 217bad5a28195e6adcba24f381698546bbc06ff09d45cd8603c892a204d06ee2 (24 bytes), restore source for wt-016 | 2026-10-29T23:13:10-04:00 |
 
 ---
 
