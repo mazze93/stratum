@@ -55,3 +55,33 @@ export type { BindingRecord, EventRecord, EvidenceRecord } from "./serialize.js"
 export { canonicalBytes, canonicalize } from "./canonical.js";
 export { chainDigest, chainLink, GENESIS_DIGEST } from "./chain.js";
 export { sha256, sha256Hex, toHex } from "./sha256.js";
+export {
+  commandDigest,
+  DIGEST_DOMAINS,
+  effectDigest,
+  FAILURE_CODES,
+  MANAGED_ID,
+  MANAGED_LIMITS,
+  MANAGED_LOG_ID,
+  MANAGED_OPERATIONS,
+  MANAGED_PROTOCOL,
+  ManagedRefusal,
+  PAYLOAD_KEYS,
+  parseCommand,
+  parsePayload,
+  payloadDigest,
+  PROPOSED_EVENT_SCHEMA,
+  RECEIPT_DOMAIN,
+  receiptSigningBytes,
+  RESEARCH_PROFILE,
+  RETENTION_CLASSES,
+  REVISION_TRANSITIONS,
+  SERVICE_METHODS,
+} from "./managed.js";
+export type {
+  ClaimRevisionPayload,
+  FailureCode,
+  ManagedCommand,
+  ManagedOperation,
+  RequiredEdge,
+} from "./managed.js";

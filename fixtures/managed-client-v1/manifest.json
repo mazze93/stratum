@@ -1,0 +1,8 @@
+{
+ "bundle": "stratum.managed-client.v1",
+ "generator": "scripts/render-managed-fixtures.py",
+ "files": {
+  "commands.json": "7f28caa4cf17a7b1aaaad7ccfb8af3665a6a57c0423837c611074cf0ceb31a08"
+ },
+ "bundle_digest": "b862c0422667636a70566b7a7a8d3fc8501efaa412d3f636294636b0a749e4d4"
+}

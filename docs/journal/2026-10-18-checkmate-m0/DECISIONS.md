@@ -42,3 +42,28 @@ bearer, which C1/C2's planned `src/stratum-client.ts` must reconcile with, not
 duplicate. That touches the C phases, not S1. Authorization: mazze's 2026-10-18
 "Go: all of M0", plus "begin the work" (2026-10-30); this resume waits for go.
 · Why: session-journal Phase 0. · Reverse: n/a (a check).
+
+**2026-10-30 · S1a: the Python oracle generates the managed fixture bundle; both
+sides reproduce it.** `scripts/render-managed-fixtures.py` renders
+`fixtures/managed-client-v1/` (13 valid commands, 32 refusals, 3 reader cases)
+from `reference/managed.py`. Every case also names the code its author expects,
+and rendering aborts if the oracle disagrees. `manifest.json` pins each file by
+SHA-256 and gives a bundle digest over the canonical `{bundle, files}`
+(`b862c042…`). Negative control: corrupting one expected digest and one code in
+a copy failed 3 TS tests and the Python staleness check; restored, all green.
+· Why: R09/R31, same pattern as `data/canonical.golden.json`. · Reverse: delete
+the bundle and its two tests; nothing consumes it yet.
+
+**2026-10-30 · C04's `source_event_id` rides on the command envelope (C01), not
+inside the claim-revision payload.** The WIP payload omits it and the spec
+lists it on both records. The command already binds it into the command and
+effect digests, so a second copy in the payload could only disagree. The
+schema-3 event record will carry it when M1 writes events. · Why: one source of
+truth per field. · Reverse: add it to `PAYLOAD_KEYS.register_claim` and require
+it to equal the envelope's value; digests change, so a new bundle.
+
+**2026-10-30 · The receipt-signing separator is a single `\n` after
+`stratum execution receipt 1`.** The spec names the domain string but not the
+join. The WIP chose a newline (SSHSIG-style framing), and the test pins the exact
+bytes on both sides. · Reverse: change both implementations and the pinned bytes
+before any verifier signs (M2).

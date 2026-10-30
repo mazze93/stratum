@@ -1,0 +1,1670 @@
+{
+ "bundle": "stratum.managed-client.v1",
+ "protocol": 1,
+ "log_id": "cm-afac5fff4142a7d096d00004cedcded9",
+ "constants": {
+  "operations": [
+   "register_claim",
+   "register_evidence",
+   "request_verification",
+   "apply_verification",
+   "invalidate_evidence",
+   "revise_claim",
+   "dispute_claim"
+  ],
+  "service_methods": [
+   "provisionCase",
+   "submitCommand",
+   "getCommandResult",
+   "getCaseSnapshot"
+  ],
+  "failure_codes": {
+   "invalid_contract": {
+    "http": 400,
+    "handling": "terminal_until_corrected"
+   },
+   "unsupported_version": {
+    "http": 400,
+    "handling": "terminal_until_compatible"
+   },
+   "unauthorized": {
+    "http": 401,
+    "handling": "deny_no_escalation"
+   },
+   "forbidden": {
+    "http": 403,
+    "handling": "deny_no_escalation"
+   },
+   "head_conflict": {
+    "http": 409,
+    "handling": "reevaluate_new_command_id"
+   },
+   "idempotency_conflict": {
+    "http": 409,
+    "handling": "operator_review"
+   },
+   "dependency_blocked": {
+    "http": 409,
+    "handling": "preserve_proposal_review"
+   },
+   "evidence_rejected": {
+    "http": 409,
+    "handling": "preserve_proposal_review"
+   },
+   "unavailable": {
+    "http": 503,
+    "handling": "bounded_retry"
+   }
+  },
+  "proposed_event_schema": 3,
+  "receipt_domain": "stratum execution receipt 1"
+ },
+ "valid": [
+  {
+   "name": "register_claim: minimal valid command",
+   "ingress_client_id": "checkmate",
+   "command": {
+    "protocol": 1,
+    "client_id": "checkmate",
+    "case_id": "case-synthetic-1",
+    "source_event_id": "src-register_claim",
+    "command_id": "cmd-register_claim-1",
+    "prior_command_id": null,
+    "operation": "register_claim",
+    "expected_head_digest": "00a5caf81a2a1751a7c3107426bcefc7fe0eccba5ad5a50f2f40c7bb0eb4c188",
+    "payload_digest": "aa05e2de0da4e8348e3e93487da061c3cd218636289899f3d4b78117e7429563",
+    "payload": {
+     "claim_id": "claim-impact",
+     "revision_id": "rev-impact-1",
+     "proposition": "Synthetic fixture: the impact claim holds within its declared scope.",
+     "scope_digest": "c64a0b40f7f59230576189a6878ac448ce105018dc367e192a3323a38453e9cf",
+     "obligations": [
+      "execution_receipt",
+      "oracle_result",
+      "negative_control"
+     ],
+     "requires": [
+      {
+       "revision_id": "rev-interp-1",
+       "scope_digest": "4001b4103c8121ee8d2f1a05c12b344c647fa519b60060f0c7b02f908ada188c"
+      }
+     ]
+    }
+   },
+   "expect": {
+    "payload_digest": "aa05e2de0da4e8348e3e93487da061c3cd218636289899f3d4b78117e7429563",
+    "command_digest": "85a4e9aa7007d26f49077fb90ed413a7bcd4a89f30a98ad66cb5bb0b936ee224",
+    "effect_digest": "950b8027433033709ffc0660c2c91c4af15a89a8ca48f9f49a0fde731ef152f8"
+   }
+  },
+  {
+   "name": "register_evidence: minimal valid command",
+   "ingress_client_id": "checkmate",
+   "command": {
+    "protocol": 1,
+    "client_id": "checkmate",
+    "case_id": "case-synthetic-1",
+    "source_event_id": "src-register_evidence",
+    "command_id": "cmd-register_evidence-1",
+    "prior_command_id": null,
+    "operation": "register_evidence",
+    "expected_head_digest": "00a5caf81a2a1751a7c3107426bcefc7fe0eccba5ad5a50f2f40c7bb0eb4c188",
+    "payload_digest": "6dfc0c1a637ae91d5cc5082f3e7fa7888ec8ad6c458f137d8a045b56c2828a88",
+    "payload": {
+     "evidence_id": "ev-static-1",
+     "artifact_sha256": "7167f142894b2f1cf3352f3f2c9812d656661692b3cfbfc2513268f2eac6b5a1",
+     "size_bytes": 4096,
+     "media_type": "application/json",
+     "private_locator": "r2://checkmate-evidence/ev-static-1",
+     "recipe_sha256": "349cf9e0eb880e78daeb20ffe5b49d809da3673560886a4da48ed8939e6034b5",
+     "environment_sha256": "30441b3680f0205aafb8c9cc114d68faeb2a3532380e142ab7e3b8fe89f7a2b9",
+     "retention_class": "case"
+    }
+   },
+   "expect": {
+    "payload_digest": "6dfc0c1a637ae91d5cc5082f3e7fa7888ec8ad6c458f137d8a045b56c2828a88",
+    "command_digest": "9bc575b0a01583c57c4b53365eec92726f7bdfd03ab5e9dc39e5bad28b47a6a1",
+    "effect_digest": "0d65e899545b09966104b01a201720ee9e682ba8211bfe0d9e9d4ca1a1fbb5e3"
+   }
+  },
+  {
+   "name": "request_verification: minimal valid command",
+   "ingress_client_id": "checkmate",
+   "command": {
+    "protocol": 1,
+    "client_id": "checkmate",
+    "case_id": "case-synthetic-1",
+    "source_event_id": "src-request_verification",
+    "command_id": "cmd-request_verification-1",
+    "prior_command_id": null,
+    "operation": "request_verification",
+    "expected_head_digest": "00a5caf81a2a1751a7c3107426bcefc7fe0eccba5ad5a50f2f40c7bb0eb4c188",
+    "payload_digest": "9b02b755f41ea63e421f8c94a26a45e859634b061d2380f2042f42b2bbbd3569",
+    "payload": {
+     "revision_id": "rev-impact-1",
+     "evidence_ids": [
+      "ev-static-1"
+     ],
+     "recipe_sha256": "349cf9e0eb880e78daeb20ffe5b49d809da3673560886a4da48ed8939e6034b5"
+    }
+   },
+   "expect": {
+    "payload_digest": "9b02b755f41ea63e421f8c94a26a45e859634b061d2380f2042f42b2bbbd3569",
+    "command_digest": "7332ccdf5f96b146c43401a0ea5989044c447b059491566ac838997149628817",
+    "effect_digest": "48cd1ee7c88f696f1dbecd99b7dd967acfc0d89953020bd5d524332672e4de5f"
+   }
+  },
+  {
+   "name": "apply_verification: minimal valid command",
+   "ingress_client_id": "checkmate",
+   "command": {
+    "protocol": 1,
+    "client_id": "checkmate",
+    "case_id": "case-synthetic-1",
+    "source_event_id": "src-apply_verification",
+    "command_id": "cmd-apply_verification-1",
+    "prior_command_id": null,
+    "operation": "apply_verification",
+    "expected_head_digest": "00a5caf81a2a1751a7c3107426bcefc7fe0eccba5ad5a50f2f40c7bb0eb4c188",
+    "payload_digest": "cb5bd1315c6a5e42dc62619ea2944bdf52beb9c595b8f43257d0fb0a8bd7b048",
+    "payload": {
+     "revision_id": "rev-impact-1",
+     "receipt_ref": "rcpt-1",
+     "oracle_ref": "oracle-1",
+     "attestation_ref": "att-1"
+    }
+   },
+   "expect": {
+    "payload_digest": "cb5bd1315c6a5e42dc62619ea2944bdf52beb9c595b8f43257d0fb0a8bd7b048",
+    "command_digest": "f8856f37e0107d6ce5dc925f29c38b8cc685f335083e910924512e0e2921d9a7",
+    "effect_digest": "0e15f15cfbd57ea4f857b944c3a21057c9147b97fca460558f825b877fdfd127"
+   }
+  },
+  {
+   "name": "invalidate_evidence: minimal valid command",
+   "ingress_client_id": "checkmate",
+   "command": {
+    "protocol": 1,
+    "client_id": "checkmate",
+    "case_id": "case-synthetic-1",
+    "source_event_id": "src-invalidate_evidence",
+    "command_id": "cmd-invalidate_evidence-1",
+    "prior_command_id": null,
+    "operation": "invalidate_evidence",
+    "expected_head_digest": "00a5caf81a2a1751a7c3107426bcefc7fe0eccba5ad5a50f2f40c7bb0eb4c188",
+    "payload_digest": "adadd9cae2a213032857a17098ffe12cffb4a9a4c8d2250657d83e90b879d35f",
+    "payload": {
+     "evidence_id": "ev-static-1",
+     "reason": "Synthetic fixture: the interpretation trace was corrected.",
+     "evidence_refs": [
+      "ev-static-2"
+     ]
+    }
+   },
+   "expect": {
+    "payload_digest": "adadd9cae2a213032857a17098ffe12cffb4a9a4c8d2250657d83e90b879d35f",
+    "command_digest": "d1628af4b365064e27d17c36237c9b8557598a77d5248c74538c299723b74010",
+    "effect_digest": "2878f9b591e999574c3a07241fb93f50861620dc3abe1a6cb01a60fc3e542612"
+   }
+  },
+  {
+   "name": "revise_claim: minimal valid command",
+   "ingress_client_id": "checkmate",
+   "command": {
+    "protocol": 1,
+    "client_id": "checkmate",
+    "case_id": "case-synthetic-1",
+    "source_event_id": "src-revise_claim",
+    "command_id": "cmd-revise_claim-1",
+    "prior_command_id": null,
+    "operation": "revise_claim",
+    "expected_head_digest": "00a5caf81a2a1751a7c3107426bcefc7fe0eccba5ad5a50f2f40c7bb0eb4c188",
+    "payload_digest": "48ebdcb49b2a621bdfc2fbfc1d12f4e5180b219a5e7ac0174e6c2439e00d2147",
+    "payload": {
+     "prior_revision_id": "rev-impact-1",
+     "transition": "supersede",
+     "revision": {
+      "claim_id": "claim-impact",
+      "revision_id": "rev-impact-2",
+      "proposition": "Synthetic fixture: the impact claim holds within its declared scope.",
+      "scope_digest": "30ef562755b802c80e58538ea79f30dbf043e57bea86572e3fb34abb9c5da420",
+      "obligations": [
+       "execution_receipt",
+       "oracle_result",
+       "negative_control"
+      ],
+      "requires": [
+       {
+        "revision_id": "rev-interp-1",
+        "scope_digest": "4001b4103c8121ee8d2f1a05c12b344c647fa519b60060f0c7b02f908ada188c"
+       }
+      ]
+     }
+    }
+   },
+   "expect": {
+    "payload_digest": "48ebdcb49b2a621bdfc2fbfc1d12f4e5180b219a5e7ac0174e6c2439e00d2147",
+    "command_digest": "0ba5c3b88149ad4bd1e9713cc99372f58c1284b8bfdbb1211fbc1c956ea22be4",
+    "effect_digest": "1fdd756b48a10a18fd22985268498e67633c2c996f0b74f653c586db944fd290"
+   }
+  },
+  {
+   "name": "dispute_claim: minimal valid command",
+   "ingress_client_id": "checkmate",
+   "command": {
+    "protocol": 1,
+    "client_id": "checkmate",
+    "case_id": "case-synthetic-1",
+    "source_event_id": "src-dispute_claim",
+    "command_id": "cmd-dispute_claim-1",
+    "prior_command_id": null,
+    "operation": "dispute_claim",
+    "expected_head_digest": "00a5caf81a2a1751a7c3107426bcefc7fe0eccba5ad5a50f2f40c7bb0eb4c188",
+    "payload_digest": "cd8c77dd5457cd4b6d3d7e0ea1df1e6827e80440d6e18ac2fe2bf25512e7c8bf",
+    "payload": {
+     "revision_id": "rev-impact-1",
+     "reason": "Synthetic fixture: the oracle lacks a negative control."
+    }
+   },
+   "expect": {
+    "payload_digest": "cd8c77dd5457cd4b6d3d7e0ea1df1e6827e80440d6e18ac2fe2bf25512e7c8bf",
+    "command_digest": "e0e1e6e1b4bf95b2d1a770de785a1ed6ef09f0eaedb016029d2da55933d66509",
+    "effect_digest": "fe162d07870c9a775f043a333208a352a5248d5ee1276c9ade834fca88597c92"
+   }
+  },
+  {
+   "name": "rebased retry: new command id and head, same effect",
+   "ingress_client_id": "checkmate",
+   "command": {
+    "protocol": 1,
+    "client_id": "checkmate",
+    "case_id": "case-synthetic-1",
+    "source_event_id": "src-register_evidence",
+    "command_id": "cmd-register_evidence-2",
+    "prior_command_id": "cmd-register_evidence-1",
+    "operation": "register_evidence",
+    "expected_head_digest": "23a4ada63dd4a456283c67a68a2266347d8d0d5cfd01fb07514f0c553080e3ab",
+    "payload_digest": "6dfc0c1a637ae91d5cc5082f3e7fa7888ec8ad6c458f137d8a045b56c2828a88",
+    "payload": {
+     "evidence_id": "ev-static-1",
+     "artifact_sha256": "7167f142894b2f1cf3352f3f2c9812d656661692b3cfbfc2513268f2eac6b5a1",
+     "size_bytes": 4096,
+     "media_type": "application/json",
+     "private_locator": "r2://checkmate-evidence/ev-static-1",
+     "recipe_sha256": "349cf9e0eb880e78daeb20ffe5b49d809da3673560886a4da48ed8939e6034b5",
+     "environment_sha256": "30441b3680f0205aafb8c9cc114d68faeb2a3532380e142ab7e3b8fe89f7a2b9",
+     "retention_class": "case"
+    }
+   },
+   "expect": {
+    "payload_digest": "6dfc0c1a637ae91d5cc5082f3e7fa7888ec8ad6c458f137d8a045b56c2828a88",
+    "command_digest": "58b35c95e8e1db51e6f7a9b2be7eb59b5a66e29f3275630fa45799ed45daac85",
+    "effect_digest": "0d65e899545b09966104b01a201720ee9e682ba8211bfe0d9e9d4ca1a1fbb5e3"
+   }
+  },
+  {
+   "name": "changed effect under the same source event",
+   "ingress_client_id": "checkmate",
+   "command": {
+    "protocol": 1,
+    "client_id": "checkmate",
+    "case_id": "case-synthetic-1",
+    "source_event_id": "src-register_evidence",
+    "command_id": "cmd-register_evidence-1",
+    "prior_command_id": null,
+    "operation": "register_evidence",
+    "expected_head_digest": "00a5caf81a2a1751a7c3107426bcefc7fe0eccba5ad5a50f2f40c7bb0eb4c188",
+    "payload_digest": "5f95b76c415fa1f1a1952b91b6d1caff3e72de5d311f5dfc586434cab617f4a5",
+    "payload": {
+     "evidence_id": "ev-static-1",
+     "artifact_sha256": "7167f142894b2f1cf3352f3f2c9812d656661692b3cfbfc2513268f2eac6b5a1",
+     "size_bytes": 8192,
+     "media_type": "application/json",
+     "private_locator": "r2://checkmate-evidence/ev-static-1",
+     "recipe_sha256": "349cf9e0eb880e78daeb20ffe5b49d809da3673560886a4da48ed8939e6034b5",
+     "environment_sha256": "30441b3680f0205aafb8c9cc114d68faeb2a3532380e142ab7e3b8fe89f7a2b9",
+     "retention_class": "case"
+    }
+   },
+   "expect": {
+    "payload_digest": "5f95b76c415fa1f1a1952b91b6d1caff3e72de5d311f5dfc586434cab617f4a5",
+    "command_digest": "1054a10b73605e76833f4ed45499fdfa1c45ac399ec0aa2b22b5f61b27142ade",
+    "effect_digest": "c22724c4c4efc7fcaf3b6ba0341e149fa52ebd94f9f5f095fdfaf73ae4987d78"
+   }
+  },
+  {
+   "name": "protocol written as 1.0 is protocol 1",
+   "ingress_client_id": "checkmate",
+   "command": {
+    "protocol": 1.0,
+    "client_id": "checkmate",
+    "case_id": "case-synthetic-1",
+    "source_event_id": "src-register_evidence",
+    "command_id": "cmd-register_evidence-1",
+    "prior_command_id": null,
+    "operation": "register_evidence",
+    "expected_head_digest": "00a5caf81a2a1751a7c3107426bcefc7fe0eccba5ad5a50f2f40c7bb0eb4c188",
+    "payload_digest": "6dfc0c1a637ae91d5cc5082f3e7fa7888ec8ad6c458f137d8a045b56c2828a88",
+    "payload": {
+     "evidence_id": "ev-static-1",
+     "artifact_sha256": "7167f142894b2f1cf3352f3f2c9812d656661692b3cfbfc2513268f2eac6b5a1",
+     "size_bytes": 4096,
+     "media_type": "application/json",
+     "private_locator": "r2://checkmate-evidence/ev-static-1",
+     "recipe_sha256": "349cf9e0eb880e78daeb20ffe5b49d809da3673560886a4da48ed8939e6034b5",
+     "environment_sha256": "30441b3680f0205aafb8c9cc114d68faeb2a3532380e142ab7e3b8fe89f7a2b9",
+     "retention_class": "case"
+    }
+   },
+   "expect": {
+    "payload_digest": "6dfc0c1a637ae91d5cc5082f3e7fa7888ec8ad6c458f137d8a045b56c2828a88",
+    "command_digest": "9bc575b0a01583c57c4b53365eec92726f7bdfd03ab5e9dc39e5bad28b47a6a1",
+    "effect_digest": "0d65e899545b09966104b01a201720ee9e682ba8211bfe0d9e9d4ca1a1fbb5e3"
+   }
+  },
+  {
+   "name": "size_bytes written as 4096.0 normalizes to 4096",
+   "ingress_client_id": "checkmate",
+   "command": {
+    "protocol": 1,
+    "client_id": "checkmate",
+    "case_id": "case-synthetic-1",
+    "source_event_id": "src-register_evidence",
+    "command_id": "cmd-register_evidence-1",
+    "prior_command_id": null,
+    "operation": "register_evidence",
+    "expected_head_digest": "00a5caf81a2a1751a7c3107426bcefc7fe0eccba5ad5a50f2f40c7bb0eb4c188",
+    "payload_digest": "6dfc0c1a637ae91d5cc5082f3e7fa7888ec8ad6c458f137d8a045b56c2828a88",
+    "payload": {
+     "evidence_id": "ev-static-1",
+     "artifact_sha256": "7167f142894b2f1cf3352f3f2c9812d656661692b3cfbfc2513268f2eac6b5a1",
+     "size_bytes": 4096.0,
+     "media_type": "application/json",
+     "private_locator": "r2://checkmate-evidence/ev-static-1",
+     "recipe_sha256": "349cf9e0eb880e78daeb20ffe5b49d809da3673560886a4da48ed8939e6034b5",
+     "environment_sha256": "30441b3680f0205aafb8c9cc114d68faeb2a3532380e142ab7e3b8fe89f7a2b9",
+     "retention_class": "case"
+    }
+   },
+   "expect": {
+    "payload_digest": "6dfc0c1a637ae91d5cc5082f3e7fa7888ec8ad6c458f137d8a045b56c2828a88",
+    "command_digest": "9bc575b0a01583c57c4b53365eec92726f7bdfd03ab5e9dc39e5bad28b47a6a1",
+    "effect_digest": "0d65e899545b09966104b01a201720ee9e682ba8211bfe0d9e9d4ca1a1fbb5e3"
+   }
+  },
+  {
+   "name": "prerequisites at the 32-edge limit",
+   "ingress_client_id": "checkmate",
+   "command": {
+    "protocol": 1,
+    "client_id": "checkmate",
+    "case_id": "case-synthetic-1",
+    "source_event_id": "src-register_claim",
+    "command_id": "cmd-register_claim-1",
+    "prior_command_id": null,
+    "operation": "register_claim",
+    "expected_head_digest": "00a5caf81a2a1751a7c3107426bcefc7fe0eccba5ad5a50f2f40c7bb0eb4c188",
+    "payload_digest": "2dab54da1b6ff147f1e4fb303ce18c168dcfd79666a23957539d6603ed561d49",
+    "payload": {
+     "claim_id": "claim-impact",
+     "revision_id": "rev-impact-1",
+     "proposition": "Synthetic fixture: the impact claim holds within its declared scope.",
+     "scope_digest": "c64a0b40f7f59230576189a6878ac448ce105018dc367e192a3323a38453e9cf",
+     "obligations": [
+      "execution_receipt",
+      "oracle_result",
+      "negative_control"
+     ],
+     "requires": [
+      {
+       "revision_id": "rev-pre-0",
+       "scope_digest": "6f31746b49ad6a4e315ec6a3a13f2d1774aeed7a11b42317e3f661d478898474"
+      },
+      {
+       "revision_id": "rev-pre-1",
+       "scope_digest": "44fd1c82121b43c131bb9744c9124895718c5a92af044b2568a0f5632a63006b"
+      },
+      {
+       "revision_id": "rev-pre-2",
+       "scope_digest": "11fda714d137f0184fe068cf073ffc10c1b352b458fd4d7b5096aabb22a3c19c"
+      },
+      {
+       "revision_id": "rev-pre-3",
+       "scope_digest": "843f9f486a2dfb8362cd917478b2225b4f483d9ffe61546e7035c973b2a33127"
+      },
+      {
+       "revision_id": "rev-pre-4",
+       "scope_digest": "8bdefa758d93698fe3315497c9f378b78c799169aa785703e958924d909731b8"
+      },
+      {
+       "revision_id": "rev-pre-5",
+       "scope_digest": "50d0870c4d49f0c2c47a7e0d9cdc57b75d66d46be9652c96a53dae531493f9b7"
+      },
+      {
+       "revision_id": "rev-pre-6",
+       "scope_digest": "fe3e1e580816eb94e3361e1e8fc82c7e774d36ecb54d7a11a0c610198b8c752e"
+      },
+      {
+       "revision_id": "rev-pre-7",
+       "scope_digest": "3081ea879101abd4dd31a9e11b8f6f0f46d8ce584a3da16b046c049998a0dcce"
+      },
+      {
+       "revision_id": "rev-pre-8",
+       "scope_digest": "68fed0ce006b379c2a5c947c900574fc669ede8acb79aaf92a19ccfa7f1de498"
+      },
+      {
+       "revision_id": "rev-pre-9",
+       "scope_digest": "90cd76e4a3b041c1a757dcf9c959b6b643592ae75468b425d07bf70cba86f743"
+      },
+      {
+       "revision_id": "rev-pre-10",
+       "scope_digest": "d60253da5ce02101386d578c42c92153612ada6599cd3f7824774caf0c7d1c81"
+      },
+      {
+       "revision_id": "rev-pre-11",
+       "scope_digest": "b1e10d512a830ef3a6014d507222c8a1b239f770382d3b94e97e64913cfa4620"
+      },
+      {
+       "revision_id": "rev-pre-12",
+       "scope_digest": "6a92b526cb5bf00a023b39a5801765a1ef97d46772ebb1533ed6c3f1c84a15f1"
+      },
+      {
+       "revision_id": "rev-pre-13",
+       "scope_digest": "36424a6c013b89b3f2f1abeb89e525a03a84915d62f3efd3f5dc794507c722e3"
+      },
+      {
+       "revision_id": "rev-pre-14",
+       "scope_digest": "3ee03e8247a2652d425344ce75d949d6109ddef77aa86d1b1919b63589848974"
+      },
+      {
+       "revision_id": "rev-pre-15",
+       "scope_digest": "845ae5c2f678542ca61300f5d4446fc25ff6b455b97f4a01e9bdfaa1862ada85"
+      },
+      {
+       "revision_id": "rev-pre-16",
+       "scope_digest": "118ca1e074bb0f8f77d2afc3aeca912ea98d1c1e085753d14ad641842aada1e5"
+      },
+      {
+       "revision_id": "rev-pre-17",
+       "scope_digest": "bc7e496c1ad59fd6ed5b996cdfe2574063509702b06f16c0b38af87b6b059744"
+      },
+      {
+       "revision_id": "rev-pre-18",
+       "scope_digest": "1625c5f7c5a23402eb727c02539704cf396bbf07ace8160b48837b7a23856dec"
+      },
+      {
+       "revision_id": "rev-pre-19",
+       "scope_digest": "bac4eb2fde85e1212a28dd79b594ba7cae95a38266dd848cfd2f21b3f7eaf5be"
+      },
+      {
+       "revision_id": "rev-pre-20",
+       "scope_digest": "279f5b39be25e93fb2393cffc5eadab9449beb6cceec3ba6e6a8ad866ad227d2"
+      },
+      {
+       "revision_id": "rev-pre-21",
+       "scope_digest": "63e813d4cf7a83a4e29cdbe7ba612a5a5b7409114758ad8291632b8af528ade1"
+      },
+      {
+       "revision_id": "rev-pre-22",
+       "scope_digest": "fe1fac161fe27d42190179db1252fe7e9ac3d3d212b338478ae1605e5a4f0eac"
+      },
+      {
+       "revision_id": "rev-pre-23",
+       "scope_digest": "087a5eb92f1067202a3c0109d3604325e146943209aad66d0e2b9638c574fffa"
+      },
+      {
+       "revision_id": "rev-pre-24",
+       "scope_digest": "50f3837548bffbdab0afb38a52dad56c4f5b418dda2454ab5242d0f48be673e4"
+      },
+      {
+       "revision_id": "rev-pre-25",
+       "scope_digest": "89f8661ac4fd32c743f7b2f06b1bd8894557a742e8dc26b98e78ec18e9510e33"
+      },
+      {
+       "revision_id": "rev-pre-26",
+       "scope_digest": "53aee0cf24fd9bf4b3eee6043b127f5181029b17c575aa401c31b77b6f0012e9"
+      },
+      {
+       "revision_id": "rev-pre-27",
+       "scope_digest": "a8cfe6d05d785fdfd700698ceff1f98d1731a0ff5f7c325ae110048c8d96e64e"
+      },
+      {
+       "revision_id": "rev-pre-28",
+       "scope_digest": "ae6c989748377774952d739fa6a093de4f87545c5641b20c407c93ae0b30e89e"
+      },
+      {
+       "revision_id": "rev-pre-29",
+       "scope_digest": "4f80af1165e3aab1acc3cb2662948e78d19da489f2bb922627386da549c3571c"
+      },
+      {
+       "revision_id": "rev-pre-30",
+       "scope_digest": "9dafc260b00e5ff61e8edbaeaacd6c602d7812e7936ecd1e8fe7e8cb574505fd"
+      },
+      {
+       "revision_id": "rev-pre-31",
+       "scope_digest": "ce7a09ea49e3a47d4a51a294b1e23f40b7a44ca9a1e73ec24cf1a16efa771af8"
+      }
+     ]
+    }
+   },
+   "expect": {
+    "payload_digest": "2dab54da1b6ff147f1e4fb303ce18c168dcfd79666a23957539d6603ed561d49",
+    "command_digest": "37f7676636448d2f752efa3185e73a5e2c488030e4aeef6015c8bf0f647ee65f",
+    "effect_digest": "49148fb0956cb5c235c33b1404cba20df60f3b2a70bcfcf1a261c1d3e4d209bf"
+   }
+  },
+  {
+   "name": "proposition at 8000 UTF-16 units (astral characters count twice)",
+   "ingress_client_id": "checkmate",
+   "command": {
+    "protocol": 1,
+    "client_id": "checkmate",
+    "case_id": "case-synthetic-1",
+    "source_event_id": "src-register_claim",
+    "command_id": "cmd-register_claim-1",
+    "prior_command_id": null,
+    "operation": "register_claim",
+    "expected_head_digest": "00a5caf81a2a1751a7c3107426bcefc7fe0eccba5ad5a50f2f40c7bb0eb4c188",
+    "payload_digest": "a2a28804a0177e9e26e7a9b44212e8ccd7355270fea1bf0c548001ea7051f87a",
+    "payload": {
+     "claim_id": "claim-impact",
+     "revision_id": "rev-impact-1",
+     "proposition": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀",
+     "scope_digest": "c64a0b40f7f59230576189a6878ac448ce105018dc367e192a3323a38453e9cf",
+     "obligations": [
+      "execution_receipt",
+      "oracle_result",
+      "negative_control"
+     ],
+     "requires": [
+      {
+       "revision_id": "rev-interp-1",
+       "scope_digest": "4001b4103c8121ee8d2f1a05c12b344c647fa519b60060f0c7b02f908ada188c"
+      }
+     ]
+    }
+   },
+   "expect": {
+    "payload_digest": "a2a28804a0177e9e26e7a9b44212e8ccd7355270fea1bf0c548001ea7051f87a",
+    "command_digest": "5351aa5b9580684c7090967c8bae966fdfe6b50fa18257d03534bf71bf7ef76c",
+    "effect_digest": "302e222424cc2b24bf52f8a8140f1d50e79d99ec19ff432784544f14f066f6d8"
+   }
+  }
+ ],
+ "invalid": [
+  {
+   "name": "protocol 2",
+   "ingress_client_id": "checkmate",
+   "command": {
+    "protocol": 2,
+    "client_id": "checkmate",
+    "case_id": "case-synthetic-1",
+    "source_event_id": "src-register_evidence",
+    "command_id": "cmd-register_evidence-1",
+    "prior_command_id": null,
+    "operation": "register_evidence",
+    "expected_head_digest": "00a5caf81a2a1751a7c3107426bcefc7fe0eccba5ad5a50f2f40c7bb0eb4c188",
+    "payload_digest": "6dfc0c1a637ae91d5cc5082f3e7fa7888ec8ad6c458f137d8a045b56c2828a88",
+    "payload": {
+     "evidence_id": "ev-static-1",
+     "artifact_sha256": "7167f142894b2f1cf3352f3f2c9812d656661692b3cfbfc2513268f2eac6b5a1",
+     "size_bytes": 4096,
+     "media_type": "application/json",
+     "private_locator": "r2://checkmate-evidence/ev-static-1",
+     "recipe_sha256": "349cf9e0eb880e78daeb20ffe5b49d809da3673560886a4da48ed8939e6034b5",
+     "environment_sha256": "30441b3680f0205aafb8c9cc114d68faeb2a3532380e142ab7e3b8fe89f7a2b9",
+     "retention_class": "case"
+    }
+   },
+   "expect_code": "unsupported_version"
+  },
+  {
+   "name": "protocol true",
+   "ingress_client_id": "checkmate",
+   "command": {
+    "protocol": true,
+    "client_id": "checkmate",
+    "case_id": "case-synthetic-1",
+    "source_event_id": "src-register_evidence",
+    "command_id": "cmd-register_evidence-1",
+    "prior_command_id": null,
+    "operation": "register_evidence",
+    "expected_head_digest": "00a5caf81a2a1751a7c3107426bcefc7fe0eccba5ad5a50f2f40c7bb0eb4c188",
+    "payload_digest": "6dfc0c1a637ae91d5cc5082f3e7fa7888ec8ad6c458f137d8a045b56c2828a88",
+    "payload": {
+     "evidence_id": "ev-static-1",
+     "artifact_sha256": "7167f142894b2f1cf3352f3f2c9812d656661692b3cfbfc2513268f2eac6b5a1",
+     "size_bytes": 4096,
+     "media_type": "application/json",
+     "private_locator": "r2://checkmate-evidence/ev-static-1",
+     "recipe_sha256": "349cf9e0eb880e78daeb20ffe5b49d809da3673560886a4da48ed8939e6034b5",
+     "environment_sha256": "30441b3680f0205aafb8c9cc114d68faeb2a3532380e142ab7e3b8fe89f7a2b9",
+     "retention_class": "case"
+    }
+   },
+   "expect_code": "unsupported_version"
+  },
+  {
+   "name": "protocol as a string",
+   "ingress_client_id": "checkmate",
+   "command": {
+    "protocol": "1",
+    "client_id": "checkmate",
+    "case_id": "case-synthetic-1",
+    "source_event_id": "src-register_evidence",
+    "command_id": "cmd-register_evidence-1",
+    "prior_command_id": null,
+    "operation": "register_evidence",
+    "expected_head_digest": "00a5caf81a2a1751a7c3107426bcefc7fe0eccba5ad5a50f2f40c7bb0eb4c188",
+    "payload_digest": "6dfc0c1a637ae91d5cc5082f3e7fa7888ec8ad6c458f137d8a045b56c2828a88",
+    "payload": {
+     "evidence_id": "ev-static-1",
+     "artifact_sha256": "7167f142894b2f1cf3352f3f2c9812d656661692b3cfbfc2513268f2eac6b5a1",
+     "size_bytes": 4096,
+     "media_type": "application/json",
+     "private_locator": "r2://checkmate-evidence/ev-static-1",
+     "recipe_sha256": "349cf9e0eb880e78daeb20ffe5b49d809da3673560886a4da48ed8939e6034b5",
+     "environment_sha256": "30441b3680f0205aafb8c9cc114d68faeb2a3532380e142ab7e3b8fe89f7a2b9",
+     "retention_class": "case"
+    }
+   },
+   "expect_code": "unsupported_version"
+  },
+  {
+   "name": "missing protocol",
+   "ingress_client_id": "checkmate",
+   "command": {
+    "client_id": "checkmate",
+    "case_id": "case-synthetic-1",
+    "source_event_id": "src-register_evidence",
+    "command_id": "cmd-register_evidence-1",
+    "prior_command_id": null,
+    "operation": "register_evidence",
+    "expected_head_digest": "00a5caf81a2a1751a7c3107426bcefc7fe0eccba5ad5a50f2f40c7bb0eb4c188",
+    "payload_digest": "6dfc0c1a637ae91d5cc5082f3e7fa7888ec8ad6c458f137d8a045b56c2828a88",
+    "payload": {
+     "evidence_id": "ev-static-1",
+     "artifact_sha256": "7167f142894b2f1cf3352f3f2c9812d656661692b3cfbfc2513268f2eac6b5a1",
+     "size_bytes": 4096,
+     "media_type": "application/json",
+     "private_locator": "r2://checkmate-evidence/ev-static-1",
+     "recipe_sha256": "349cf9e0eb880e78daeb20ffe5b49d809da3673560886a4da48ed8939e6034b5",
+     "environment_sha256": "30441b3680f0205aafb8c9cc114d68faeb2a3532380e142ab7e3b8fe89f7a2b9",
+     "retention_class": "case"
+    }
+   },
+   "expect_code": "unsupported_version"
+  },
+  {
+   "name": "body names another client",
+   "ingress_client_id": "checkmate",
+   "command": {
+    "protocol": 1,
+    "client_id": "other-client",
+    "case_id": "case-synthetic-1",
+    "source_event_id": "src-register_evidence",
+    "command_id": "cmd-register_evidence-1",
+    "prior_command_id": null,
+    "operation": "register_evidence",
+    "expected_head_digest": "00a5caf81a2a1751a7c3107426bcefc7fe0eccba5ad5a50f2f40c7bb0eb4c188",
+    "payload_digest": "6dfc0c1a637ae91d5cc5082f3e7fa7888ec8ad6c458f137d8a045b56c2828a88",
+    "payload": {
+     "evidence_id": "ev-static-1",
+     "artifact_sha256": "7167f142894b2f1cf3352f3f2c9812d656661692b3cfbfc2513268f2eac6b5a1",
+     "size_bytes": 4096,
+     "media_type": "application/json",
+     "private_locator": "r2://checkmate-evidence/ev-static-1",
+     "recipe_sha256": "349cf9e0eb880e78daeb20ffe5b49d809da3673560886a4da48ed8939e6034b5",
+     "environment_sha256": "30441b3680f0205aafb8c9cc114d68faeb2a3532380e142ab7e3b8fe89f7a2b9",
+     "retention_class": "case"
+    }
+   },
+   "expect_code": "forbidden"
+  },
+  {
+   "name": "unknown top-level field",
+   "ingress_client_id": "checkmate",
+   "command": {
+    "protocol": 1,
+    "client_id": "checkmate",
+    "case_id": "case-synthetic-1",
+    "source_event_id": "src-register_evidence",
+    "command_id": "cmd-register_evidence-1",
+    "prior_command_id": null,
+    "operation": "register_evidence",
+    "expected_head_digest": "00a5caf81a2a1751a7c3107426bcefc7fe0eccba5ad5a50f2f40c7bb0eb4c188",
+    "payload_digest": "6dfc0c1a637ae91d5cc5082f3e7fa7888ec8ad6c458f137d8a045b56c2828a88",
+    "payload": {
+     "evidence_id": "ev-static-1",
+     "artifact_sha256": "7167f142894b2f1cf3352f3f2c9812d656661692b3cfbfc2513268f2eac6b5a1",
+     "size_bytes": 4096,
+     "media_type": "application/json",
+     "private_locator": "r2://checkmate-evidence/ev-static-1",
+     "recipe_sha256": "349cf9e0eb880e78daeb20ffe5b49d809da3673560886a4da48ed8939e6034b5",
+     "environment_sha256": "30441b3680f0205aafb8c9cc114d68faeb2a3532380e142ab7e3b8fe89f7a2b9",
+     "retention_class": "case"
+    },
+    "authority": "authoritative_verified"
+   },
+   "expect_code": "invalid_contract"
+  },
+  {
+   "name": "missing payload_digest",
+   "ingress_client_id": "checkmate",
+   "command": {
+    "protocol": 1,
+    "client_id": "checkmate",
+    "case_id": "case-synthetic-1",
+    "source_event_id": "src-register_evidence",
+    "command_id": "cmd-register_evidence-1",
+    "prior_command_id": null,
+    "operation": "register_evidence",
+    "expected_head_digest": "00a5caf81a2a1751a7c3107426bcefc7fe0eccba5ad5a50f2f40c7bb0eb4c188",
+    "payload": {
+     "evidence_id": "ev-static-1",
+     "artifact_sha256": "7167f142894b2f1cf3352f3f2c9812d656661692b3cfbfc2513268f2eac6b5a1",
+     "size_bytes": 4096,
+     "media_type": "application/json",
+     "private_locator": "r2://checkmate-evidence/ev-static-1",
+     "recipe_sha256": "349cf9e0eb880e78daeb20ffe5b49d809da3673560886a4da48ed8939e6034b5",
+     "environment_sha256": "30441b3680f0205aafb8c9cc114d68faeb2a3532380e142ab7e3b8fe89f7a2b9",
+     "retention_class": "case"
+    }
+   },
+   "expect_code": "invalid_contract"
+  },
+  {
+   "name": "payload_digest does not match",
+   "ingress_client_id": "checkmate",
+   "command": {
+    "protocol": 1,
+    "client_id": "checkmate",
+    "case_id": "case-synthetic-1",
+    "source_event_id": "src-register_evidence",
+    "command_id": "cmd-register_evidence-1",
+    "prior_command_id": null,
+    "operation": "register_evidence",
+    "expected_head_digest": "00a5caf81a2a1751a7c3107426bcefc7fe0eccba5ad5a50f2f40c7bb0eb4c188",
+    "payload_digest": "b7763bd9612167894ae3a4cb1f47eebdfb213fef136382fe20b932f8df6e69d0",
+    "payload": {
+     "evidence_id": "ev-static-1",
+     "artifact_sha256": "7167f142894b2f1cf3352f3f2c9812d656661692b3cfbfc2513268f2eac6b5a1",
+     "size_bytes": 4096,
+     "media_type": "application/json",
+     "private_locator": "r2://checkmate-evidence/ev-static-1",
+     "recipe_sha256": "349cf9e0eb880e78daeb20ffe5b49d809da3673560886a4da48ed8939e6034b5",
+     "environment_sha256": "30441b3680f0205aafb8c9cc114d68faeb2a3532380e142ab7e3b8fe89f7a2b9",
+     "retention_class": "case"
+    }
+   },
+   "expect_code": "invalid_contract"
+  },
+  {
+   "name": "uppercase digest",
+   "ingress_client_id": "checkmate",
+   "command": {
+    "protocol": 1,
+    "client_id": "checkmate",
+    "case_id": "case-synthetic-1",
+    "source_event_id": "src-register_evidence",
+    "command_id": "cmd-register_evidence-1",
+    "prior_command_id": null,
+    "operation": "register_evidence",
+    "expected_head_digest": "00A5CAF81A2A1751A7C3107426BCEFC7FE0ECCBA5AD5A50F2F40C7BB0EB4C188",
+    "payload_digest": "6dfc0c1a637ae91d5cc5082f3e7fa7888ec8ad6c458f137d8a045b56c2828a88",
+    "payload": {
+     "evidence_id": "ev-static-1",
+     "artifact_sha256": "7167f142894b2f1cf3352f3f2c9812d656661692b3cfbfc2513268f2eac6b5a1",
+     "size_bytes": 4096,
+     "media_type": "application/json",
+     "private_locator": "r2://checkmate-evidence/ev-static-1",
+     "recipe_sha256": "349cf9e0eb880e78daeb20ffe5b49d809da3673560886a4da48ed8939e6034b5",
+     "environment_sha256": "30441b3680f0205aafb8c9cc114d68faeb2a3532380e142ab7e3b8fe89f7a2b9",
+     "retention_class": "case"
+    }
+   },
+   "expect_code": "invalid_contract"
+  },
+  {
+   "name": "unknown operation",
+   "ingress_client_id": "checkmate",
+   "command": {
+    "protocol": 1,
+    "client_id": "checkmate",
+    "case_id": "case-synthetic-1",
+    "source_event_id": "src-register_evidence",
+    "command_id": "cmd-register_evidence-1",
+    "prior_command_id": null,
+    "operation": "ratify_claim",
+    "expected_head_digest": "00a5caf81a2a1751a7c3107426bcefc7fe0eccba5ad5a50f2f40c7bb0eb4c188",
+    "payload_digest": "6dfc0c1a637ae91d5cc5082f3e7fa7888ec8ad6c458f137d8a045b56c2828a88",
+    "payload": {
+     "evidence_id": "ev-static-1",
+     "artifact_sha256": "7167f142894b2f1cf3352f3f2c9812d656661692b3cfbfc2513268f2eac6b5a1",
+     "size_bytes": 4096,
+     "media_type": "application/json",
+     "private_locator": "r2://checkmate-evidence/ev-static-1",
+     "recipe_sha256": "349cf9e0eb880e78daeb20ffe5b49d809da3673560886a4da48ed8939e6034b5",
+     "environment_sha256": "30441b3680f0205aafb8c9cc114d68faeb2a3532380e142ab7e3b8fe89f7a2b9",
+     "retention_class": "case"
+    }
+   },
+   "expect_code": "invalid_contract"
+  },
+  {
+   "name": "prior_command_id equals command_id",
+   "ingress_client_id": "checkmate",
+   "command": {
+    "protocol": 1,
+    "client_id": "checkmate",
+    "case_id": "case-synthetic-1",
+    "source_event_id": "src-register_evidence",
+    "command_id": "cmd-register_evidence-1",
+    "prior_command_id": "cmd-register_evidence-1",
+    "operation": "register_evidence",
+    "expected_head_digest": "00a5caf81a2a1751a7c3107426bcefc7fe0eccba5ad5a50f2f40c7bb0eb4c188",
+    "payload_digest": "6dfc0c1a637ae91d5cc5082f3e7fa7888ec8ad6c458f137d8a045b56c2828a88",
+    "payload": {
+     "evidence_id": "ev-static-1",
+     "artifact_sha256": "7167f142894b2f1cf3352f3f2c9812d656661692b3cfbfc2513268f2eac6b5a1",
+     "size_bytes": 4096,
+     "media_type": "application/json",
+     "private_locator": "r2://checkmate-evidence/ev-static-1",
+     "recipe_sha256": "349cf9e0eb880e78daeb20ffe5b49d809da3673560886a4da48ed8939e6034b5",
+     "environment_sha256": "30441b3680f0205aafb8c9cc114d68faeb2a3532380e142ab7e3b8fe89f7a2b9",
+     "retention_class": "case"
+    }
+   },
+   "expect_code": "invalid_contract"
+  },
+  {
+   "name": "id with a slash",
+   "ingress_client_id": "checkmate",
+   "command": {
+    "protocol": 1,
+    "client_id": "checkmate",
+    "case_id": "case/1",
+    "source_event_id": "src-register_evidence",
+    "command_id": "cmd-register_evidence-1",
+    "prior_command_id": null,
+    "operation": "register_evidence",
+    "expected_head_digest": "00a5caf81a2a1751a7c3107426bcefc7fe0eccba5ad5a50f2f40c7bb0eb4c188",
+    "payload_digest": "6dfc0c1a637ae91d5cc5082f3e7fa7888ec8ad6c458f137d8a045b56c2828a88",
+    "payload": {
+     "evidence_id": "ev-static-1",
+     "artifact_sha256": "7167f142894b2f1cf3352f3f2c9812d656661692b3cfbfc2513268f2eac6b5a1",
+     "size_bytes": 4096,
+     "media_type": "application/json",
+     "private_locator": "r2://checkmate-evidence/ev-static-1",
+     "recipe_sha256": "349cf9e0eb880e78daeb20ffe5b49d809da3673560886a4da48ed8939e6034b5",
+     "environment_sha256": "30441b3680f0205aafb8c9cc114d68faeb2a3532380e142ab7e3b8fe89f7a2b9",
+     "retention_class": "case"
+    }
+   },
+   "expect_code": "invalid_contract"
+  },
+  {
+   "name": "id of 129 characters",
+   "ingress_client_id": "checkmate",
+   "command": {
+    "protocol": 1,
+    "client_id": "checkmate",
+    "case_id": "case-synthetic-1",
+    "source_event_id": "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
+    "command_id": "cmd-register_evidence-1",
+    "prior_command_id": null,
+    "operation": "register_evidence",
+    "expected_head_digest": "00a5caf81a2a1751a7c3107426bcefc7fe0eccba5ad5a50f2f40c7bb0eb4c188",
+    "payload_digest": "6dfc0c1a637ae91d5cc5082f3e7fa7888ec8ad6c458f137d8a045b56c2828a88",
+    "payload": {
+     "evidence_id": "ev-static-1",
+     "artifact_sha256": "7167f142894b2f1cf3352f3f2c9812d656661692b3cfbfc2513268f2eac6b5a1",
+     "size_bytes": 4096,
+     "media_type": "application/json",
+     "private_locator": "r2://checkmate-evidence/ev-static-1",
+     "recipe_sha256": "349cf9e0eb880e78daeb20ffe5b49d809da3673560886a4da48ed8939e6034b5",
+     "environment_sha256": "30441b3680f0205aafb8c9cc114d68faeb2a3532380e142ab7e3b8fe89f7a2b9",
+     "retention_class": "case"
+    }
+   },
+   "expect_code": "invalid_contract"
+  },
+  {
+   "name": "payload carries a supplied verdict",
+   "ingress_client_id": "checkmate",
+   "command": {
+    "protocol": 1,
+    "client_id": "checkmate",
+    "case_id": "case-synthetic-1",
+    "source_event_id": "src-register_evidence",
+    "command_id": "cmd-register_evidence-1",
+    "prior_command_id": null,
+    "operation": "register_evidence",
+    "expected_head_digest": "00a5caf81a2a1751a7c3107426bcefc7fe0eccba5ad5a50f2f40c7bb0eb4c188",
+    "payload_digest": "6dfc0c1a637ae91d5cc5082f3e7fa7888ec8ad6c458f137d8a045b56c2828a88",
+    "payload": {
+     "evidence_id": "ev-static-1",
+     "artifact_sha256": "7167f142894b2f1cf3352f3f2c9812d656661692b3cfbfc2513268f2eac6b5a1",
+     "size_bytes": 4096,
+     "media_type": "application/json",
+     "private_locator": "r2://checkmate-evidence/ev-static-1",
+     "recipe_sha256": "349cf9e0eb880e78daeb20ffe5b49d809da3673560886a4da48ed8939e6034b5",
+     "environment_sha256": "30441b3680f0205aafb8c9cc114d68faeb2a3532380e142ab7e3b8fe89f7a2b9",
+     "retention_class": "case",
+     "verified": true
+    }
+   },
+   "expect_code": "invalid_contract"
+  },
+  {
+   "name": "self prerequisite edge",
+   "ingress_client_id": "checkmate",
+   "command": {
+    "protocol": 1,
+    "client_id": "checkmate",
+    "case_id": "case-synthetic-1",
+    "source_event_id": "src-register_claim",
+    "command_id": "cmd-register_claim-1",
+    "prior_command_id": null,
+    "operation": "register_claim",
+    "expected_head_digest": "00a5caf81a2a1751a7c3107426bcefc7fe0eccba5ad5a50f2f40c7bb0eb4c188",
+    "payload_digest": "aa05e2de0da4e8348e3e93487da061c3cd218636289899f3d4b78117e7429563",
+    "payload": {
+     "claim_id": "claim-impact",
+     "revision_id": "rev-impact-1",
+     "proposition": "Synthetic fixture: the impact claim holds within its declared scope.",
+     "scope_digest": "c64a0b40f7f59230576189a6878ac448ce105018dc367e192a3323a38453e9cf",
+     "obligations": [
+      "execution_receipt",
+      "oracle_result",
+      "negative_control"
+     ],
+     "requires": [
+      {
+       "revision_id": "rev-impact-1",
+       "scope_digest": "4001b4103c8121ee8d2f1a05c12b344c647fa519b60060f0c7b02f908ada188c"
+      }
+     ]
+    }
+   },
+   "expect_code": "invalid_contract"
+  },
+  {
+   "name": "duplicate prerequisite edge",
+   "ingress_client_id": "checkmate",
+   "command": {
+    "protocol": 1,
+    "client_id": "checkmate",
+    "case_id": "case-synthetic-1",
+    "source_event_id": "src-register_claim",
+    "command_id": "cmd-register_claim-1",
+    "prior_command_id": null,
+    "operation": "register_claim",
+    "expected_head_digest": "00a5caf81a2a1751a7c3107426bcefc7fe0eccba5ad5a50f2f40c7bb0eb4c188",
+    "payload_digest": "aa05e2de0da4e8348e3e93487da061c3cd218636289899f3d4b78117e7429563",
+    "payload": {
+     "claim_id": "claim-impact",
+     "revision_id": "rev-impact-1",
+     "proposition": "Synthetic fixture: the impact claim holds within its declared scope.",
+     "scope_digest": "c64a0b40f7f59230576189a6878ac448ce105018dc367e192a3323a38453e9cf",
+     "obligations": [
+      "execution_receipt",
+      "oracle_result",
+      "negative_control"
+     ],
+     "requires": [
+      {
+       "revision_id": "rev-interp-1",
+       "scope_digest": "4001b4103c8121ee8d2f1a05c12b344c647fa519b60060f0c7b02f908ada188c"
+      },
+      {
+       "revision_id": "rev-interp-1",
+       "scope_digest": "4001b4103c8121ee8d2f1a05c12b344c647fa519b60060f0c7b02f908ada188c"
+      }
+     ]
+    }
+   },
+   "expect_code": "invalid_contract"
+  },
+  {
+   "name": "33 prerequisites",
+   "ingress_client_id": "checkmate",
+   "command": {
+    "protocol": 1,
+    "client_id": "checkmate",
+    "case_id": "case-synthetic-1",
+    "source_event_id": "src-register_claim",
+    "command_id": "cmd-register_claim-1",
+    "prior_command_id": null,
+    "operation": "register_claim",
+    "expected_head_digest": "00a5caf81a2a1751a7c3107426bcefc7fe0eccba5ad5a50f2f40c7bb0eb4c188",
+    "payload_digest": "aa05e2de0da4e8348e3e93487da061c3cd218636289899f3d4b78117e7429563",
+    "payload": {
+     "claim_id": "claim-impact",
+     "revision_id": "rev-impact-1",
+     "proposition": "Synthetic fixture: the impact claim holds within its declared scope.",
+     "scope_digest": "c64a0b40f7f59230576189a6878ac448ce105018dc367e192a3323a38453e9cf",
+     "obligations": [
+      "execution_receipt",
+      "oracle_result",
+      "negative_control"
+     ],
+     "requires": [
+      {
+       "revision_id": "rev-pre-0",
+       "scope_digest": "6f31746b49ad6a4e315ec6a3a13f2d1774aeed7a11b42317e3f661d478898474"
+      },
+      {
+       "revision_id": "rev-pre-1",
+       "scope_digest": "44fd1c82121b43c131bb9744c9124895718c5a92af044b2568a0f5632a63006b"
+      },
+      {
+       "revision_id": "rev-pre-2",
+       "scope_digest": "11fda714d137f0184fe068cf073ffc10c1b352b458fd4d7b5096aabb22a3c19c"
+      },
+      {
+       "revision_id": "rev-pre-3",
+       "scope_digest": "843f9f486a2dfb8362cd917478b2225b4f483d9ffe61546e7035c973b2a33127"
+      },
+      {
+       "revision_id": "rev-pre-4",
+       "scope_digest": "8bdefa758d93698fe3315497c9f378b78c799169aa785703e958924d909731b8"
+      },
+      {
+       "revision_id": "rev-pre-5",
+       "scope_digest": "50d0870c4d49f0c2c47a7e0d9cdc57b75d66d46be9652c96a53dae531493f9b7"
+      },
+      {
+       "revision_id": "rev-pre-6",
+       "scope_digest": "fe3e1e580816eb94e3361e1e8fc82c7e774d36ecb54d7a11a0c610198b8c752e"
+      },
+      {
+       "revision_id": "rev-pre-7",
+       "scope_digest": "3081ea879101abd4dd31a9e11b8f6f0f46d8ce584a3da16b046c049998a0dcce"
+      },
+      {
+       "revision_id": "rev-pre-8",
+       "scope_digest": "68fed0ce006b379c2a5c947c900574fc669ede8acb79aaf92a19ccfa7f1de498"
+      },
+      {
+       "revision_id": "rev-pre-9",
+       "scope_digest": "90cd76e4a3b041c1a757dcf9c959b6b643592ae75468b425d07bf70cba86f743"
+      },
+      {
+       "revision_id": "rev-pre-10",
+       "scope_digest": "d60253da5ce02101386d578c42c92153612ada6599cd3f7824774caf0c7d1c81"
+      },
+      {
+       "revision_id": "rev-pre-11",
+       "scope_digest": "b1e10d512a830ef3a6014d507222c8a1b239f770382d3b94e97e64913cfa4620"
+      },
+      {
+       "revision_id": "rev-pre-12",
+       "scope_digest": "6a92b526cb5bf00a023b39a5801765a1ef97d46772ebb1533ed6c3f1c84a15f1"
+      },
+      {
+       "revision_id": "rev-pre-13",
+       "scope_digest": "36424a6c013b89b3f2f1abeb89e525a03a84915d62f3efd3f5dc794507c722e3"
+      },
+      {
+       "revision_id": "rev-pre-14",
+       "scope_digest": "3ee03e8247a2652d425344ce75d949d6109ddef77aa86d1b1919b63589848974"
+      },
+      {
+       "revision_id": "rev-pre-15",
+       "scope_digest": "845ae5c2f678542ca61300f5d4446fc25ff6b455b97f4a01e9bdfaa1862ada85"
+      },
+      {
+       "revision_id": "rev-pre-16",
+       "scope_digest": "118ca1e074bb0f8f77d2afc3aeca912ea98d1c1e085753d14ad641842aada1e5"
+      },
+      {
+       "revision_id": "rev-pre-17",
+       "scope_digest": "bc7e496c1ad59fd6ed5b996cdfe2574063509702b06f16c0b38af87b6b059744"
+      },
+      {
+       "revision_id": "rev-pre-18",
+       "scope_digest": "1625c5f7c5a23402eb727c02539704cf396bbf07ace8160b48837b7a23856dec"
+      },
+      {
+       "revision_id": "rev-pre-19",
+       "scope_digest": "bac4eb2fde85e1212a28dd79b594ba7cae95a38266dd848cfd2f21b3f7eaf5be"
+      },
+      {
+       "revision_id": "rev-pre-20",
+       "scope_digest": "279f5b39be25e93fb2393cffc5eadab9449beb6cceec3ba6e6a8ad866ad227d2"
+      },
+      {
+       "revision_id": "rev-pre-21",
+       "scope_digest": "63e813d4cf7a83a4e29cdbe7ba612a5a5b7409114758ad8291632b8af528ade1"
+      },
+      {
+       "revision_id": "rev-pre-22",
+       "scope_digest": "fe1fac161fe27d42190179db1252fe7e9ac3d3d212b338478ae1605e5a4f0eac"
+      },
+      {
+       "revision_id": "rev-pre-23",
+       "scope_digest": "087a5eb92f1067202a3c0109d3604325e146943209aad66d0e2b9638c574fffa"
+      },
+      {
+       "revision_id": "rev-pre-24",
+       "scope_digest": "50f3837548bffbdab0afb38a52dad56c4f5b418dda2454ab5242d0f48be673e4"
+      },
+      {
+       "revision_id": "rev-pre-25",
+       "scope_digest": "89f8661ac4fd32c743f7b2f06b1bd8894557a742e8dc26b98e78ec18e9510e33"
+      },
+      {
+       "revision_id": "rev-pre-26",
+       "scope_digest": "53aee0cf24fd9bf4b3eee6043b127f5181029b17c575aa401c31b77b6f0012e9"
+      },
+      {
+       "revision_id": "rev-pre-27",
+       "scope_digest": "a8cfe6d05d785fdfd700698ceff1f98d1731a0ff5f7c325ae110048c8d96e64e"
+      },
+      {
+       "revision_id": "rev-pre-28",
+       "scope_digest": "ae6c989748377774952d739fa6a093de4f87545c5641b20c407c93ae0b30e89e"
+      },
+      {
+       "revision_id": "rev-pre-29",
+       "scope_digest": "4f80af1165e3aab1acc3cb2662948e78d19da489f2bb922627386da549c3571c"
+      },
+      {
+       "revision_id": "rev-pre-30",
+       "scope_digest": "9dafc260b00e5ff61e8edbaeaacd6c602d7812e7936ecd1e8fe7e8cb574505fd"
+      },
+      {
+       "revision_id": "rev-pre-31",
+       "scope_digest": "ce7a09ea49e3a47d4a51a294b1e23f40b7a44ca9a1e73ec24cf1a16efa771af8"
+      },
+      {
+       "revision_id": "rev-pre-32",
+       "scope_digest": "6942731c4b4b7c734dbc612fa3a1e1744878c9335f79dd2aec799f5f2cab7282"
+      }
+     ]
+    }
+   },
+   "expect_code": "invalid_contract"
+  },
+  {
+   "name": "blank proposition (JS trim whitespace only)",
+   "ingress_client_id": "checkmate",
+   "command": {
+    "protocol": 1,
+    "client_id": "checkmate",
+    "case_id": "case-synthetic-1",
+    "source_event_id": "src-register_claim",
+    "command_id": "cmd-register_claim-1",
+    "prior_command_id": null,
+    "operation": "register_claim",
+    "expected_head_digest": "00a5caf81a2a1751a7c3107426bcefc7fe0eccba5ad5a50f2f40c7bb0eb4c188",
+    "payload_digest": "aa05e2de0da4e8348e3e93487da061c3cd218636289899f3d4b78117e7429563",
+    "payload": {
+     "claim_id": "claim-impact",
+     "revision_id": "rev-impact-1",
+     "proposition": " 　﻿ ",
+     "scope_digest": "c64a0b40f7f59230576189a6878ac448ce105018dc367e192a3323a38453e9cf",
+     "obligations": [
+      "execution_receipt",
+      "oracle_result",
+      "negative_control"
+     ],
+     "requires": [
+      {
+       "revision_id": "rev-interp-1",
+       "scope_digest": "4001b4103c8121ee8d2f1a05c12b344c647fa519b60060f0c7b02f908ada188c"
+      }
+     ]
+    }
+   },
+   "expect_code": "invalid_contract"
+  },
+  {
+   "name": "proposition over 8000 UTF-16 units",
+   "ingress_client_id": "checkmate",
+   "command": {
+    "protocol": 1,
+    "client_id": "checkmate",
+    "case_id": "case-synthetic-1",
+    "source_event_id": "src-register_claim",
+    "command_id": "cmd-register_claim-1",
+    "prior_command_id": null,
+    "operation": "register_claim",
+    "expected_head_digest": "00a5caf81a2a1751a7c3107426bcefc7fe0eccba5ad5a50f2f40c7bb0eb4c188",
+    "payload_digest": "aa05e2de0da4e8348e3e93487da061c3cd218636289899f3d4b78117e7429563",
+    "payload": {
+     "claim_id": "claim-impact",
+     "revision_id": "rev-impact-1",
+     "proposition": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀x",
+     "scope_digest": "c64a0b40f7f59230576189a6878ac448ce105018dc367e192a3323a38453e9cf",
+     "obligations": [
+      "execution_receipt",
+      "oracle_result",
+      "negative_control"
+     ],
+     "requires": [
+      {
+       "revision_id": "rev-interp-1",
+       "scope_digest": "4001b4103c8121ee8d2f1a05c12b344c647fa519b60060f0c7b02f908ada188c"
+      }
+     ]
+    }
+   },
+   "expect_code": "invalid_contract"
+  },
+  {
+   "name": "file: locator",
+   "ingress_client_id": "checkmate",
+   "command": {
+    "protocol": 1,
+    "client_id": "checkmate",
+    "case_id": "case-synthetic-1",
+    "source_event_id": "src-register_evidence",
+    "command_id": "cmd-register_evidence-1",
+    "prior_command_id": null,
+    "operation": "register_evidence",
+    "expected_head_digest": "00a5caf81a2a1751a7c3107426bcefc7fe0eccba5ad5a50f2f40c7bb0eb4c188",
+    "payload_digest": "6dfc0c1a637ae91d5cc5082f3e7fa7888ec8ad6c458f137d8a045b56c2828a88",
+    "payload": {
+     "evidence_id": "ev-static-1",
+     "artifact_sha256": "7167f142894b2f1cf3352f3f2c9812d656661692b3cfbfc2513268f2eac6b5a1",
+     "size_bytes": 4096,
+     "media_type": "application/json",
+     "private_locator": "file:///tmp/ev",
+     "recipe_sha256": "349cf9e0eb880e78daeb20ffe5b49d809da3673560886a4da48ed8939e6034b5",
+     "environment_sha256": "30441b3680f0205aafb8c9cc114d68faeb2a3532380e142ab7e3b8fe89f7a2b9",
+     "retention_class": "case"
+    }
+   },
+   "expect_code": "invalid_contract"
+  },
+  {
+   "name": "bare local path locator",
+   "ingress_client_id": "checkmate",
+   "command": {
+    "protocol": 1,
+    "client_id": "checkmate",
+    "case_id": "case-synthetic-1",
+    "source_event_id": "src-register_evidence",
+    "command_id": "cmd-register_evidence-1",
+    "prior_command_id": null,
+    "operation": "register_evidence",
+    "expected_head_digest": "00a5caf81a2a1751a7c3107426bcefc7fe0eccba5ad5a50f2f40c7bb0eb4c188",
+    "payload_digest": "6dfc0c1a637ae91d5cc5082f3e7fa7888ec8ad6c458f137d8a045b56c2828a88",
+    "payload": {
+     "evidence_id": "ev-static-1",
+     "artifact_sha256": "7167f142894b2f1cf3352f3f2c9812d656661692b3cfbfc2513268f2eac6b5a1",
+     "size_bytes": 4096,
+     "media_type": "application/json",
+     "private_locator": "/tmp/ev",
+     "recipe_sha256": "349cf9e0eb880e78daeb20ffe5b49d809da3673560886a4da48ed8939e6034b5",
+     "environment_sha256": "30441b3680f0205aafb8c9cc114d68faeb2a3532380e142ab7e3b8fe89f7a2b9",
+     "retention_class": "case"
+    }
+   },
+   "expect_code": "invalid_contract"
+  },
+  {
+   "name": "locator containing a space",
+   "ingress_client_id": "checkmate",
+   "command": {
+    "protocol": 1,
+    "client_id": "checkmate",
+    "case_id": "case-synthetic-1",
+    "source_event_id": "src-register_evidence",
+    "command_id": "cmd-register_evidence-1",
+    "prior_command_id": null,
+    "operation": "register_evidence",
+    "expected_head_digest": "00a5caf81a2a1751a7c3107426bcefc7fe0eccba5ad5a50f2f40c7bb0eb4c188",
+    "payload_digest": "6dfc0c1a637ae91d5cc5082f3e7fa7888ec8ad6c458f137d8a045b56c2828a88",
+    "payload": {
+     "evidence_id": "ev-static-1",
+     "artifact_sha256": "7167f142894b2f1cf3352f3f2c9812d656661692b3cfbfc2513268f2eac6b5a1",
+     "size_bytes": 4096,
+     "media_type": "application/json",
+     "private_locator": "r2://bucket/a b",
+     "recipe_sha256": "349cf9e0eb880e78daeb20ffe5b49d809da3673560886a4da48ed8939e6034b5",
+     "environment_sha256": "30441b3680f0205aafb8c9cc114d68faeb2a3532380e142ab7e3b8fe89f7a2b9",
+     "retention_class": "case"
+    }
+   },
+   "expect_code": "invalid_contract"
+  },
+  {
+   "name": "fractional size",
+   "ingress_client_id": "checkmate",
+   "command": {
+    "protocol": 1,
+    "client_id": "checkmate",
+    "case_id": "case-synthetic-1",
+    "source_event_id": "src-register_evidence",
+    "command_id": "cmd-register_evidence-1",
+    "prior_command_id": null,
+    "operation": "register_evidence",
+    "expected_head_digest": "00a5caf81a2a1751a7c3107426bcefc7fe0eccba5ad5a50f2f40c7bb0eb4c188",
+    "payload_digest": "6dfc0c1a637ae91d5cc5082f3e7fa7888ec8ad6c458f137d8a045b56c2828a88",
+    "payload": {
+     "evidence_id": "ev-static-1",
+     "artifact_sha256": "7167f142894b2f1cf3352f3f2c9812d656661692b3cfbfc2513268f2eac6b5a1",
+     "size_bytes": 1.5,
+     "media_type": "application/json",
+     "private_locator": "r2://checkmate-evidence/ev-static-1",
+     "recipe_sha256": "349cf9e0eb880e78daeb20ffe5b49d809da3673560886a4da48ed8939e6034b5",
+     "environment_sha256": "30441b3680f0205aafb8c9cc114d68faeb2a3532380e142ab7e3b8fe89f7a2b9",
+     "retention_class": "case"
+    }
+   },
+   "expect_code": "invalid_contract"
+  },
+  {
+   "name": "negative size",
+   "ingress_client_id": "checkmate",
+   "command": {
+    "protocol": 1,
+    "client_id": "checkmate",
+    "case_id": "case-synthetic-1",
+    "source_event_id": "src-register_evidence",
+    "command_id": "cmd-register_evidence-1",
+    "prior_command_id": null,
+    "operation": "register_evidence",
+    "expected_head_digest": "00a5caf81a2a1751a7c3107426bcefc7fe0eccba5ad5a50f2f40c7bb0eb4c188",
+    "payload_digest": "6dfc0c1a637ae91d5cc5082f3e7fa7888ec8ad6c458f137d8a045b56c2828a88",
+    "payload": {
+     "evidence_id": "ev-static-1",
+     "artifact_sha256": "7167f142894b2f1cf3352f3f2c9812d656661692b3cfbfc2513268f2eac6b5a1",
+     "size_bytes": -1,
+     "media_type": "application/json",
+     "private_locator": "r2://checkmate-evidence/ev-static-1",
+     "recipe_sha256": "349cf9e0eb880e78daeb20ffe5b49d809da3673560886a4da48ed8939e6034b5",
+     "environment_sha256": "30441b3680f0205aafb8c9cc114d68faeb2a3532380e142ab7e3b8fe89f7a2b9",
+     "retention_class": "case"
+    }
+   },
+   "expect_code": "invalid_contract"
+  },
+  {
+   "name": "boolean size",
+   "ingress_client_id": "checkmate",
+   "command": {
+    "protocol": 1,
+    "client_id": "checkmate",
+    "case_id": "case-synthetic-1",
+    "source_event_id": "src-register_evidence",
+    "command_id": "cmd-register_evidence-1",
+    "prior_command_id": null,
+    "operation": "register_evidence",
+    "expected_head_digest": "00a5caf81a2a1751a7c3107426bcefc7fe0eccba5ad5a50f2f40c7bb0eb4c188",
+    "payload_digest": "6dfc0c1a637ae91d5cc5082f3e7fa7888ec8ad6c458f137d8a045b56c2828a88",
+    "payload": {
+     "evidence_id": "ev-static-1",
+     "artifact_sha256": "7167f142894b2f1cf3352f3f2c9812d656661692b3cfbfc2513268f2eac6b5a1",
+     "size_bytes": true,
+     "media_type": "application/json",
+     "private_locator": "r2://checkmate-evidence/ev-static-1",
+     "recipe_sha256": "349cf9e0eb880e78daeb20ffe5b49d809da3673560886a4da48ed8939e6034b5",
+     "environment_sha256": "30441b3680f0205aafb8c9cc114d68faeb2a3532380e142ab7e3b8fe89f7a2b9",
+     "retention_class": "case"
+    }
+   },
+   "expect_code": "invalid_contract"
+  },
+  {
+   "name": "size above 2^53-1",
+   "ingress_client_id": "checkmate",
+   "command": {
+    "protocol": 1,
+    "client_id": "checkmate",
+    "case_id": "case-synthetic-1",
+    "source_event_id": "src-register_evidence",
+    "command_id": "cmd-register_evidence-1",
+    "prior_command_id": null,
+    "operation": "register_evidence",
+    "expected_head_digest": "00a5caf81a2a1751a7c3107426bcefc7fe0eccba5ad5a50f2f40c7bb0eb4c188",
+    "payload_digest": "6dfc0c1a637ae91d5cc5082f3e7fa7888ec8ad6c458f137d8a045b56c2828a88",
+    "payload": {
+     "evidence_id": "ev-static-1",
+     "artifact_sha256": "7167f142894b2f1cf3352f3f2c9812d656661692b3cfbfc2513268f2eac6b5a1",
+     "size_bytes": 9007199254740992,
+     "media_type": "application/json",
+     "private_locator": "r2://checkmate-evidence/ev-static-1",
+     "recipe_sha256": "349cf9e0eb880e78daeb20ffe5b49d809da3673560886a4da48ed8939e6034b5",
+     "environment_sha256": "30441b3680f0205aafb8c9cc114d68faeb2a3532380e142ab7e3b8fe89f7a2b9",
+     "retention_class": "case"
+    }
+   },
+   "expect_code": "invalid_contract"
+  },
+  {
+   "name": "uppercase media type",
+   "ingress_client_id": "checkmate",
+   "command": {
+    "protocol": 1,
+    "client_id": "checkmate",
+    "case_id": "case-synthetic-1",
+    "source_event_id": "src-register_evidence",
+    "command_id": "cmd-register_evidence-1",
+    "prior_command_id": null,
+    "operation": "register_evidence",
+    "expected_head_digest": "00a5caf81a2a1751a7c3107426bcefc7fe0eccba5ad5a50f2f40c7bb0eb4c188",
+    "payload_digest": "6dfc0c1a637ae91d5cc5082f3e7fa7888ec8ad6c458f137d8a045b56c2828a88",
+    "payload": {
+     "evidence_id": "ev-static-1",
+     "artifact_sha256": "7167f142894b2f1cf3352f3f2c9812d656661692b3cfbfc2513268f2eac6b5a1",
+     "size_bytes": 4096,
+     "media_type": "Application/JSON",
+     "private_locator": "r2://checkmate-evidence/ev-static-1",
+     "recipe_sha256": "349cf9e0eb880e78daeb20ffe5b49d809da3673560886a4da48ed8939e6034b5",
+     "environment_sha256": "30441b3680f0205aafb8c9cc114d68faeb2a3532380e142ab7e3b8fe89f7a2b9",
+     "retention_class": "case"
+    }
+   },
+   "expect_code": "invalid_contract"
+  },
+  {
+   "name": "unknown retention class",
+   "ingress_client_id": "checkmate",
+   "command": {
+    "protocol": 1,
+    "client_id": "checkmate",
+    "case_id": "case-synthetic-1",
+    "source_event_id": "src-register_evidence",
+    "command_id": "cmd-register_evidence-1",
+    "prior_command_id": null,
+    "operation": "register_evidence",
+    "expected_head_digest": "00a5caf81a2a1751a7c3107426bcefc7fe0eccba5ad5a50f2f40c7bb0eb4c188",
+    "payload_digest": "6dfc0c1a637ae91d5cc5082f3e7fa7888ec8ad6c458f137d8a045b56c2828a88",
+    "payload": {
+     "evidence_id": "ev-static-1",
+     "artifact_sha256": "7167f142894b2f1cf3352f3f2c9812d656661692b3cfbfc2513268f2eac6b5a1",
+     "size_bytes": 4096,
+     "media_type": "application/json",
+     "private_locator": "r2://checkmate-evidence/ev-static-1",
+     "recipe_sha256": "349cf9e0eb880e78daeb20ffe5b49d809da3673560886a4da48ed8939e6034b5",
+     "environment_sha256": "30441b3680f0205aafb8c9cc114d68faeb2a3532380e142ab7e3b8fe89f7a2b9",
+     "retention_class": "forever"
+    }
+   },
+   "expect_code": "invalid_contract"
+  },
+  {
+   "name": "no evidence ids to verify",
+   "ingress_client_id": "checkmate",
+   "command": {
+    "protocol": 1,
+    "client_id": "checkmate",
+    "case_id": "case-synthetic-1",
+    "source_event_id": "src-request_verification",
+    "command_id": "cmd-request_verification-1",
+    "prior_command_id": null,
+    "operation": "request_verification",
+    "expected_head_digest": "00a5caf81a2a1751a7c3107426bcefc7fe0eccba5ad5a50f2f40c7bb0eb4c188",
+    "payload_digest": "9b02b755f41ea63e421f8c94a26a45e859634b061d2380f2042f42b2bbbd3569",
+    "payload": {
+     "revision_id": "rev-impact-1",
+     "evidence_ids": [],
+     "recipe_sha256": "349cf9e0eb880e78daeb20ffe5b49d809da3673560886a4da48ed8939e6034b5"
+    }
+   },
+   "expect_code": "invalid_contract"
+  },
+  {
+   "name": "duplicate evidence ids",
+   "ingress_client_id": "checkmate",
+   "command": {
+    "protocol": 1,
+    "client_id": "checkmate",
+    "case_id": "case-synthetic-1",
+    "source_event_id": "src-request_verification",
+    "command_id": "cmd-request_verification-1",
+    "prior_command_id": null,
+    "operation": "request_verification",
+    "expected_head_digest": "00a5caf81a2a1751a7c3107426bcefc7fe0eccba5ad5a50f2f40c7bb0eb4c188",
+    "payload_digest": "9b02b755f41ea63e421f8c94a26a45e859634b061d2380f2042f42b2bbbd3569",
+    "payload": {
+     "revision_id": "rev-impact-1",
+     "evidence_ids": [
+      "ev-1",
+      "ev-1"
+     ],
+     "recipe_sha256": "349cf9e0eb880e78daeb20ffe5b49d809da3673560886a4da48ed8939e6034b5"
+    }
+   },
+   "expect_code": "invalid_contract"
+  },
+  {
+   "name": "revision reuses the prior revision id",
+   "ingress_client_id": "checkmate",
+   "command": {
+    "protocol": 1,
+    "client_id": "checkmate",
+    "case_id": "case-synthetic-1",
+    "source_event_id": "src-revise_claim",
+    "command_id": "cmd-revise_claim-1",
+    "prior_command_id": null,
+    "operation": "revise_claim",
+    "expected_head_digest": "00a5caf81a2a1751a7c3107426bcefc7fe0eccba5ad5a50f2f40c7bb0eb4c188",
+    "payload_digest": "48ebdcb49b2a621bdfc2fbfc1d12f4e5180b219a5e7ac0174e6c2439e00d2147",
+    "payload": {
+     "prior_revision_id": "rev-impact-1",
+     "transition": "supersede",
+     "revision": {
+      "claim_id": "claim-impact",
+      "revision_id": "rev-impact-1",
+      "proposition": "Synthetic fixture: the impact claim holds within its declared scope.",
+      "scope_digest": "30ef562755b802c80e58538ea79f30dbf043e57bea86572e3fb34abb9c5da420",
+      "obligations": [
+       "execution_receipt",
+       "oracle_result",
+       "negative_control"
+      ],
+      "requires": [
+       {
+        "revision_id": "rev-interp-1",
+        "scope_digest": "4001b4103c8121ee8d2f1a05c12b344c647fa519b60060f0c7b02f908ada188c"
+       }
+      ]
+     }
+    }
+   },
+   "expect_code": "invalid_contract"
+  },
+  {
+   "name": "unknown revision transition",
+   "ingress_client_id": "checkmate",
+   "command": {
+    "protocol": 1,
+    "client_id": "checkmate",
+    "case_id": "case-synthetic-1",
+    "source_event_id": "src-revise_claim",
+    "command_id": "cmd-revise_claim-1",
+    "prior_command_id": null,
+    "operation": "revise_claim",
+    "expected_head_digest": "00a5caf81a2a1751a7c3107426bcefc7fe0eccba5ad5a50f2f40c7bb0eb4c188",
+    "payload_digest": "48ebdcb49b2a621bdfc2fbfc1d12f4e5180b219a5e7ac0174e6c2439e00d2147",
+    "payload": {
+     "prior_revision_id": "rev-impact-1",
+     "transition": "edit_in_place",
+     "revision": {
+      "claim_id": "claim-impact",
+      "revision_id": "rev-impact-2",
+      "proposition": "Synthetic fixture: the impact claim holds within its declared scope.",
+      "scope_digest": "30ef562755b802c80e58538ea79f30dbf043e57bea86572e3fb34abb9c5da420",
+      "obligations": [
+       "execution_receipt",
+       "oracle_result",
+       "negative_control"
+      ],
+      "requires": [
+       {
+        "revision_id": "rev-interp-1",
+        "scope_digest": "4001b4103c8121ee8d2f1a05c12b344c647fa519b60060f0c7b02f908ada188c"
+       }
+      ]
+     }
+    }
+   },
+   "expect_code": "invalid_contract"
+  }
+ ],
+ "readers": [
+  {
+   "name": "schema_version 3 is refused",
+   "record": {
+    "id": "v3-probe",
+    "type": "decision",
+    "agent_id": "fixture",
+    "birth_status": "pending_evidence",
+    "claim": {
+     "narrative": "Synthetic fixture."
+    },
+    "evidence": [],
+    "targets": [],
+    "is_trust_root": false,
+    "timestamp": null,
+    "schema_version": 3
+   },
+   "expect": "refused"
+  },
+  {
+   "name": "schema_version 0 is refused",
+   "record": {
+    "id": "v3-probe",
+    "type": "decision",
+    "agent_id": "fixture",
+    "birth_status": "pending_evidence",
+    "claim": {
+     "narrative": "Synthetic fixture."
+    },
+    "evidence": [],
+    "targets": [],
+    "is_trust_root": false,
+    "timestamp": null,
+    "schema_version": 0
+   },
+   "expect": "refused"
+  },
+  {
+   "name": "schema_version 4 is refused",
+   "record": {
+    "id": "v3-probe",
+    "type": "decision",
+    "agent_id": "fixture",
+    "birth_status": "pending_evidence",
+    "claim": {
+     "narrative": "Synthetic fixture."
+    },
+    "evidence": [],
+    "targets": [],
+    "is_trust_root": false,
+    "timestamp": null,
+    "schema_version": 4
+   },
+   "expect": "refused"
+  }
+ ],
+ "non_managed_log_id": {
+  "log_id": "checkmate",
+  "expect_code": "invalid_contract"
+ }
+}
