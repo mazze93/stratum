@@ -594,7 +594,7 @@ Not chosen: a maintained AGENTS.md copy, or a one-line stub telling agents to re
 
 *ADR-003: bound evidence, an authority registry, atomic persistence.*
 
-> `data/trust-trace.jsonl` · epoch 30 · 31 events · 18 decisions · 4 foreclosures
+> `data/trust-trace.jsonl` · epoch 31 · 32 events · 19 decisions · 4 foreclosures
 
 ## Decisions
 
@@ -751,6 +751,14 @@ Proposed, awaiting mazze: each stored row records which contract accepted it (a 
 *Revision chain:* `tp-021 → tp-022`
 
 > **Shadow [TRACE · certainty 0.7]** — The same principle as tp-016 ('verified remains verified; status is a fold'), applied to storage rather than projection. Today a row the old code accepted, such as schema_version 2 written before phase 2 deployed (folded then under v1 rules), would be re-judged by v2 guards on load, either refused or re-folded. No known real log is affected now; that is luck, not design. Born asserted because it changes storage semantics.
+
+### tp-031 — ◐ PROVISIONAL · pending_evidence
+
+**claude** · 2026-10-30T16:20:00-04:00
+
+The CLI has no default log. Every command that touches a log refuses unless one is named by --log, STRATUM_LOG or config, and a bare --log is refused instead of read as a log named 'true'. Appends are permanent, so a log is never guessed.
+
+> **Shadow [TRACE · certainty 0.9]** — Twice an agent's writes fell through to the machine's configured default log, macos-vuln-pipeline (MAX). On 2026-10-24 an unquoted zsh variable swallowed --log (checkmate inc_ztZNYXxw6aR_29Vl). On 2026-10-30 five unrelated decisions landed there as seq 7-11 (inc_5he7fLwavybF7G8p). Removing the config value alone would only have moved the silent fallback to the hard-coded 'workspace'. Same class as tp-016's fail-closed stance and the agent_id default (inc_aJvG5BbagJ9NG__n), which is left for a separate decision. Directed by mazze: 'remove the default so the cli must be told'.
 
 ## Foreclosures — ghost edges
 
