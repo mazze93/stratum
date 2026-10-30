@@ -1,5 +1,5 @@
 # CHECKPOINT — Checkmate × Stratum joint M0
-Last updated: 2026-10-18 — S1 in progress
+Last updated: 2026-10-30 — S1 in progress (resume check done; WP01 WIP unverified)
 
 - [ ] S1 stratum WP00 + WP01 — bundle, journal, schemas, fixtures, digests, v3 refusal
 - [ ] S2 stratum WP03 — `@stratum/decisions`
