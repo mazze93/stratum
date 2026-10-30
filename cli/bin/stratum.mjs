@@ -7,6 +7,10 @@
  *
  * Config: ~/.config/stratum/config.json  (endpoint, token, log, agent)
  * Env overrides: STRATUM_ENDPOINT, STRATUM_TOKEN, STRATUM_LOG, STRATUM_AGENT
+ *
+ * There is no built-in default log. A command that touches a log needs one
+ * from --log, STRATUM_LOG or config, or it refuses: appends are permanent, and
+ * a silent fallback is how decisions landed in the wrong log.
  */
 
 import { spawnSync } from "node:child_process";
@@ -47,10 +51,11 @@ function saveConfig(cfg) {
 
 function settings(flags) {
   const cfg = loadConfig();
+  if (flags.log === true) fail("--log needs a log id");
   return {
     endpoint: flags.endpoint || process.env.STRATUM_ENDPOINT || cfg.endpoint || "https://stratum.mazzeleczzare.com",
     token: flags.token || process.env.STRATUM_TOKEN || cfg.token || "",
-    log: flags.log || process.env.STRATUM_LOG || cfg.log || "workspace",
+    log: flags.log || process.env.STRATUM_LOG || cfg.log || null,
     agent: flags.agent || process.env.STRATUM_AGENT || cfg.agent || "mazze",
   };
 }
@@ -119,8 +124,14 @@ async function call(s, path, opts = {}) {
   return data;
 }
 
+/** The API path for the named log. Refuses rather than guess one. */
+function logPath(s, suffix) {
+  if (!s.log) fail("no log named — pass --log <id> or set STRATUM_LOG (there is no default log)");
+  return `/api/logs/${s.log}${suffix}`;
+}
+
 const appendEvent = (s, record) =>
-  call(s, `/api/logs/${s.log}/events`, { method: "POST", body: JSON.stringify(record) });
+  call(s, logPath(s, "/events"), { method: "POST", body: JSON.stringify(record) });
 
 function record(s, type, extra) {
   return {
@@ -242,7 +253,7 @@ const commands = {
     saveConfig(cfg);
     const s = settings({});
     ok(`config written to ${CONFIG_PATH}`);
-    console.log(`  endpoint  ${s.endpoint}\n  log       ${s.log}\n  agent     ${s.agent}\n  token     ${s.token ? "set" : color.red("not set")}`);
+    console.log(`  endpoint  ${s.endpoint}\n  log       ${s.log || "none — pass --log or set STRATUM_LOG"}\n  agent     ${s.agent}\n  token     ${s.token ? "set" : color.red("not set")}`);
   },
 
   async health(pos, flags) {
@@ -353,7 +364,7 @@ const commands = {
     const s = settings(flags);
     const [id] = pos;
     if (!id) fail("usage: stratum status <event-id>");
-    const d = await call(s, `/api/logs/${s.log}/events/${encodeURIComponent(id)}`);
+    const d = await call(s, logPath(s, `/events/${encodeURIComponent(id)}`));
     console.log(`${color.bold(id)} · ${d.record.type} · ${d.record.agent_id}`);
     console.log(`  status     ${d.status}${d.under_review ? color.red(" · UNDER REVIEW") : ""}`);
     console.log(`  authority  ${tier(d.authority)}`);
@@ -371,7 +382,7 @@ const commands = {
   async tessera(pos, flags) {
     const s = settings(flags);
     const epoch = flags.epoch !== undefined ? `?epoch=${flags.epoch}` : "";
-    const p = await call(s, `/api/logs/${s.log}/projection${epoch}`);
+    const p = await call(s, logPath(s, `/projection${epoch}`));
     if (flags.json) { console.log(JSON.stringify(p, null, 2)); return; }
     const d = p.authoritative.recent_decisions;
     const f = p.authoritative.foreclosed_options;
@@ -389,7 +400,7 @@ const commands = {
 
   async log(pos, flags) {
     const s = settings(flags);
-    const events = await call(s, `/api/logs/${s.log}/events`);
+    const events = await call(s, logPath(s, "/events"));
     const n = Number(flags.n || 15);
     console.log(color.bold(`log ${s.log} · ${events.length} events`));
     for (const [seq, ev] of events.map((e, i) => [i, e]).slice(-n)) {
@@ -401,7 +412,7 @@ const commands = {
 
   async export(pos, flags) {
     const s = settings(flags);
-    const events = await call(s, `/api/logs/${s.log}/events`);
+    const events = await call(s, logPath(s, "/events"));
     console.log(JSON.stringify(events, null, 2));
   },
 
@@ -431,7 +442,7 @@ const HELP = `${color.bold("stratum")} — one command, one recorded decision
     init                  [--endpoint URL] [--token T] [--log L] [--agent A]
     health · playground
 
-  flags: --log <id> targets another log for any command
+  flags: --log <id> names the log; required (or STRATUM_LOG / config log) — there is no default
   exit codes: 0 ok · 1 error · 2 guard refused (contract violation)`;
 
 const { pos, flags } = parseArgs(process.argv.slice(2));
