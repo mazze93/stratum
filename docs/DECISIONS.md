@@ -594,7 +594,7 @@ Not chosen: a maintained AGENTS.md copy, or a one-line stub telling agents to re
 
 *ADR-003: bound evidence, an authority registry, atomic persistence.*
 
-> `data/trust-trace.jsonl` · epoch 31 · 32 events · 19 decisions · 4 foreclosures
+> `data/trust-trace.jsonl` · epoch 32 · 33 events · 20 decisions · 4 foreclosures
 
 ## Decisions
 
@@ -759,6 +759,14 @@ Proposed, awaiting mazze: each stored row records which contract accepted it (a 
 The CLI has no default log. Every command that touches a log refuses unless one is named by --log, STRATUM_LOG or config, and a bare --log is refused instead of read as a log named 'true'. Appends are permanent, so a log is never guessed.
 
 > **Shadow [TRACE · certainty 0.9]** — Twice an agent's writes fell through to the machine's configured default log, macos-vuln-pipeline (MAX). On 2026-10-24 an unquoted zsh variable swallowed --log (checkmate inc_ztZNYXxw6aR_29Vl). On 2026-10-30 five unrelated decisions landed there as seq 7-11 (inc_5he7fLwavybF7G8p). Removing the config value alone would only have moved the silent fallback to the hard-coded 'workspace'. Same class as tp-016's fail-closed stance and the agent_id default (inc_aJvG5BbagJ9NG__n), which is left for a separate decision. Directed by mazze: 'remove the default so the cli must be told'.
+
+### tp-032 — ◐ PROVISIONAL · pending_evidence
+
+**claude** · 2026-10-30T16:30:00-04:00
+
+The local Stratum checkout is production's mirror: it stays on main, in sync with origin/main and therefore with the deployed Worker, because the installed CLI runs from it. Development happens only in worktrees and reaches main through reviewed PRs, so the ledger's code, and the decisions it records about itself, stay authoritative.
+
+> **Shadow [TRACE · certainty 0.95]** — Ruled by mazze on 2026-10-30, recorded by the agent, not minted as mazze's authority: 'the local stratum must be retained at main in sync as production, with local work and development on their own copies so that the ledger is authoritative, and stratum must dogfood its own decisions'. Found because the main checkout sat on chore/claude-md-action-majors, 2 commits past main, so the CLI every session ran was unreviewed branch code, and the tp-031 fix could never take effect there. Production equalled main at the time: main 8e7e854 was committed 18:16:42Z on 2026-10-21 and deployed 26 s later by Workers Builds, which deploys every push to main.
 
 ## Foreclosures — ghost edges
 
