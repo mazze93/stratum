@@ -31,6 +31,7 @@ export const api = {
   projection: (log, epoch) =>
     call(`/api/logs/${log}/projection${epoch !== undefined ? `?epoch=${epoch}` : ""}`),
   events: (log) => call(`/api/logs/${log}/events`),
+  head: (log) => call(`/api/logs/${log}/head`),
   eventDetail: (log, id) => call(`/api/logs/${log}/events/${encodeURIComponent(id)}`),
   append: (log, record) =>
     call(`/api/logs/${log}/events`, { method: "POST", body: JSON.stringify(record) }),
