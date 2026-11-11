@@ -26,16 +26,16 @@
  */
 
 import { spawnSync } from "node:child_process";
-import { createHash } from "node:crypto";
+import { createHash, randomBytes } from "node:crypto";
 import {
   appendFileSync,
   closeSync,
-  existsSync,
+  fstatSync,
+  linkSync,
   mkdirSync,
   openSync,
   readFileSync,
   renameSync,
-  statSync,
   unlinkSync,
   writeFileSync,
 } from "node:fs";
@@ -527,26 +527,145 @@ export async function sendRecord(cfg, record) {
   return { outcome: "failed", message: why };
 }
 
+// ------------------------------------------------------------------ outbox lock
+//
+// Every change to the outbox file (append, rewrite, the refused file) happens
+// inside a short critical section guarded by an O_EXCL lock file. Network
+// sends happen outside it, so the lock is held for milliseconds and a lock
+// older than LOCK_STALE_MS belongs to a process that died or was suspended
+// mid-write. Each holder writes a random token into the lock; stealing and
+// releasing move the lock aside and check that token first, so a process can
+// never remove a lock it does not hold (CodeQL js/file-system-race).
+
+const LOCK_STALE_MS = 10_000;
+const LOCK_WAIT_MS = 5_000;
+const LOCK_POLL_MS = 25;
+
+function sleepSync(ms) {
+  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
+}
+
+/**
+ * Read a lock through one descriptor: its age and the token its holder wrote.
+ * Null when the path is gone. The token, not the inode, names the holder,
+ * because a filesystem may hand a freed inode number to the next lock.
+ */
+function readLock(path) {
+  let fd;
+  try {
+    fd = openSync(path, "r");
+  } catch {
+    return null;
+  }
+  try {
+    return { mtimeMs: fstatSync(fd).mtimeMs, token: readFileSync(fd, "utf8") };
+  } finally {
+    closeSync(fd);
+  }
+}
+
+/**
+ * Move the lock aside and remove it only if it still carries `token`.
+ * If another process replaced it in the meantime, hand theirs back.
+ * Internal to the outbox lock; exported for tests.
+ * @returns {boolean} true when the lock holding `token` was removed
+ */
+export function removeLockIf(lock, token) {
+  const aside = `${lock}.aside-${process.pid}-${randomBytes(4).toString("hex")}`;
+  try {
+    renameSync(lock, aside);
+  } catch {
+    return false; // already gone, or another process moved it first
+  }
+  if (readLock(aside)?.token === token) {
+    unlinkSync(aside);
+    return true;
+  }
+  try {
+    linkSync(aside, lock); // fails only if a newer lock already exists
+  } catch {
+    /* a newer holder exists; theirs stands */
+  }
+  unlinkSync(aside);
+  return false;
+}
+
+/** Take the stale lock at `lock` away from a dead holder. */
+function stealIfStale(lock) {
+  const seen = readLock(lock);
+  if (seen === null || Date.now() - seen.mtimeMs <= LOCK_STALE_MS) return false;
+  return removeLockIf(lock, seen.token);
+}
+
+/**
+ * Run `fn` synchronously with the outbox lock held. Waits up to
+ * LOCK_WAIT_MS; on timeout returns `{locked: false}` and runs nothing.
+ * @returns {{locked: true, value: any} | {locked: false}}
+ */
+function withOutboxLock(cfg, fn) {
+  const lock = `${cfg.outboxPath}.lock`;
+  mkdirSync(dirname(lock), { recursive: true, mode: 0o700 });
+  const deadline = Date.now() + LOCK_WAIT_MS;
+  let fd = null;
+  while (fd === null) {
+    try {
+      fd = openSync(lock, "wx", 0o600);
+    } catch (e) {
+      if (e?.code !== "EEXIST") throw e;
+      if (stealIfStale(lock)) continue;
+      if (Date.now() >= deadline) return { locked: false };
+      sleepSync(LOCK_POLL_MS);
+    }
+  }
+  const token = `${process.pid}-${randomBytes(8).toString("hex")}`;
+  try {
+    writeFileSync(fd, token);
+  } finally {
+    closeSync(fd);
+  }
+  try {
+    return { locked: true, value: fn() };
+  } finally {
+    removeLockIf(lock, token);
+  }
+}
+
 // ------------------------------------------------------------------ outbox
 
-/** Queued records, oldest first. Masked before they were ever written. */
-export function readOutbox(cfg) {
-  if (!existsSync(cfg.outboxPath)) return [];
-  return readFileSync(cfg.outboxPath, "utf8")
+function refusedPath(cfg) {
+  return `${cfg.outboxPath.replace(/\.jsonl$/, "")}.refused.jsonl`;
+}
+
+function readJsonl(path) {
+  let text;
+  try {
+    text = readFileSync(path, "utf8");
+  } catch (e) {
+    if (e?.code === "ENOENT") return [];
+    throw e;
+  }
+  return text
     .split("\n")
     .filter((l) => l.trim())
     .map((l) => JSON.parse(l));
 }
 
-function enqueue(cfg, record) {
-  mkdirSync(dirname(cfg.outboxPath), { recursive: true, mode: 0o700 });
-  // O_APPEND: concurrent hooks each add whole lines
-  appendFileSync(cfg.outboxPath, JSON.stringify(record) + "\n", { mode: 0o600 });
+/**
+ * Queued records, oldest first. Masked before they were ever written.
+ * Reads without the lock: a rewrite lands by atomic rename.
+ */
+export function readOutbox(cfg) {
+  return readJsonl(cfg.outboxPath);
 }
 
+/** Caller holds the lock. */
 function writeOutbox(cfg, records) {
   if (records.length === 0) {
-    if (existsSync(cfg.outboxPath)) unlinkSync(cfg.outboxPath);
+    try {
+      unlinkSync(cfg.outboxPath);
+    } catch (e) {
+      if (e?.code !== "ENOENT") throw e;
+    }
     return;
   }
   const tmp = `${cfg.outboxPath}.tmp-${process.pid}`;
@@ -554,74 +673,64 @@ function writeOutbox(cfg, records) {
   renameSync(tmp, cfg.outboxPath);
 }
 
-const LOCK_STALE_MS = 60_000;
-
-/** One flusher at a time; a lock older than a minute belongs to a dead process. */
-function withLock(cfg, fn) {
-  const lock = `${cfg.outboxPath}.lock`;
-  mkdirSync(dirname(lock), { recursive: true, mode: 0o700 });
-  try {
-    if (existsSync(lock) && Date.now() - statSync(lock).mtimeMs > LOCK_STALE_MS) unlinkSync(lock);
-  } catch {
-    /* raced with another flusher; the open below decides */
+/**
+ * Queue one record, once. Under the lock, so an append can never land on a
+ * file that a flush is about to replace. A lock that can't be had is an
+ * error, never a silent drop.
+ */
+function enqueue(cfg, record) {
+  const r = withOutboxLock(cfg, () => {
+    if (readOutbox(cfg).some((q) => q.id === record.id)) return;
+    appendFileSync(cfg.outboxPath, JSON.stringify(record) + "\n", { mode: 0o600 });
+  });
+  if (!r.locked) {
+    throw new IngressError(`could not queue ${record.id}: the outbox at ${cfg.outboxPath} stayed locked; nothing recorded`, EXIT.unrecorded);
   }
-  let fd;
-  try {
-    fd = openSync(lock, "wx", 0o600);
-  } catch {
-    return null; // someone else is flushing; leave the queue to them
-  }
-  const release = () => {
-    closeSync(fd);
-    try {
-      unlinkSync(lock);
-    } catch {
-      /* already gone */
-    }
-  };
-  return Promise.resolve()
-    .then(fn)
-    .finally(release);
 }
 
 /**
  * Send queued records in order and stop at the first that can't be sent now,
- * so a marker never lands before the event it targets. A refused record is
- * moved aside to outbox-<log>.refused.jsonl and reported, not retried.
+ * so a marker never lands before the event it targets. Sends run outside the
+ * lock; two flushers may send the same record, which the deterministic id
+ * and the read-back on 409 make harmless. A refused record is moved aside to
+ * outbox-<log>.refused.jsonl and reported, not retried.
  *
  * @returns {Promise<{sent: {id: string, type: string, outcome: string}[],
  *   refused: {id: string, type: string, message: string}[], pending: number,
  *   failure: string | null, busy: boolean}>}
  */
 export async function flushOutbox(cfg) {
-  const result = await withLock(cfg, async () => {
-    const queue = readOutbox(cfg);
-    const sent = [];
-    const refused = [];
-    let failure = null;
-    let i = 0;
-    for (; i < queue.length; i++) {
-      const rec = queue[i];
-      const r = await sendRecord(cfg, rec);
-      if (r.outcome === "recorded" || r.outcome === "already") {
-        sent.push({ id: rec.id, type: rec.type, outcome: r.outcome });
-      } else if (r.outcome === "refused") {
-        refused.push({ id: rec.id, type: rec.type, message: r.message });
-        appendFileSync(`${cfg.outboxPath.replace(/\.jsonl$/, "")}.refused.jsonl`, JSON.stringify(rec) + "\n", { mode: 0o600 });
-      } else {
-        failure = r.message;
-        break;
-      }
+  const queue = readOutbox(cfg);
+  const sent = [];
+  const refused = [];
+  let failure = null;
+  for (const rec of queue) {
+    const r = await sendRecord(cfg, rec);
+    if (r.outcome === "recorded" || r.outcome === "already") {
+      sent.push({ id: rec.id, type: rec.type, outcome: r.outcome });
+    } else if (r.outcome === "refused") {
+      refused.push({ rec, message: r.message });
+    } else {
+      failure = r.message;
+      break;
     }
-    // Re-read before rewriting: another process may have appended meanwhile.
-    const now = readOutbox(cfg);
-    const done = new Set([...sent, ...refused].map((x) => x.id));
-    const rest = now.filter((rec) => !done.has(rec.id));
+  }
+  const settled = withOutboxLock(cfg, () => {
+    const already = new Set(readJsonl(refusedPath(cfg)).map((r) => r.id));
+    for (const { rec } of refused) {
+      if (!already.has(rec.id)) appendFileSync(refusedPath(cfg), JSON.stringify(rec) + "\n", { mode: 0o600 });
+    }
+    const done = new Set([...sent.map((x) => x.id), ...refused.map((x) => x.rec.id)]);
+    const rest = readOutbox(cfg).filter((rec) => !done.has(rec.id));
     writeOutbox(cfg, rest);
-    return { sent, refused, pending: rest.length, failure, busy: false };
+    return rest.length;
   });
-  if (result === null) return { sent: [], refused: [], pending: readOutbox(cfg).length, failure: null, busy: true };
-  return result;
+  const report = refused.map(({ rec, message }) => ({ id: rec.id, type: rec.type, message }));
+  if (!settled.locked) {
+    // Sends are idempotent, so leaving everything queued loses nothing; the next flush settles it.
+    return { sent, refused: report, pending: readOutbox(cfg).length, failure, busy: true };
+  }
+  return { sent, refused: report, pending: settled.value, failure, busy: false };
 }
 
 /**
@@ -631,7 +740,7 @@ export async function flushOutbox(cfg) {
 export async function emit(input, cfg, deps = {}) {
   if (cfg.mode !== "configured") return { configured: false, notice: UNCONFIGURED_NOTICE };
   const record = await buildRecord(input, cfg, deps);
-  if (!readOutbox(cfg).some((r) => r.id === record.id)) enqueue(cfg, record);
+  enqueue(cfg, record);
   const flushed = await flushOutbox(cfg);
   return { configured: true, record, ...flushed };
 }

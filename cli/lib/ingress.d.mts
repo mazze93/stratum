@@ -88,6 +88,8 @@ export function sendRecord(
   cfg: ConfiguredIngress,
   record: IngressRecord,
 ): Promise<{ outcome: "recorded" | "already" | "refused" | "failed"; seq?: number; message?: string }>;
+/** Internal to the outbox lock; exported for tests. */
+export function removeLockIf(lock: string, token: string): boolean;
 export function readOutbox(cfg: ConfiguredIngress): IngressRecord[];
 export function flushOutbox(cfg: ConfiguredIngress): Promise<FlushResult>;
 export function emit(

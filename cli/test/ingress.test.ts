@@ -8,7 +8,7 @@
  */
 
 import { spawn, spawnSync } from "node:child_process";
-import { existsSync, mkdtempSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, unlinkSync, utimesSync, writeFileSync } from "node:fs";
 import { createServer, type IncomingMessage, type Server } from "node:http";
 import type { AddressInfo } from "node:net";
 import { tmpdir } from "node:os";
@@ -34,6 +34,7 @@ import {
   canonicalJson,
   confirmHumanGesture,
   emissionId,
+  removeLockIf,
   sendRecord,
   type ConfiguredIngress,
   type IngressRecord,
@@ -439,3 +440,68 @@ describe("degradation: unset is a notice, configured-but-failing is loud", () =>
     expect(r.stderr).toMatch(/no agent named/);
   });
 });
+
+describe("outbox under concurrency (CodeQL js/file-system-race)", () => {
+  const lockPath = () => `${outboxPath()}.lock`;
+  const plantLock = (ageMs: number) => {
+    mkdirSync(join(home, ".local", "state", "stratum"), { recursive: true });
+    writeFileSync(lockPath(), "");
+    const t = (Date.now() - ageMs) / 1000;
+    utimesSync(lockPath(), t, t);
+  };
+
+  test("hooks emitting at once never lose a queued record", async () => {
+    const closed = { STRATUM_ENDPOINT: "http://127.0.0.1:9" };
+    const n = 12;
+    const runs = await Promise.all(
+      Array.from({ length: n }, (_, i) => emitCli({ type: "decision", narrative: `parallel ${i}`, pending: true }, closed)),
+    );
+    for (const r of runs) expect(r.status, r.stderr).toBe(EXIT.unrecorded);
+    const queued = readFileSync(outboxPath(), "utf8").trim().split("\n").map((l) => JSON.parse(l).id);
+    expect(new Set(queued).size).toBe(n);
+    expect(queued).toHaveLength(n);
+    const flushed = await stratum(["outbox", "--flush"], undefined);
+    expect(flushed.status, flushed.stderr).toBe(EXIT.ok);
+    expect(events()).toHaveLength(n);
+    expect(existsSync(lockPath())).toBe(false);
+  }, 30_000);
+
+  test("the same act emitted twice while down is queued once", async () => {
+    const closed = { STRATUM_ENDPOINT: "http://127.0.0.1:9" };
+    const act = { type: "decision", narrative: "said twice", pending: true };
+    await emitCli(act, closed);
+    const again = await emitCli(act, closed);
+    expect(again.stderr).toMatch(/1 event\(s\) unrecorded/);
+    expect(readFileSync(outboxPath(), "utf8").trim().split("\n")).toHaveLength(1);
+  });
+
+  test("releasing never removes a lock that another process now holds", () => {
+    plantLock(0);
+    writeFileSync(lockPath(), "mine");
+    unlinkSync(lockPath()); // ours was taken over while we were suspended...
+    writeFileSync(lockPath(), "theirs"); // ...and the next holder may even reuse the inode
+    expect(removeLockIf(lockPath(), "mine")).toBe(false);
+    expect(readFileSync(lockPath(), "utf8")).toBe("theirs");
+    expect(removeLockIf(lockPath(), "theirs")).toBe(true);
+    expect(existsSync(lockPath())).toBe(false);
+  });
+
+  test("a lock left by a dead process is taken over", async () => {
+    plantLock(60_000);
+    const r = await emitCli({ type: "decision", narrative: "after a crash", pending: true });
+    expect(r.status, r.stderr).toBe(EXIT.ok);
+    expect(events()).toHaveLength(1);
+    expect(existsSync(lockPath())).toBe(false);
+  });
+
+  test("a live lock is waited on; one that never frees is an error, never a silent drop", async () => {
+    plantLock(0);
+    const r = await emitCli({ type: "decision", narrative: "blocked", pending: true });
+    expect(r.status).toBe(EXIT.unrecorded);
+    expect(r.stderr).toMatch(/stayed locked; nothing recorded/);
+    expect(existsSync(outboxPath())).toBe(false);
+    expect(ledger.requests).toBe(0);
+    expect(existsSync(lockPath())).toBe(true); // someone else's lock is never removed
+  }, 15_000);
+});
+
