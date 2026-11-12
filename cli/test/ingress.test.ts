@@ -280,6 +280,27 @@ describe("evidence is produced by running the check, never supplied", () => {
     expect(v.evidence[0]!.binding).toMatchObject({ type: "reproducible_check", command: "test -f README", commit: head, expect_exit: 0, repo: "github.com/mazze93/demo" });
   });
 
+  test("a caller-supplied repo never carries credentials into the binding", async () => {
+    const repo = gitRepo();
+    const dec = await emitCli({ type: "decision", narrative: "repo hygiene", pending: true }, {}, repo);
+    expect(dec.status, dec.stderr).toBe(EXIT.ok);
+    const target = events()[0]!.id;
+    const secret = "ghp_notarealtoken0000";
+    const ver = await emitCli(
+      { type: "verification", target, run: "true", repo: `https://ci:${secret}@github.com/mazze93/demo.git` },
+      {},
+      repo,
+    );
+    expect(ver.status, ver.stderr).toBe(EXIT.ok);
+    const sent = ledger.bodies.join("\n");
+    expect(sent).not.toContain(secret);
+    expect(sent).toContain('"repo":"github.com/mazze93/demo"');
+    const bare = await emitCli({ type: "verification", target, run: "true", repo: `ci:${secret}@github.com/x/y` }, {}, repo);
+    expect(bare.status).toBe(EXIT.error);
+    expect(bare.stderr).toMatch(/without credentials; nothing recorded/);
+    expect(bare.stderr + ledger.bodies.join("")).not.toMatch(/ci:ghp/);
+  });
+
   test("the ledger itself refuses a v2 verification with only a typed timestamp (I1)", async () => {
     const dec = await buildRecord({ type: "decision", narrative: "x", pending: true }, { agent: AGENT });
     await sendRecord(cfg(), dec);

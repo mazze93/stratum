@@ -359,6 +359,22 @@ export function normalizeRepo(url) {
 }
 
 /**
+ * A repo the caller named. A URL or scp form goes through normalizeRepo, which
+ * drops any userinfo (an HTTPS remote can carry a token, and the binding is
+ * written to a ledger that may be public); a bare host/owner/name passes as
+ * is. Anything still holding an @ or whitespace is refused, never recorded.
+ */
+function repoFromCaller(value) {
+  const given = String(value).trim();
+  const looksLikeUrl = /^[a-z][a-z0-9+.-]*:\/\//i.test(given) || /^[^@/]+@[^:/]+:/.test(given);
+  const repo = looksLikeUrl ? normalizeRepo(given) : given;
+  if (!repo || /[@\s]/.test(repo)) {
+    throw new IngressError("--repo must be host/owner/name or a remote URL without credentials; nothing recorded");
+  }
+  return repo;
+}
+
+/**
  * Run a check and bind its result (ADR-003 §3): the command, the exact
  * commit it ran against, the exit code, and digests of named inputs and of a
  * deterministic output file. The exit code is the one this process observed;
@@ -377,7 +393,7 @@ export function runBoundCheck(opts) {
     throw new IngressError("working tree is dirty — commit or stash first: the tested tree must be the pinned commit");
   }
   const commit = git(["rev-parse", "HEAD"], top);
-  const repo = opts.repo ? String(opts.repo) : normalizeRepo(git(["remote", "get-url", "origin"], top) || "");
+  const repo = opts.repo ? repoFromCaller(opts.repo) : normalizeRepo(git(["remote", "get-url", "origin"], top) || "");
   if (!repo) throw new IngressError("no origin remote to name the repo — pass --repo host/owner/name");
   const expectExit = opts.expectExit === undefined ? 0 : Number(opts.expectExit);
   if (!Number.isInteger(expectExit) || expectExit < 0 || expectExit > 255) {
