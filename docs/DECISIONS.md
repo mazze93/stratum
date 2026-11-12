@@ -830,11 +830,11 @@ Stacked PRs (a PR based on another unmerged PR's branch) are foreclosed for this
 
 *How automated clients write into Stratum (cognitive-topology T1).*
 
-> `data/ingress-trace.jsonl` · epoch 4 · 5 events · 3 decisions · 2 foreclosures
+> `data/ingress-trace.jsonl` · epoch 5 · 6 events · 3 decisions · 2 foreclosures
 
 ## Decisions
 
-### ig-000 — ◐ PROVISIONAL · pending_evidence
+### ig-000 — ● VERIFIED · validated
 
 **claude** · 2026-11-11T16:50:00-05:00
 
