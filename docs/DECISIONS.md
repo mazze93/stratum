@@ -826,6 +826,62 @@ Stacked PRs (a PR based on another unmerged PR's branch) are foreclosed for this
 
 ---
 
+# Ingress
+
+*How automated clients write into Stratum (cognitive-topology T1).*
+
+> `data/ingress-trace.jsonl` · epoch 4 · 5 events · 3 decisions · 2 foreclosures
+
+## Decisions
+
+### ig-000 — ◐ PROVISIONAL · pending_evidence
+
+**claude** · 2026-11-11T16:50:00-05:00
+
+Automated clients write into Stratum through one upstream ingress module, cli/lib/ingress.mjs, reached from the shell as `stratum emit` (cognitive-topology T1). The event id is a digest of the canonical masked record, so a retry can never create a second event. Evidence is produced only by running the check in that process and binding the observed exit code to the pinned commit (v2); a caller cannot supply evidence, checked_at or a binding. A ratification needs a human at an interactive terminal who types the event id back. Prose lands only in claim.narrative. Unset config is a no-op with a notice; a configured ledger that fails queues the record in an outbox and shows the unrecorded count until it drains.
+
+> **Shadow [TRACE · certainty 0.85]** — Client form chosen per the 2026-10-21 council: evaluate a CLI shell-out before a new lib. The CLI already had the deterministic capture path (`verify --run`, ADR-003 bindings); what it lacked was a deterministic id, a refusal of supplied evidence, the TTY gate and the two degradation modes. So the binding code moved into the shared module and the CLI's verify now calls it, one source of truth. No worker or core change was needed, which was one of the council's conditions that could have flipped the call. The cognitive-topology plugin's source is in no GitHub repo, so the spec's plugins/topology-core/lib/stratum.<ext> had no home; upstream it serves Stele, Temenos and macprobe as well. A 409 is shared by a duplicate id and every other guard refusal, so the client reads the event back and compares identity views before calling a retry already recorded. Seven mutants of the module (accept supplied evidence, ignore the observed exit, mask after the id, drop the TTY gate, treat any 409 as already, drop a failure silently, skip the unconfigured guard) each fail the suite. Perimeter: a binding is still the writer's statement; it is re-checkable, not proven, and a model with shell access can still run a check that asserts nothing.
+
+### ig-001 — ◐ PROVISIONAL · pending_evidence
+
+**claude** · 2026-11-11T16:51:00-05:00
+
+docs/API.md is the upstream HTTP reference for every ingress client, each statement cited to a source line. When the page and the source disagree, the source wins and the page is the bug.
+
+> **Shadow [TRACE · certainty 0.9]** — Before it, each client reverse-engineered the envelope; the ct-reshape spec v0.6.0 did, and got four things wrong against source: birth_status is required on every record, not only originating ones; the evidence kind has no enum; schema_version is per event and v1 or v2, and under v2 checked_at counts for nothing; and a 409 does not by itself tell a retry from a refusal. Unknown top-level and evidence keys are dropped, not refused, in both the TypeScript port and the Python oracle.
+
+### ig-004 — ○ narrative · asserted
+
+**claude** · 2026-11-11T16:54:00-05:00
+
+Proposed, awaiting mazze: a narrower token for automated writers, write-only and scoped to one log, so a plugin's environment stops holding the one STRATUM_TOKEN that also reads every private log and writes to all of them.
+
+> **Shadow [TRACE · certainty 0.75]** — Raised as a backlog decision, not code, per the council's X1 condition. Today auth.ts has one secret for every private read and every write. Append-only plus a leaked master key means permanent pollution of every log. Touches worker auth, so it sits next to the authority registry (R4) and is not part of T1. Born asserted because it changes the trust boundary.
+
+## Foreclosures — ghost edges
+
+### ig-002 — standing
+
+A per-client Stratum library inside each plugin (the ct-reshape spec's plugins/topology-core/lib/stratum.<ext>) is foreclosed: there is one ingress module upstream, and clients shell out to `stratum emit`.
+
+*Ghost edges:* ~~`per-plugin-lib-stratum`~~
+
+> **Shadow [TRACE · certainty 0.85]** — Every ingress candidate needs the same envelope (council, Brick Layer), and the evidence rule is only as strong as the one place that enforces it. Copies drift. Reopen if a client cannot spawn node, and then port the module rather than reimplement it.
+
+### ig-003 — standing
+
+Automated clients emitting v1 verifications (a typed checked_at as the evidence) is foreclosed. Ingress writes verifications only as v2 with a reproducible_check binding it produced.
+
+*Ghost edges:* ~~`v1-typed-checked-at-from-clients`~~
+
+> **Shadow [TRACE · certainty 0.9]** — Under v1 the server enforces that a timestamp is present, never that a check happened (tp-007), which is exactly how model prose would be laundered into the verified tier. The CLI's own `verify --ref` stays as the human's legacy path. Reopen never for automated clients.
+
+## Checked-evidence ledger
+
+*No checked evidence yet — every decision above is provisional or axiomatic.*
+
+---
+
 ### Da'ath
 
 The mechanism that produced these convergences — whether each was discovery or retrieval — is not recorded here, because it cannot be. The void stays empty; anything placed in it would be fabrication of the unknowable.
