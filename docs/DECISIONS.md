@@ -469,7 +469,7 @@ docs/TRUST.md ships as a skeleton that RESOLVES the two decidable questions (den
 
 *~/Projects container decisions, compiled from the workspace journal.*
 
-> `data/workspace-trace.jsonl` · epoch 20 · 21 events · 13 decisions · 3 foreclosures
+> `data/workspace-trace.jsonl` · epoch 21 · 22 events · 14 decisions · 3 foreclosures
 
 ## Decisions
 
@@ -576,6 +576,14 @@ cli/mise.toml (a single line, aube = "latest") is deleted from the working tree,
 CLAUDE.md (and AGENTS.md, its symlink) is refreshed against the tree at 3553a6c. Corrections: test:reference names all four suites; CI names the all-traces and DECISIONS.md-sync gates plus the codeql, recheck and release-attest workflows; Architecture gains the ADR-003 trust layer (canonical.ts/canonical.py JCS, chain.ts, schemas/event.v2.schema.json) and cli/lib/ingress.mjs (stratum emit/outbox, exit 3/4, docs/API.md); data/canonical.golden.json joins the generated-files list; every trace is named; the next ADR is ADR-004; /home/ is noted. Delivered as PR #104.
 
 > **Shadow [TRACE · certainty 0.9]** — Found by /init: the file existed, so the task became a drift audit rather than a rewrite. Every claim was checked against disk before it was kept. #101 (ingress) landed mid-session, which made 'zero-dependency single-file CLI' stale too, so it was folded in. The golden-regeneration command switched to >| because mazze's shell has noclobber. Not done: a full rewrite (the existing file was mostly accurate, and churn would hide the six real fixes) and a wt entry being skipped as 'docs-only' (mazze approved recording it).
+
+### wt-021 — ◐ PROVISIONAL · pending_evidence
+
+**claude-opus-5.5** · 2026-11-12T22:25:40-05:00
+
+The 11 open Dependabot alerts (5 high, 5 moderate, 1 low; all dev-scope, all in undici and vite) are cleared by raising worker's wrangler range to ^4.161.0, whose miniflare pins undici 7.30.1, and updating vite in range to 8.3.8 under vitest.
+
+> **Shadow [TRACE · certainty 0.9]** — undici is pinned exactly (7.29.1) by miniflare 5.20261001.0-alpha, so `npm update` cannot reach the fix. An npm override forcing undici under the old miniflare was rejected: it pairs a deploy tool with a transport it was never released against. The wrangler bump is the maintained path, and it was confirmed with `wrangler deploy --dry-run` before commit. Merging this PR is a production deploy because Workers Builds runs the lockfile's wrangler. No runtime dependency changed.
 
 ## Foreclosures — ghost edges
 
