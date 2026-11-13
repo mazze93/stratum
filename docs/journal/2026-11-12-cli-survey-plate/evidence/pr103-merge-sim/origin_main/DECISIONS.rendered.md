@@ -1,0 +1,906 @@
+# Decisions — projected from the traces
+
+> **Do not hand-edit.** Regenerate with `python3 scripts/render-decisions.py > docs/DECISIONS.md`.
+>
+> Each entry has two faces: the clean record as the projection renders it, and the *shadow trace* — what the clean record buried, tagged `TRACE` when sourced from surfaced deliberation or `RECON` when reconstructed, with a certainty weight. Ghost edges are roads deliberately not taken.
+>
+> Traces are projected **independently**. Each carries its own trust root, so they are separate trust scopes; a merged projection would imply a shared lineage that exists in no log.
+
+---
+
+# Genesis
+
+*The recorded decisions of this repository's own construction.*
+
+> `data/genesis-trace.jsonl` · epoch 19 · 20 events · 13 decisions · 4 foreclosures
+
+## Decisions
+
+### sb-000 — ◆ AXIOMATIC · ratified
+
+**mazze** · 2026-07-10T01:55:00-04:00 · **trust root**
+
+Launch Stratum as a working prototype: full frontend and backend, production-quality Atrium, public deployment at stratum.mazzeleczzare.com, usable for daily decision capture. Build recorded in the system's own event format.
+
+> **Shadow [TRACE · certainty 1.0]** — Human mandate, given out-of-band (session instruction, 2026-07-10). This is the genesis authority for the build: every subsequent event descends from it.
+
+### sb-001 — ● VERIFIED · validated
+
+**claude-opus-4.8** · 2026-07-10T02:05:00-04:00
+
+The TypeScript port in core/ is the single runtime source of truth for Worker, CLI, and Atrium. The Python reference remains the semantics oracle; divergence is decided by the Python.
+
+> **Shadow [TRACE · certainty 0.85]** — Considered running the Python directly in production (Workers Python runtime, or containerized). Rejected: doubles the deployment surface, and MEMORY_MODEL section 10 already directs the port ('the Python is a semantics check; port the rules into the runtime'). Validation pending: cross-implementation fingerprint test.
+
+### sb-003 — ● VERIFIED · validated
+
+**claude-opus-4.8** · 2026-07-10T02:07:00-04:00
+
+One Durable Object per log is the single-writer gate: appends serialize in a single-threaded scope and every guard runs at one door. Infrastructure expression of ADR-002's single-synchronous-gate principle.
+
+> **Shadow [TRACE · certainty 0.9]** — Considered D1-only (simpler, queryable) and Workers KV (wrong shape entirely). D1 alone cannot guarantee seq assignment under concurrent writers without locking gymnastics; the DO's execution model gives ordering for free and colocates the contract guards with the append. Validation pending: live append/projection round-trip on the deployed Worker.
+
+### sb-005 — ● VERIFIED · validated
+
+**claude-opus-4.8** · 2026-07-10T02:09:00-04:00
+
+Public GitHub repository from genesis: clean signed-or-marked history, no secrets in code, event data lives in Durable Object storage rather than git.
+
+> **Shadow [TRACE · certainty 0.7]** — Considered private-first, public at polish. Rejected: the meridian precedent (mazze93/meridian public), the Fellows portfolio needs public work, and the recursive build story is itself the exhibit. Reversible by flipping visibility.
+
+### sb-007 — ○ narrative · asserted
+
+**claude-opus-4.8** · 2026-07-10T02:11:00-04:00
+
+Workflow event data lives on Cloudflare (Durable Object storage), bearer-gated. The sovereignty escape hatch is the contract itself: the export endpoint is serialize_log, and invariant I4 proves the full round-trip. Portability is a tested invariant, not a promise.
+
+> **Shadow [TRACE · certainty 0.65]** — Tension with the local-first ethos of the wider Praxis stack was considered and is real. Chosen anyway because the mandate explicitly asks for a public deployed instance collecting workflow data, and I4 replay keeps exit costs near zero. Awaits human ratification as a strategic call.
+
+### sb-009 — ○ narrative · asserted
+
+**claude-opus-4.8** · 2026-07-10T02:13:00-04:00
+
+The numbering collision flagged in MEMORY_MODEL's header is resolved: the Event Epistemic Contract keeps its MEMORY_MODEL identity (it is a contract, not an ADR); ADR-001 and ADR-002 in the architecture evaluation keep their numbers; new ADRs from this build begin at ADR-003.
+
+> **Shadow [TRACE · certainty 0.85]** — Alternative: renumber the contract to ADR-003. Rejected because the document functions as a specification with an executable reference, not a point-in-time decision record.
+
+### sb-010 — ○ narrative · asserted
+
+**claude-opus-4.8** · 2026-07-10T02:14:00-04:00
+
+Flat npm workspaces (core, worker, cli, plus static atrium) rather than the packages/runtime path MEMORY_MODEL's carry-forward sketch used. Same intent, shallower tree.
+
+> **Shadow [RECON · certainty 0.7]** — Deviation from the doc's literal phrasing, recorded so the doc and repo do not silently disagree. packages/* nesting buys nothing at three workspaces.
+
+### sb-012 — ○ narrative · asserted
+
+**claude-opus-4.8** · 2026-07-10T03:10:00-04:00
+
+API surface v1: POST events (guarded append), GET projection at any epoch, GET events (export = serialize_log), GET event detail. Contract violations map to HTTP 409, parse failures to 400 — the wire mirrors the guards.
+
+> **Shadow [TRACE · certainty 0.8]** — Considered GraphQL and a generic query endpoint; both rejected as surface area without a consumer. The projection IS the query language.
+
+### sb-013 — ○ narrative · asserted
+
+**claude-opus-4.8** · 2026-07-10T03:11:00-04:00
+
+Visitors get per-session playground logs cloned from the curated demo seed: write-open but capped, isolated per Durable Object, disposable. The canonical demo log stays read-only to the public.
+
+> **Shadow [TRACE · certainty 0.85]** — Alternative was a single shared writable demo (vandalism magnet) or read-only-everything (kills the interactive arbitration demo). Per-visitor sandbox preserves both safety and the wow moment.
+
+### sb-015 — ○ narrative · asserted
+
+**claude-opus-4.8** · 2026-07-10T04:05:00-04:00
+
+Atrium arbitration actions are derived from the transition system at the event's current folded status — the UI can only offer what the guards would accept, and a 409 is shown verbatim as the gate speaking. All rendered text is escaped (playground narratives are untrusted input). The epoch scrubber exposes deterministic replay as a first-class UI feature.
+
+> **Shadow [TRACE · certainty 0.9]** — Alternative was hardcoding action menus per view, which is how the prototype's verified/axiomatic collapse happened in the first place: a UI asserting statuses the contract never granted. Deriving from TRANSITIONS makes that class of defect unrepresentable.
+
+### sb-016 — ○ narrative · asserted
+
+**claude-opus-4.8** · 2026-07-10T04:25:00-04:00
+
+The CLI is the primary daily capture surface: zero-dependency single file, one command per contract motion, config in ~/.config/stratum, exit code 2 reserved for guard refusals so scripts can distinguish contract violations from transport errors. Supersession is one command performing the two-event motion (new decision + marker).
+
+> **Shadow [TRACE · certainty 0.85]** — Considered an interactive TUI and a menu-driven flow; both rejected — ADHD-accessible means one command is one complete action, no navigation state to hold. The Atrium is the browse surface; the CLI is the write surface.
+
+### sb-018 — ○ narrative · asserted
+
+**claude-opus-4.8** · 2026-07-10T04:46:00-04:00
+
+Stratum v0.3.0 is public: stratum.mazzeleczzare.com serves the Atrium over the deployed Worker; the demo log is seeded with this genesis trace — the system's first dataset is the record of its own construction; the workspace log is live for daily capture.
+
+- evidence · `url_check` · https://stratum.mazzeleczzare.com — Atrium HTML served, custom domain bound · **checked 2026-07-10T04:46:00-04:00**
+
+> **Shadow [TRACE · certainty 0.9]** — The recursive seed was the launch thesis from the first planning pass: it closes MEMORY_MODEL section 8's named empirical risk with real data and gives the funding demo its opening line.
+
+### sb-019 — ○ narrative · asserted
+
+**claude-opus-4.8** · 2026-07-10T05:05:00-04:00
+
+The human-readable decision record (docs/DECISIONS.md) is a projection of this trace — generated, never hand-edited, drift-guarded in CI alongside the golden projection and both implementations' invariants. MIT license. The repo's own decision hygiene is enforced by the machinery it ships.
+
+> **Shadow [TRACE · certainty 0.9]** — A hand-maintained DECISIONS.md was the obvious default and is how every other repo does it — rejected precisely because hand-maintained decision docs are the drift this system exists to end.
+
+## Foreclosures — ghost edges
+
+### sb-002 — standing
+
+No frontend framework for Atrium v1. Hand-authored ES modules served as static assets; zero build step.
+
+*Ghost edges:* ~~`react-19-frontend`~~ · ~~`astro-frontend`~~
+
+> **Shadow [TRACE · certainty 0.8]** — Ghost edges: React 19 (the praxis-stack default), Astro. Both rejected for v1: the state-machine prototype is already 90 percent of the target UI in vanilla JS, a build chain adds failure modes to the demo path, and funding reviewers see the artifact not the toolchain. Reopen when Atrium needs client routing or shared component state across views.
+
+### sb-004 — standing
+
+The simulated agent roster and mock telemetry are cut from Atrium v1. Everything rendered is a projection of a real log.
+
+*Ghost edges:* ~~`simulated-agent-roster`~~ · ~~`mock-telemetry-feed`~~
+
+> **Shadow [TRACE · certainty 0.75]** — The prototype's roster looks alive and demos well, but a funding audience discovering simulated dashboards costs more trust than the panel earns. One sentence must hold everywhere: everything on screen is a projection of the real log. Reopen when the agent runtime exists and the roster can render real topology.
+
+### sb-008 — standing
+
+Cloudflare Access as the v1 auth layer is foreclosed; a single bearer token (wrangler secret) gates writes and private reads.
+
+*Ghost edges:* ~~`cloudflare-access-auth`~~
+
+> **Shadow [TRACE · certainty 0.8]** — Access is the cleaner zero-trust story and the eventual answer for multi-user, but it drags zone-level IdP configuration into the critical path of a single-user prototype. Reopen at multi-user or org deployment.
+
+### sb-014 — standing
+
+In-process Worker unit tests (vitest-pool-workers) are deferred for v1; the deployed API is verified by a live end-to-end smoke suite instead.
+
+*Ghost edges:* ~~`vitest-pool-workers-v1`~~
+
+> **Shadow [TRACE · certainty 0.7]** — Pool-workers config is real setup cost mid-sprint; the core carries the correctness weight (22 tests) and the Worker is a thin adapter. Reopen when the Worker grows logic of its own.
+
+## Checked-evidence ledger
+
+| verification | target | what was checked | when |
+|---|---|---|---|
+| `sb-006` | `sb-005` | https://github.com/mazze93/stratum @ c7962f8 | 2026-07-10T02:10:00-04:00 |
+| `sb-011` | `sb-001` | vitest cross-validation + invariants @ efed324 | 2026-07-10T03:03:00-04:00 |
+| `sb-017` | `sb-003` | https://stratum.mazzeleczzare.com/api/health @ v0a0e3539 — 200, TLS valid, guard refusal 409 observed | 2026-07-10T04:45:00-04:00 |
+
+---
+
+# Stele
+
+*Cross-project use: STELE decisions routed through Stratum.*
+
+> `data/stele-trace.jsonl` · epoch 2 · 3 events · 2 decisions · 0 foreclosures
+
+## Decisions
+
+### st-000 — ◆ AXIOMATIC · ratified
+
+**mazze** · 2026-07-16T20:05:00-04:00 · **trust root**
+
+All STELE decisions route through Stratum. Case reports for stele (app + stele-core) are collected as this trace: data/stele-trace.jsonl. Generation and authority stay separated — a decision is not authoritative until its evidence is checked.
+
+> **Shadow [TRACE · certainty 1.0]** — Human mandate, given 2026-07-16 in-session ('all decisions for stele route through stratum'). Alternative was continuing to log stele decisions in projects-workspace docs/journal/DECISIONS.md — rejected as narrative-only memory: exactly the conflation Stratum exists to prevent.
+
+### st-001 — ● VERIFIED · validated
+
+**claude-fable-5** · 2026-07-16T20:08:00-04:00
+
+Unblock stele delivery by adding a CodeQL workflow (codeql.yml, javascript-typescript) to the repo, satisfying the branch ruleset's required Code Scanning results. The ruleset currently requires scanning results while no scanner is configured, so NO pull request can merge (observed: PR #29, all checks green, merge blocked even with --admin via API).
+
+> **Shadow [TRACE · certainty 0.9]** — Ghost edges: (1) delete the code-scanning requirement from the ruleset — rejected: weakens the hardening posture github-hardening-skills deliberately applied; the rule is right, the missing scanner is the bug. (2) per-PR admin bypass — rejected: failed via API, and unreproducible process even where it works. Validation: PR #29 merges cleanly once CodeQL has run on the PR/base.
+
+## Foreclosures — ghost edges
+
+*None recorded.*
+
+## Checked-evidence ledger
+
+| verification | target | what was checked | when |
+|---|---|---|---|
+| `st-002` | `st-001` | https://github.com/mazze93/stele/pull/29 merged @ 949148f | 2026-07-16T20:41:00-04:00 |
+| `st-002` | `st-001` | https://github.com/mazze93/stele/actions/runs/29544712319 — both matrix jobs pass | 2026-07-16T20:41:00-04:00 |
+
+---
+
+# Public launch
+
+*The public landing surface — this session's own decisions, recorded live.*
+
+> `data/atrium-trace.jsonl` · epoch 45 · 46 events · 24 decisions · 2 foreclosures
+
+## Decisions
+
+### at-000 — ◆ AXIOMATIC · ratified
+
+**mazze** · 2026-07-23T14:10:00-04:00 · **trust root**
+
+Public-launch working session decisions route through this trace: data/atrium-trace.jsonl. Mandate: by session end, a shipped, merged product — a public landing page at stratum.mazzeleczzare.com — with clear decision telemetry including foreclosed options, on a green branch.
+
+> **Shadow [TRACE · certainty 1.0]** — Human mandate, given 2026-07-23 in-session during plan review. Alternative was folding session decisions into the existing stele-trace or journal-only narrative — rejected: this session's decisions concern Stratum's own public surface, a distinct trust scope, and journal-only memory is the conflation Stratum exists to prevent.
+
+### at-001 — ● VERIFIED · validated
+
+**claude-fable-5** · 2026-07-23T14:20:00-04:00
+
+The public landing page takes over `/`; the Atrium control room moves to `/atrium/`. Implementation is a single `git mv` of atrium/public/index.html to atrium/public/atrium/index.html — every reference in the Atrium bundle is root-absolute (/styles.css, /app.js, /api.js, /theme.js, /fonts/*), app.js touches only location.search, and wrangler's default html_handling serves /atrium/ and redirects /atrium.
+
+> **Shadow [TRACE · certainty 0.9]** — Ghost edges: separate subdomain or repo for the landing (rejected: splits deploy surface, wrangler already serves static assets from atrium/public); landing section stacked above the control room in one page (rejected: control room is an instrument panel, not a pitch — mixing registers weakens both). Path-safety claim verified by touchstone probe before approval, not assumed.
+
+### at-002 — ● VERIFIED · validated
+
+**claude-fable-5** · 2026-07-23T14:22:00-04:00
+
+The landing hero is a stratigraphic cross-section of the real genesis trace — 20 events rendered as deposited layers colored by authority tier, epochs as labeled eras, foreclosures as fault lines — shipped as a deterministic static inline SVG, with progressive enhancement that re-renders from GET /api/logs/demo/projection when the API is reachable.
+
+> **Shadow [TRACE · certainty 0.95]** — User selected static-plus-live-enhance from three options. Ghost edges: live-rendered only (truest to everything-is-a-projection, but blank on API failure or JS off — a landing page cannot fail closed); static only (never reflects the live log). The figure uses real trace data either way; a decorative fake stratum diagram was never on the table — sb-004 forecloses simulated dashboards.
+
+### at-003 — ● VERIFIED · validated
+
+**claude-fable-5** · 2026-07-23T14:25:00-04:00
+
+Atrium gains a circadian theme mode: an accessible light-to-dark progression keyed to local time, the default for visitors with no stored preference. Explicit theme choice persists in localStorage and always wins. The existing four named themes remain selectable.
+
+> **Shadow [TRACE · certainty 0.85]** — User mandate ('accessible light to dark gradient on a circadian engine, with user override for atrium'). Design latitude retained on mechanism: banded interpolation across dawn/dusk windows vs continuous interpolation — resolved at implementation toward whichever keeps WCAG-AA contrast provable at every point in the cycle.
+
+### at-005 — ● VERIFIED · validated
+
+**claude-opus-4.8** · 2026-07-23T16:40:00-04:00
+
+Intra-tier policy contradictions resolve deny-wins, stated normatively in ARCHITECTURE-EVALUATION.md ADR-002 and TRUST.md §2. Closes ADR-002 action item 1, open since 2026-06-20.
+
+> **Shadow [TRACE · certainty 0.9]** — The rule was already inferable from fail-closed, which is why it sat unstated for a month. Stating it anyway: fail-closed describes behaviour under error, whereas this describes behaviour under a well-formed disagreement between two valid rules — a different case, and one that otherwise resolves by authoring order, i.e. by accident. Ghost edge: allow-wins-with-audit-log, rejected because it makes adding a rule capable of widening a grant, breaking composition with the cross-tier intersection semantics.
+
+### at-006 — ● VERIFIED · validated
+
+**claude-opus-4.8** · 2026-07-23T16:45:00-04:00
+
+ADR-001 (Tessera fidelity) moves Proposed → Accepted-implemented, with action items 1-3 checked against verified code evidence and item 4 (Chronicle role re-scope) recorded as deferred, NOT checked. The 2026-06-20 body of the evaluation is left standing; a dated §0 addendum records the supersession.
+
+> **Shadow [TRACE · certainty 0.95]** — Items 1-3 were verified before checking, not assumed: schema split at tessera_projection.py:348 and core/src/projection.ts; MEMORY_MODEL rev 3 §§2/5/8 is the projection spec; the trace-check has BOTH positive and negative tests in both implementations and runs in CI. Item 4 could have been quietly checked to make the ADR look closed — the Chronicle role contract lives in the paper and v0.2.0 SPEC, neither committed here, so there is nothing in this repo to re-scope. Marking it deferred is the honest state and is itself the interesting datum: the projection design landed, the role's self-description never followed. Ghost edge: rewriting §1/§2 in place to read as resolved — rejected as mutating a dated review; supersede, don't mutate, matching the contract this document evaluates.
+
+### at-008 — ● VERIFIED · validated
+
+**claude-opus-4.8** · 2026-07-23T17:10:00-04:00
+
+Supersedes at-003's open mechanism question: the circadian work is SURFACING the engine theme.js already implements, not building a new one. Scope is (a) make prefers-color-scheme tracking live rather than read-once, gated on the user not having chosen explicitly, and (b) add a fifth ground, Plate, matching the landing page's black posterboard palette, so opening the Atrium from / is a continuous move rather than a jump between two unrelated rooms.
+
+> **Shadow [TRACE · certainty 0.9]** — Investigation found theme.js ALREADY had the circadian engine: circadianTone() maps hour to a 0-100 tone, applyTokens interpolates day-to-night per ground, toneAuto defaults true, a 5-minute timer re-renders. The plan's 'extend theme.js with a new auto mode' was written before reading the file and would have rebuilt what existed. Human chose surfacing over a ground-to-ground progression across the day, trading that scope for the Plate bridge. Ghost edges: full vellum-through-nocturne progression across the cycle (deferred, not rejected — reopen if the tone range within one ground proves too narrow to read as circadian); pinning the Atrium to Plate on arrival from the landing via referrer sniffing (rejected as fragile and as overriding a returning visitor's room). Requires a real fix: render() persists state on first paint, so a defaulted theme is indistinguishable from a chosen one — live tracking needs an explicit themeExplicit flag or it would override deliberate choices.
+
+### at-009 — ● VERIFIED · validated
+
+**claude-opus-4.8** · 2026-07-23T17:40:00-04:00
+
+docs/ARBITRATION.md drafted as a RESEARCH-posture exploration of precedent decay (research agenda #2). It leans toward re-ratification-on-invocation (decay produces events, not decaying numbers), uses context distance as a trigger rather than a continuous weight, and rejects time-based half-life as the primary mechanism. Confidence recorded as low-to-moderate.
+
+> **Shadow [RECON · certainty 0.55]** — Key reasoning: the contract's existing correction markers (supersession, invalidation) are AUTHOR-triggered, but precedent fails READER-triggered — it is consulted without being visited, so nothing prompts an author to correct it. That mismatch is the real gap and is why 'just use supersession' fails. Time-based half-life rejected because the contract deliberately ignores wall-clock in every projection path (MEMORY_MODEL §2); making decay trust a clock would be the single place the system does so. Distance-as-trigger rather than weight because a trigger's worst case is 'asked a human unnecessarily' while a weight's worst case is 'silently deferred to stale authority' — and the metric is likely stochastic, which is tolerable only in the first position. Ghost edges: continuous embedding-similarity weight (rejected — makes an authority boundary depend on a stochastic model in a system whose thesis is mechanical checkability); pure time half-life (rejected as primary, retained as possible backstop since its failure mode is also escalation). Open dependency surfaced: precedent reconciliation of two priors is a diamond, and multi-parent lineage is rejected at write time in v1 — nobody had drawn that dependency.
+
+### at-010 — ● VERIFIED · validated
+
+**claude-opus-4.8** · 2026-07-23T18:05:00-04:00
+
+render-decisions.py renders every trace (genesis, stele, atrium) into docs/DECISIONS.md, projecting each INDEPENDENTLY rather than merging them. CI gains two gates: every data/*-trace.jsonl must load through the reference guards, and docs/DECISIONS.md must match a fresh render.
+
+> **Shadow [TRACE · certainty 0.9]** — Independent projection, not a merged log: each trace carries its own trust root, so they are separate trust scopes — a merged projection would imply a shared lineage existing in no log, and would also have to invent an ordering across three independent seq spaces. Ghost edge: one combined chronological projection, rejected on both counts. The DECISIONS.md sync gate was negative-tested before being trusted — drift was deliberately introduced and the diff caught it — because a gate nobody has watched fail is an assumption, not a gate. That is the same discipline the contract applies to its own IncompleteProjection test.
+
+### at-011 — ● VERIFIED · validated
+
+**claude-opus-4.8** · 2026-07-23T18:30:00-04:00
+
+Release version bumps 0.3.0 -> 0.4.0 across root, core, worker, cli, the lockfile, and the /api/health payload. The event contract is NOT versioned by this: no schema, projection, or guard semantics changed this session, and the README provenance line now states both facts explicitly.
+
+> **Shadow [TRACE · certainty 0.9]** — Human chose the bump over staying at 0.3.0; the counter-argument (version tracks the contract, and the contract did not move) was correct on its merits, so it is preserved in the README wording rather than discarded — 'v0.4.0, carrying the same event contract (unchanged since rev 3)'. Historical v0.3.0 strings in docs/DECISIONS.md and the golden file were deliberately NOT touched: they are sb-018's immutable event narrative, not status text, and rewriting log content to match a current version is precisely the mutation this system exists to prevent. package-lock.json regenerated because CI runs npm ci, which fails on a lock that disagrees with package.json — caught locally rather than in a red build.
+
+### at-012 — ● VERIFIED · validated
+
+**claude-opus-4.8** · 2026-07-23T19:15:00-04:00
+
+The landing gains a decoding layer above the fold and a per-layer audit panel: selecting any stratum opens its full record — claim, evidence with checked-vs-cited state, actor identity, timestamps, every later event that acted on it (with that event's own evidence), roads not taken, and the buried shadow. Event records are baked inline alongside the figure so the panel works with no network.
+
+> **Shadow [TRACE · certainty 0.9]** — Human feedback: the plate read as a beautiful thesis statement rather than a credible decision-audit product, and named the missing piece exactly — selecting sb-014 should reveal claim, evidence, invalidating event, timestamps, actor identity, and reason. Two of the four requested tier definitions were corrected rather than shipped as given: 'narrative = provisional interpretation' conflates two distinct tiers (authoritative_provisional is separate and is now its own PENDING row), and 'foreclosed = invalidated by later evidence' describes invalidation, a different event type — a foreclosure is a deliberate choice with a reopen condition, not a refutation. Shipping either would have misdescribed the contract on the public surface. Records baked inline rather than fetched: the record behind a layer is part of the plate, not an enhancement, and the panel must not depend on an API that may be unreachable. Layers made focusable with role=button and Enter/Space handling; the right-register label is a second hit target because a 1-2px lens is not a realistic click target.
+
+### at-013 — ● VERIFIED · validated
+
+**claude-opus-4.8** · 2026-07-23T20:05:00-04:00
+
+Revises at-002: the landing no longer swaps its figure for a live projection. It reconciles against the live log and reports agreement or divergence instead. The static-SVG half of at-002 stands unchanged.
+
+*Revision chain:* `at-002 → at-013`
+
+> **Shadow [TRACE · certainty 0.9]** — The epoch scrubber made at-002's live-enhance clause incoherent: the scrubber's frames are oracle projections baked at render time, so replacing the figure with a live projection would leave the scrubber driving a figure it no longer describes — two surfaces silently disagreeing about the log, which is the exact failure this project exists to prevent. FIRST ATTEMPT WAS A supersession EVENT AND THE GUARD REFUSED IT: 'illegal transition pending_evidence -> superseded on at-002'. The contract was right and I was wrong — you cannot supersede a decision that was never established; at-002 is still awaiting its own evidence. Recorded instead as a revision with at-002 as lineage parent. The deeper lesson is that at-002 was written too coarsely: it bundled two independent choices (how to draw the figure statically, and whether to swap for live data), one of which shipped and one of which was replaced. A well-formed ledger would have recorded them as separate decisions.
+
+### at-014 — ● VERIFIED · validated
+
+**claude-opus-4.8** · 2026-07-23T20:10:00-04:00
+
+The landing answers the 15-second developer question: masthead nav (Docs, Contract, Decisions, Atrium, Author, version badge, GitHub), a terminal transcript of real CLI usage beside the wordmark, a copyable clone-and-run command, and FORK A LIVE LOG as the zero-install path. The Atrium gains navigation out — wordmark and Plate link home, plus GitHub and Author — so it is a destination, not a dead end. The landing scrubber hands its position to the Atrium via ?epoch=N.
+
+> **Shadow [TRACE · certainty 0.9]** — Human compared the plate against mise-en-place and named what was missing: nav, version badge, source links, an install command, a terminal showing real usage. Correctly identified that moving the Atrium to /atrium/ (at-001) had created a trap with no way back — a journey break introduced three phases earlier and unnoticed until a human walked it. Two things deliberately NOT copied: a fabricated GitHub star count (no honest number is available at build time) and a docs search box (there are no hosted docs to search; links point at GitHub, which has search). The install command is git clone, NOT npm install: @stratum/cli is private:true and unpublished, and shipping a command that does not run would be precisely the generated-truth failure this project exists to prevent. Two layout defects were found by measuring rather than eyeballing: the h1's min-content width overran its hero column and slid under the terminal, and flex/grid children defaulting to min-width:auto let the 700px figure force 745px of horizontal scroll on a 390px viewport — mobile had never been checked until the human asked.
+
+### at-015 — ● VERIFIED · validated
+
+**claude-opus-4.8** · 2026-07-23T20:15:00-04:00
+
+Deterministic replay moves to the front page: an epoch scrubber under the figure redraws the section at any epoch, so a visitor watches verified decisions lose their evidence and foreclosed roads reopen. Every position is a projection computed by the Python oracle at render time (scripts/render-epoch-frames.py), not a browser reimplementation of the fold.
+
+> **Shadow [TRACE · certainty 0.95]** — Answering 'what is the unforgettable moment': not the poster, not the audit panel, but the thing no other tool does — watching status un-derive. The page already CLAIMED 'drag the past back and watch decisions un-verify' while only asserting it, one click away in the Atrium. Ghost edge: implementing the fold in JS — rejected outright, since a third implementation could drift from the contract and the golden-file discipline exists to prevent exactly that. Baking 20 oracle-computed frames costs 17KB and keeps the page's claim literally true. Measured proof the moment lands: 3 green verification seams at epoch 19, 2 at epoch 12, 0 at epoch 5.
+
+### at-016 — ● VERIFIED · validated
+
+**claude-opus-4.8** · 2026-07-23T20:45:00-04:00
+
+Comprehension before admiration: a one-line legend sits directly under the figure, the hero closes with the operational consequence stated rather than implied ('Every later decision inherits prior unchecked claims — unless the ledger says otherwise'), and every audit record links through to the Atrium as the canonical proof surface via /atrium/?log=demo&event=ID, which deep-links the inspector to that exact record.
+
+> **Shadow [TRACE · certainty 0.9]** — Human direction: sell the system through one impeccable record view rather than more abstract explanation, and compress comprehension so a first-time visitor understands the model before admiring it. One word changed from the requested legend copy: 'Foreclosed = closed by later decision' became 'a road deliberately closed' — a foreclosure IS the closing decision, not something closed by a subsequent one, and the shorter phrasing is no longer while staying accurate. Required a small Atrium change: ?event=ID opens the inspector on load, one-shot so Refresh does not reopen it.
+
+### at-017 — ● VERIFIED · validated
+
+**claude-opus-4.8** · 2026-07-23T21:20:00-04:00
+
+Hero polish: centered title band spans the full sheet (STRATUM scales to clamp(72px,17vw,232px)) with description-left / terminal-right below it; the two-column hero holds down to 640px before stacking. The two hero CTAs get per-button tier color (Fork = blue, Atrium = yellow) and an art-deco frame — double rule plus four corner registration ticks — echoing the survey plate rather than the terminal box. The three source-register entries dropped their pill boxes for a tier-colored underline that fills upward on hover.
+
+> **Shadow [TRACE · certainty 0.9]** — Human directed each step live over several rounds. The apparent 'stacking' regression was diagnosed by measuring geometry, not eyeballing: the viewport was 885px, under the original 900px hero breakpoint, so it had correctly collapsed to mobile — the human confirmed and stood corrected, and the breakpoint dropped to 640px so two columns hold at desktop-ish widths. CTA deco built from the plate's own vocabulary: border + inset ::before rule (the outline-offset echo) + ::after eight-gradient corner ticks (the reg-marks echo), --deco flipping dark on hover-fill. Blue #5aa9d6 and yellow #d0b25c chosen as distinct tier colors that read on black and take dark ink when filled. Ghost edge: keeping the uniform green pill boxes — rejected, they were too close to the terminal box and gave the three registers no individual identity.
+
+### at-033 — ◐ PROVISIONAL · pending_evidence
+
+**claude-opus-4.8** · 2026-07-24T12:00:00-04:00
+
+Harden the public repo's supply chain and provenance. Code scanning: advanced CodeQL workflow (security-extended) over actions + javascript-typescript + python, on push/PR to main plus a weekly baseline. Dependabot: weekly npm and github-actions version updates (security updates already on). Third-party Actions SHA-pinned in ci.yml and the new workflows, with Dependabot keeping the pins current. SECURITY.md publishes a disclosure policy and a provenance contract. Branch protection on main: PR required (0 approvals, solo-safe), CI required, force-push and deletion blocked. Provenance is two independent layers: commits/tags stay GPG-signed (GitHub Verified once the key is registered) and required-signed-commits gates main; releases are Sigstore/cosign keyless-signed and Rekor-logged via release-attest.yml.
+
+> **Shadow [TRACE · certainty 0.9]** — Audit finding that motivated this: commits ARE gpg-signed and verify Good locally (ed25519 C641A68647D8A0FA), but GitHub reports every authored commit verified=false/unknown_key — the signing public key was never registered on the account (consistent with the 2026-07-15 fresh-machine rebuild). Signed, but not publicly verifiable. Ordering traps, same family as stele st-001 (a required code-scanning check with no scanner blocked all merges): CodeQL is added as a required status check only AFTER its first green run on main, and required-signed-commits is turned on only AFTER the gpg key is uploaded (GitHub treats unknown_key as unverified and would block the maintainer's own PRs). Both staged as gated follow-ups.
+
+### at-034 — ● VERIFIED · validated
+
+**claude-opus-5** · 2026-07-26T01:05:00-04:00
+
+Move all three github/codeql-action entrypoints (init, autobuild, analyze) to the same v4.37.3 commit SHA e4fba868fa4b1b91e1fdab776edc8cfbe6e9fb81. The three are entrypoints in ONE repository and must move as a set; they had drifted apart, with autobuild on v4.37.3 while init and analyze stayed on the v3 SHA 4187e74d05793876e9989daffde9c3e66b4acd07.
+
+> **Shadow [TRACE · certainty 0.95]** — Discovered while sweeping open Dependabot PRs: all four (#8 codeql-analyze, #9 cosign-installer, #10 action-gh-release, #13 hono) failed the same three Analyze (actions|javascript-typescript|python) jobs, including bumps that touch no CI at all. The failing STEP was Autobuild, erroring 'Loaded a configuration file for version 3.37.3, but running version 4.37.3' - autobuild v4 cannot read the config written by init v3. main was already broken: HEAD c337f62 merged the autobuild-only bump (#6), which silently broke CodeQL for every subsequent PR. This is the Dependabot partial-bump hazard for multi-entrypoint actions: Dependabot models init/autobuild/analyze as independent dependencies and opens separate PRs, so merging one alone desynchronises the set and the breakage surfaces on unrelated PRs - the misattribution trap. Merging the open analyze bump (#8) alone would NOT have fixed this, since init would still be v3; #8 is subsumed by this change. Note at-033 (which introduced this CodeQL workflow) remains pending_evidence, so CodeQL had never had a green run on main to protect - consistent with at-033's own staging rule that CodeQL becomes a required check only after its first green run.
+
+### at-036 — ● VERIFIED · validated
+
+**claude-opus-5** · 2026-07-26T02:20:00-04:00
+
+Promote CodeQL to a required status check on main. The three matrix analyses - Analyze (actions), Analyze (javascript-typescript), Analyze (python) - are added to branch protection's required contexts alongside the existing Typecheck, tests, cross-validation.
+
+> **Shadow [TRACE · certainty 0.9]** — at-033 staged this deliberately: CodeQL becomes a required check only AFTER its first green run on main, because a required code-scanning check with no passing scanner blocks every merge (the stele st-001 trap). That precondition was unmet for the entire life of at-033 - CodeQL had never been green on main - and at-034/at-035 have now satisfied it (run 30191349561 @ 804a095). Chose the three matrix job contexts rather than the aggregate CodeQL check run: the matrix jobs are the analyses that actually gate, and the aggregate reports in 2-3s as a code-scanning rollup. The tradeoff is that changing the language matrix now requires updating branch protection in the same change, which is the intended coupling.
+
+### at-038 — ◐ PROVISIONAL · pending_evidence
+
+**claude-opus-5** · 2026-07-26T03:05:00-04:00
+
+Restrict the Dependabot dev-dependencies group to minor and patch updates. Major dev-dependency updates are NOT ignored - they arrive as their own individual PRs instead of riding along inside a routine grouped bump.
+
+> **Shadow [TRACE · certainty 0.9]** — Group PR #12 (deps-dev, 5 updates) failed 'Typecheck, tests, cross-validation' at 'npm run check' with TS2591 Cannot find name 'node:fs', TS2304 Cannot find name 'URL', TS2339 Property 'url' does not exist on type 'ImportMeta' in core/test/cross-validation.test.ts. Cause was not @types/node (24->26) but typescript 5.9.3 -> 7.0.2 bundled in the same PR - the native TypeScript port, which ships platform-specific binaries (@typescript/typescript-darwin-arm64 et al) and resolves lib/types differently. vitest 3 -> 4 rode along too. Two real migrations were hidden inside a bump labelled routine dev-tooling. The grouping was the defect, not the packages: a group that admits majors converts 'review a version bump' into 'review a toolchain migration' without saying so. Chose update-types minor+patch over an ignore rule for typescript/vitest, because ignoring would silently stop the migrations from ever surfacing; this keeps them visible and reviewable on their own. #12 is closed rather than merged; Dependabot will reopen a conforming group.
+
+### at-039 — ◐ PROVISIONAL · pending_evidence
+
+**claude-sonnet-5** · 2026-08-06T06:46:00-04:00
+
+Add explicit compilerOptions.types: ["node"] to core/tsconfig.json. core previously relied on TypeScript automatic @types acquisition (no explicit types field) to bring in Node globals (node:fs imports, URL, ImportMeta.url) used by core/test/cross-validation.test.ts.
+
+*Revision chain:* `at-038 → at-039`
+
+> **Shadow [TRACE · certainty 0.9]** — at-038 restricted the dev-dependencies Dependabot group to minor/patch after grouped PR #12 (typescript 7.0.2 + vitest 4 + others) broke npm run check with TS2591/TS2304/TS2339 in core/test/cross-validation.test.ts, and attributed the break to typescript 7 alone. Re-tested empirically against the three individually-open major-bump PRs (#19 typescript 7.0.2, #21 @types/node 26.1.2, #22 vitest 4.1.10): each passes npm run check cleanly in isolation, and typescript 7 + @types/node 26 together also pass. The break only reproduces with typescript 7 + vitest 4 together, regardless of @types/node version (24.13.3 or 26.1.2 both fail identically) - so at-038s attribution to typescript alone was incomplete, and @types/node was never the culprit. Root cause: with no explicit types field, tsc falls back to automatic @types acquisition, and something in how typescript 7s native port walks node_modules/@types changes which globals get pulled in once vitest 4 (and its own vite 8 / @types chain) is also present. An explicit types: ["node"] removes the dependency on that fallback entirely, matching what the compiler error itself suggests (Try add node to the types field). Verified: with the fix applied on top of current main (typescript still 5.9.3), npm run check / npm test / npm run test:reference / npm run validate:trace / docs/DECISIONS.md staleness all pass unchanged - so this is safe to land now, before any of #19/#21/#22 merge, rather than only after a break is observed. worker/tsconfig.json already sets its own explicit types (@cloudflare/workers-types), which is why worker never surfaced this.
+
+### at-040 — ● VERIFIED · validated
+
+**claude-opus-4.8** · 2026-07-25T15:10:00-04:00
+
+Fix CodeQL CWE-200 alert js/file-access-to-http in cli/bin/stratum.mjs: s.endpoint (from the local config file / env / flag) flowed unvalidated into fetch(). call() now parses s.endpoint+path through the URL constructor, rejects any scheme other than http:/https: via fail(), and passes the validated URL object (not the raw string) to fetch.
+
+*Revision chain:* `at-033 → at-040`
+
+> **Shadow [TRACE · certainty 0.9]** — This is the first real finding the at-033 CodeQL setup surfaced — scanning earning its keep. URL(endpoint+path) preserves the existing concatenation semantics (paths are absolute, default endpoint has no base path) while adding the sanitizer CodeQL recognizes. Ghost edge: URL(path, endpoint) base-resolution form — rejected, it would silently drop a configured base-path prefix and change request targeting. Evidence lands when the CodeQL alert closes on the re-scan of this commit. Renumbered from at-039 to at-040 while resolving a merge conflict with main, which had independently assigned at-039 to an unrelated decision (explicit tsconfig types) that landed first.
+
+### at-042 — ● VERIFIED · validated
+
+**claude-sonnet-5** · 2026-08-24T17:18:00-04:00
+
+call()'s fetch stops spreading the caller's whole opts object; it passes only method and body explicitly. Every call() site was grepped and only ever passes those two fields, so the spread was closing no functionality — just an unconstrained surface CodeQL's js/file-access-to-http rule (alert #4) correctly flagged as an unproven path from opts into the request.
+
+*Revision chain:* `at-033 → at-040 → at-042`
+
+> **Shadow [TRACE · certainty 0.85]** — Rejected the allowlisted-origin approach a pasted CodeQL triage suggested (hardcoded ALLOWED_API_ORIGINS, --allow-external-endpoint flag): it would break the CLI's deliberate self-hosting design — settings() intentionally lets endpoint come from flag/env/config with only a default, per stratum's own decision at-016 (CLI is the write surface, config-driven). Developed independently of at-040 (URL-scheme validation) against the same alert; the two were reconciled in a merge conflict when both landed on main via PR #47 — at-040's URL() validation plus this opts-narrowing together close the alert from both the destination side and the request-shape side.
+
+### at-044 — ● VERIFIED · validated
+
+**claude-sonnet-5** · 2026-08-24T17:36:00-04:00
+
+Dismiss CodeQL alerts #5, #6, #7 (js/file-access-to-http) as false positives. All three re-flag cli/bin/stratum.mjs:107 (the fetch call), but the traced source in every case is loadConfig() reading ~/.config/stratum/config.json — s.endpoint and s.token, used to reach the user-configured sync destination. That is the CLI's intended job (settings(), at-016's config-driven write surface), not exfiltration; the rule's own guidance is to examine and confirm intended behavior rather than restructure it away.
+
+*Revision chain:* `at-033 → at-040 → at-042 → at-044`
+
+> **Shadow [TRACE · certainty 0.85]** — This is a downstream consequence of at-042/at-040 landing together: CodeQL re-analyzed the merged fetch(url, {method, body, headers}) call and opened three fresh instances of the same rule against the config-file source, distinct from the original alert #4 (already closed by the code fix) which pointed at the unconstrained opts spread itself. Considered restructuring the CLI to not read endpoint/token from a config file at all — rejected, that IS the CLI's design (zero-dependency config in ~/.config/stratum, per at-016). Considered an admin-override merge leaving the alerts open — rejected by the human (mazze) in favor of an explicit, documented dismissal so the audit trail states the reasoning rather than leaving it silent. Dismissal action itself required human confirmation: the harness's auto-mode classifier blocks an agent from unilaterally dismissing security alerts, and mazze confirmed via AskUserQuestion before any alert state changed.
+
+## Foreclosures — ghost edges
+
+### at-004 — standing
+
+The landing page does not follow the circadian engine. It is pinned to a single dark survey-poster rendering — black field, false-color strata, mono caption register.
+
+*Ghost edges:* ~~`circadian-landing`~~
+
+> **Shadow [TRACE · certainty 0.8]** — User delegated this call ('the pinned poster for the landing page can either respect the circadian engine or stay dark, your call'). Pinned dark chosen: the USGS-plate aesthetic is the lasting-impression instrument, and a poster that re-inks itself by time of day dilutes its identity; accessibility is handled by AA-checked contrast within the dark palette rather than by a light variant. Reopen if analytics or feedback show daylight readability complaints.
+
+### at-007 — standing
+
+docs/TRUST.md ships as a skeleton that RESOLVES the two decidable questions (deny-wins tie-break, negative-test ship gate) and explicitly FRAMES the capability-ontology granularity question without answering it. Inventing an ontology to make the document look complete is foreclosed.
+
+*Ghost edges:* ~~`invent-capability-ontology-now`~~ · ~~`omit-trust-md-until-resolvable`~~
+
+> **Shadow [TRACE · certainty 0.85]** — The ontology is research agenda #1 and the make-or-break usability decision for a deny-by-default gate; resolving it needs evidence this project does not yet have — a corpus of real capability requests, rule-count-per-granularity, and transitive leak analysis. TRUST.md §3 names those three as what would resolve it, and states a provisional lean (granularity varies by capability class, not uniform) explicitly held as hypothesis rather than decision. Reopen when the dogfooding traces have accumulated enough real capability requests to sample. A document that answered it now would be prose wearing the costume of a decision — the exact conflation Stratum exists to prevent.
+
+## Checked-evidence ledger
+
+| verification | target | what was checked | when |
+|---|---|---|---|
+| `at-018` | `at-001` | https://stratum.mazzeleczzare.com/ -> 200; /atrium/ -> 200; /atrium -> 307 | 2026-07-23T21:52:00-04:00 |
+| `at-019` | `at-002` | https://stratum.mazzeleczzare.com/ contains baked strata-records + FIG.1 section at epoch 19 | 2026-07-23T21:52:00-04:00 |
+| `at-020` | `at-003` | atrium/public/theme.js @ 369a056 on main (circadian engine surfaced, themeExplicit guard) | 2026-07-23T21:53:00-04:00 |
+| `at-021` | `at-005` | docs/ARCHITECTURE-EVALUATION.md + docs/TRUST.md @ 369a056 on main | 2026-07-23T21:53:30-04:00 |
+| `at-022` | `at-006` | docs/ARCHITECTURE-EVALUATION.md ADR-001 + §0 addendum @ 369a056 on main | 2026-07-23T21:54:00-04:00 |
+| `at-023` | `at-008` | https://stratum.mazzeleczzare.com/ cta--fork #5aa9d6 / cta--atrium #d0b25c; Plate ground in theme.js @ 369a056 | 2026-07-23T21:54:30-04:00 |
+| `at-024` | `at-009` | docs/ARBITRATION.md @ 369a056 on main | 2026-07-23T21:55:00-04:00 |
+| `at-025` | `at-010` | https://github.com/mazze93/stratum/actions/runs/30037916351 — check + 26 tests + reference + all-traces + DECISIONS-sync all pass | 2026-07-23T21:55:30-04:00 |
+| `at-026` | `at-011` | https://stratum.mazzeleczzare.com/api/health -> {"ok":true,"service":"stratum","version":"0.4.0"} | 2026-07-23T21:56:00-04:00 |
+| `at-027` | `at-012` | https://stratum.mazzeleczzare.com/ contains id=strata-records (20 events) + audit panel markup | 2026-07-23T21:56:30-04:00 |
+| `at-028` | `at-013` | https://stratum.mazzeleczzare.com/ fig-live caption reads 'LIVE LOG REACHED · IN SYNC AT EPOCH 19' | 2026-07-23T21:57:00-04:00 |
+| `at-029` | `at-014` | https://stratum.mazzeleczzare.com/ masthead nav + git-clone install cmd; /atrium/ has back-to-Plate/GitHub/Author links | 2026-07-23T21:57:30-04:00 |
+| `at-030` | `at-015` | https://stratum.mazzeleczzare.com/ scrubber: 3 green seams at epoch 19, 0 at epoch 5 (measured in-browser) | 2026-07-23T21:58:00-04:00 |
+| `at-031` | `at-016` | https://stratum.mazzeleczzare.com/ contains decode-line legend + audit-canon canonical links | 2026-07-23T21:58:30-04:00 |
+| `at-032` | `at-017` | https://stratum.mazzeleczzare.com/ hero-title centered; cta--fork #5aa9d6 + cta--atrium #d0b25c with corner-tick deco; real :hover floods blue, ink dark | 2026-07-23T21:59:00-04:00 |
+| `at-035` | `at-034` | https://github.com/mazze93/stratum/actions/runs/30191349561 - CodeQL on main @ 804a095: Analyze actions/javascript-typescript/python all success | 2026-07-26T01:35:00-04:00 |
+| `at-035` | `at-034` | https://github.com/mazze93/stratum/actions/runs/30178990744 - prior CodeQL on main @ c337f62: same three Analyze jobs failed (Autobuild: config v3.37.3 vs running v4.37.3) | 2026-07-26T01:35:00-04:00 |
+| `at-035` | `at-034` | .github/workflows/codeql.yml init+autobuild+analyze all @ e4fba868fa4b1b91e1fdab776edc8cfbe6e9fb81 # v4.37.3, merged as 804a0957b5e6340b32d459e242afc9b91574735a on main (PR #14) | 2026-07-26T01:35:00-04:00 |
+| `at-037` | `at-036` | GET /repos/mazze93/stratum/branches/main/protection -> required_status_checks.contexts = [Typecheck, tests, cross-validation; Analyze (actions); Analyze (javascript-typescript); Analyze (python)] | 2026-07-26T02:20:00-04:00 |
+| `at-041` | `at-040` | https://github.com/mazze93/stratum/commit/dd047aa | 2026-08-24T17:37:00-04:00 |
+| `at-041` | `at-040` | https://github.com/mazze93/stratum/pull/47 merged @ b7c3933 — CI and CodeQL both green | 2026-08-24T17:37:00-04:00 |
+| `at-043` | `at-042` | npm test — 26/26 passing on the resolved merge | 2026-08-24T17:27:00-04:00 |
+| `at-043` | `at-042` | https://github.com/mazze93/stratum/pull/47 — merged, CI+CodeQL green | 2026-08-24T17:37:00-04:00 |
+| `at-045` | `at-044` | https://github.com/mazze93/stratum/security/code-scanning/5 — state: dismissed, reason: false positive | 2026-08-24T17:36:29-04:00 |
+| `at-045` | `at-044` | https://github.com/mazze93/stratum/security/code-scanning/6 — state: dismissed, reason: false positive | 2026-08-24T17:36:31-04:00 |
+| `at-045` | `at-044` | https://github.com/mazze93/stratum/security/code-scanning/7 — state: dismissed, reason: false positive | 2026-08-24T17:36:32-04:00 |
+| `at-045` | `at-044` | https://github.com/mazze93/stratum/pull/47 — merged, mergedAt 2026-08-24T21:37:12Z | 2026-08-24T17:37:12-04:00 |
+
+---
+
+# Workspace
+
+*~/Projects container decisions, compiled from the workspace journal.*
+
+> `data/workspace-trace.jsonl` · epoch 22 · 23 events · 14 decisions · 3 foreclosures
+
+## Decisions
+
+### wt-000 — ◆ AXIOMATIC · ratified
+
+**mazze** · 2026-08-31T06:30:00-04:00 · **trust root**
+
+Workspace-level decisions recorded in ~/Projects/docs/journal/ route through Stratum as this trace: data/workspace-trace.jsonl. A periodic compiler (scripts/ops/journal_to_trace.py, in the projects-workspace container) projects each dated DECISIONS.md entry into a schema_version:1 decision/foreclosure event so container decisions are ledgered, not narrative-only.
+
+> **Shadow [TRACE · certainty 1.0]** — Ratified by mazze 2026-08-31 (burst q), in-session, on the design in scripts/ops/journal_to_trace.README.md. Alternative was a bespoke workspace ledger store — rejected: that is the journal-only / parallel-memory conflation Stratum exists to prevent, and stele-trace / atrium-trace already establish the per-source routing pattern. Verification events are appended by hand, not machine-generated.
+
+### wt-001 — ◐ PROVISIONAL · pending_evidence
+
+**claude** · 2026-08-31T12:00:00-04:00
+
+A jj-colocated repo's detached git HEAD is a recognised state, not drift to "fix".
+
+> **Shadow [COMPILED · certainty 0.7]** — `ws status` now tags any repo with a `.jj/` dir as `[juju]` (bright blue, TTY-gated) and always surfaces it, rather than reading git ahead/behind (meaningless when HEAD is detached by design) or omitting it as clean. Why: mazze is standardising on jujutsu; the fleet tooling and the Stop hook were built git-only and mis-report jj repos as either anomalous or invisible. Making the state legible is the fix, not forcing `git checkout`. Reverse: drop the `juju`/`C_JUJU` lines from `scripts/ws`.
+
+### wt-002 — ◐ PROVISIONAL · pending_evidence
+
+**claude** · 2026-08-31T12:00:00-04:00
+
+The context-synapse "detached HEAD stranded work" flag from the 2026-08-23 `.remember` buffer is resolved as a non-issue.
+
+> **Shadow [COMPILED · certainty 0.7]** — jj bookmark `feat/site-deploy-release-sync` is `== @origin` at `3a0dd08`; the git detached HEAD `833d732` is its ancestor. The deploy work is pushed, rebased on current `origin/main`, and only needs a PR. *Why recorded:* so the flag isn't re-raised a third time by the next session reading a stale buffer. Reverse: n/a (observation).
+
+### wt-003 — ◐ PROVISIONAL · pending_evidence
+
+**claude** · 2026-08-31T12:00:00-04:00
+
+CHECKPOINT.md's `Updated:` header is the one line rewritten in place; everything else stays append-only, and the header now names the current burst.
+
+> **Shadow [COMPILED · certainty 0.7]** — It had rotted at "burst n / 2026-07-28" while o, p, q were appended below. A one-line note under the header points readers to the file end. Why: the append-only rule (correctly) stops anyone touching old sections, but nothing owned the summary line, so it aged into a lie. How to keep true: P4's datestamp hook rewrites it on every journal commit. Reverse: revert the header block; it's cosmetic.
+
+### wt-004 — ◐ PROVISIONAL · pending_evidence
+
+**claude** · 2026-08-31T12:00:00-04:00
+
+Planned (not yet built): bursts compile into a Stratum trace, not a bespoke store.
+
+> **Shadow [COMPILED · certainty 0.7]** — Container decisions will be emitted as `schema_version:1` decision-events into `cognitive/stratum/data/workspace-trace.jsonl`, mirroring the existing `stele-trace` / `atrium-trace` routing where a project's decisions "route through Stratum". Why: the user's stated goal — models learning from past decisions — is exactly Stratum's purpose ("journal-only memory is the conflation Stratum exists to prevent"). A parallel homemade ledger would be that conflation again. *Constraint:* Stratum is MAX and dogfoods its own ledger — the routing itself needs a genesis event with mazze's `birth_status: ratified`. Reverse: the trace file is additive; delete it and the compiler script.
+
+### wt-005 — ◐ PROVISIONAL · pending_evidence
+
+**mazze** · 2026-08-31T12:00:00-04:00
+
+Ratified `wt-000` and built the journal→trace compiler.
+
+> **Shadow [COMPILED · certainty 0.9]** — mazze ratified in-session; `wt-000` (`decision`, `birth_status: ratified`, `is_trust_root: true`, `agent_id: mazze`) is line 1 of `cognitive/stratum/data/workspace-trace.jsonl`. `scripts/ops/journal_to_trace.py` projects dated `DECISIONS.md` entries into `decision`/`foreclosure` events. *Why these shape choices:* (a) schema verified against `stratum/core/src/contract.ts` + `serialize.ts`, not the earlier README guess; (b) no `verification` events auto-generated — they must satisfy Stratum's transition guards (target in `pending_evidence`, checked evidence attached) and matching "verified X" prose to the right id is not safe to automate; humans append those per stratum CLAUDE.md §53; (c) idempotency via `claim.source_hash` embedded in each event, no sidecar state file — rejected the sidecar because it breaks on a fresh clone (dedup key must travel with the trace); (d) `tag: "COMPILED"` + `certainty` 0.7 (0.9 for human mandates) to mark these as machine projections, honestly low-confidence; (e) `--from` defaults to `wt-000`'s date, so v1 payload is just the genesis + this burst's four decisions — backfill to 2026-07-15 is a later deliberate run. Validator passes (`5 events, every guard passed, projection total`). Reverse: delete `workspace-trace.jsonl` + `journal_to_trace.py`; both additive.
+
+### wt-006 — ◐ PROVISIONAL · pending_evidence
+
+**claude** · 2026-08-31T12:00:00-04:00
+
+stratum is plain git, not jj-colocated.
+
+> **Shadow [COMPILED · certainty 0.7]** — Corrects a burst-q working assumption. Only `cognitive/context-synapse` and `tools/aletheia` have `.jj/`. So the `workspace-trace.jsonl` change lands as an ordinary GitHub PR against stratum `main` (protected, MAX), not a jj bookmark push. Reverse: n/a (observation).
+
+### wt-007 — ◐ PROVISIONAL · pending_evidence
+
+**claude** · 2026-09-09T09:41:00-04:00
+
+Connect the deployed stratum Cloudflare Worker to github.com/mazze93/stratum via Workers Builds: production branch main, root directory /worker, preview builds enabled, deploy command npx wrangler deploy (default).
+
+> **Shadow [TRACE · certainty 0.85]** — ci.yml already gates merges to main (typecheck, tests, Python cross-validation, trace validation, docs/DECISIONS.md drift check) but has no deploy step — production has been shipped by a manual `wrangler deploy` run locally, so a merged-and-validated main and the live Worker can silently diverge. Connecting Git integration makes production a direct fold of main's HEAD instead of an assertable claim about it — the same authority discipline this ledger enforces on its own events, applied to its own deploy surface. Root directory must be /worker (monorepo; wrangler.jsonc is not at repo root) or the build fails immediately on the name-match check. mazze configured the connection in the Cloudflare dashboard; the final Connect click — which mints write access from GitHub to production — is his to make, not mine.
+
+### wt-009 — ● VERIFIED · validated
+
+**claude** · 2026-10-06T18:33:30-04:00
+
+The official stratum checkout at ~/Projects/cognitive/stratum is a fresh clone of origin/main, re-created via `scripts/ws missing`; the previous checkout is retired.
+
+> **Shadow [TRACE · certainty 0.9]** — The old clone had drifted: local main was 18 commits behind origin, HEAD was on `4-mobile-bugs` (a branch whose only commit had already landed as #65 / b97f0b1), and seven stale local branches. Corroborated before retiring it: every unmerged-looking branch was either squash-merged (harden-security-scanning → #5, worktree-codeql-fetch-opts → #47 per at-043, feat/workspace-trace and record-fetch-opts-decisions → main), still on the remote, or a regenerable Dependabot bump (pr12). Only local-only state — cli/mise.toml (deliberately untracked per 7a615b1), .claude/settings.local.json, .remember/ logs — was carried across. Same path, so the registry entry (WORKSPACE.md, ws REGISTRY) is unchanged and needs no edit. Old clone moved outside ~/Projects to ~/stratum.pre-reclone-2026-10-06 rather than deleted; its deletion is mazze's call. Reverse: move it back.
+
+### wt-011 — ● VERIFIED · validated
+
+**claude** · 2026-10-07T15:25:00-04:00
+
+Force sharp to ^0.35.5 with a root npm `overrides` entry, closing Dependabot alert #24 (GHSA-wq5f-xc86-pv6w: librsvg memory bug, possible RCE on glibc Linux). sharp is dev-only and transitive (worker → wrangler 4.147.0 → miniflare, which pins sharp exactly at 0.35.4); 0.35.5 ships librsvg 2.63.2.
+
+> **Shadow [TRACE · certainty 0.9]** — Even the latest wrangler (4.148.0) still pins sharp 0.35.4, so a wrangler bump cannot fix it yet. Touchstone probes: (1) adding the override and running `npm install` exits 0 but leaves the locked 0.35.4 in place — the lockfile must be re-resolved (`npm update sharp`), or the fix is a no-op that looks applied; (2) after the re-resolve, all 17 @img/sharp-* platform packages are at 0.35.5 and all 10 libvips packages at 1.3.4 in package-lock.json; (3) a clean `npm ci` in node:24-bookworm (Debian glibc 2.36, the platform the RCE targets and CI runs on) loads sharp 0.35.5 with rsvg 2.63.2, and vitest passes 80/80; (4) `wrangler dev` serves health, head and the landing page. The override is a range, not an exact pin, so a later miniflare pin of 0.35.6+ is not downgraded. Reopen: once miniflare pins sharp >=0.35.5, delete the override — a stale override is rot.
+
+### wt-013 — ● VERIFIED · validated
+
+**claude-opus-5.5** · 2026-10-21T14:13:13-04:00
+
+AGENTS.md is a tracked symlink to CLAUDE.md: one instruction source for every agent, which cannot drift.
+
+> **Shadow [TRACE · certainty 0.95]** — Owner decision 2026-10-21 ("agents should point to claude.md and that's that"). The untracked AGENTS.md here was a Codex-renamed copy of CLAUDE.md with no unique content; across three repos every such copy had already drifted within ten days.
+
+### wt-016 — ● VERIFIED · validated
+
+**claude-sonnet-5.5** · 2026-10-29T23:13:10-04:00
+
+cli/mise.toml (a single line, aube = "latest") is deleted from the working tree, closing the choice that 7a615b1 left deliberately open and that wt-009 carried across the re-clone. mazze does not use aube; the file was never in git history. Recoverable from the retired clone at ~/Projects/archive/stratum.pre-reclone-2026-10-06-home-2026-10-12/cli/mise.toml (sha256 217bad5a28195e6adcba24f381698546bbc06ff09d45cd8603c892a204d06ee2).
+
+> **Shadow [TRACE · certainty 0.95]** — Corroborated before acting rather than inferred from the diff: git log --all shows no history for the path in any ref; the bytes are identical to the archived copy, so the Jul 23 mtime is a preserved copy date, not recent work; 7a615b1 (2026-09-06, present only in the archived clone) records why it was left untracked, an unpinned tool version being a choice to make consciously; nothing in cli/, core/, worker/, scripts/, package.json or .github references aube; CI pins node 24 and package.json engines say node >=20, so no toolchain file is consumed. The sibling repos checkmate and stele do track a mise.toml, but those pin node/pnpm/python and define tasks; this one pinned one unrelated tool. Deleted on mazze's instruction ('I don't use aube, delete it'). 7a615b1 stays reachable only through the archived clone, so deleting that clone would orphan the citations in wt-009 and the 2026-10-07 journal export; that deletion is still mazze's call.
+
+### wt-019 — ● VERIFIED · validated
+
+**claude-opus-5.5** · 2026-11-12T22:22:46-05:00
+
+CLAUDE.md (and AGENTS.md, its symlink) is refreshed against the tree at 3553a6c. Corrections: test:reference names all four suites; CI names the all-traces and DECISIONS.md-sync gates plus the codeql, recheck and release-attest workflows; Architecture gains the ADR-003 trust layer (canonical.ts/canonical.py JCS, chain.ts, schemas/event.v2.schema.json) and cli/lib/ingress.mjs (stratum emit/outbox, exit 3/4, docs/API.md); data/canonical.golden.json joins the generated-files list; every trace is named; the next ADR is ADR-004; /home/ is noted. Delivered as PR #104.
+
+> **Shadow [TRACE · certainty 0.9]** — Found by /init: the file existed, so the task became a drift audit rather than a rewrite. Every claim was checked against disk before it was kept. #101 (ingress) landed mid-session, which made 'zero-dependency single-file CLI' stale too, so it was folded in. The golden-regeneration command switched to >| because mazze's shell has noclobber. Not done: a full rewrite (the existing file was mostly accurate, and churn would hide the six real fixes) and a wt entry being skipped as 'docs-only' (mazze approved recording it).
+
+### wt-021 — ● VERIFIED · validated
+
+**claude-opus-5.5** · 2026-11-12T22:25:40-05:00
+
+The 11 open Dependabot alerts (5 high, 5 moderate, 1 low; all dev-scope, all in undici and vite) are cleared by raising worker's wrangler range to ^4.161.0, whose miniflare pins undici 7.30.1, and updating vite in range to 8.3.8 under vitest.
+
+> **Shadow [TRACE · certainty 0.9]** — undici is pinned exactly (7.29.1) by miniflare 5.20261001.0-alpha, so `npm update` cannot reach the fix. An npm override forcing undici under the old miniflare was rejected: it pairs a deploy tool with a transport it was never released against. The wrangler bump is the maintained path, and it was confirmed with `wrangler deploy --dry-run` before commit. Merging this PR is a production deploy because Workers Builds runs the lockfile's wrangler. No runtime dependency changed.
+
+## Foreclosures — ghost edges
+
+### wt-008 — standing
+
+Reusing an existing cross-project Cloudflare API token for the stratum Worker's build auth is foreclosed; Workers Builds mints a token scoped to this connection instead.
+
+*Ghost edges:* ~~`reuse-cross-project-build-token`~~
+
+> **Shadow [TRACE · certainty 0.8]** — The Connect-to-a-repository dialog defaulted the API token field to `mazze-leczzare-blog build token` — an existing token from an unrelated project, already flagged by Cloudflare's own UI as missing email-routing permissions, evidence the default was picked by recency rather than scope. Letting a stratum production deploy run on another project's credential is the kind of scope leak this ledger's evidence-gated trust model exists to name, even outside the log itself. Switched to Create new token. Reopen only if Cloudflare starts scoping the token suggestion by project/zone instead of defaulting to most-recently-used.
+
+### wt-014 — standing
+
+Not chosen: a maintained AGENTS.md copy, or a one-line stub telling agents to read CLAUDE.md.
+
+*Ghost edges:* ~~`agents-md-copy`~~ · ~~`agents-md-stub`~~
+
+> **Shadow [TRACE · certainty 0.85]** — A copy drifts by construction (the evidence for wt-013). A stub relies on the agent taking an extra read step and leaves the auto-loaded file content-free. Reopen if an agent harness refuses to follow symlinks.
+
+### wt-017 — standing
+
+cli/mise.toml is neither pinned-and-tracked nor gitignored; it is removed outright.
+
+*Ghost edges:* ~~`pin-and-track-aube`~~ · ~~`gitignore-cli-mise-toml`~~
+
+> **Shadow [TRACE · certainty 0.85]** — Pin-and-track would commit a toolchain file with no consumer. Gitignoring would keep an unused file on disk and hide it from status, which is how it survived two clones unexamined. Reopen if cli/ gains a real toolchain requirement: then track a mise.toml with exact versions, as checkmate and stele do.
+
+## Checked-evidence ledger
+
+| verification | target | what was checked | when |
+|---|---|---|---|
+| `wt-010` | `wt-009` | git rev-parse HEAD origin/main → 706edf352a91a681c5416ebae1396230baeb286e (both) | 2026-10-06T18:34:00-04:00 |
+| `wt-010` | `wt-009` | npm run check && npm test && npm run test:reference && npm run validate:trace — exit 0 (26/26 vitest, 16/16 invariants) | 2026-10-06T18:36:03-04:00 |
+| `wt-015` | `wt-013` | git ls-files -s AGENTS.md → 120000 681311eb9cf453d0faddf3aacaec7357e97ba8e9 0	AGENTS.md | 2026-10-21T14:13:13-04:00 |
+| `wt-015` | `wt-013` | readlink AGENTS.md → CLAUDE.md; head -1 AGENTS.md → '# CLAUDE.md' — exit 0 | 2026-10-21T14:13:13-04:00 |
+| `wt-018` | `wt-016` | test ! -e cli/mise.toml; git log --all --oneline -- cli/mise.toml (empty); git grep aube -- cli core worker scripts package.json .github (empty) — exit 0 | 2026-10-29T23:13:10-04:00 |
+| `wt-018` | `wt-016` | archive cli/mise.toml sha256 217bad5a28195e6adcba24f381698546bbc06ff09d45cd8603c892a204d06ee2 (24 bytes), restore source for wt-016 | 2026-10-29T23:13:10-04:00 |
+| `wt-020` | `wt-019` | grep -q ADR-004 CLAUDE.md && grep -q cli/lib/ingress.mjs CLAUDE.md && grep -q core/src/chain.ts CLAUDE.md && grep -q canonical.golden.json CLAUDE.md && test -e cli/lib/ingress.mjs && test -e core/src/chain.ts && test -e core/src/canonical.ts && test -e schemas/event.v2.schema.json && test -e data/canonical.golden.json && test -e scripts/render-canonical-golden.py && test -e atrium/public/home/index.html && test -e docs/API.md && test -L AGENTS.md | 2026-11-13T03:22:53.506Z |
+| `wt-022` | `wt-021` | npm ci --no-audit --no-fund && node -e 'const v=n=>require(require.resolve(n+"/package.json",{paths:[require.resolve("miniflare",{paths:["worker"]}),"."]})).version;const u=v("undici"),t=v("vite");const ge=(a,b)=>{a=a.split(".").map(Number);b=b.split(".").map(Number);for(let i=0;i<3;i++){if(a[i]!==b[i])return a[i]>b[i]}return true};console.log("undici",u,"vite",t);process.exit(ge(u,"7.30.1")&&ge(t,"8.3.3")?0:1)' | 2026-11-13T03:26:12.252Z |
+
+---
+
+# Trust primitives
+
+*ADR-003: bound evidence, an authority registry, atomic persistence.*
+
+> `data/trust-trace.jsonl` · epoch 34 · 35 events · 20 decisions · 4 foreclosures
+
+## Decisions
+
+### tp-000 — ◆ AXIOMATIC · ratified
+
+**mazze** · 2026-10-06T19:00:00-04:00 · **trust root**
+
+Trust-primitive hardening decisions route through this trace: data/trust-trace.jsonl. Mandate: stop treating checked_at and signer as sufficient trust primitives; bind evidence to reproducible checks or signed artifact attestations; introduce a real authority registry; make persistence atomic.
+
+> **Shadow [TRACE · certainty 1.0]** — Human mandate, given by mazze in-session 2026-10-06 and run as a self-paced /loop, with an explicit reminder that stratum dogfoods itself. A new per-session trace rather than growing genesis, because genesis is the cross-validation golden fixture and must not churn with session work.
+
+### tp-001 — ● VERIFIED · validated
+
+**claude** · 2026-10-06T19:01:00-04:00
+
+Worker persistence is atomic: every Durable Object write runs inside ctx.storage.transactionSync, memory changes only after storage commits, and a failed write drops the cache so the next call rebuilds from storage through loadLog.
+
+> **Shadow [TRACE · certainty 0.9]** — Defect: appendEvent pushed to the in-memory EpisodicLog before the SQL INSERT, so a throwing INSERT left the cache ahead of storage until eviction. seedIfEmpty looped INSERTs with no explicit transaction. Implicit write coalescing does not save a caught exception mid-loop: earlier rows still commit. transactionSync rolls back on throw (Cloudflare SQLite storage API docs). Scope is the Worker only; the JSONL traces are hand- or script-written and reviewed in PRs. Reverse: revert worker/src/do.ts and worker/src/persist.ts.
+
+### tp-002 — ● VERIFIED · validated
+
+**claude** · 2026-10-06T19:02:00-04:00
+
+schema_version 2 evidence carries a structured binding, either reproducible_check (command, repo, 40-hex commit, expect_exit, output_sha256) or signed_attestation (subject_sha256, predicate, key_id, ed25519 signature). checked_at and signer become metadata that no v2 guard reads. v1 events keep v1 guards byte-for-byte, and schema_version > 2 is a parse error.
+
+> **Shadow [TRACE · certainty 0.85]** — checked_at is a timestamp the writer typed and signer is a name, not a signature; rev 3 enforced 'cited != checked' against fields that cannot tell the two apart. The guard does not re-run commands. Guards stay pure and synchronous and projection stays a function of the log, so a binding makes evidence re-checkable and falsifiable rather than re-checked. Version-gating keeps all four existing traces loadable. Reverse: drop the v2 branch in both implementations.
+
+### tp-003 — ◐ PROVISIONAL · pending_evidence
+
+**claude** · 2026-10-06T19:03:00-04:00
+
+The authority registry is a fold over ordinary trust-root events carrying a top-level authorities block (key_id, ed25519 public key). The first one in a log is the unsigned genesis set of at least QUORUM keys. Later grants, v2 trust_root_revoked and v2 ratification require valid signatures from live members, and quorum counts distinct live key_ids.
+
+> **Shadow [TRACE · certainty 0.8]** — MEMORY_MODEL section 7 named the registry as the answer and section 10 said to build it on the same EpisodicLog, but it was never built. Quorum compared signer strings. No new status, no new edge: membership is ratified-at-epoch and revocation is the existing marker. Closes a second hole: v1 ratification has no authorization at all. A registry under QUORUM live members fails closed (bricked by design, recovery out of band). Distinct keys are still not distinct people; that remains the axiom.
+
+### tp-004 — ◐ PROVISIONAL · pending_evidence
+
+**claude** · 2026-10-06T19:04:00-04:00
+
+Signing uses RFC 8785 JCS canonical bytes with a cross-implementation golden fixture, and Ed25519 (RFC 8032). The Python oracle carries a self-contained stdlib RFC 8032 verifier pinned by RFC test vectors.
+
+> **Shadow [TRACE · certainty 0.75]** — Both implementations must sign identical bytes, so the canonical form becomes a new golden surface, tested like the projection golden. The oracle is an executable spec and CI runs bare python3; a pip install of cryptography would add a supply-chain step for a verifier that fits in about 60 lines. The TS verifier (node:crypto vs a pure-JS library) is decided in phase 3 against a real workerd run.
+
+### tp-005 — ○ narrative · rejected
+
+**claude** · 2026-10-06T19:05:00-04:00
+
+Proposed: v1 validated events whose verification markers carry only unbound evidence project as authoritative_provisional with binding 'unbound'; status stays validated. A v2 re-verification edge (validated to validated, bound evidence only) lets a legacy decision be re-bound without rewriting history.
+
+> **Shadow [TRACE · certainty 0.6]** — The one change that reinterprets the existing ledger, so it is born asserted (a proposal) and waits on mazze's ratification (ADR-003 section 7). Grandfathering contradicts the mandate; a fifth tier spreads into the figure, legend and every reader's model for a state a binding field already expresses. Follows the axiomatic/verified-split precedent: when trust kinds differ, show the difference. Changes the genesis golden deliberately.
+
+### tp-009 — ◐ PROVISIONAL · pending_evidence
+
+**claude** · 2026-10-06T20:00-04:00
+
+The Durable Object stores a per-row hash chain, sha256(prev || JCS(record)) from a 64-zero genesis, and exposes the head digest. The chain lives in the storage layer; event records stay seq-free and v1 traces are untouched.
+
+> **Shadow [TRACE · certainty 0.8]** — Borrowed from claude-stamp's ledger-stamp.sh. The guards catch an incoherent log on load but not a coherent truncation or swap; a chain makes every edit, deletion or reorder break from that row on, and gives a log one content address that evidence and anchors can cite. Off-system anchoring (claude-stamp's forward-only hub, fork = 409 + incident) is deliberately not wired here because it needs a witness outside the system, which is a deploy decision.
+
+### tp-010 — ◐ PROVISIONAL · pending_evidence
+
+**claude** · 2026-10-06T20:01-04:00
+
+Registry signatures use SSHSIG (OpenSSH PROTOCOL.sshsig) with namespace 'stratum' over Ed25519, accepting ssh-ed25519 and sk-ssh-ed25519@openssh.com keys; for sk keys the guard requires the user-presence flag. Verification is pure computation and never executes ssh-keygen.
+
+> **Shadow [TRACE · certainty 0.75]** — Borrowed from claude-stamp's gated installer: hardware-key signers pinned in allowed_signers, namespace-bound to git. A YubiKey authority's signature proves a physical touch, the nearest available answer to 'distinct keys are not distinct people'. The namespace blocks cross-protocol replay between git commit signatures and registry signatures. Never shelling out follows verify-release.py's rule that root never runs tools whose behaviour the input can steer; here, the guard must stay pure and synchronous.
+
+### tp-011 — ● VERIFIED · validated
+
+**claude** · 2026-10-06T20:02-04:00
+
+Phase 2 publishes schemas/event.v2.schema.json as the normative machine-readable v2 wire contract, and reproducible_check gains optional inputs[{id, sha256}] shaped like Temenos's provenance envelope. output_sha256 becomes optional and must digest deterministic output.
+
+> **Shadow [TRACE · certainty 0.8]** — Borrowed from Temenos's authority order (schemas above policy, tests and ADRs), so the ADR's prose is not the only definition of the wire format. Temenos is a live v1 writer that stamps checked_at=now, signer='aletheia', the retired primitive; matching its inputs shape gives it a migration path that needs no translation (its own ADR). output_sha256 can't be required: vitest output contains timings, which phase 1 found.
+
+### tp-012 — ◐ PROVISIONAL · pending_evidence
+
+**claude** · 2026-10-06T19:55:00-04:00
+
+Revision of tp-009: the storage hash chain detects an edited, reordered, or middle-deleted log, but NOT a dropped tail, since a prefix is itself a valid chain. Only an off-system witness of the head digest closes that. Head digest = chain over the normalized wire records (load, then serialize), so a trace file and a DO seeded from it share one content address. SHA-256 and JCS are hand-written, synchronous and dependency-free in core, and pinned against NIST vectors, node:crypto, and the oracle.
+
+*Revision chain:* `tp-009 → tp-012`
+
+> **Shadow [TRACE · certainty 0.85]** — tp-009's shadow implied the chain catches truncation. Writing the persistence tests disproved it: dropping the last row leaves a valid prefix chain. Recorded as a revision rather than an edit because events are immutable (the at-013 precedent: re-record, never rewrite). Normalized-records digest: trace files carry fields the wire format may drop, so raw-row digests would never match a seeded DO. Hand-written hashing: crypto.subtle is async and guards are synchronous; workerd runs without nodejs_compat; the data is public, so timing side channels are out of scope; correctness is pinned differentially.
+
+### tp-013 — ● VERIFIED · validated
+
+**claude** · 2026-10-06T19:58:00-04:00
+
+Revision of tp-012 after a touchstone pass. Canonical numbers are IEEE-754 doubles (I-JSON): large magnitudes are formatted, never refused, and the oracle rounds a large int to the double JS would parse. Storage chaining is authorized only by the schema change that adds the chain column, run in one transaction with it; on the read path an unchained row is a chain break.
+
+*Revision chain:* `tp-009 → tp-012 → tp-013`
+
+> **Shadow [TRACE · certainty 0.85]** — Touchstone probed four boundaries the 52/52 suite didn't reach. P1 failed: a number of magnitude at least 2^53 passed loadLog but persistence refused it, so a production log already holding one would brick on first load after deploy. P2 failed: editing a stored row and then nulling every chain made the read-path backfill re-chain the tampered log. P3 held (middle deletion caught) and is now a test instead of an assertion. P4 held within scope (the chain authenticates normalized content, not bytes). The re-pass held: workerd migration served the oracle's genesis digest, a 1.73e18/1e300 append returned 201, and workerd and the oracle agree on fe2b04cf for that log. Perimeter: an attacker with storage write access can still recompute the whole chain (no secret), so only an anchor makes it tamper-proof rather than tamper-evident. TS parsing defaults missing is_trust_root to false where the oracle raises KeyError, a pre-existing leniency gap left for phase 2.
+
+### tp-014 — ● VERIFIED · validated
+
+**claude** · 2026-10-06T20:30-04:00
+
+Until the authority registry exists, v2 ratifications, v2 trust_root_revoked and v2 ratified trust-root births are refused outright, and both parsers are strict: evidence, targets and is_trust_root are required, and binding objects refuse unknown keys.
+
+> **Shadow [TRACE · certainty 0.85]** — Letting v2 authority acts through before phase 3 would either judge them by v1's signer strings (the retired primitive) or mint unsigned v2 roots that the registry would later have to grandfather. Fail-closed is the honest interim. Strictness closes the touchstone-found divergence where TS defaulted fields the oracle requires; strict binding keys enforce claude-stamp's re-derive-never-trust rule, so a supplied verified:true is a parse error. Verified safe for current writers: the CLI, the Atrium and Temenos all send every required field, and every trace has them.
+
+### tp-015 — ● VERIFIED · validated
+
+**claude** · 2026-10-06T20:31-04:00
+
+The CLI's default verification path is bound: `stratum verify <id> --run <cmd>` runs the check, pins the commit, refuses a dirty tree, records nothing on an unexpected exit, digests named inputs and a deterministic output file, and strips remote userinfo. `--ref` remains as legacy v1 and warns that it is unbound.
+
+> **Shadow [TRACE · certainty 0.85]** — The CLI's verify command used to manufacture the retired primitive itself: checked_at=new Date(), signer=agent. If binding is harder than not binding, writers won't bind, so the honest path has to be the easy path. Refusing a dirty tree is load-bearing, because a binding that pins a commit not containing the tested code is a lie with a SHA attached. Userinfo stripping matters because an https remote can embed a token and this record goes to a public ledger. Proven by cli/test/verify.test.ts against a real scratch repo whose remote carries a fake token.
+
+### tp-016 — ◆ AXIOMATIC · ratified
+
+**mazze** · 2026-10-06T20:07:00-04:00 · **trust root**
+
+Verified remains verified. Status is a fold: v1 events validated under v1 rules keep authoritative_verified. ADR-003 phase 4 (legacy projection) is dropped and the projection does not change.
+
+> **Shadow [TRACE · certainty 1.0]** — Human ruling, given by mazze in-session 2026-10-06 in answer to ADR-003 section 7. A projection is a fold over the log under the rules each event was appended under; re-tiering history by a later contract would make authority depend on the reader's contract version rather than the log, which is reinterpretation (the I4 principle across versions, not only across replay). Each event's schema_version already makes the kind of evidence it met inspectable.
+
+### tp-019 — ◐ PROVISIONAL · pending_evidence
+
+**claude** · 2026-10-06T20:30:00-04:00
+
+Loop reordered, approved by mazze: (1) land the PR stack on main with CI green; (2) anchor the log head off-system; (3) a CI re-checker that re-runs reproducible_check bindings at their pinned commits and records the results; (4) only then the authority registry, scoped to a per-log quorum fixed at genesis that allows a single hardware key for a single-human log, labeled as such; (5) migrate Temenos to v2 as the first external writer.
+
+*Revision chain:* `tp-003 → tp-019`
+
+> **Shadow [TRACE · certainty 0.8]** — From the project assessment. Binding makes evidence re-checkable but nothing re-checks it yet, so the re-checker turns the promise into a practice. Without an anchor the chain is only tamper-evident, and a dropped tail is invisible. A QUORUM=2 registry with one human is theater (two keys, one person) or agents holding authority keys (generation becoming authority), so the honest version is fixed per log at genesis. A ledger read only by its author is a journal, which makes Temenos the external test.
+
+### tp-023 — ◐ PROVISIONAL · pending_evidence
+
+**claude** · 2026-10-06T21:14:00-04:00
+
+R3: scripts/recheck-bindings.py re-runs every same-repo reproducible_check binding at its pinned commit in a clean detached worktree, comparing the exit code, the output digest and file-input digests, and re-deriving rather than trusting each value. A weekly, on-demand and on-trace-change CI job runs it as a finding, not a required check. Building it exposed that output_sha256 without a path can't be re-checked, so the binding gains output_path (repo-relative, no '..', required alongside output_sha256) in both implementations, the schema and the CLI.
+
+*Revision chain:* `tp-003 → tp-019 → tp-023`
+
+> **Shadow [TRACE · certainty 0.85]** — Binding made evidence re-checkable; nothing re-checked it, so the re-checker turns the promise into a practice (tp-019 R3). It never writes to the traces: a re-check result is a separate act of evidence, recorded by a reviewed PR. Input ids that aren't repo files (e.g. Temenos signal ids) are reported as unverifiable rather than failed, which is honest about the tool's reach. Not a required check, because re-running history costs more as the ledger grows and a vanished dependency can break an old check through no fault of Stratum. First real run: 4/4 bindings for the merged work reproduced at f34d190 and 9270736 (tp-024 to tp-029).
+
+### tp-021 — ● VERIFIED · validated
+
+**claude** · 2026-10-06T20:50:00-04:00
+
+A stored log that fails the contract on load refuses to serve, but says why: the DO prefixes load failures and the Worker's onError returns a JSON 500 carrying the contract's own message, while any other error stays a generic 500 so internals never leak.
+
+> **Shadow [TRACE · certainty 0.9]** — Incident 2026-10-07, caused by me. While #76 was deploying, my verification probe hit production on the OLD code, which accepted and stored an event with schema_version 3 in the public sandbox playground-02f51acf. The new strict parser then refused to load that log, and because loading happens outside the append error handler, every request to it returned a bare 500. Diagnosing it took wrangler tail on production. Impact: one throwaway playground log. Every known real log (demo with the oracle-exact head, workspace, temenos, macos-vuln-pipeline) loads fine. Reproduced faithfully in workerd with a real install of f34d190: old code stores v3 (201), new code returns the legible JSON 500. An earlier repro attempt was invalid because a symlinked node_modules resolved @stratum/core to the current code. Lessons: probe production only after the deploy is confirmed live, and a parser that tightens can strand stored history (see tp-022).
+
+### tp-022 — ○ narrative · asserted
+
+**claude** · 2026-10-06T20:50:00-04:00
+
+Proposed, awaiting mazze: each stored row records which contract accepted it (a `contract` column, with existing rows backfilled to 1), and every row is loaded and folded under that contract. A stricter parser then never strands or re-folds history the earlier contract accepted.
+
+*Revision chain:* `tp-021 → tp-022`
+
+> **Shadow [TRACE · certainty 0.7]** — The same principle as tp-016 ('verified remains verified; status is a fold'), applied to storage rather than projection. Today a row the old code accepted, such as schema_version 2 written before phase 2 deployed (folded then under v1 rules), would be re-judged by v2 guards on load, either refused or re-folded. No known real log is affected now; that is luck, not design. Born asserted because it changes storage semantics.
+
+### tp-031 — ● VERIFIED · validated
+
+**claude** · 2026-10-30T16:20:00-04:00
+
+The CLI has no default log. Every command that touches a log refuses unless one is named by --log, STRATUM_LOG or config, and a bare --log is refused instead of read as a log named 'true'. Appends are permanent, so a log is never guessed.
+
+> **Shadow [TRACE · certainty 0.9]** — Twice an agent's writes fell through to the machine's configured default log, macos-vuln-pipeline (MAX). On 2026-10-24 an unquoted zsh variable swallowed --log (checkmate inc_ztZNYXxw6aR_29Vl). On 2026-10-30 five unrelated decisions landed there as seq 7-11 (inc_5he7fLwavybF7G8p). Removing the config value alone would only have moved the silent fallback to the hard-coded 'workspace'. Same class as tp-016's fail-closed stance and the agent_id default (inc_aJvG5BbagJ9NG__n), which is left for a separate decision. Directed by mazze: 'remove the default so the cli must be told'.
+
+### tp-032 — ● VERIFIED · validated
+
+**claude** · 2026-10-30T16:30:00-04:00
+
+The local Stratum checkout is production's mirror: it stays on main, in sync with origin/main and therefore with the deployed Worker, because the installed CLI runs from it. Development happens only in worktrees and reaches main through reviewed PRs, so the ledger's code, and the decisions it records about itself, stay authoritative.
+
+> **Shadow [TRACE · certainty 0.95]** — Ruled by mazze on 2026-10-30, recorded by the agent, not minted as mazze's authority: 'the local stratum must be retained at main in sync as production, with local work and development on their own copies so that the ledger is authoritative, and stratum must dogfood its own decisions'. Found because the main checkout sat on chore/claude-md-action-majors, 2 commits past main, so the CLI every session ran was unreviewed branch code, and the tp-031 fix could never take effect there. Production equalled main at the time: main 8e7e854 was committed 18:16:42Z on 2026-10-21 and deployed 26 s later by Workers Builds, which deploys every push to main.
+
+## Foreclosures — ghost edges
+
+### tp-006 — standing
+
+Rejecting v1 evidence on load is foreclosed.
+
+*Ghost edges:* ~~`reject-v1-on-load`~~
+
+> **Shadow [TRACE · certainty 0.9]** — It would make all four existing traces corrupt, breaking replay (I4) and the project's own history to enforce a rule that did not exist when they were written. A version gate gets the same strictness for new events. Reopen only if a v1 trace is found to be actively misleading in a way projection-side demotion (tp-005) cannot express.
+
+### tp-007 — standing
+
+Having guards re-run reproducible checks is foreclosed.
+
+*Ghost edges:* ~~`guard-executes-commands`~~
+
+> **Shadow [TRACE · certainty 0.85]** — Executing commands at append or projection time makes projection impure, network- and time-dependent, and turns the single-writer gate into a remote-execution surface on a public endpoint. Re-checking is a separate actor whose output is itself evidence. Reopen only for a sandboxed, deterministic check class (e.g. pure digest recomputation over content already in the log).
+
+### tp-008 — standing
+
+Shared-secret HMAC signatures and a pip-installed crypto library in CI are foreclosed for the registry.
+
+*Ghost edges:* ~~`hmac-shared-secret`~~ · ~~`pip-cryptography-in-ci`~~
+
+> **Shadow [TRACE · certainty 0.85]** — HMAC needs the verifier to hold the signing secret, so a registry of verify-only keys is impossible and every verifier becomes a forger. A CI pip step adds an unpinned supply-chain edge to the oracle for something stdlib can do. Reopen if the RFC 8032 oracle proves too slow for CI-sized traces.
+
+### tp-020 — standing
+
+Stacked PRs (a PR based on another unmerged PR's branch) are foreclosed for this work: one PR per phase, based on main, the next started only after the previous lands.
+
+*Ghost edges:* ~~`stacked-pr-chain`~~
+
+> **Shadow [TRACE · certainty 0.9]** — The stack stranded work and hid it from CI. CI runs only on PRs targeting main, so #74 to #76 never ran it, and my local green was the only gate. #74 was merged into its stacked base after #73 had been squash-merged into main, so phase 1 never reached main until a merge plus a retarget recovered it. Stacking also forced a force-push and a diff3-marker cleanup earlier. Reopen only if CI is configured to run on all PR bases.
+
+## Checked-evidence ledger
+
+*No checked evidence yet — every decision above is provisional or axiomatic.*
+
+---
+
+# Ingress
+
+*How automated clients write into Stratum (cognitive-topology T1).*
+
+> `data/ingress-trace.jsonl` · epoch 5 · 6 events · 3 decisions · 2 foreclosures
+
+## Decisions
+
+### ig-000 — ● VERIFIED · validated
+
+**claude** · 2026-11-11T16:50:00-05:00
+
+Automated clients write into Stratum through one upstream ingress module, cli/lib/ingress.mjs, reached from the shell as `stratum emit` (cognitive-topology T1). The event id is a digest of the canonical masked record, so a retry can never create a second event. Evidence is produced only by running the check in that process and binding the observed exit code to the pinned commit (v2); a caller cannot supply evidence, checked_at or a binding. A ratification needs a human at an interactive terminal who types the event id back. Prose lands only in claim.narrative. Unset config is a no-op with a notice; a configured ledger that fails queues the record in an outbox and shows the unrecorded count until it drains.
+
+> **Shadow [TRACE · certainty 0.85]** — Client form chosen per the 2026-10-21 council: evaluate a CLI shell-out before a new lib. The CLI already had the deterministic capture path (`verify --run`, ADR-003 bindings); what it lacked was a deterministic id, a refusal of supplied evidence, the TTY gate and the two degradation modes. So the binding code moved into the shared module and the CLI's verify now calls it, one source of truth. No worker or core change was needed, which was one of the council's conditions that could have flipped the call. The cognitive-topology plugin's source is in no GitHub repo, so the spec's plugins/topology-core/lib/stratum.<ext> had no home; upstream it serves Stele, Temenos and macprobe as well. A 409 is shared by a duplicate id and every other guard refusal, so the client reads the event back and compares identity views before calling a retry already recorded. Seven mutants of the module (accept supplied evidence, ignore the observed exit, mask after the id, drop the TTY gate, treat any 409 as already, drop a failure silently, skip the unconfigured guard) each fail the suite. Perimeter: a binding is still the writer's statement; it is re-checkable, not proven, and a model with shell access can still run a check that asserts nothing.
+
+### ig-001 — ◐ PROVISIONAL · pending_evidence
+
+**claude** · 2026-11-11T16:51:00-05:00
+
+docs/API.md is the upstream HTTP reference for every ingress client, each statement cited to a source line. When the page and the source disagree, the source wins and the page is the bug.
+
+> **Shadow [TRACE · certainty 0.9]** — Before it, each client reverse-engineered the envelope; the ct-reshape spec v0.6.0 did, and got four things wrong against source: birth_status is required on every record, not only originating ones; the evidence kind has no enum; schema_version is per event and v1 or v2, and under v2 checked_at counts for nothing; and a 409 does not by itself tell a retry from a refusal. Unknown top-level and evidence keys are dropped, not refused, in both the TypeScript port and the Python oracle.
+
+### ig-004 — ○ narrative · asserted
+
+**claude** · 2026-11-11T16:54:00-05:00
+
+Proposed, awaiting mazze: a narrower token for automated writers, write-only and scoped to one log, so a plugin's environment stops holding the one STRATUM_TOKEN that also reads every private log and writes to all of them.
+
+> **Shadow [TRACE · certainty 0.75]** — Raised as a backlog decision, not code, per the council's X1 condition. Today auth.ts has one secret for every private read and every write. Append-only plus a leaked master key means permanent pollution of every log. Touches worker auth, so it sits next to the authority registry (R4) and is not part of T1. Born asserted because it changes the trust boundary.
+
+## Foreclosures — ghost edges
+
+### ig-002 — standing
+
+A per-client Stratum library inside each plugin (the ct-reshape spec's plugins/topology-core/lib/stratum.<ext>) is foreclosed: there is one ingress module upstream, and clients shell out to `stratum emit`.
+
+*Ghost edges:* ~~`per-plugin-lib-stratum`~~
+
+> **Shadow [TRACE · certainty 0.85]** — Every ingress candidate needs the same envelope (council, Brick Layer), and the evidence rule is only as strong as the one place that enforces it. Copies drift. Reopen if a client cannot spawn node, and then port the module rather than reimplement it.
+
+### ig-003 — standing
+
+Automated clients emitting v1 verifications (a typed checked_at as the evidence) is foreclosed. Ingress writes verifications only as v2 with a reproducible_check binding it produced.
+
+*Ghost edges:* ~~`v1-typed-checked-at-from-clients`~~
+
+> **Shadow [TRACE · certainty 0.9]** — Under v1 the server enforces that a timestamp is present, never that a check happened (tp-007), which is exactly how model prose would be laundered into the verified tier. The CLI's own `verify --ref` stays as the human's legacy path. Reopen never for automated clients.
+
+## Checked-evidence ledger
+
+*No checked evidence yet — every decision above is provisional or axiomatic.*
+
+---
+
+### Da'ath
+
+The mechanism that produced these convergences — whether each was discovery or retrieval — is not recorded here, because it cannot be. The void stays empty; anything placed in it would be fabrication of the unknowable.
+
