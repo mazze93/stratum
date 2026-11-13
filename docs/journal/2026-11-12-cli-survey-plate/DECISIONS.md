@@ -92,3 +92,17 @@ Signed-commit enforcement is **staged**, not applied: 8 of the last 40 `main` co
 **Side effect to expect.** With auto-delete on, merging #104 deletes `docs/claude-md-refresh`, and GitHub then retargets the stacked #105 to `main`, which is what starts its CI.
 
 **Note.** A mistaken `v*` tag can no longer be moved or deleted, even by an admin. To fix one, set the ruleset's enforcement to `disabled`, fix the tag, then re-enable it.
+
+## 2026-11-12 · Package name, release split, worktree policy (mazze)
+
+**Decisions.**
+
+- **npm org `@stratum-ledger`.** Ship `@stratum-ledger/cli` (bin `stratum`) first; `@stratum-ledger/core` comes later. Publishing uses npm Trusted Publishing (OIDC), so no token is stored anywhere.
+- **v0.5.0 ships now.** It is what's on `main`, plus the docs truth pass and the fixed release pipeline. The survey-plate CLI follows as **v0.6.0**.
+- **Worktrees: rescue, then tidy.** For each worktree that holds unique work: corroborate what it is, commit it to a `rescue/2026-11-12-…` branch, and push. Then prune broken registrations, remove worktrees that are merged, clean and pushed, and report orphan directories rather than touch them.
+
+**Guard added during execution.** A rescue branch pushed to a *public* remote publishes unreviewed WIP. For public repos, the rescue goes to a `git bundle` in the inbox instead, and is flagged.
+
+**How to reverse.**
+- The package name can only be changed before the first publish. After that, deprecate the old package.
+- Rescue branches can be deleted on the remote once triaged.
