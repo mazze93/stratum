@@ -185,3 +185,24 @@ It is recorded in auto-memory `preserve-work-baseline`. From now on, intermediat
 
 - **The stele rescue bundle** relies on SHA-1 object ids (stele's object format is `sha1`). Added `stele-private-core-sample-4d31d1a.bundle.sha256` = `a40d711de9762d437a0d6ff7dc4e2ea153dee2714bbb07402fce549323454f6c`. It is still single-copy on this laptop (**unresolved**).
 - **Systemic limitation, not fixed:** every repo here uses SHA-1 git object ids, and GitHub does not host SHA-256-format repos. So commit and tag signatures sign SHA-1 ids; git uses collision-detecting SHA-1DC, but that is not a modern integrity guarantee on its own. Stratum's own evidence bindings, chain and release checksums use SHA-256, and the release pipeline adds SHA-256 checksums plus Sigstore signatures over the artifacts themselves.
+
+## 2026-11-12 · npm bootstrap via a protected environment secret; Homebrew via our own tap
+
+**Verified facts:**
+- `npm help trust` (npm 11.20.0, local): "Package must exist: The package you're configuring must already exist on the npm registry." So Trusted Publishing can't be configured before the first publish, and the first publish needs one token.
+- The `trust` commands also require account-level 2FA and refuse "bypass 2FA" granular tokens.
+- The repo has 2 stars, 0 forks and 0 watchers, far below homebrew-core's notability bar (inference from Homebrew's Acceptable Formulae policy; not re-fetched this session).
+
+**Decisions:**
+1. **The token lives only in the `npm-publish` environment secret.** Created 2026-11-12: required reviewer mazze93, deployments restricted to `v*` tags. mazze sets the secret from their own terminal; Claude never sees it.
+2. **v0.5.0 publishes from CI** with `--provenance`, so the very first release still carries a Sigstore provenance statement.
+3. **Immediately after:** mazze runs `npm trust github @stratum-ledger/cli --file release.yml --repo mazze93/stratum --env npm-publish --allow-publish`, revokes the token, and deletes the secret. Later releases use OIDC only.
+4. **Homebrew:** a tap repo `mazze93/homebrew-tap`, giving `brew install mazze93/tap/stratum`. The formula installs the published npm tarball, pinned by **sha256**. Creating the public tap repo waits for mazze's go.
+
+**Foreclosed:**
+- Local first publish from mazze's laptop. It would carry no provenance (no OIDC). Reopen if CI publish fails twice.
+- A placeholder 0.0.0 package published just to enable trust. It would burn a public version for nothing. Reopen if the token route is unavailable.
+
+**How to reverse:**
+- `gh api -X DELETE repos/mazze93/stratum/environments/npm-publish`
+- `npm trust revoke`
