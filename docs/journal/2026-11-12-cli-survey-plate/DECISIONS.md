@@ -148,3 +148,40 @@ Also pruned 3 dead registrations (blog `blog-cm2` in an old scratchpad, git-fore
 - stratum `checkmate-m0-wp00-wp01`, `fix/cli-require-log` and `verify/tp-031-032` (all three look superseded; candidates for closing);
 - adaptive-response, theatre, Research ×2;
 - intentional-fragility `tmp/` worktree.
+
+## 2026-11-12 · STANDING OBLIGATION adopted, and disclosure of prior departures
+
+**mazze (verbatim, in part):** "sha1 is not considered secure, and please do not abandon or remove work that has not been backed up or secured. that is a standing obligation." mazze also adopted a baseline:
+
+- no deleting, overwriting, truncating or discarding without explicit approval;
+- all work is evidence;
+- only durable, visible storage;
+- report every failure prominently;
+- state assumptions explicitly.
+
+It is recorded in auto-memory `preserve-work-baseline`. From now on, intermediates go to `evidence/` beside this file.
+
+### What I did this session *before* the rule was stated, and how far each departs from it
+
+1. **Removed 6 worktrees.** mazze had approved "remove merged+clean+pushed".
+   - The 6: codex `3276/Projects`, two archive `copilot-prewarm-*`, `temenos/copilot-prewarm-ideal-dollop`, and Research `copilot-prewarm-shiny-carnival` and `copilot-prewarm-psychic-barnacle`.
+   - **Verified:** each had 0 modified or untracked files, 0 commits absent from every remote, and HEAD contained in the default branch. Tracked content is fully recoverable with `git worktree add <path> <sha>`; the SHAs are in `~/Projects/inbox/2026-11-12/wt.json`.
+   - **Not verified:** my ignored-file check *filtered out* `node_modules`, `__pycache__`, `.DS_Store`, `.pytest_cache`, `dist/`, `.venv`, `.wrangler`, and `.astro` without listing them. Any such contents were deleted, unlisted, and **cannot be recovered**. `.wrangler` can hold local Worker state.
+   - **Inference, not fact:** the five copilot-prewarm trees were auto-created and never worked in (HEAD equal to the default branch). That makes unique ignored data unlikely, but unproven.
+2. **Removed 2 empty directories** (`rmdir` succeeds only on empty ones) and **pruned 3 worktree registrations** whose directories no longer existed. These were metadata only; the branch refs are untouched.
+3. **Deleted my own intermediate outputs with `/bin/rm`:**
+   - `.wt020.json`/`.err`: the wt-020 dry-run output. The record itself persists in `workspace-trace.jsonl`.
+   - `.wt022.json`/`.err`: **the failed first attempt.** This was the evidence of that failure; only the commit message of the fix-up commit describes it now.
+   - `.wt022.out`: the second, successful run.
+   - `.pr104.md`: a PR body draft. The final text is on GitHub, which keeps edit history.
+   - Three wrangler `--dry-run` output dirs: regenerable build output.
+   - Temporary git index files used for the rescue snapshots: plumbing, not work.
+
+   **None of these can be recovered.**
+4. **Scratchpad use:** `wt_audit.py` and `wt.json` were written to the session scratchpad. Both are now copied to `~/Projects/inbox/2026-11-12/`.
+5. **Left unbacked on purpose, and flagged now:** palimpsest's untracked `.tmp.driveupload/` (20 files). I excluded it from the rescue snapshot as probable Drive client temp data. **That is an inference.** It exists only on this laptop and needs mazze's call.
+
+### SHA-1
+
+- **The stele rescue bundle** relies on SHA-1 object ids (stele's object format is `sha1`). Added `stele-private-core-sample-4d31d1a.bundle.sha256` = `a40d711de9762d437a0d6ff7dc4e2ea153dee2714bbb07402fce549323454f6c`. It is still single-copy on this laptop (**unresolved**).
+- **Systemic limitation, not fixed:** every repo here uses SHA-1 git object ids, and GitHub does not host SHA-256-format repos. So commit and tag signatures sign SHA-1 ids; git uses collision-detecting SHA-1DC, but that is not a modern integrity guarantee on its own. Stratum's own evidence bindings, chain and release checksums use SHA-256, and the release pipeline adds SHA-256 checksums plus Sigstore signatures over the artifacts themselves.
