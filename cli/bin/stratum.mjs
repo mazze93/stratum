@@ -473,11 +473,17 @@ const HELP = `${color.bold("stratum")} — one command, one recorded decision
     init                  [--endpoint URL] [--token T] [--log L] [--agent A]
     health · playground
 
+  --version prints the version
   flags: --log <id> names the log; required (or STRATUM_LOG / config log) — there is no default
   exit codes: 0 ok · 1 error · 2 guard refused (contract violation)
               3 unrecorded, queued in the outbox · 4 ratification needs a human`;
 
 const { pos, flags } = parseArgs(process.argv.slice(2));
+if (flags.version || pos[0] === "version") {
+  const pkg = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8"));
+  console.log(pkg.version);
+  process.exit(0);
+}
 const cmd = pos.shift();
 if (!cmd || cmd === "help" || flags.help) {
   console.log(HELP);

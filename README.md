@@ -101,20 +101,25 @@ illegal and the gate answers with the violation. Or locally:
 
 ```sh
 npm install
-npm test                 # 22 tests: 16 invariants + boundary + oracle parity
+npm test                 # 16 invariants, boundary, oracle parity, CLI, worker
 npm run test:reference   # the Python oracle's own 16/16
 npm run dev              # wrangler dev + the Atrium on localhost
 ```
 
-CLI:
+CLI: zero dependencies, Node 20+. It is published with npm provenance, and the
+release bundle is cosign-signed. See [SECURITY.md](SECURITY.md#provenance--signed-stamped-verifiable)
+for how to verify each layer.
 
 ```sh
-cd cli && npm link
+npm install -g @stratum-ledger/cli      # or: brew install mazze93/tap/stratum
+npm audit signatures                    # verify the package's provenance
 stratum init --endpoint https://your-instance --token <token> --log workspace
 stratum decide "Ship the thing" --pending
-stratum verify dec-xxxx --ref "test run @ commit"
+stratum verify dec-xxxx --run "npm test"   # runs the check, binds it to the commit
 stratum tessera
 ```
+
+From a clone instead: `cd cli && npm link`.
 
 ## Verification discipline
 
@@ -168,8 +173,8 @@ working substrate to answer them on.
 Built in one supervised session, 2026-07-10; public surface added 2026-07-23. The git
 history is the checkpoint record; the traces are the decision record;
 [docs/DECISIONS.md](docs/DECISIONS.md) is a projection of all three. Status: working
-prototype in daily use — v0.4.0, carrying the same event contract (unchanged since
-rev 3) behind a live gate. Not a finished product.
+prototype in daily use — v0.5.0 ([changelog](CHANGELOG.md)): the event contract at
+rev 3, with ADR-003 bound evidence (schema v2), behind a live gate. Not a finished product.
 
 ## License
 
