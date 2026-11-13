@@ -469,7 +469,7 @@ docs/TRUST.md ships as a skeleton that RESOLVES the two decidable questions (den
 
 *~/Projects container decisions, compiled from the workspace journal.*
 
-> `data/workspace-trace.jsonl` · epoch 18 · 19 events · 12 decisions · 3 foreclosures
+> `data/workspace-trace.jsonl` · epoch 22 · 23 events · 14 decisions · 3 foreclosures
 
 ## Decisions
 
@@ -569,6 +569,22 @@ cli/mise.toml (a single line, aube = "latest") is deleted from the working tree,
 
 > **Shadow [TRACE · certainty 0.95]** — Corroborated before acting rather than inferred from the diff: git log --all shows no history for the path in any ref; the bytes are identical to the archived copy, so the Jul 23 mtime is a preserved copy date, not recent work; 7a615b1 (2026-09-06, present only in the archived clone) records why it was left untracked, an unpinned tool version being a choice to make consciously; nothing in cli/, core/, worker/, scripts/, package.json or .github references aube; CI pins node 24 and package.json engines say node >=20, so no toolchain file is consumed. The sibling repos checkmate and stele do track a mise.toml, but those pin node/pnpm/python and define tasks; this one pinned one unrelated tool. Deleted on mazze's instruction ('I don't use aube, delete it'). 7a615b1 stays reachable only through the archived clone, so deleting that clone would orphan the citations in wt-009 and the 2026-10-07 journal export; that deletion is still mazze's call.
 
+### wt-019 — ● VERIFIED · validated
+
+**claude-opus-5.5** · 2026-11-12T22:22:46-05:00
+
+CLAUDE.md (and AGENTS.md, its symlink) is refreshed against the tree at 3553a6c. Corrections: test:reference names all four suites; CI names the all-traces and DECISIONS.md-sync gates plus the codeql, recheck and release-attest workflows; Architecture gains the ADR-003 trust layer (canonical.ts/canonical.py JCS, chain.ts, schemas/event.v2.schema.json) and cli/lib/ingress.mjs (stratum emit/outbox, exit 3/4, docs/API.md); data/canonical.golden.json joins the generated-files list; every trace is named; the next ADR is ADR-004; /home/ is noted. Delivered as PR #104.
+
+> **Shadow [TRACE · certainty 0.9]** — Found by /init: the file existed, so the task became a drift audit rather than a rewrite. Every claim was checked against disk before it was kept. #101 (ingress) landed mid-session, which made 'zero-dependency single-file CLI' stale too, so it was folded in. The golden-regeneration command switched to >| because mazze's shell has noclobber. Not done: a full rewrite (the existing file was mostly accurate, and churn would hide the six real fixes) and a wt entry being skipped as 'docs-only' (mazze approved recording it).
+
+### wt-021 — ● VERIFIED · validated
+
+**claude-opus-5.5** · 2026-11-12T22:25:40-05:00
+
+The 11 open Dependabot alerts (5 high, 5 moderate, 1 low; all dev-scope, all in undici and vite) are cleared by raising worker's wrangler range to ^4.161.0, whose miniflare pins undici 7.30.1, and updating vite in range to 8.3.8 under vitest.
+
+> **Shadow [TRACE · certainty 0.9]** — undici is pinned exactly (7.29.1) by miniflare 5.20261001.0-alpha, so `npm update` cannot reach the fix. An npm override forcing undici under the old miniflare was rejected: it pairs a deploy tool with a transport it was never released against. The wrangler bump is the maintained path, and it was confirmed with `wrangler deploy --dry-run` before commit. Merging this PR is a production deploy because Workers Builds runs the lockfile's wrangler. No runtime dependency changed.
+
 ## Foreclosures — ghost edges
 
 ### wt-008 — standing
@@ -605,6 +621,8 @@ cli/mise.toml is neither pinned-and-tracked nor gitignored; it is removed outrig
 | `wt-015` | `wt-013` | readlink AGENTS.md → CLAUDE.md; head -1 AGENTS.md → '# CLAUDE.md' — exit 0 | 2026-10-21T14:13:13-04:00 |
 | `wt-018` | `wt-016` | test ! -e cli/mise.toml; git log --all --oneline -- cli/mise.toml (empty); git grep aube -- cli core worker scripts package.json .github (empty) — exit 0 | 2026-10-29T23:13:10-04:00 |
 | `wt-018` | `wt-016` | archive cli/mise.toml sha256 217bad5a28195e6adcba24f381698546bbc06ff09d45cd8603c892a204d06ee2 (24 bytes), restore source for wt-016 | 2026-10-29T23:13:10-04:00 |
+| `wt-020` | `wt-019` | grep -q ADR-004 CLAUDE.md && grep -q cli/lib/ingress.mjs CLAUDE.md && grep -q core/src/chain.ts CLAUDE.md && grep -q canonical.golden.json CLAUDE.md && test -e cli/lib/ingress.mjs && test -e core/src/chain.ts && test -e core/src/canonical.ts && test -e schemas/event.v2.schema.json && test -e data/canonical.golden.json && test -e scripts/render-canonical-golden.py && test -e atrium/public/home/index.html && test -e docs/API.md && test -L AGENTS.md | 2026-11-13T03:22:53.506Z |
+| `wt-022` | `wt-021` | npm ci --no-audit --no-fund && node -e 'const v=n=>require(require.resolve(n+"/package.json",{paths:[require.resolve("miniflare",{paths:["worker"]}),"."]})).version;const u=v("undici"),t=v("vite");const ge=(a,b)=>{a=a.split(".").map(Number);b=b.split(".").map(Number);for(let i=0;i<3;i++){if(a[i]!==b[i])return a[i]>b[i]}return true};console.log("undici",u,"vite",t);process.exit(ge(u,"7.30.1")&&ge(t,"8.3.3")?0:1)' | 2026-11-13T03:26:12.252Z |
 
 ---
 
