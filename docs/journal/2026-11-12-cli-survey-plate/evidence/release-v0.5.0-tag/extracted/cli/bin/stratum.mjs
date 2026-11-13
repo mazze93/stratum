@@ -1,0 +1,493 @@
+#!/usr/bin/env node
+/**
+ * stratum — one command, one recorded decision.
+ *
+ * Zero-dependency CLI for the Stratum epistemic ledger. Appends run the full
+ * contract guards server-side; a refusal prints the guard's own message.
+ *
+ * Config: ~/.config/stratum/config.json  (endpoint, token, log, agent)
+ * Env overrides: STRATUM_ENDPOINT, STRATUM_TOKEN, STRATUM_LOG, STRATUM_AGENT
+ *
+ * There is no built-in default log. A command that touches a log needs one
+ * from --log, STRATUM_LOG or config, or it refuses: appends are permanent, and
+ * a silent fallback is how decisions landed in the wrong log.
+ */
+
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { homedir } from "node:os";
+import { join } from "node:path";
+import {
+  EXIT,
+  IngressError,
+  emit as ingressEmit,
+  flushOutbox,
+  readOutbox,
+  resolveConfig,
+  runBoundCheck as bindCheck,
+} from "../lib/ingress.mjs";
+
+const CONFIG_DIR = join(homedir(), ".config", "stratum");
+const CONFIG_PATH = join(CONFIG_DIR, "config.json");
+
+const color = (() => {
+  const on = process.stdout.isTTY && !process.env.NO_COLOR;
+  const wrap = (c) => (s) => (on ? `\x1b[${c}m${s}\x1b[0m` : String(s));
+  return { dim: wrap("2"), bold: wrap("1"), red: wrap("31"), green: wrap("32"), gold: wrap("33"), blue: wrap("34"), mono: wrap("36") };
+})();
+
+const TIER_PAINT = {
+  authoritative_axiomatic: (s) => color.gold(s),
+  authoritative_verified: (s) => color.green(s),
+  authoritative_provisional: (s) => color.blue(s),
+  narrative: (s) => color.dim(s),
+};
+const tier = (a) => (TIER_PAINT[a] || color.dim)(a.replace("authoritative_", ""));
+
+function loadConfig() {
+  try {
+    return JSON.parse(readFileSync(CONFIG_PATH, "utf8"));
+  } catch {
+    return {};
+  }
+}
+
+function saveConfig(cfg) {
+  mkdirSync(CONFIG_DIR, { recursive: true });
+  writeFileSync(CONFIG_PATH, JSON.stringify(cfg, null, 2) + "\n", { mode: 0o600 });
+}
+
+function settings(flags) {
+  const cfg = loadConfig();
+  if (flags.log === true) fail("--log needs a log id");
+  return {
+    endpoint: flags.endpoint || process.env.STRATUM_ENDPOINT || cfg.endpoint || "https://stratum.mazzeleczzare.com",
+    token: flags.token || process.env.STRATUM_TOKEN || cfg.token || "",
+    log: flags.log || process.env.STRATUM_LOG || cfg.log || null,
+    agent: flags.agent || process.env.STRATUM_AGENT || cfg.agent || "mazze",
+  };
+}
+
+// ---------------------------------------------------------------- args
+
+function parseArgs(argv) {
+  const pos = [];
+  const flags = {};
+  for (let i = 0; i < argv.length; i++) {
+    const a = argv[i];
+    if (a.startsWith("--")) {
+      const key = a.slice(2);
+      const next = argv[i + 1];
+      if (next === undefined || next.startsWith("--")) flags[key] = true;
+      else { flags[key] = next; i++; }
+    } else pos.push(a);
+  }
+  return { pos, flags };
+}
+
+const newId = (prefix) =>
+  `${prefix}-${Date.now().toString(36)}-${Math.random().toString(16).slice(2, 6)}`;
+
+// ---------------------------------------------------------------- api
+
+async function call(s, path, opts = {}) {
+  const headers = {};
+  // s.endpoint comes from a local config file / env / flag. Validate it through
+  // the URL constructor and restrict the scheme to http(s) before it reaches
+  // fetch — never let a config value drive a request to a file:, data:, or other
+  // non-network protocol.
+  let url;
+  try {
+    url = new URL(s.endpoint + path);
+  } catch {
+    fail(`invalid endpoint URL: ${s.endpoint}`);
+  }
+  if (url.protocol !== "http:" && url.protocol !== "https:") {
+    fail(`refusing endpoint with non-http(s) protocol '${url.protocol}' — ${s.endpoint}`);
+  }
+  // Refuse to send the bearer token in plaintext. Local dev is exempt;
+  // anything else over http:// needs an explicit opt-in.
+  if (
+    s.token &&
+    s.endpoint.startsWith("http://") &&
+    !/^http:\/\/(localhost|127\.0\.0\.1|\[::1\])(:|\/|$)/.test(s.endpoint) &&
+    process.env.STRATUM_ALLOW_INSECURE !== "1"
+  ) {
+    fail(`refusing to send token over plaintext http endpoint ${s.endpoint} (set STRATUM_ALLOW_INSECURE=1 to override)`);
+  }
+  if (s.token) headers.authorization = `Bearer ${s.token}`;
+  if (opts.body !== undefined) headers["content-type"] = "application/json";
+  let res;
+  try {
+    res = await fetch(url, { method: opts.method, body: opts.body, headers });
+  } catch (e) {
+    fail(`cannot reach ${s.endpoint} — ${e.cause?.code || e.message}`);
+  }
+  let data = null;
+  try { data = await res.json(); } catch { /* empty body */ }
+  if (!res.ok) {
+    const msg = (data && data.error) || `HTTP ${res.status}`;
+    fail(res.status === 409 ? `guard refused: ${msg}` : msg, res.status === 409 ? 2 : 1);
+  }
+  return data;
+}
+
+/** The API path for the named log. Refuses rather than guess one. */
+function logPath(s, suffix) {
+  if (!s.log) fail("no log named — pass --log <id> or set STRATUM_LOG (there is no default log)");
+  return `/api/logs/${s.log}${suffix}`;
+}
+
+const appendEvent = (s, record) =>
+  call(s, logPath(s, "/events"), { method: "POST", body: JSON.stringify(record) });
+
+function record(s, type, extra) {
+  return {
+    id: newId(type.slice(0, 3)),
+    type,
+    agent_id: s.agent,
+    schema_version: 1,
+    birth_status: "asserted",
+    claim: {},
+    evidence: [],
+    targets: [],
+    is_trust_root: false,
+    timestamp: new Date().toISOString(),
+    ...extra,
+  };
+}
+
+// -- v2 reproducible-check binding (ADR-003 §3) ------------------------------
+// The binding logic lives in ../lib/ingress.mjs, shared with `stratum emit`,
+// so the CLI and automated clients bind checks the same way.
+
+function runBoundCheck(flags) {
+  try {
+    return bindCheck({
+      command: String(flags.run),
+      expectExit: flags["expect-exit"],
+      inputs: flags.input ? String(flags.input) : undefined,
+      output: flags.output ? String(flags.output) : undefined,
+      repo: flags.repo ? String(flags.repo) : undefined,
+      log: (line) => console.error(color.dim(line)),
+    });
+  } catch (e) {
+    if (e instanceof IngressError) fail(e.message);
+    throw e;
+  }
+}
+
+function fail(msg, code = 1) {
+  console.error(color.red("✗") + " " + msg);
+  process.exit(code);
+}
+
+const ok = (msg) => console.log(color.green("✓") + " " + msg);
+
+/** Ids and types only: a narrative never reaches a terminal or a log here. */
+function reportFlush(r, cfg) {
+  for (const x of r.sent) console.error(color.dim(`  sent ${x.id} (${x.outcome})`));
+  for (const x of r.refused) {
+    console.error(color.red("✗") + ` guard refused ${x.id} (${x.type}): ${x.message} — moved to the refused file`);
+  }
+  if (r.pending > 0) {
+    const why = r.busy ? "another process is flushing" : r.failure;
+    console.error(color.red("✗") + ` ${r.pending} event(s) unrecorded for log ${cfg.log} — ${why}. Queued in ${cfg.outboxPath}; run: stratum outbox --flush`);
+  }
+}
+
+function shadowClaim(narrative, flags) {
+  const claim = { narrative };
+  if (flags.shadow) {
+    claim.shadow = { trace: String(flags.shadow), certainty: flags.certainty ? Number(flags.certainty) : 0.7, tag: "TRACE" };
+  }
+  return claim;
+}
+
+// ---------------------------------------------------------------- commands
+
+const commands = {
+  async init(pos, flags) {
+    const cfg = loadConfig();
+    for (const k of ["endpoint", "token", "log", "agent"]) {
+      if (flags[k] !== undefined) cfg[k] = String(flags[k]);
+    }
+    saveConfig(cfg);
+    const s = settings({});
+    ok(`config written to ${CONFIG_PATH}`);
+    console.log(`  endpoint  ${s.endpoint}\n  log       ${s.log || "none — pass --log or set STRATUM_LOG"}\n  agent     ${s.agent}\n  token     ${s.token ? "set" : color.red("not set")}`);
+  },
+
+  async health(pos, flags) {
+    const s = settings(flags);
+    const h = await call(s, "/api/health");
+    ok(`${s.endpoint} — ${h.service} ${h.version}`);
+  },
+
+  async decide(pos, flags) {
+    const s = settings(flags);
+    const narrative = pos.join(" ").trim();
+    if (!narrative) fail('usage: stratum decide "what was decided" [--pending] [--supersedes id] [--shadow "trace"]');
+    const rec = record(s, "decision", {
+      birth_status: flags.pending ? "pending_evidence" : "asserted",
+      claim: shadowClaim(narrative, flags),
+      targets: flags.supersedes ? [String(flags.supersedes)] : [],
+    });
+    const r = await appendEvent(s, rec);
+    if (flags.supersedes) {
+      await appendEvent(s, record(s, "supersession", { targets: [String(flags.supersedes)] }));
+      ok(`${rec.id} recorded · supersedes ${flags.supersedes}`);
+    } else {
+      ok(`${rec.id} recorded${flags.pending ? " · awaiting evidence" : ""} (seq ${r.seq})`);
+    }
+  },
+
+  async foreclose(pos, flags) {
+    const s = settings(flags);
+    const narrative = pos.join(" ").trim();
+    if (!narrative) fail('usage: stratum foreclose "the road not taken" [--shadow "trace"]');
+    const rec = record(s, "foreclosure", { claim: shadowClaim(narrative, flags) });
+    const r = await appendEvent(s, rec);
+    ok(`${rec.id} — road closed (seq ${r.seq})`);
+  },
+
+  async verify(pos, flags) {
+    const s = settings(flags);
+    const [target] = pos;
+    if (!target || (!flags.run && !flags.ref)) {
+      fail('usage: stratum verify <event-id> --run "<check command>" [--expect-exit 0] [--input id=path,…] [--output report.json] [--repo host/owner/name] [--dry-run]\n' +
+           '       stratum verify <event-id> --ref "what you checked"   (legacy v1: unbound)');
+    }
+    let rec;
+    if (flags.run) {
+      // v2: the check is run HERE and its result bound — the default path.
+      const binding = runBoundCheck(flags);
+      rec = record(s, "verification", {
+        schema_version: 2,
+        targets: [target],
+        evidence: [{
+          kind: String(flags.kind || "test_exit"),
+          ref: binding.command,
+          checked_at: new Date().toISOString(), // metadata only in v2
+          signer: s.agent,                       // metadata only in v2
+          binding,
+        }],
+      });
+    } else {
+      console.error(color.gold("!") + " --ref writes UNBOUND v1 evidence: checked_at is a typed timestamp, not a check (ADR-003). Prefer --run.");
+      rec = record(s, "verification", {
+        targets: [target],
+        evidence: [{ kind: String(flags.kind || "human_attestation"), ref: String(flags.ref), checked_at: new Date().toISOString(), signer: s.agent }],
+      });
+    }
+    if (flags["dry-run"]) {
+      console.log(JSON.stringify(rec, null, 2));
+      return;
+    }
+    await appendEvent(s, rec);
+    ok(flags.run
+      ? `${target} → validated · bound to ${rec.evidence[0].binding.commit.slice(0, 12)} (exit ${rec.evidence[0].binding.expect_exit})`
+      : `${target} → validated · ${color.gold("unbound")} "${flags.ref}"`);
+  },
+
+  async ratify(pos, flags) {
+    const s = settings(flags);
+    const [target] = pos;
+    if (!target) fail("usage: stratum ratify <event-id>");
+    await appendEvent(s, record(s, "ratification", { targets: [target] }));
+    ok(`${target} → ratified · ${color.gold("axiomatic")} (authority-declared, not evidence-checked)`);
+  },
+
+  async dispute(pos, flags) {
+    const s = settings(flags);
+    const [target] = pos;
+    if (!target) fail("usage: stratum dispute <event-id>");
+    await appendEvent(s, record(s, "dispute", { targets: [target] }));
+    ok(`${target} → disputed`);
+  },
+
+  async reject(pos, flags) {
+    const s = settings(flags);
+    const [target] = pos;
+    if (!target) fail("usage: stratum reject <event-id>");
+    await appendEvent(s, record(s, "rejection", { targets: [target] }));
+    ok(`${target} → rejected (terminal)`);
+  },
+
+  async contradict(pos, flags) {
+    const s = settings(flags);
+    const [target] = pos;
+    if (!target) fail("usage: stratum contradict <event-id>");
+    await appendEvent(s, record(s, "contradiction", { targets: [target] }));
+    ok(`${target} → contradicted (chain preserved — I2)`);
+  },
+
+  async status(pos, flags) {
+    const s = settings(flags);
+    const [id] = pos;
+    if (!id) fail("usage: stratum status <event-id>");
+    const d = await call(s, logPath(s, `/events/${encodeURIComponent(id)}`));
+    console.log(`${color.bold(id)} · ${d.record.type} · ${d.record.agent_id}`);
+    console.log(`  status     ${d.status}${d.under_review ? color.red(" · UNDER REVIEW") : ""}`);
+    console.log(`  authority  ${tier(d.authority)}`);
+    if (d.record.claim?.narrative) console.log(`  narrative  ${d.record.claim.narrative}`);
+    if (d.revision_chain.length > 1) console.log(`  chain      ${d.revision_chain.join(" → ")}`);
+    for (const e of d.record.evidence || []) {
+      console.log(`  evidence   ${e.kind} · ${e.ref} · ${e.checked_at ? color.green("checked") : color.dim("cited only")}`);
+    }
+    if (d.record.claim?.shadow) {
+      const sh = d.record.claim.shadow;
+      console.log(color.dim(`  shadow     [${sh.tag || "RECON"} ${sh.certainty ?? "?"}] ${sh.trace}`));
+    }
+  },
+
+  async tessera(pos, flags) {
+    const s = settings(flags);
+    const epoch = flags.epoch !== undefined ? `?epoch=${flags.epoch}` : "";
+    const p = await call(s, logPath(s, `/projection${epoch}`));
+    if (flags.json) { console.log(JSON.stringify(p, null, 2)); return; }
+    const d = p.authoritative.recent_decisions;
+    const f = p.authoritative.foreclosed_options;
+    console.log(color.bold(`TESSERA · log ${s.log} · epoch ${p.epoch}`));
+    console.log(color.dim("everything below is a projection of the log — nothing is stored state\n"));
+    console.log(color.bold(`decisions (${d.length})`));
+    for (const e of [...d].reverse()) {
+      console.log(`  ${tier(e.authority).padEnd(24)} ${color.mono(e.id)}  ${String(e.narrative ?? "").slice(0, 84)}`);
+    }
+    console.log(color.bold(`\nforeclosed (${f.length})`));
+    for (const e of [...f].reverse()) {
+      console.log(`  ${(e.active ? "standing " : color.dim("reopened ")).padEnd(9)} ${color.mono(e.id)}  ${String(e.narrative ?? "").slice(0, 84)}`);
+    }
+  },
+
+  async log(pos, flags) {
+    const s = settings(flags);
+    const events = await call(s, logPath(s, "/events"));
+    const n = Number(flags.n || 15);
+    console.log(color.bold(`log ${s.log} · ${events.length} events`));
+    for (const [seq, ev] of events.map((e, i) => [i, e]).slice(-n)) {
+      const target = ev.targets?.length ? ` → ${ev.targets[0]}` : "";
+      const snippet = ev.claim?.narrative ? ` · ${String(ev.claim.narrative).slice(0, 56)}` : "";
+      console.log(`  ${color.dim(`#${String(seq).padStart(3)}`)} ${ev.type.padEnd(18)} ${color.dim(ev.agent_id)}${target}${snippet}`);
+    }
+  },
+
+  async export(pos, flags) {
+    const s = settings(flags);
+    const events = await call(s, logPath(s, "/events"));
+    console.log(JSON.stringify(events, null, 2));
+  },
+
+  /**
+   * Ingress for automated clients (docs/API.md, cli/lib/ingress.mjs). Reads
+   * one JSON emission from stdin or --file. Exit: 0 recorded, already
+   * recorded, or unconfigured no-op · 1 error · 2 guard refused ·
+   * 3 unrecorded (queued in the outbox) · 4 ratification without a human.
+   */
+  async emit(pos, flags) {
+    let input;
+    try {
+      const raw = flags.file ? readFileSync(String(flags.file), "utf8") : readFileSync(0, "utf8");
+      input = JSON.parse(raw);
+    } catch {
+      fail("emit reads one JSON emission from stdin or --file <path>");
+    }
+    let cfg;
+    let r;
+    try {
+      cfg = resolveConfig({ log: flags.log, agent: flags.agent, endpoint: flags.endpoint, token: flags.token });
+      r = await ingressEmit(input, cfg);
+    } catch (e) {
+      if (e instanceof IngressError) fail(e.message, e.code);
+      throw e;
+    }
+    if (!r.configured) {
+      console.error(color.gold("!") + " " + r.notice);
+      process.exit(flags.required ? EXIT.unrecorded : EXIT.ok);
+    }
+    reportFlush(r, cfg);
+    const mine = r.sent.find((x) => x.id === r.record.id);
+    const refusedMine = r.refused.find((x) => x.id === r.record.id);
+    if (mine) {
+      ok(`${r.record.id} ${mine.outcome === "already" ? "already recorded" : "recorded"} · ${r.record.type}`);
+      return;
+    }
+    if (refusedMine) process.exit(EXIT.refused);
+    process.exit(EXIT.unrecorded);
+  },
+
+  async outbox(pos, flags) {
+    let cfg;
+    try {
+      cfg = resolveConfig({ log: flags.log, agent: flags.agent || "outbox", endpoint: flags.endpoint, token: flags.token });
+    } catch (e) {
+      if (e instanceof IngressError) fail(e.message, e.code);
+      throw e;
+    }
+    if (cfg.mode !== "configured") fail("no log named — pass --log <id> or set STRATUM_LOG (there is no default log)");
+    if (!flags.flush) {
+      const q = readOutbox(cfg);
+      console.log(`${q.length} event(s) unrecorded for log ${cfg.log}`);
+      for (const rec of q) console.log(`  ${color.mono(rec.id)}  ${rec.type}`);
+      process.exit(q.length ? EXIT.unrecorded : EXIT.ok);
+    }
+    let r;
+    try {
+      r = await flushOutbox(cfg);
+    } catch (e) {
+      if (e instanceof IngressError) fail(e.message, e.code);
+      throw e;
+    }
+    reportFlush(r, cfg);
+    if (r.pending === 0 && r.refused.length === 0) ok("outbox empty");
+    process.exit(r.refused.length ? EXIT.refused : r.pending ? EXIT.unrecorded : EXIT.ok);
+  },
+
+  async playground(pos, flags) {
+    const s = settings(flags);
+    const r = await call(s, "/api/playground", { method: "POST" });
+    ok(`${r.log} — ${r.events} events cloned · ${s.endpoint}/?log=${r.log}`);
+  },
+};
+
+const HELP = `${color.bold("stratum")} — one command, one recorded decision
+
+  ${color.bold("write")}
+    decide "…"            record a decision   [--pending] [--supersedes id] [--shadow "…"]
+    foreclose "…"         close a road        [--shadow "…"]
+    verify <id> --run "…" run a check, bind it to the commit → validated (v2)
+                          [--expect-exit 0] [--input id=path,…] [--output report.json] [--dry-run]
+    verify <id> --ref "…" legacy v1: unbound evidence (a typed timestamp)
+    ratify <id>           human ratification → ${color.gold("axiomatic")}
+    dispute | reject | contradict <id>
+  ${color.bold("ingress")} (automated clients — docs/API.md)
+    emit                  one JSON emission on stdin or --file; deterministic id,
+                          checks run here, ratification needs a human at a TTY
+                          [--agent A] [--required]
+    outbox                unrecorded emissions for the log      [--flush]
+  ${color.bold("read")}
+    tessera               the projection      [--epoch N] [--json]
+    status <id>           fold status, tier, evidence, shadow trace
+    log                   recent events       [--n 30]
+    export                full log (serialize_log; I4 replay-proven)
+  ${color.bold("setup")}
+    init                  [--endpoint URL] [--token T] [--log L] [--agent A]
+    health · playground
+
+  --version prints the version
+  flags: --log <id> names the log; required (or STRATUM_LOG / config log) — there is no default
+  exit codes: 0 ok · 1 error · 2 guard refused (contract violation)
+              3 unrecorded, queued in the outbox · 4 ratification needs a human`;
+
+const { pos, flags } = parseArgs(process.argv.slice(2));
+if (flags.version || pos[0] === "version") {
+  const pkg = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8"));
+  console.log(pkg.version);
+  process.exit(0);
+}
+const cmd = pos.shift();
+if (!cmd || cmd === "help" || flags.help) {
+  console.log(HELP);
+  process.exit(0);
+}
+if (!commands[cmd]) fail(`unknown command "${cmd}" — try: stratum help`);
+await commands[cmd](pos, flags);

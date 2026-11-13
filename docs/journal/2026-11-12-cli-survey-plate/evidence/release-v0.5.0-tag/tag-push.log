@@ -1,0 +1,14 @@
+2026-11-13T17:40:41Z
+Good "git" signature for mazze@mazzeleczzare.com with ED25519 key SHA256:u/YX5OMJo+IAT4nTNgydwknMkcuBwV0hf0buJNVvN7g
+object 77297cb3b791d414b2421cd91a86877e2644e93d
+type commit
+tag v0.5.0
+tagger Mazze LeCzzare Frazer <225266999+mazze93@users.noreply.github.com> 1794591634 -0500
+
+v0.5.0
+--- push
+To https://github.com/mazze93/stratum.git
+ * [new tag]         v0.5.0 -> v0.5.0
+exit=0
+251b5920849c5b82da7921165ac7bda08ce2b948	refs/tags/v0.5.0
+77297cb3b791d414b2421cd91a86877e2644e93d	refs/tags/v0.5.0^{}
