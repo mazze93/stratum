@@ -1,0 +1,2 @@
+✓ dec-mhx2k-a1f0 recorded · awaiting evidence (seq 42)
+  → next  stratum verify dec-mhx2k-a1f0 --run "<check>"  bind the check once it lands

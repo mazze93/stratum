@@ -1,0 +1,9 @@
+STRATUM — epistemic decision ledger · log genesis · epoch 19 · v0.5.0
+Ledger: ◆ AXIOMATIC 1, ● VERIFIED 3, ◐ PENDING 2, ○ NARRATIVE 7, ⊘ FORECLOSED 4.
+
+  → NEXT   verify sb-012
+           stratum verify sb-012 --run "<check>"
+           pending: "API surface v1: POST events (guarded append), GET p…"
+
+  then     1 more decision awaits evidence
+

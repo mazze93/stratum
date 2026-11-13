@@ -1,0 +1,10 @@
+ [38;2;67;75;84m┌─[0m                                                                          [38;2;67;75;84m─┐[0m
+   [1mS T R A T U M[0m                                                             
+   [2mEPISTEMIC DECISION LEDGER[0m                                                 
+                                                                             
+   [2mPLATE · no log named · v0.5.0[0m                                             
+ [38;2;67;75;84m└─[0m                                                                          [38;2;67;75;84m─┘[0m
+
+  [38;2;88;214;141m[1m→ NEXT[0m[0m   [1mname a log[0m
+           [1mstratum init --log <log-id>[0m
+           [2mthere is no default log, so nothing lands in the wrong one[0m

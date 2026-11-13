@@ -1,0 +1,16 @@
+ [38;2;67;75;84m┌─[0m                                                                          [38;2;67;75;84m─┐[0m
+   [1mS T R A T U M[0m                                           [38;2;62;90;114m▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆[0m  
+   [2mEPISTEMIC DECISION LEDGER[0m                               [38;2;62;90;114m▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆[0m 
+                                                           [38;2;176;138;46m▆▆▆▆▆▆▆▆▆▆▆[0m       
+   [2mPLATE · log genesis · epoch 19 · v0.5.0[0m                 [38;2;62;90;114m▆▆▆▆▆▆▆▆▆▆▆▆[0m      
+
+   [38;2;140;59;46m██[0m ◆ AXIOMATIC [1m1[0m   [38;2;46;93;75m██[0m ● VERIFIED [1m3[0m   [38;2;176;138;46m██[0m ◐ PENDING [1m2[0m   [38;2;62;90;114m██[0m ○ NARRATIVE [1m7[0m
+   [38;2;142;74;107m██[0m ⊘ FORECLOSED [1m4[0m
+ [38;2;67;75;84m└─[0m                                                                          [38;2;67;75;84m─┘[0m
+
+  [38;2;88;214;141m[1m→ NEXT[0m[0m   [1mverify sb-012[0m
+           [1mstratum verify sb-012 --run "<check>"[0m
+           [2mpending: "API surface v1: POST events (guarded append), GET p…"[0m
+
+  [2mthen[0m     [2m1 more decision awaits evidence[0m
+

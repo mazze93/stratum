@@ -1,0 +1,52 @@
+stratum — one command, one recorded decision
+
+  RECORD
+    decide      Record a decision.
+    foreclose   Record a road not taken.
+
+  PROVE
+    verify      Run a check and bind its result to the commit.
+    ratify      Declare a decision by authority (axiomatic, not evidenced).
+
+  CHALLENGE
+    dispute     Put a decision under review.
+    contradict  Record that a decision is wrong; its chain is kept.
+    reject      Reject a decision. Terminal.
+
+  READ
+    tessera     The ledger as it stands: decisions by tier, roads closed.
+    status      One decision: status, tier, evidence, chain, shadow.
+    log         Recent events, newest last.
+    export      The full log as JSON.
+
+  AUTOMATE
+    emit        One JSON emission from a hook or script (docs/API.md).
+    outbox      Writes that could not land yet.
+
+  SETUP
+    init        Save endpoint, token, log and agent to config.
+    health      Check the endpoint answers.
+    playground  Clone the demo into a public sandbox log.
+
+  details  stratum help <command>
+  plain    NO_COLOR=1 or STRATUM_PLAIN=1 for linear text, no color, no art
+  exit     0 ok
+           1 error
+           2 guard refused (contract violation)
+           3 unrecorded, queued in the outbox
+           4 ratification needs a human at a terminal
+
+stratum verify — Run a check and bind its result to the commit.
+
+  use when  a pending decision has landed
+  usage     stratum verify <id> --run "<check command>"
+
+  flags
+    --expect-exit <n>     exit code that means pass (default 0)
+    --input id=path,…     files whose hashes the check depends on
+    --output <file>       a report the check writes; its hash is bound
+    --dry-run             print the record instead of sending it
+    --ref "<text>"        legacy: unbound, typed evidence (avoid)
+
+  example
+    stratum verify st-014 --run "npm test"
