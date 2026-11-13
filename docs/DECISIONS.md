@@ -469,7 +469,7 @@ docs/TRUST.md ships as a skeleton that RESOLVES the two decidable questions (den
 
 *~/Projects container decisions, compiled from the workspace journal.*
 
-> `data/workspace-trace.jsonl` · epoch 21 · 22 events · 14 decisions · 3 foreclosures
+> `data/workspace-trace.jsonl` · epoch 22 · 23 events · 14 decisions · 3 foreclosures
 
 ## Decisions
 
@@ -577,7 +577,7 @@ CLAUDE.md (and AGENTS.md, its symlink) is refreshed against the tree at 3553a6c.
 
 > **Shadow [TRACE · certainty 0.9]** — Found by /init: the file existed, so the task became a drift audit rather than a rewrite. Every claim was checked against disk before it was kept. #101 (ingress) landed mid-session, which made 'zero-dependency single-file CLI' stale too, so it was folded in. The golden-regeneration command switched to >| because mazze's shell has noclobber. Not done: a full rewrite (the existing file was mostly accurate, and churn would hide the six real fixes) and a wt entry being skipped as 'docs-only' (mazze approved recording it).
 
-### wt-021 — ◐ PROVISIONAL · pending_evidence
+### wt-021 — ● VERIFIED · validated
 
 **claude-opus-5.5** · 2026-11-12T22:25:40-05:00
 
@@ -622,6 +622,7 @@ cli/mise.toml is neither pinned-and-tracked nor gitignored; it is removed outrig
 | `wt-018` | `wt-016` | test ! -e cli/mise.toml; git log --all --oneline -- cli/mise.toml (empty); git grep aube -- cli core worker scripts package.json .github (empty) — exit 0 | 2026-10-29T23:13:10-04:00 |
 | `wt-018` | `wt-016` | archive cli/mise.toml sha256 217bad5a28195e6adcba24f381698546bbc06ff09d45cd8603c892a204d06ee2 (24 bytes), restore source for wt-016 | 2026-10-29T23:13:10-04:00 |
 | `wt-020` | `wt-019` | grep -q ADR-004 CLAUDE.md && grep -q cli/lib/ingress.mjs CLAUDE.md && grep -q core/src/chain.ts CLAUDE.md && grep -q canonical.golden.json CLAUDE.md && test -e cli/lib/ingress.mjs && test -e core/src/chain.ts && test -e core/src/canonical.ts && test -e schemas/event.v2.schema.json && test -e data/canonical.golden.json && test -e scripts/render-canonical-golden.py && test -e atrium/public/home/index.html && test -e docs/API.md && test -L AGENTS.md | 2026-11-13T03:22:53.506Z |
+| `wt-022` | `wt-021` | npm ci --no-audit --no-fund && node -e 'const v=n=>require(require.resolve(n+"/package.json",{paths:[require.resolve("miniflare",{paths:["worker"]}),"."]})).version;const u=v("undici"),t=v("vite");const ge=(a,b)=>{a=a.split(".").map(Number);b=b.split(".").map(Number);for(let i=0;i<3;i++){if(a[i]!==b[i])return a[i]>b[i]}return true};console.log("undici",u,"vite",t);process.exit(ge(u,"7.30.1")&&ge(t,"8.3.3")?0:1)' | 2026-11-13T03:26:12.252Z |
 
 ---
 
