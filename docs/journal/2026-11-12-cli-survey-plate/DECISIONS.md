@@ -106,3 +106,45 @@ Signed-commit enforcement is **staged**, not applied: 8 of the last 40 `main` co
 **How to reverse.**
 - The package name can only be changed before the first publish. After that, deprecate the old package.
 - Rescue branches can be deleted on the remote once triaged.
+
+## 2026-11-12 · Worktree sweep: results
+
+**Rescued.** Signed snapshot commits were built through a temporary index, so no worktree or index was touched. Each push was confirmed with `ls-remote`. All remotes are private.
+
+| From | To |
+|---|---|
+| `~/.codex/worktrees/da9e/checkmate`: 24 paths of WIP (P5 RSA, journal, review contract) on a detached HEAD | `mazze93/checkmate` `rescue/2026-11-12-checkmate-da9e` (fe671cc9) |
+| palimpsest consolidation worktree: a unique `AGENTS.md` | `rescue/2026-11-12-palimpsest-consolidation-agents` (5054817e) |
+| palimpsest **main**: an `AGENTS.md` that was staged and never committed (index only; the untracked `.tmp.driveupload/` was deliberately excluded) | `rescue/2026-11-12-palimpsest-main-agents` (3315177f) |
+
+**Pushed as their own branches** (public repo; gitleaks found nothing):
+- `mazze93/claude-code-skills` `hooks/claude-md-drift-on-start` (4 commits);
+- `skills/touchstone-probe-gotchas` (2 commits).
+
+**Bundled, not pushed.** stele `codex/private-core-sample` (4d31d1a) is described as *private* and stele is **public**. It went to `~/Projects/inbox/2026-11-12/stele-private-core-sample-4d31d1a.bundle` (1.9M, verified). It exists only on this laptop until mazze decides where it belongs.
+
+**Not loss, no action:**
+- checkmate-review-readback holds only `node_modules`.
+- Codex 340f palimpsest: its `AGENTS.md` is byte-identical to the one in palimpsest main.
+- palimpsest `main` is ahead 1 and behind 1, but local d59b23d and origin edfcf53 have **identical trees** (the same merge done twice). That is fixable with a fast-forward to origin; left for mazze, because it's their checkout and has a staged file.
+
+**Removed** (merged, clean, no notable ignored files):
+- Codex 3276/Projects;
+- 2 archive copilot-prewarm worktrees;
+- temenos copilot-prewarm;
+- 2 Research copilot-prewarm worktrees.
+
+Also pruned 3 dead registrations (blog `blog-cm2` in an old scratchpad, git-forensics-agent `gfa`, and a Research `.DS_Store`) and removed 2 empty parent directories.
+
+**Kept on purpose.** `~/Research/.worktrees/release-docs-2026-10-16`: merged, but its ignored `build/` may hold the exact verified-release artifacts.
+
+**Orphans reported, not touched:**
+- `tools/worktrees/temenos/` and `tools/worktrees/stele/major-newt/` contain only `.DS_Store`.
+- `tools/worktrees/scope-to-deposit-public` is a full standalone clone of `mazze93/scope-to-deposit`, sitting at a worktree path and absent from WORKSPACE.md (rot: register or move).
+- The svgo fix worktrees are documented in WORKSPACE.md (MAX), so they stay.
+
+**Still open (pushed but unmerged; on a remote, so not at risk):**
+- blog ×4;
+- stratum `checkmate-m0-wp00-wp01`, `fix/cli-require-log` and `verify/tp-031-032` (all three look superseded; candidates for closing);
+- adaptive-response, theatre, Research ×2;
+- intentional-fragility `tmp/` worktree.
