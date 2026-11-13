@@ -1,0 +1,20 @@
+npm notice
+npm notice 📦  @stratum-ledger/cli@0.5.0
+npm notice Tarball Contents
+npm notice 1.1kB LICENSE
+npm notice 2.1kB README.md
+npm notice 19.5kB bin/stratum.mjs
+npm notice 3.4kB lib/ingress.d.mts
+npm notice 29.8kB lib/ingress.mjs
+npm notice 996B package.json
+npm notice Tarball Details
+npm notice name: @stratum-ledger/cli
+npm notice version: 0.5.0
+npm notice filename: stratum-ledger-cli-0.5.0.tgz
+npm notice package size: 18.5 kB
+npm notice unpacked size: 56.9 kB
+npm notice shasum: ea903fab3dc335d4d0c7854c0958d246dce12de3
+npm notice integrity: sha512-mfzJndmBzuHVT[...]9Z9eoRwchiGIw==
+npm notice total files: 6
+npm notice
+stratum-ledger-cli-0.5.0.tgz

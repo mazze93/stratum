@@ -1,0 +1,59 @@
+data/atrium-trace.jsonl
+trace     atrium-trace.jsonl
+events    46  ·  head epoch 45
+decisions 24  ·  foreclosures 2 (2 active)
+  authoritative_axiomatic      1
+  authoritative_provisional    3
+  authoritative_verified       20
+fingerprint entries 26
+head digest cc443f247dcbb654788ab526e13b0bbf4ab5f1fa0a7528928fba6d290005f5f2
+OK — trace loads clean; every guard passed; projection is total.
+data/genesis-trace.jsonl
+trace     genesis-trace.jsonl
+events    20  ·  head epoch 19
+decisions 13  ·  foreclosures 4 (4 active)
+  authoritative_axiomatic      1
+  authoritative_verified       3
+  narrative                    9
+fingerprint entries 17
+head digest 67f7689bb298131b673ee5da969b2aa74509b773351dd7c3afc57be7e8b4bbc0
+OK — trace loads clean; every guard passed; projection is total.
+data/ingress-trace.jsonl
+trace     ingress-trace.jsonl
+events    5  ·  head epoch 4
+decisions 3  ·  foreclosures 2 (2 active)
+  authoritative_provisional    2
+  narrative                    1
+fingerprint entries 5
+head digest d952309666dcabd197b187747ab958c326ff62383a7b24d0761493296e772db9
+OK — trace loads clean; every guard passed; projection is total.
+data/stele-trace.jsonl
+trace     stele-trace.jsonl
+events    3  ·  head epoch 2
+decisions 2  ·  foreclosures 0 (0 active)
+  authoritative_axiomatic      1
+  authoritative_verified       1
+fingerprint entries 2
+head digest e070a19197b7eddeb29067941f012f4cce17c4a270d841d5e7b35f2e8ca98910
+OK — trace loads clean; every guard passed; projection is total.
+data/trust-trace.jsonl
+trace     trust-trace.jsonl
+events    35  ·  head epoch 34
+decisions 20  ·  foreclosures 4 (4 active)
+  authoritative_axiomatic      2
+  authoritative_provisional    7
+  authoritative_verified       9
+  narrative                    2
+fingerprint entries 24
+head digest 61ae5031178ff079847a3716a934728b1a33ed1fb54de433613c4ae61aa7fd08
+OK — trace loads clean; every guard passed; projection is total.
+data/workspace-trace.jsonl
+trace     workspace-trace.jsonl
+events    23  ·  head epoch 22
+decisions 14  ·  foreclosures 3 (3 active)
+  authoritative_axiomatic      1
+  authoritative_provisional    7
+  authoritative_verified       6
+fingerprint entries 17
+head digest 1902ff3f55b5be2ebd11e3ebcecf82d01df10370c5c862da881022893a2eb0dd
+OK — trace loads clean; every guard passed; projection is total.

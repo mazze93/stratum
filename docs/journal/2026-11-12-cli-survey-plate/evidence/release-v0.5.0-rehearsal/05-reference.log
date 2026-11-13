@@ -1,0 +1,52 @@
+
+> stratum@0.5.0 test:reference
+> cd reference && python3 test_tessera_projection.py && python3 test_canonical.py && python3 test_binding.py && python3 ../scripts/test_recheck_bindings.py
+
+  ok  test_axiom_and_evidence_trust_are_distinct
+  ok  test_corrupt_persisted_log_fails_on_load
+  ok  test_determinism_under_timestamp_permutation
+  ok  test_fail_closed_on_missing_backing
+  ok  test_i1_checked_evidence_validates
+  ok  test_i1_claim_only_cannot_validate
+  ok  test_i2_supersession_preserves_chain
+  ok  test_i3a_depth_circuit_breaker
+  ok  test_i3b_fanin_distinct_from_depth
+  ok  test_i4_replay_from_serialized_log
+  ok  test_illegal_transition_rejected
+  ok  test_multi_parent_lineage_rejected
+  ok  test_ontology_covers_status_space
+  ok  test_quorum_accepts_checked_distinct_signatures
+  ok  test_quorum_rejects_unchecked_signatures
+  ok  test_review_clears_on_overturned_invalidation
+
+16/16 invariants hold (epoch-pure, replay-proven).
+  ok  test_chain_detects_edit_delete_reorder
+  ok  test_fail_closed_refusals
+  ok  test_golden_cases_reproduce
+  ok  test_golden_genesis_digest_is_current
+  ok  test_key_order_is_utf16_not_codepoint
+
+5/5 canonical-bytes properties hold.
+  ok  test_binding_round_trips_and_v1_wire_is_unchanged
+  ok  test_malformed_bindings_rejected
+  ok  test_strict_required_fields_match_typescript
+  ok  test_unknown_schema_version_fails_closed
+  ok  test_v1_checked_at_still_validates
+  ok  test_v1_evidence_cannot_carry_a_binding
+  ok  test_v2_attestation_cannot_validate_before_registry
+  ok  test_v2_authority_acts_refused_until_registry
+  ok  test_v2_checked_at_alone_cannot_validate
+  ok  test_v2_reproducible_check_validates
+
+10/10 v2 binding rules hold.
+  ok  test_foreign_repo_is_skipped
+  ok  test_input_digest_is_rederived_from_the_checkout
+  ok  test_missing_output_fails
+  ok  test_non_file_input_is_unverifiable_not_failed
+  ok  test_output_digest_mismatch_fails
+  ok  test_reproducing_binding_passes
+  ok  test_runs_at_the_pinned_commit_not_head
+  ok  test_unknown_commit_fails
+  ok  test_worktrees_are_cleaned_up
+
+9/9 re-checker properties hold.

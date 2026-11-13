@@ -1,0 +1,13 @@
+
+> stratum@0.5.0 test
+> vitest run
+
+
+ RUN  v5.0.3 /Users/daedalus/Projects/tools/worktrees/stratum-release-v0.5.0
+
+
+ Test Files  11 passed (11)
+      Tests  129 passed (129)
+   Start at  23:35:57
+   Duration  10.36s (tests 94%, transform 4%, import 2%)
+

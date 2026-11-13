@@ -1,0 +1,16 @@
+
+> stratum@0.5.0 check
+> npm run check --workspaces --if-present
+
+
+> @stratum/core@0.5.0 check
+> tsc --noEmit
+
+
+> @stratum/worker@0.5.0 check
+> tsc --noEmit
+
+
+> @stratum-ledger/cli@0.5.0 check
+> tsc --noEmit
+

@@ -1,0 +1,18 @@
+cae44f08ac81e0f1e91f042cc0df2480b76002532ea57fd05a0d41d7e84c5333  /Users/daedalus/Projects/tools/worktrees/stratum-cli-survey-plate/docs/journal/2026-11-12-cli-survey-plate/evidence/release-v0.5.0-rehearsal/stratum-v0.5.0.tar.gz
+node:fs:624
+    return binding.readFileUtf8(path, stringToFlags(options.flag));
+                   ^
+
+Error: ENOENT: no such file or directory, open '/Users/daedalus/Projects/tools/worktrees/stratum-cli-survey-plate/docs/journal/2026-11-12-cli-survey-plate/evidence/release-v0.5.0-rehearsal/extract/cli/package.json'
+    at readFileSync (node:fs:624:20)
+    at file:///Users/daedalus/Projects/tools/worktrees/stratum-cli-survey-plate/docs/journal/2026-11-12-cli-survey-plate/evidence/release-v0.5.0-rehearsal/extract/cli/bin/stratum.mjs:483:26
+    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)
+    at async node:internal/modules/esm/loader:650:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:105:5) {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/Users/daedalus/Projects/tools/worktrees/stratum-cli-survey-plate/docs/journal/2026-11-12-cli-survey-plate/evidence/release-v0.5.0-rehearsal/extract/cli/package.json'
+}
+
+Node.js v26.13.1
