@@ -1,0 +1,26 @@
+## positive (real tree)
+✓ version 0.5.0 is consistent
+exit=0
+## --tag v0.5.0
+✓ version 0.5.0 is consistent with tag v0.5.0
+exit=0
+## --tag v0.5.1 (must fail)
+✗ version drift (package.json says 0.5.0):
+  - tag v0.5.1 is not v0.5.0
+exit=1
+## probe: CHANGELOG with [0x5x0] (old regex dot-escape would have rejected; must fail as missing)
+✗ version drift (package.json says 0.5.0):
+  - CHANGELOG.md has no "## [0.5.0]" entry
+exit=1
+## probe: CHANGELOG heading present
+✓ version 0.5.0 is consistent
+exit=0
+## probe: non-semver version
+✗ version drift (package.json says 0.5.0.*):
+  - package.json version "0.5.0.*" is not SemVer
+  - core/package.json says 0.5.0
+  - worker/package.json says 0.5.0
+  - cli/package.json says 0.5.0
+  - atrium/public/index.html masthead says v0.5.0
+  - CHANGELOG.md has no "## [0.5.0.*]" entry
+exit=1
