@@ -11,8 +11,8 @@ for anything exploitable.
 
 - **Preferred:** [GitHub private vulnerability reporting](https://github.com/mazze93/stratum/security/advisories/new)
   (Security tab → *Report a vulnerability*).
-- **Email:** mazze.leczzare@protonmail.com — PGP-signed reports welcome; the signing
-  key fingerprint is published on the account (see *Provenance* below).
+- **Email:** mazze.leczzare@protonmail.com — PGP-signed reports welcome; the
+  maintainer's public GPG keys are published at <https://github.com/mazze93.gpg>.
 
 Expect an acknowledgement within a few days. There is no bug-bounty program; this
 is a personal-scope project, and reports are handled on a best-effort basis.
@@ -24,34 +24,70 @@ not — this is a single-surface project (one deployed Worker, one CLI).
 
 ## Provenance — signed, stamped, verifiable
 
-The record's trustworthiness rests on more than prose. Two independent layers:
+The record's trustworthiness rests on more than prose. Each layer below states
+what is true today and how to check it yourself.
 
-1. **Commits and tags are GPG-signed.** Every authored commit and tag on `main`
-   carries a cryptographic signature. Verify against the maintainer's public key,
-   which is registered on the GitHub account (commits show **Verified** in the UI):
+1. **Commits are SSH-signed.** The maintainer signs commits with an SSH signing
+   key registered on the GitHub account, so authored commits show **Verified**
+   in the GitHub UI. To check locally, list the registered signing keys at
+   `https://api.github.com/users/mazze93/ssh_signing_keys`, add them to an
+   `allowed_signers` file, and run:
 
    ```sh
-   git log --show-signature -1
-   git verify-tag <tag>            # tags are signed too
+   git -c gpg.ssh.allowedSignersFile=allowed_signers log --show-signature -1
    ```
 
-   `main` enforces **required signed commits** via branch protection — an unsigned
-   or unverifiable commit cannot land.
+   **Not yet enforced.** `main` does not yet require signed commits in branch
+   protection. Some older history, including Dependabot commits from before
+   2026-10, is unverified, and the requirement is staged until new Dependabot
+   commits arrive verified. Until then, an unsigned commit *can* land through a
+   reviewed PR.
 
-2. **Releases are Sigstore-stamped (keyless, transparency-logged).** Tagged
-   releases are signed with [cosign](https://github.com/sigstore/cosign) using
-   short-lived, OIDC-bound certificates whose signing event is recorded in the
-   public [Rekor](https://docs.sigstore.dev/logs/overview/) transparency log — so
-   the signature is independently verifiable and timestamped without trusting any
-   long-lived private key. See `.github/workflows/release-attest.yml`.
+2. **Tags are signed from v0.5.0.** Release tags from `v0.5.0` on are
+   annotated and SSH-signed, and verify with `git tag -v <tag>` against the same
+   `allowed_signers` file. **`v0.4.0` is a lightweight, unsigned tag.** It is
+   left as published, because a version tag is never moved. A tag ruleset blocks
+   deleting or rewriting any `v*` tag.
+
+3. **Release artifacts are Sigstore-stamped (keyless, transparency-logged).**
+   Each tagged release bundles the CLI (`cli/package.json`, `cli/bin/`, `cli/lib/`), the immutable
+   traces, and the golden projection. It is signed with
+   [cosign](https://github.com/sigstore/cosign) using a short-lived,
+   OIDC-bound certificate, and the signing event is recorded in the public
+   [Rekor](https://docs.sigstore.dev/logs/overview/) transparency log. A SHA-256
+   checksum and a GitHub build-provenance attestation accompany it. See
+   `.github/workflows/release.yml`.
 
    ```sh
+   sha256sum -c stratum-<tag>.tar.gz.sha256
    cosign verify-blob \
-     --bundle <artifact>.sigstore.json \
+     --bundle stratum-<tag>.tar.gz.sigstore.json \
      --certificate-identity-regexp 'https://github.com/mazze93/stratum/.*' \
      --certificate-oidc-issuer https://token.actions.githubusercontent.com \
-     <artifact>
+     stratum-<tag>.tar.gz
+   gh attestation verify stratum-<tag>.tar.gz --repo mazze93/stratum
    ```
+
+4. **The npm package carries provenance.** `@stratum-ledger/cli` is published
+   only from the release workflow, inside a GitHub environment that needs the
+   maintainer's approval and accepts only `v*` tags. It is published with npm
+   provenance, a Sigstore-signed statement that links the package to this
+   repository, the exact commit, and the workflow run. Check it after installing:
+
+   ```sh
+   npm audit signatures
+   ```
+
+   The first publish bootstraps with a short-lived token held only in that
+   environment. After it, publishing moves to npm Trusted Publishing (OIDC) and
+   the token is revoked.
+
+**SHA-1, stated plainly.** Git identifies commits and tags by SHA-1, and GitHub
+does not host SHA-256 repositories, so commit and tag signatures sign SHA-1 ids.
+Git's collision-detecting SHA-1 makes known attacks detectable, but it is not a
+modern integrity guarantee on its own. That is why every release artifact also
+carries a SHA-256 checksum and a Sigstore signature over the artifact bytes, and
+why Stratum's own evidence bindings and storage chain use SHA-256 throughout.
 
 ## Automated scanning
 
