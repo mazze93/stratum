@@ -1,11 +1,43 @@
 {
-  "name": "@stratum/cli",
-  "version": "0.4.0",
-  "description": "stratum \u2014 one command, one recorded decision. CLI for the Stratum epistemic ledger.",
+  "name": "@stratum-ledger/cli",
+  "version": "0.5.0",
+  "description": "stratum — one command, one recorded decision. Zero-dependency CLI for the Stratum epistemic decision ledger: append-only events, evidence-gated trust, bound reproducible checks.",
   "type": "module",
-  "private": true,
   "bin": {
     "stratum": "./bin/stratum.mjs"
+  },
+  "files": [
+    "bin/",
+    "lib/",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT",
+  "author": "Mazze LeCzzare Frazer",
+  "homepage": "https://stratum.mazzeleczzare.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mazze93/stratum.git",
+    "directory": "cli"
+  },
+  "bugs": {
+    "url": "https://github.com/mazze93/stratum/issues"
+  },
+  "keywords": [
+    "decision-log",
+    "ledger",
+    "provenance",
+    "append-only",
+    "evidence",
+    "agents",
+    "cli"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
   },
   "scripts": {
     "check": "tsc --noEmit"

@@ -7,6 +7,7 @@
  */
 
 import { Hono } from "hono";
+import pkg from "../package.json" with { type: "json" };
 import { bearerOk, canRead, canWrite, isValidLogId } from "./auth.js";
 import { errorBody } from "./errors.js";
 import type { Env } from "./env.js";
@@ -24,7 +25,7 @@ const failStatus = (r: Extract<AppendResult | SeedResult, { ok: false }>): 400 |
   r.kind === "parse" ? 400 : r.kind === "cap" ? 413 : 409;
 
 app.get("/api/health", (c) =>
-  c.json({ ok: true, service: "stratum", version: "0.4.0" }),
+  c.json({ ok: true, service: "stratum", version: pkg.version }),
 );
 
 /** Create a per-visitor sandbox log, cloned from the curated demo seed.
