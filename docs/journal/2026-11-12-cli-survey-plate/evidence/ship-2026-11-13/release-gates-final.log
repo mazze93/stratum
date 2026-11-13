@@ -1,0 +1,21 @@
+✓ version 0.5.0 is consistent
+✓ npm ci (lockfile in sync)
+      Tests  129 passed (129)
+   Start at  01:30:54
+   Duration  10.36s (tests 92%, transform 6%, import 2%)
+
+9/9 re-checker properties hold.
+✓ traces
+✓ DECISIONS in sync
+0
+audit-exit=1
++ @stratum-ledger/cli@0.5.0
+
+--- CORRECTION (appended): the `grep -c ig-005 docs/DECISIONS.md` probe was a wrong
+assumption. The renderer does not print verification event ids. It stopped the && chain,
+so actionlint and npm audit did not run above, and "audit-exit=1" is grep's status.
+Re-run separately:
+  ig-005 present in data/ingress-trace.jsonl: 1
+  docs/DECISIONS.md:855  ### ig-000 — ● VERIFIED · validated
+  actionlint: clean
+  npm audit: found 0 vulnerabilities (exit 0)
