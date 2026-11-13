@@ -85,7 +85,9 @@ jobs:
   attest:
     name: Bundle, sign, attest
     needs: verify
-    if: github.ref_type == 'tag'
+    # A tag push only. A manual dispatch run against a tag also has
+    # ref_type 'tag', and must never sign or publish.
+    if: github.event_name == 'push' && github.ref_type == 'tag'
     runs-on: ubuntu-latest
     permissions:
       id-token: write # OIDC for keyless signing and attestation
@@ -135,7 +137,9 @@ jobs:
   publish:
     name: Publish @stratum-ledger/cli to npm
     needs: attest
-    if: github.ref_type == 'tag'
+    # A tag push only. A manual dispatch run against a tag also has
+    # ref_type 'tag', and must never sign or publish.
+    if: github.event_name == 'push' && github.ref_type == 'tag'
     runs-on: ubuntu-latest
     environment: npm-publish # maintainer approval; v* tags only
     permissions:
