@@ -50,7 +50,7 @@ what is true today and how to check it yourself.
    deleting or rewriting any `v*` tag.
 
 3. **Release artifacts are Sigstore-stamped (keyless, transparency-logged).**
-   Each tagged release bundles the CLI (`cli/bin/`, `cli/lib/`), the immutable
+   Each tagged release bundles the CLI (`cli/package.json`, `cli/bin/`, `cli/lib/`), the immutable
    traces, and the golden projection. It is signed with
    [cosign](https://github.com/sigstore/cosign) using a short-lived,
    OIDC-bound certificate, and the signing event is recorded in the public

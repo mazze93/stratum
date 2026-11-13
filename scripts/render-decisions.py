@@ -48,6 +48,8 @@ TRACES = [
      "ADR-003: bound evidence, an authority registry, atomic persistence."),
     ("ingress-trace.jsonl", "Ingress",
      "How automated clients write into Stratum (cognitive-topology T1)."),
+    ("release-trace.jsonl", "Releases",
+     "Versioning, signed distribution, and how a release reaches adopters."),
 ]
 
 

@@ -900,6 +900,62 @@ Automated clients emitting v1 verifications (a typed checked_at as the evidence)
 
 ---
 
+# Releases
+
+*Versioning, signed distribution, and how a release reaches adopters.*
+
+> `data/release-trace.jsonl` · epoch 4 · 5 events · 2 decisions · 3 foreclosures
+
+## Decisions
+
+### rl-001 — ◐ PROVISIONAL · pending_evidence
+
+**claude-opus-5.5** · 2026-11-12T23:37:28-05:00
+
+Stratum ships as a package. @stratum-ledger/cli is published to npm from .github/workflows/release.yml with npm provenance, inside the npm-publish GitHub environment (maintainer approval, v* tags only). Each tagged release also carries a SHA-256-summed, cosign-keyless-signed, build-provenance-attested bundle. The first publish bootstraps with an environment-scoped token; afterwards npm Trusted Publishing (OIDC) replaces it and the token is revoked.
+
+> **Shadow [TRACE · certainty 0.85]** — Asked for by mazze: people who wanted to adopt the ledger had held back for lack of formal, verified, signed distribution. Checked before choosing: `npm help trust` (npm 11.20.0) says the package must already exist, so a token-free first publish is impossible. A local rehearsal found two defects before any tag existed: the bundle lacked cli/package.json, so `stratum --version` crashed, and the package had no README. Both were fixed, and rehearsal 2 was green, including a global install of the packed tarball.
+
+### rl-004 — ○ narrative · asserted
+
+**claude-opus-5.5** · 2026-11-12T23:37:28-05:00
+
+The next version is 0.5.0, a minor bump with Breaking changes noted. SemVer 0.x rules: no default log (tp-031) and bound evidence (schema v2, ADR-003) change behavior that callers depended on. Root package.json is the single source, and scripts/check-version.mjs holds the other package.json files, the landing masthead, CHANGELOG.md and any release tag to it in CI and in the release gate. Tags from v0.5.0 are annotated and SSH-signed; v0.4.0 stays a lightweight unsigned tag, because version tags are never moved (ruleset 27174967).
+
+> **Shadow [TRACE · certainty 0.9]** — There were 44 commits since v0.4.0 (2026-09-09), and the version was hardcoded in 6 places with nothing keeping them equal. A 0.4.x patch would have hidden two breaking changes. Recovery from a failed tagged run is to re-run the failed jobs for credential faults, or ship a new patch version for code faults (docs/RELEASING.md); a side agent flagged that the tag lock makes this matter.
+
+## Foreclosures — ghost edges
+
+### rl-002 — standing
+
+Publishing the first version from the maintainer's laptop.
+
+*Ghost edges:* ~~`local-first-publish`~~
+
+> **Shadow [TRACE · certainty 0.9]** — A local `npm publish` cannot produce provenance, because there is no OIDC identity, so the first release adopters see would be the one release they cannot verify. Reopen if the CI publish fails twice for reasons that a re-run cannot fix.
+
+### rl-003 — standing
+
+Publishing a 0.0.0 placeholder only to enable Trusted Publishing before the real release.
+
+*Ghost edges:* ~~`placeholder-0.0.0`~~
+
+> **Shadow [TRACE · certainty 0.85]** — npm never reuses a version number, so a placeholder burns a public version, and its page would advertise an empty package. Reopen if the environment-token route is refused by npm policy.
+
+### rl-005 — standing
+
+Submitting the formula to homebrew-core now.
+
+*Ghost edges:* ~~`homebrew-core-submission`~~
+
+> **Shadow [TRACE · certainty 0.8]** — homebrew-core requires notability, roughly 75 stars, 30 forks or 30 watchers (from memory of Homebrew's policy; not re-fetched this session). The repo has 2 stars. A tap, mazze93/homebrew-tap, gives `brew install mazze93/tap/stratum` today, pinned by sha256 to the npm tarball. Reopen when the repo meets the notability bar.
+
+## Checked-evidence ledger
+
+*No checked evidence yet — every decision above is provisional or axiomatic.*
+
+---
+
 ### Da'ath
 
 The mechanism that produced these convergences — whether each was discovery or retrieval — is not recorded here, because it cannot be. The void stays empty; anything placed in it would be fabrication of the unknowable.

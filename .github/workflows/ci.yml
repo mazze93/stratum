@@ -19,6 +19,8 @@ jobs:
         with:
           node-version: 24
           cache: npm
+      - name: One version everywhere
+        run: node scripts/check-version.mjs
       - run: npm ci
       - run: npm run check
       - run: npm test
