@@ -1,9 +1,9 @@
 # CHECKPOINT — CLI survey plate
 
-Last updated: 2026-11-12 (pre-flight, awaiting go-ahead)
+Last updated: 2026-11-12 (go-ahead: line-mode)
 
 - [x] 0. Pre-flight. Mirror fast-forwarded to 3553a6c; assumption checked (DECISIONS.md)
-- [ ] 1. Scaffold + intent committed and pushed
+- [x] 1. Scaffold + intent committed and pushed
 - [ ] 2a. wt entry for the CLAUDE.md refresh on PR #104
 - [ ] 2b. Dependabot: undici + vite (dev-only) PR
 - [ ] 3. Design spike: `cli/lib/survey.mjs` + samples. **Visual verdict from mazze**
@@ -19,6 +19,6 @@ Last updated: 2026-11-12 (pre-flight, awaiting go-ahead)
 
 ## Deferred / needs mazze
 
-- Go-ahead on the pre-flight and on the line-mode vs. full-screen question.
+- ~~Go-ahead~~ given 2026-11-12: line-mode first.
 - Visual verdict at phase 3.
 - Merging any PR is a production deploy.

@@ -21,3 +21,16 @@ Append-only. `date · decision · why · how to reverse`.
 - Recommendation: line-mode first. Full-screen raw mode fights screen readers, breaks scrollback, and adds a state machine to a zero-dependency single door.
 - An interactive picker can come later as a separate phase.
 - Waiting for mazze's go-ahead.
+
+## 2026-11-12 · Line-mode first (mazze's choice)
+
+**Decision.** Bare `stratum` prints a framed title card, then the ledger at a glance, then one emphasized next step, and exits. There is no raw mode.
+
+**Why:**
+- scrollback stays intact;
+- screen readers can follow it;
+- it adds no new state machine at the CLI's single door.
+
+**Foreclosed.** A full-screen interactive TUI. **Reopen condition:** the line-mode plate ships and the next step still needs more than one command to act on.
+
+**How to reverse.** Add a `stratum survey` subcommand in raw mode. The render primitives in `cli/lib/survey.mjs` are shared, so nothing here gets thrown away.
