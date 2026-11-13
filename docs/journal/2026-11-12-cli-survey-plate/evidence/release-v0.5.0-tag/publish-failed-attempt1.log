@@ -1,0 +1,235 @@
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	﻿2026-11-13T17:46:15.0601116Z Current runner version: '2.338.2'
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.0625092Z ##[group]Runner Image Provisioner
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.0626004Z Hosted Compute Agent
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.0626554Z Version: 20261103.629
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.0627140Z Commit: 15dbd9ccb5dbf34fae002b6ed1a2670f52df37bc
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.0628196Z Build Date: 2026-11-03T17:26:59Z
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.0628851Z Worker ID: {1669b915-1db6-4ba7-b5e7-926bd54489e8}
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.0629527Z Region: eastus3
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.0630319Z Cloud: Azure
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.0630812Z ##[endgroup]
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.0632567Z ##[group]Operating System
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.0633152Z Ubuntu
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.0633714Z 26.04.1
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.0634179Z LTS
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.0634644Z ##[endgroup]
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.0635157Z ##[group]Runner Image
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.0635709Z Image: ubuntu-26.04
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.0636230Z Version: 20261111.196.1
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.0637411Z Included Software: https://github.com/actions/runner-images/blob/ubuntu26/20261111.196/images/ubuntu/Ubuntu2604-Readme.md
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.0638798Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu26%2F20261111.196
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.0640246Z ##[endgroup]
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.0641251Z ##[group]GITHUB_TOKEN Permissions
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.0643460Z Contents: read
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.0644806Z Metadata: read
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.0645676Z ##[endgroup]
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.0648528Z Secret source: Actions
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.0650264Z Cache mode: write
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.0651325Z Prepare workflow directory
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.1102200Z Prepare all required actions
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.1173877Z Getting action download info
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.3550439Z Download action repository 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.4537906Z Download action repository 'actions/setup-node@820762786026740c76f36085b0efc47a31fe5020' (SHA:820762786026740c76f36085b0efc47a31fe5020)
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.5945533Z Complete job name: Publish @stratum-ledger/cli to npm
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.6763473Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.6764540Z with:
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.6765111Z   repository: mazze93/stratum
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.6768724Z   token: ***
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.6769222Z   ssh-strict: true
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.6769719Z   ssh-user: git
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.6770355Z   persist-credentials: true
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.6770904Z   clean: true
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.6771454Z   sparse-checkout-cone-mode: true
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.6772017Z   fetch-depth: 1
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.6772499Z   fetch-tags: false
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.6772982Z   show-progress: true
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.6773478Z   lfs: false
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.6773949Z   submodules: false
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.6774477Z   set-safe-directory: true
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.6775032Z   allow-unsafe-pr-checkout: false
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.6775878Z ##[endgroup]
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.9699254Z Syncing repository: mazze93/stratum
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.9702864Z ##[group]Getting Git version info
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.9704504Z Working directory is '/home/runner/work/stratum/stratum'
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.9706707Z [command]/usr/bin/git version
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.9707793Z git version 2.56.1
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.9719502Z ##[endgroup]
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.9730469Z Temporarily overriding HOME='/home/runner/work/_temp/f30f046c-5045-4182-9a0d-db2e5945ec85' before making global git config changes
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.9733999Z Adding repository directory to the temporary git global config as a safe directory
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.9737556Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/stratum/stratum
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.9801786Z Deleting the contents of '/home/runner/work/stratum/stratum'
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.9805220Z ##[group]Determining repository object format
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.9807570Z ##[endgroup]
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.9813069Z ##[group]Initializing the repository
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.9813939Z [command]/usr/bin/git init /home/runner/work/stratum/stratum
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.9915826Z hint: Using 'master' as the name for the initial branch. This default branch name
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.9918860Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.9921680Z hint: to use in all of your new repositories, which will suppress this warning,
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.9922623Z hint: call:
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.9923146Z hint:
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.9923808Z hint: 	git config --global init.defaultBranch <name>
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.9925073Z hint:
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.9926377Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.9927650Z hint: 'development'. The just-created branch can be renamed via this command:
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.9928552Z hint:
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.9929550Z hint: 	git branch -m <name>
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.9930638Z hint:
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.9931348Z hint: Disable this message with "git config set advice.defaultBranchName false"
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.9932473Z Initialized empty Git repository in /home/runner/work/stratum/stratum/.git/
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.9938989Z [command]/usr/bin/git remote add origin https://github.com/mazze93/stratum
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.9989717Z ##[endgroup]
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.9991664Z ##[group]Disabling automatic garbage collection
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:15.9993177Z [command]/usr/bin/git config --local gc.auto 0
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:16.0021943Z ##[endgroup]
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:16.0023960Z ##[group]Setting up auth
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:16.0025347Z Removing SSH command configuration
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:16.0029945Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:16.0058654Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:16.0548336Z Removing HTTP extra header
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:16.0555924Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:16.0591831Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:16.0817208Z Removing includeIf entries pointing to credentials config files
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:16.0824722Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:16.0859184Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:16.1082622Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-176e4514-51a4-43c7-9635-99a9ba07a848.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:16.1116792Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/stratum/stratum/.git.path /home/runner/work/_temp/git-credentials-176e4514-51a4-43c7-9635-99a9ba07a848.config
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:16.1144688Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/stratum/stratum/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-176e4514-51a4-43c7-9635-99a9ba07a848.config
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:16.1173875Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-176e4514-51a4-43c7-9635-99a9ba07a848.config
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:16.1200203Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-176e4514-51a4-43c7-9635-99a9ba07a848.config
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:16.1240973Z ##[endgroup]
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:16.1242897Z ##[group]Fetching the repository
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:16.1245487Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +refs/tags/v0.5.0:refs/tags/v0.5.0
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.1282600Z From https://github.com/mazze93/stratum
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.1284963Z  * [new tag]         v0.5.0     -> v0.5.0
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.1291852Z [command]/usr/bin/git tag --list v0.5.0
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.1317395Z v0.5.0
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.1328668Z [command]/usr/bin/git rev-parse refs/tags/v0.5.0^{commit}
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.1350901Z 77297cb3b791d414b2421cd91a86877e2644e93d
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.1361435Z ##[endgroup]
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.1362959Z ##[group]Determining the checkout info
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.1364688Z ##[endgroup]
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.1367228Z [command]/usr/bin/git sparse-checkout disable
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.1408541Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.1433655Z ##[group]Checking out the ref
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.1435593Z [command]/usr/bin/git checkout --progress --force refs/tags/v0.5.0
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.2953213Z Note: switching to 'refs/tags/v0.5.0'.
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.2954308Z 
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.2955301Z You are in 'detached HEAD' state. You can look around, make experimental
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.2957676Z changes and commit them, and you can discard any commits you make in this
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.2960087Z state without impacting any branches by switching back to a branch.
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.2961333Z 
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.2962272Z If you want to create a new branch to retain commits you create, you may
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.2964409Z do so (now or later) by using -c with the switch command. Example:
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.2965597Z 
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.2966241Z   git switch -c <new-branch-name>
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.2967114Z 
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.2967723Z Or undo this operation with:
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.2968549Z 
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.2969109Z   git switch -
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.2969864Z 
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.2970963Z Turn off this advice by setting config variable advice.detachedHead to false
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.2972386Z 
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.2973391Z HEAD is now at 77297cb ci: bump actions/setup-node from 7.0.0 to 7.1.0 (#89)
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.2978702Z ##[endgroup]
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.3028773Z [command]/usr/bin/git log -1 --format=%H
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.3049874Z 77297cb3b791d414b2421cd91a86877e2644e93d
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.3472333Z ##[group]Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.3473900Z with:
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.3474753Z   node-version: 24
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.3475810Z   registry-url: https://registry.npmjs.org
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.3477033Z   check-latest: false
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.3486294Z   token: ***
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.3487244Z   package-manager-cache: true
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.3488316Z ##[endgroup]
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.4766999Z Found in cache @ /opt/hostedtoolcache/node/24.22.2/x64
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.4769618Z ##[group]Environment details
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.8914448Z node: v24.22.2
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.8914836Z npm: 11.19.1
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.8915124Z yarn: 1.22.22
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.8915837Z ##[endgroup]
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.9037838Z ##[group]Run npm --version
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.9038212Z ^[[36;1mnpm --version^[[0m
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.9038767Z ^[[36;1mnode -e 'const [a,b,c]=process.argv[1].split(".").map(Number);process.exit(a>11||(a===11&&(b>5||(b===5&&c>=1)))?0:1)' "$(npm --version)" \^[[0m
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.9039330Z ^[[36;1m  || npm install -g npm@11^[[0m
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.9039595Z ^[[36;1mnpm --version^[[0m
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.9081347Z shell: /usr/bin/bash -e {0}
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.9081637Z env:
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.9081894Z   NPM_CONFIG_USERCONFIG: /home/runner/work/_temp/.npmrc
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.9082197Z ##[endgroup]
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:17.9885838Z 11.19.1
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:18.1629143Z 11.19.1
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:18.1704765Z ##[group]Run npm publish --workspace cli --provenance --access public
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:18.1705275Z ^[[36;1mnpm publish --workspace cli --provenance --access public^[[0m
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:18.1734853Z shell: /usr/bin/bash -e {0}
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:18.1735124Z env:
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:18.1735391Z   NPM_CONFIG_USERCONFIG: /home/runner/work/_temp/.npmrc
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:18.1735936Z   NODE_AUTH_TOKEN: ***
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:18.1736392Z ##[endgroup]
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:18.7998881Z npm warn publish npm auto-corrected some errors in your package.json when publishing.  Please run "npm pkg fix" to address these errors.
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:18.8002843Z npm warn publish errors corrected:
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:18.8003736Z npm warn publish "bin[stratum]" script name bin/stratum.mjs was invalid and removed
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:18.8029490Z npm notice
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:18.8032743Z npm notice 📦  @stratum-ledger/cli@0.5.0
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:18.8033332Z npm notice Tarball Contents
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:18.8036386Z npm notice 1.1kB LICENSE
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:18.8036905Z npm notice 2.1kB README.md
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:18.8037410Z npm notice 19.5kB bin/stratum.mjs
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:18.8037936Z npm notice 3.4kB lib/ingress.d.mts
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:18.8038479Z npm notice 29.8kB lib/ingress.mjs
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:18.8038955Z npm notice 996B package.json
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:18.8039424Z npm notice Tarball Details
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:18.8040120Z npm notice name: @stratum-ledger/cli
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:18.8040790Z npm notice version: 0.5.0
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:18.8041403Z npm notice filename: stratum-ledger-cli-0.5.0.tgz
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:18.8042056Z npm notice package size: 18.6 kB
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:18.8042596Z npm notice unpacked size: 56.9 kB
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:18.8043269Z npm notice shasum: 27c8a027f9f6ee69c6ac863305dfc80b1944fe0c
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:18.8044096Z npm notice integrity: sha512-vrLm3aAzjA/QF[...]XzInmBHN/+Gfg==
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:18.8044714Z npm notice total files: 6
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:18.8045127Z npm notice
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:19.4321113Z npm notice npm tokens that bypass 2FA are being restricted for account changes and direct publishing. Learn how to prepare: https://gh.io/npm-gat-bypass2fa-deprecation
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:19.6333594Z npm notice Publishing to https://registry.npmjs.org/ with tag latest and public access
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:21.4362483Z npm notice publish Signed provenance statement with source and build information from GitHub Actions
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:21.4364539Z npm notice publish Provenance statement published to transparency log: https://search.sigstore.dev/?logIndex=3859165882
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:21.9733135Z npm error code EOTP
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:21.9737701Z npm error This operation requires a one-time password.
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:21.9738717Z npm error Open this URL in your browser to authenticate:
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:21.9739664Z npm error   https://www.npmjs.com/auth/cli/***
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:21.9740517Z npm error
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:21.9741301Z npm error After authenticating, your token can be retrieved from:
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:21.9742351Z npm error   https://registry.npmjs.org/-/v1/done?authId=***
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:21.9753404Z npm error A complete log of this run can be found in: /home/runner/.npm/_logs/2026-11-13T17_46_18_224Z-debug-0.log
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:21.9963281Z ##[error]Process completed with exit code 1.
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:22.0106307Z Post job cleanup.
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:22.0952300Z [command]/usr/bin/git version
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:22.0994172Z git version 2.56.1
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:22.1033146Z Temporarily overriding HOME='/home/runner/work/_temp/5cd5f379-5ea9-4eb2-9633-f050f1ef8735' before making global git config changes
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:22.1034368Z Adding repository directory to the temporary git global config as a safe directory
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:22.1038825Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/stratum/stratum
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:22.1072518Z Removing SSH command configuration
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:22.1080569Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:22.1115787Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:22.1356651Z Removing HTTP extra header
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:22.1381903Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:22.1402586Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:22.1631082Z Removing includeIf entries pointing to credentials config files
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:22.1636485Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:22.1658136Z includeif.gitdir:/home/runner/work/stratum/stratum/.git.path
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:22.1659255Z includeif.gitdir:/home/runner/work/stratum/stratum/.git/worktrees/*.path
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:22.1660416Z includeif.gitdir:/github/workspace/.git.path
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:22.1661647Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:22.1666992Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/stratum/stratum/.git.path
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:22.1688447Z /home/runner/work/_temp/git-credentials-176e4514-51a4-43c7-9635-99a9ba07a848.config
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:22.1698476Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/stratum/stratum/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-176e4514\-51a4\-43c7\-9635\-99a9ba07a848\.config
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:22.1748137Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/stratum/stratum/.git/worktrees/*.path
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:22.1786835Z /home/runner/work/_temp/git-credentials-176e4514-51a4-43c7-9635-99a9ba07a848.config
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:22.1789971Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/stratum/stratum/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-176e4514\-51a4\-43c7\-9635\-99a9ba07a848\.config
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:22.1821854Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:22.1839968Z /github/runner_temp/git-credentials-176e4514-51a4-43c7-9635-99a9ba07a848.config
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:22.1846083Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-176e4514\-51a4\-43c7\-9635\-99a9ba07a848\.config
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:22.1871501Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:22.1889722Z /github/runner_temp/git-credentials-176e4514-51a4-43c7-9635-99a9ba07a848.config
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:22.1895530Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-176e4514\-51a4\-43c7\-9635\-99a9ba07a848\.config
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:22.1922851Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:22.2127379Z Removing credentials config '/home/runner/work/_temp/git-credentials-176e4514-51a4-43c7-9635-99a9ba07a848.config'
+Publish @stratum-ledger/cli to npm	UNKNOWN STEP	2026-11-13T17:46:22.2255179Z Cleaning up orphan processes

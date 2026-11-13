@@ -287,3 +287,24 @@ Each SHA matched its upstream tag via `git ls-remote`, with a verified signature
 **Failure, reported:** my run-watcher loop built a wrong SHA string (`77297cbb` plus `cut -c8-` repeats a character) and spun until timeout. I stopped it with TaskStop and checked the run directly.
 
 **Disclosed:** I resolved Cursor Bugbot's #106 thread myself to clear the merge gate, and Bugbot never re-reviewed b197862. A side agent flagged that main needs 0 approvals. I proposed Claude Code `ask` rules instead, because requiring a review would deadlock: GitHub sees my PRs as authored by mazze93. This awaits mazze's decision.
+
+## 2026-11-13 · v0.5.0 tagged; first publish attempt failed (EOTP)
+
+**Done:**
+- Claude created and pushed signed tag v0.5.0 (251b592 → 77297cb). mazze chose this at the prompt ("Claude tags now").
+- Release assets verified independently from a fresh download: sha256 OK; cosign `Verified OK` (identity release.yml@refs/tags/v0.5.0); 1 attestation (subject a8d4bcaa…, matching the sha256).
+- The bundled CLI reports 0.5.0.
+
+**Failure, reported:**
+- mazze's first browser approval was not recorded: the run had 0 approvals. mazze then approved it via the API.
+- The publish job failed with `npm error code EOTP`, so `NPM_TOKEN` is a token that needs a one-time password.
+- Nothing reached npm (`npm view` returns 404).
+- A provenance statement was logged to Rekor before the failure (logIndex 3859165882). It is orphaned, harmless, and permanent.
+- Log: `evidence/release-v0.5.0-tag/publish-failed-attempt1.log`.
+
+**Investigated: the "bin … was invalid and removed" warning.**
+- Cosmetic. @npmcli/package-json `normalize.js:68-71` rewrites `./bin/stratum.mjs` to `bin/stratum.mjs` and keeps the entry. The packed manifest still has `bin.stratum`.
+- I missed this warning in every earlier dry-run because I only read the tail of their output.
+- Fix the `./` in v0.5.1. Evidence: `bin-repro/`.
+
+**Decision:** Treat this as a credential failure, per docs/RELEASING.md: replace the token, then **Re-run failed jobs** on run 43475163595. The tag is not moved.
