@@ -1,0 +1,3 @@
+2026-11-13T06:39:16Z
+GraphQL: refusing to allow an OAuth App to create or update workflow `.github/workflows/ci.yml` without `workflow` scope (updatePullRequestBranch)
+exit=1

@@ -1,0 +1,904 @@
+Verify tree and version	Set up job	﻿2026-11-13T06:58:54.6046431Z Current runner version: '2.338.2'
+Verify tree and version	Set up job	2026-11-13T06:58:54.6072888Z ##[group]Runner Image Provisioner
+Verify tree and version	Set up job	2026-11-13T06:58:54.6073908Z Hosted Compute Agent
+Verify tree and version	Set up job	2026-11-13T06:58:54.6074512Z Version: 20261028.624
+Verify tree and version	Set up job	2026-11-13T06:58:54.6075166Z Commit: 54898b74c23fde5556c9b3c3a2290865feef0dfe
+Verify tree and version	Set up job	2026-11-13T06:58:54.6075960Z Build Date: 2026-10-28T21:51:42Z
+Verify tree and version	Set up job	2026-11-13T06:58:54.6076719Z Worker ID: {7af7e6d4-85aa-400a-9ad5-d7f86955df42}
+Verify tree and version	Set up job	2026-11-13T06:58:54.6077482Z Region: westus2
+Verify tree and version	Set up job	2026-11-13T06:58:54.6078049Z Cloud: Azure
+Verify tree and version	Set up job	2026-11-13T06:58:54.6078615Z ##[endgroup]
+Verify tree and version	Set up job	2026-11-13T06:58:54.6080407Z ##[group]Operating System
+Verify tree and version	Set up job	2026-11-13T06:58:54.6081083Z Ubuntu
+Verify tree and version	Set up job	2026-11-13T06:58:54.6081734Z 26.04.1
+Verify tree and version	Set up job	2026-11-13T06:58:54.6082276Z LTS
+Verify tree and version	Set up job	2026-11-13T06:58:54.6082835Z ##[endgroup]
+Verify tree and version	Set up job	2026-11-13T06:58:54.6083444Z ##[group]Runner Image
+Verify tree and version	Set up job	2026-11-13T06:58:54.6084046Z Image: ubuntu-26.04
+Verify tree and version	Set up job	2026-11-13T06:58:54.6084629Z Version: 20261101.186.1
+Verify tree and version	Set up job	2026-11-13T06:58:54.6085777Z Included Software: https://github.com/actions/runner-images/blob/ubuntu26/20261101.186/images/ubuntu/Ubuntu2604-Readme.md
+Verify tree and version	Set up job	2026-11-13T06:58:54.6087617Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu26%2F20261101.186
+Verify tree and version	Set up job	2026-11-13T06:58:54.6088643Z ##[endgroup]
+Verify tree and version	Set up job	2026-11-13T06:58:54.6089794Z ##[group]GITHUB_TOKEN Permissions
+Verify tree and version	Set up job	2026-11-13T06:58:54.6091856Z Contents: read
+Verify tree and version	Set up job	2026-11-13T06:58:54.6092971Z Metadata: read
+Verify tree and version	Set up job	2026-11-13T06:58:54.6093548Z ##[endgroup]
+Verify tree and version	Set up job	2026-11-13T06:58:54.6095621Z Secret source: Actions
+Verify tree and version	Set up job	2026-11-13T06:58:54.6096739Z Cache mode: write
+Verify tree and version	Set up job	2026-11-13T06:58:54.6097413Z Prepare workflow directory
+Verify tree and version	Set up job	2026-11-13T06:58:54.6498717Z Prepare all required actions
+Verify tree and version	Set up job	2026-11-13T06:58:54.6550462Z Getting action download info
+Verify tree and version	Set up job	2026-11-13T06:58:55.0163509Z Download action repository 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+Verify tree and version	Set up job	2026-11-13T06:58:55.1360737Z Download action repository 'actions/setup-node@820762786026740c76f36085b0efc47a31fe5020' (SHA:820762786026740c76f36085b0efc47a31fe5020)
+Verify tree and version	Set up job	2026-11-13T06:58:55.3366710Z Complete job name: Verify tree and version
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	﻿2026-11-13T06:58:55.4403539Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.4404681Z with:
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.4405177Z   repository: mazze93/stratum
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.4408899Z   token: ***
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.4409360Z   ssh-strict: true
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.4409827Z   ssh-user: git
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.4410562Z   persist-credentials: true
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.4411103Z   clean: true
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.4411569Z   sparse-checkout-cone-mode: true
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.4412127Z   fetch-depth: 1
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.4412577Z   fetch-tags: false
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.4413044Z   show-progress: true
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.4413522Z   lfs: false
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.4413958Z   submodules: false
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.4414439Z   set-safe-directory: true
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.4414958Z   allow-unsafe-pr-checkout: false
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.4415809Z ##[endgroup]
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.7351500Z Syncing repository: mazze93/stratum
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.7353715Z ##[group]Getting Git version info
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.7354545Z Working directory is '/home/runner/work/stratum/stratum'
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.7355621Z [command]/usr/bin/git version
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.7383675Z git version 2.56.0
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.7442962Z ##[endgroup]
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.7453980Z Temporarily overriding HOME='/home/runner/work/_temp/81d9fe65-5d59-4786-800d-58a8a5939059' before making global git config changes
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.7456360Z Adding repository directory to the temporary git global config as a safe directory
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.7458614Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/stratum/stratum
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.7527415Z Deleting the contents of '/home/runner/work/stratum/stratum'
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.7530119Z ##[group]Determining repository object format
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.7532127Z ##[endgroup]
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.7533189Z ##[group]Initializing the repository
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.7537006Z [command]/usr/bin/git init /home/runner/work/stratum/stratum
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.7678652Z hint: Using 'master' as the name for the initial branch. This default branch name
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.7680578Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.7682220Z hint: to use in all of your new repositories, which will suppress this warning,
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.7683169Z hint: call:
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.7683583Z hint:
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.7684118Z hint: 	git config --global init.defaultBranch <name>
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.7685016Z hint:
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.7685659Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.7686770Z hint: 'development'. The just-created branch can be renamed via this command:
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.7687765Z hint:
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.7688236Z hint: 	git branch -m <name>
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.7688724Z hint:
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.7689649Z hint: Disable this message with "git config set advice.defaultBranchName false"
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.7693256Z Initialized empty Git repository in /home/runner/work/stratum/stratum/.git/
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.7706740Z [command]/usr/bin/git remote add origin https://github.com/mazze93/stratum
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.7766361Z ##[endgroup]
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.7771773Z ##[group]Disabling automatic garbage collection
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.7772504Z [command]/usr/bin/git config --local gc.auto 0
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.7808253Z ##[endgroup]
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.7809396Z ##[group]Setting up auth
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.7810032Z Removing SSH command configuration
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.7815629Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.7857175Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.8327615Z Removing HTTP extra header
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.8333840Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.8369865Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.8655004Z Removing includeIf entries pointing to credentials config files
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.8661574Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.8700003Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.8979753Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-ca817244-b3e4-4298-8cbf-8dbe8dea07df.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.9021031Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/stratum/stratum/.git.path /home/runner/work/_temp/git-credentials-ca817244-b3e4-4298-8cbf-8dbe8dea07df.config
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.9053906Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/stratum/stratum/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-ca817244-b3e4-4298-8cbf-8dbe8dea07df.config
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.9092541Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-ca817244-b3e4-4298-8cbf-8dbe8dea07df.config
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.9125555Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-ca817244-b3e4-4298-8cbf-8dbe8dea07df.config
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.9155962Z ##[endgroup]
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.9156783Z ##[group]Fetching the repository
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:55.9162884Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +77297cb3b791d414b2421cd91a86877e2644e93d:refs/remotes/origin/main
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:56.7650608Z From https://github.com/mazze93/stratum
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:56.7652892Z  * [new ref]         77297cb3b791d414b2421cd91a86877e2644e93d -> origin/main
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:56.7663523Z [command]/usr/bin/git branch --list --remote origin/main
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:56.7693407Z   origin/main
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:56.7704476Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:56.7731394Z 77297cb3b791d414b2421cd91a86877e2644e93d
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:56.7738177Z ##[endgroup]
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:56.7739602Z ##[group]Determining the checkout info
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:56.7741393Z ##[endgroup]
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:56.7743384Z [command]/usr/bin/git sparse-checkout disable
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:56.7804527Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:56.7842792Z ##[group]Checking out the ref
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:56.7847302Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:56.9476128Z Switched to a new branch 'main'
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:56.9481922Z branch 'main' set up to track 'origin/main'.
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:56.9507424Z ##[endgroup]
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:56.9563968Z [command]/usr/bin/git log -1 --format=%H
+Verify tree and version	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:58:56.9593308Z 77297cb3b791d414b2421cd91a86877e2644e93d
+Verify tree and version	Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020	﻿2026-11-13T06:58:56.9946699Z ##[group]Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+Verify tree and version	Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020	2026-11-13T06:58:56.9947842Z with:
+Verify tree and version	Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020	2026-11-13T06:58:56.9948467Z   node-version: 24
+Verify tree and version	Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020	2026-11-13T06:58:56.9949084Z   cache: npm
+Verify tree and version	Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020	2026-11-13T06:58:56.9949581Z   check-latest: false
+Verify tree and version	Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020	2026-11-13T06:58:56.9957723Z   token: ***
+Verify tree and version	Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020	2026-11-13T06:58:56.9958295Z   package-manager-cache: true
+Verify tree and version	Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020	2026-11-13T06:58:56.9958974Z ##[endgroup]
+Verify tree and version	Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020	2026-11-13T06:58:57.1412187Z Found in cache @ /opt/hostedtoolcache/node/24.22.2/x64
+Verify tree and version	Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020	2026-11-13T06:58:57.1413254Z ##[group]Environment details
+Verify tree and version	Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020	2026-11-13T06:58:57.5674109Z node: v24.22.2
+Verify tree and version	Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020	2026-11-13T06:58:57.5674789Z npm: 11.19.1
+Verify tree and version	Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020	2026-11-13T06:58:57.5675167Z yarn: 1.22.22
+Verify tree and version	Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020	2026-11-13T06:58:57.5676359Z ##[endgroup]
+Verify tree and version	Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020	2026-11-13T06:58:57.5694271Z [command]/opt/hostedtoolcache/node/24.22.2/x64/bin/npm config get cache
+Verify tree and version	Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020	2026-11-13T06:58:57.6932164Z /home/runner/.npm
+Verify tree and version	Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020	2026-11-13T06:58:57.9908638Z Cache hit for: node-cache-Linux-x64-npm-1de959ecb45eab964ca5742f7cd225deb17d06ee51745e21ed1878ddb60ef607
+Verify tree and version	Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020	2026-11-13T06:58:59.3096172Z Received 12582912 of 92842108 (13.6%), 12.0 MBs/sec
+Verify tree and version	Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020	2026-11-13T06:58:59.9003302Z Received 92842108 of 92842108 (100.0%), 55.6 MBs/sec
+Verify tree and version	Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020	2026-11-13T06:58:59.9004776Z Cache Size: ~89 MB (92842108 B)
+Verify tree and version	Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020	2026-11-13T06:58:59.9048734Z [command]/usr/bin/tar -xf /home/runner/work/_temp/cc40ae01-2756-4c64-830b-f3e4f757e1c0/cache.tzst -P -C /home/runner/work/stratum/stratum --use-compress-program unzstd
+Verify tree and version	Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020	2026-11-13T06:59:00.0468643Z Cache restored successfully
+Verify tree and version	Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020	2026-11-13T06:59:00.0516118Z Cache restored from key: node-cache-Linux-x64-npm-1de959ecb45eab964ca5742f7cd225deb17d06ee51745e21ed1878ddb60ef607
+Verify tree and version	Every stated version equals the tag	﻿2026-11-13T06:59:00.0764568Z ##[group]Run node scripts/check-version.mjs
+Verify tree and version	Every stated version equals the tag	2026-11-13T06:59:00.0765050Z ^[[36;1mnode scripts/check-version.mjs^[[0m
+Verify tree and version	Every stated version equals the tag	2026-11-13T06:59:00.0837990Z shell: /usr/bin/bash -e {0}
+Verify tree and version	Every stated version equals the tag	2026-11-13T06:59:00.0838320Z ##[endgroup]
+Verify tree and version	Every stated version equals the tag	2026-11-13T06:59:00.1217787Z ✓ version 0.5.0 is consistent
+Verify tree and version	Run npm ci	﻿2026-11-13T06:59:00.1299442Z ##[group]Run npm ci
+Verify tree and version	Run npm ci	2026-11-13T06:59:00.1299749Z ^[[36;1mnpm ci^[[0m
+Verify tree and version	Run npm ci	2026-11-13T06:59:00.1351185Z shell: /usr/bin/bash -e {0}
+Verify tree and version	Run npm ci	2026-11-13T06:59:00.1351501Z ##[endgroup]
+Verify tree and version	Run npm ci	2026-11-13T06:59:03.8976120Z 
+Verify tree and version	Run npm ci	2026-11-13T06:59:03.8977272Z added 76 packages, and audited 80 packages in 4s
+Verify tree and version	Run npm ci	2026-11-13T06:59:03.8977897Z 
+Verify tree and version	Run npm ci	2026-11-13T06:59:03.8988423Z 19 packages are looking for funding
+Verify tree and version	Run npm ci	2026-11-13T06:59:03.8989174Z   run `npm fund` for details
+Verify tree and version	Run npm ci	2026-11-13T06:59:03.9011725Z npm warn install-scripts 2 packages have install scripts not yet covered by allowScripts:
+Verify tree and version	Run npm ci	2026-11-13T06:59:03.9012435Z 
+Verify tree and version	Run npm ci	2026-11-13T06:59:03.9013063Z npm warn install-scripts   esbuild@0.28.2 (postinstall: node install.js)
+Verify tree and version	Run npm ci	2026-11-13T06:59:03.9014210Z npm warn install-scripts   workerd@1.20261110.1 (postinstall: node install.js)
+Verify tree and version	Run npm ci	2026-11-13T06:59:03.9014973Z npm warn install-scripts
+Verify tree and version	Run npm ci	2026-11-13T06:59:03.9016070Z npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
+Verify tree and version	Run npm ci	2026-11-13T06:59:03.9017809Z found 0 vulnerabilities
+Verify tree and version	Run npm run check	﻿2026-11-13T06:59:03.9718416Z ##[group]Run npm run check
+Verify tree and version	Run npm run check	2026-11-13T06:59:03.9718782Z ^[[36;1mnpm run check^[[0m
+Verify tree and version	Run npm run check	2026-11-13T06:59:03.9771027Z shell: /usr/bin/bash -e {0}
+Verify tree and version	Run npm run check	2026-11-13T06:59:03.9771322Z ##[endgroup]
+Verify tree and version	Run npm run check	2026-11-13T06:59:04.0820886Z 
+Verify tree and version	Run npm run check	2026-11-13T06:59:04.0821366Z > stratum@0.5.0 check
+Verify tree and version	Run npm run check	2026-11-13T06:59:04.0821984Z > npm run check --workspaces --if-present
+Verify tree and version	Run npm run check	2026-11-13T06:59:04.0822246Z 
+Verify tree and version	Run npm run check	2026-11-13T06:59:04.2029124Z 
+Verify tree and version	Run npm run check	2026-11-13T06:59:04.2029841Z > @stratum/core@0.5.0 check
+Verify tree and version	Run npm run check	2026-11-13T06:59:04.2030597Z > tsc --noEmit
+Verify tree and version	Run npm run check	2026-11-13T06:59:04.2030778Z 
+Verify tree and version	Run npm run check	2026-11-13T06:59:04.3854246Z 
+Verify tree and version	Run npm run check	2026-11-13T06:59:04.3854863Z > @stratum/worker@0.5.0 check
+Verify tree and version	Run npm run check	2026-11-13T06:59:04.3855455Z > tsc --noEmit
+Verify tree and version	Run npm run check	2026-11-13T06:59:04.3855686Z 
+Verify tree and version	Run npm run check	2026-11-13T06:59:04.5457607Z 
+Verify tree and version	Run npm run check	2026-11-13T06:59:04.5458384Z > @stratum-ledger/cli@0.5.0 check
+Verify tree and version	Run npm run check	2026-11-13T06:59:04.5458817Z > tsc --noEmit
+Verify tree and version	Run npm run check	2026-11-13T06:59:04.5458960Z 
+Verify tree and version	Run npm test	﻿2026-11-13T06:59:04.7189852Z ##[group]Run npm test
+Verify tree and version	Run npm test	2026-11-13T06:59:04.7190165Z ^[[36;1mnpm test^[[0m
+Verify tree and version	Run npm test	2026-11-13T06:59:04.7240932Z shell: /usr/bin/bash -e {0}
+Verify tree and version	Run npm test	2026-11-13T06:59:04.7241205Z ##[endgroup]
+Verify tree and version	Run npm test	2026-11-13T06:59:04.8435987Z 
+Verify tree and version	Run npm test	2026-11-13T06:59:04.8436666Z > stratum@0.5.0 test
+Verify tree and version	Run npm test	2026-11-13T06:59:04.8437161Z > vitest run
+Verify tree and version	Run npm test	2026-11-13T06:59:04.8437401Z 
+Verify tree and version	Run npm test	2026-11-13T06:59:05.1892436Z 
+Verify tree and version	Run npm test	2026-11-13T06:59:05.1897092Z ^[[1m^[[30m^[[46m RUN ^[[49m^[[39m^[[22m ^[[36mv5.1.0 ^[[39m^[[90m/home/runner/work/stratum/stratum^[[39m
+Verify tree and version	Run npm test	2026-11-13T06:59:05.1898233Z 
+Verify tree and version	Run npm test	2026-11-13T06:59:05.5883048Z  ^[[32m✓^[[39m core/test/invariants.test.ts ^[[2m(^[[22m^[[2m19 tests^[[22m^[[2m)^[[22m^[[32m 24^[[2mms^[[22m^[[39m
+Verify tree and version	Run npm test	2026-11-13T06:59:05.5958077Z  ^[[32m✓^[[39m worker/test/persist.test.ts ^[[2m(^[[22m^[[2m15 tests^[[22m^[[2m)^[[22m^[[32m 30^[[2mms^[[22m^[[39m
+Verify tree and version	Run npm test	2026-11-13T06:59:05.9359483Z  ^[[32m✓^[[39m core/test/binding.test.ts ^[[2m(^[[22m^[[2m11 tests^[[22m^[[2m)^[[22m^[[32m 122^[[2mms^[[22m^[[39m
+Verify tree and version	Run npm test	2026-11-13T06:59:06.3300378Z  ^[[32m✓^[[39m core/test/canonical.test.ts ^[[2m(^[[22m^[[2m13 tests^[[22m^[[2m)^[[22m^[[32m 186^[[2mms^[[22m^[[39m
+Verify tree and version	Run npm test	2026-11-13T06:59:06.5349855Z  ^[[32m✓^[[39m core/test/schema.test.ts ^[[2m(^[[22m^[[2m5 tests^[[22m^[[2m)^[[22m^[[32m 13^[[2mms^[[22m^[[39m
+Verify tree and version	Run npm test	2026-11-13T06:59:06.7337307Z  ^[[32m✓^[[39m cli/test/verify.test.ts ^[[2m(^[[22m^[[2m7 tests^[[22m^[[2m)^[[22m^[[33m 916^[[2mms^[[22m^[[39m
+Verify tree and version	Run npm test	2026-11-13T06:59:06.9378462Z  ^[[32m✓^[[39m core/test/cross-validation.test.ts ^[[2m(^[[22m^[[2m3 tests^[[22m^[[2m)^[[22m^[[32m 14^[[2mms^[[22m^[[39m
+Verify tree and version	Run npm test	2026-11-13T06:59:07.1445256Z  ^[[32m✓^[[39m worker/test/errors.test.ts ^[[2m(^[[22m^[[2m3 tests^[[22m^[[2m)^[[22m^[[32m 7^[[2mms^[[22m^[[39m
+Verify tree and version	Run npm test	2026-11-13T06:59:07.3413096Z  ^[[32m✓^[[39m worker/test/gate.test.ts ^[[2m(^[[22m^[[2m4 tests^[[22m^[[2m)^[[22m^[[32m 6^[[2mms^[[22m^[[39m
+Verify tree and version	Run npm test	2026-11-13T06:59:07.6937096Z  ^[[32m✓^[[39m cli/test/log-required.test.ts ^[[2m(^[[22m^[[2m16 tests^[[22m^[[2m)^[[22m^[[33m 982^[[2mms^[[22m^[[39m
+Verify tree and version	Run npm test	2026-11-13T06:59:14.7164782Z  ^[[32m✓^[[39m cli/test/ingress.test.ts ^[[2m(^[[22m^[[2m33 tests^[[22m^[[2m)^[[22m^[[33m 9118^[[2mms^[[22m^[[39m
+Verify tree and version	Run npm test	2026-11-13T06:59:14.7165700Z    ^[[32m✓^[[39m identity: deterministic, idempotent, canonical ^[[2m(4)^[[22m
+Verify tree and version	Run npm test	2026-11-13T06:59:14.7166464Z      ^[[33m^[[2m✓^[[22m^[[39m re-emitting the same act records it once and says so^[[33m 349^[[2mms^[[22m^[[39m
+Verify tree and version	Run npm test	2026-11-13T06:59:14.7167172Z    ^[[32m✓^[[39m evidence is produced by running the check, never supplied ^[[2m(9)^[[22m
+Verify tree and version	Run npm test	2026-11-13T06:59:14.7168474Z      ^[[33m^[[2m✓^[[22m^[[39m a passing check binds the observed exit to the commit, and the ledger validates the target^[[33m 347^[[2mms^[[22m^[[39m
+Verify tree and version	Run npm test	2026-11-13T06:59:14.7170158Z      ^[[33m^[[2m✓^[[22m^[[39m a caller-supplied repo never carries credentials into the binding^[[33m 443^[[2mms^[[22m^[[39m
+Verify tree and version	Run npm test	2026-11-13T06:59:14.7171819Z    ^[[32m✓^[[39m degradation: unset is a notice, configured-but-failing is loud ^[[2m(8)^[[22m
+Verify tree and version	Run npm test	2026-11-13T06:59:14.7173442Z      ^[[33m^[[2m✓^[[22m^[[39m unreachable: queued, counted on every run, flushed in order once it's back^[[33m 318^[[2mms^[[22m^[[39m
+Verify tree and version	Run npm test	2026-11-13T06:59:14.7174793Z    ^[[32m✓^[[39m outbox under concurrency (CodeQL js/file-system-race) ^[[2m(5)^[[22m
+Verify tree and version	Run npm test	2026-11-13T06:59:14.7175978Z      ^[[33m^[[2m✓^[[22m^[[39m hooks emitting at once never lose a queued record^[[33m 532^[[2mms^[[22m^[[39m
+Verify tree and version	Run npm test	2026-11-13T06:59:14.7178017Z      ^[[33m^[[2m✓^[[22m^[[39m a live lock is waited on; one that never frees is an error, never a silent drop^[[33m 5063^[[2mms^[[22m^[[39m
+Verify tree and version	Run npm test	2026-11-13T06:59:14.7210113Z 
+Verify tree and version	Run npm test	2026-11-13T06:59:14.7215662Z ^[[2m Test Files ^[[22m ^[[1m^[[32m11 passed^[[39m^[[22m^[[90m (11)^[[39m
+Verify tree and version	Run npm test	2026-11-13T06:59:14.7216998Z ^[[2m      Tests ^[[22m ^[[1m^[[32m129 passed^[[39m^[[22m^[[90m (129)^[[39m
+Verify tree and version	Run npm test	2026-11-13T06:59:14.7218317Z ^[[2m   Start at ^[[22m 06:59:05
+Verify tree and version	Run npm test	2026-11-13T06:59:14.7223019Z ^[[2m   Duration ^[[22m 9.52s^[[2m (tests 92%, transform 5%, import 3%, worker 1%)^[[22m
+Verify tree and version	Run npm test	2026-11-13T06:59:14.7237879Z 
+Verify tree and version	Python reference + every trace	﻿2026-11-13T06:59:14.7571426Z ##[group]Run npm run test:reference
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:14.7571789Z ^[[36;1mnpm run test:reference^[[0m
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:14.7572196Z ^[[36;1mfor t in data/*-trace.jsonl; do python3 scripts/validate-trace.py "$t"; done^[[0m
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:14.7621597Z shell: /usr/bin/bash -e {0}
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:14.7621862Z ##[endgroup]
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:14.8673939Z 
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:14.8674681Z > stratum@0.5.0 test:reference
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:14.8676344Z > cd reference && python3 test_tessera_projection.py && python3 test_canonical.py && python3 test_binding.py && python3 ../scripts/test_recheck_bindings.py
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:14.8677456Z 
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:14.9070987Z   ok  test_axiom_and_evidence_trust_are_distinct
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:14.9071503Z   ok  test_corrupt_persisted_log_fails_on_load
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:14.9071942Z   ok  test_determinism_under_timestamp_permutation
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:14.9072347Z   ok  test_fail_closed_on_missing_backing
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:14.9072699Z   ok  test_i1_checked_evidence_validates
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:14.9073053Z   ok  test_i1_claim_only_cannot_validate
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:14.9073480Z   ok  test_i2_supersession_preserves_chain
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:14.9073841Z   ok  test_i3a_depth_circuit_breaker
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:14.9074225Z   ok  test_i3b_fanin_distinct_from_depth
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:14.9074568Z   ok  test_i4_replay_from_serialized_log
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:14.9074912Z   ok  test_illegal_transition_rejected
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:14.9075268Z   ok  test_multi_parent_lineage_rejected
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:14.9075654Z   ok  test_ontology_covers_status_space
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:14.9076039Z   ok  test_quorum_accepts_checked_distinct_signatures
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:14.9076451Z   ok  test_quorum_rejects_unchecked_signatures
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:14.9076854Z   ok  test_review_clears_on_overturned_invalidation
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:14.9077103Z 
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:14.9077329Z 16/16 invariants hold (epoch-pure, replay-proven).
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:14.9619191Z   ok  test_chain_detects_edit_delete_reorder
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:14.9619958Z   ok  test_fail_closed_refusals
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:14.9620714Z   ok  test_golden_cases_reproduce
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:14.9621109Z   ok  test_golden_genesis_digest_is_current
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:14.9621534Z   ok  test_key_order_is_utf16_not_codepoint
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:14.9621786Z 
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:14.9622008Z 5/5 canonical-bytes properties hold.
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:15.0098920Z   ok  test_binding_round_trips_and_v1_wire_is_unchanged
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:15.0099764Z   ok  test_malformed_bindings_rejected
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:15.0100556Z   ok  test_strict_required_fields_match_typescript
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:15.0101097Z   ok  test_unknown_schema_version_fails_closed
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:15.0101570Z   ok  test_v1_checked_at_still_validates
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:15.0102024Z   ok  test_v1_evidence_cannot_carry_a_binding
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:15.0102549Z   ok  test_v2_attestation_cannot_validate_before_registry
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:15.0103099Z   ok  test_v2_authority_acts_refused_until_registry
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:15.0103578Z   ok  test_v2_checked_at_alone_cannot_validate
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:15.0103954Z   ok  test_v2_reproducible_check_validates
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:15.0104193Z 
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:15.0104329Z 10/10 v2 binding rules hold.
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.0334146Z   ok  test_foreign_repo_is_skipped
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.0334669Z   ok  test_input_digest_is_rederived_from_the_checkout
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.0335035Z   ok  test_missing_output_fails
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.0335388Z   ok  test_non_file_input_is_unverifiable_not_failed
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.0336068Z   ok  test_output_digest_mismatch_fails
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.0336386Z   ok  test_reproducing_binding_passes
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.0336723Z   ok  test_runs_at_the_pinned_commit_not_head
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.0337041Z   ok  test_unknown_commit_fails
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.0337324Z   ok  test_worktrees_are_cleaned_up
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.0337504Z 
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.0337668Z 9/9 re-checker properties hold.
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.0957430Z trace     atrium-trace.jsonl
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.0958279Z events    46  ·  head epoch 45
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.0958904Z decisions 24  ·  foreclosures 2 (2 active)
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.0960042Z   authoritative_axiomatic      1
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.0960734Z   authoritative_provisional    3
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.0961203Z   authoritative_verified       20
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.0961719Z fingerprint entries 26
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.0962482Z head digest cc443f247dcbb654788ab526e13b0bbf4ab5f1fa0a7528928fba6d290005f5f2
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.0963596Z OK — trace loads clean; every guard passed; projection is total.
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.1454737Z trace     genesis-trace.jsonl
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.1455632Z events    20  ·  head epoch 19
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.1456239Z decisions 13  ·  foreclosures 4 (4 active)
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.1456765Z   authoritative_axiomatic      1
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.1457234Z   authoritative_verified       3
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.1457684Z   narrative                    9
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.1458120Z fingerprint entries 17
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.1458864Z head digest 67f7689bb298131b673ee5da969b2aa74509b773351dd7c3afc57be7e8b4bbc0
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.1459921Z OK — trace loads clean; every guard passed; projection is total.
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.1926897Z trace     ingress-trace.jsonl
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.1927793Z events    6  ·  head epoch 5
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.1928454Z decisions 3  ·  foreclosures 2 (2 active)
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.1929038Z   authoritative_provisional    1
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.1929552Z   authoritative_verified       1
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.1930085Z   narrative                    1
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.1930791Z fingerprint entries 5
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.1931595Z head digest 40e3242efc81f7bddd246bbaecaf0be3c0855c2f9ca380ccd9ce42b0fcc13237
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.1932769Z OK — trace loads clean; every guard passed; projection is total.
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.2384121Z trace     release-trace.jsonl
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.2385008Z events    5  ·  head epoch 4
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.2385660Z decisions 2  ·  foreclosures 3 (3 active)
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.2386323Z   authoritative_provisional    1
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.2386837Z   narrative                    1
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.2387295Z fingerprint entries 5
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.2388117Z head digest bbfdf58b1bbc6ac4369f26a1e181f256af1113984d90b93e4c6a8427cff75fad
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.2389227Z OK — trace loads clean; every guard passed; projection is total.
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.2837883Z trace     stele-trace.jsonl
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.2869035Z events    3  ·  head epoch 2
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.2869893Z decisions 2  ·  foreclosures 0 (0 active)
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.2871606Z   authoritative_axiomatic      1
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.2872065Z   authoritative_verified       1
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.2872491Z fingerprint entries 2
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.2873234Z head digest e070a19197b7eddeb29067941f012f4cce17c4a270d841d5e7b35f2e8ca98910
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.2874270Z OK — trace loads clean; every guard passed; projection is total.
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.3352814Z trace     trust-trace.jsonl
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.3353709Z events    35  ·  head epoch 34
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.3354340Z decisions 20  ·  foreclosures 4 (4 active)
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.3354903Z   authoritative_axiomatic      2
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.3355458Z   authoritative_provisional    7
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.3355963Z   authoritative_verified       9
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.3356434Z   narrative                    2
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.3356885Z fingerprint entries 24
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.3357672Z head digest 61ae5031178ff079847a3716a934728b1a33ed1fb54de433613c4ae61aa7fd08
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.3359209Z OK — trace loads clean; every guard passed; projection is total.
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.3836863Z trace     workspace-trace.jsonl
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.3837743Z events    23  ·  head epoch 22
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.3838419Z decisions 14  ·  foreclosures 3 (3 active)
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.3839011Z   authoritative_axiomatic      1
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.3839561Z   authoritative_provisional    7
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.3840091Z   authoritative_verified       6
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.3840797Z fingerprint entries 17
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.3841682Z head digest 1902ff3f55b5be2ebd11e3ebcecf82d01df10370c5c862da881022893a2eb0dd
+Verify tree and version	Python reference + every trace	2026-11-13T06:59:16.3842830Z OK — trace loads clean; every guard passed; projection is total.
+Verify tree and version	Package contents (dry run)	﻿2026-11-13T06:59:16.3949357Z ##[group]Run npm pack --workspace cli --dry-run
+Verify tree and version	Package contents (dry run)	2026-11-13T06:59:16.3949792Z ^[[36;1mnpm pack --workspace cli --dry-run^[[0m
+Verify tree and version	Package contents (dry run)	2026-11-13T06:59:16.3998651Z shell: /usr/bin/bash -e {0}
+Verify tree and version	Package contents (dry run)	2026-11-13T06:59:16.3998919Z ##[endgroup]
+Verify tree and version	Package contents (dry run)	2026-11-13T06:59:16.7102367Z npm notice
+Verify tree and version	Package contents (dry run)	2026-11-13T06:59:16.7106789Z npm notice 📦  @stratum-ledger/cli@0.5.0
+Verify tree and version	Package contents (dry run)	2026-11-13T06:59:16.7107397Z npm notice Tarball Contents
+Verify tree and version	Package contents (dry run)	2026-11-13T06:59:16.7110389Z npm notice 1.1kB LICENSE
+Verify tree and version	Package contents (dry run)	2026-11-13T06:59:16.7110778Z npm notice 2.1kB README.md
+Verify tree and version	Package contents (dry run)	2026-11-13T06:59:16.7111131Z npm notice 19.5kB bin/stratum.mjs
+Verify tree and version	Package contents (dry run)	2026-11-13T06:59:16.7111491Z npm notice 3.4kB lib/ingress.d.mts
+Verify tree and version	Package contents (dry run)	2026-11-13T06:59:16.7111841Z npm notice 29.8kB lib/ingress.mjs
+Verify tree and version	Package contents (dry run)	2026-11-13T06:59:16.7112161Z npm notice 996B package.json
+Verify tree and version	Package contents (dry run)	2026-11-13T06:59:16.7112600Z npm notice Tarball Details
+Verify tree and version	Package contents (dry run)	2026-11-13T06:59:16.7112960Z npm notice name: @stratum-ledger/cli
+Verify tree and version	Package contents (dry run)	2026-11-13T06:59:16.7113545Z npm notice version: 0.5.0
+Verify tree and version	Package contents (dry run)	2026-11-13T06:59:16.7114651Z npm notice filename: stratum-ledger-cli-0.5.0.tgz
+Verify tree and version	Package contents (dry run)	2026-11-13T06:59:16.7115568Z npm notice package size: 18.6 kB
+Verify tree and version	Package contents (dry run)	2026-11-13T06:59:16.7117842Z npm notice unpacked size: 56.9 kB
+Verify tree and version	Package contents (dry run)	2026-11-13T06:59:16.7118821Z npm notice shasum: 27c8a027f9f6ee69c6ac863305dfc80b1944fe0c
+Verify tree and version	Package contents (dry run)	2026-11-13T06:59:16.7119861Z npm notice integrity: sha512-vrLm3aAzjA/QF[...]XzInmBHN/+Gfg==
+Verify tree and version	Package contents (dry run)	2026-11-13T06:59:16.7121058Z npm notice total files: 6
+Verify tree and version	Package contents (dry run)	2026-11-13T06:59:16.7121517Z npm notice
+Verify tree and version	Package contents (dry run)	2026-11-13T06:59:16.7123038Z stratum-ledger-cli-0.5.0.tgz
+Verify tree and version	Post Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020	﻿2026-11-13T06:59:16.7332485Z Post job cleanup.
+Verify tree and version	Post Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020	2026-11-13T06:59:16.8481162Z Cache hit occurred on the primary key node-cache-Linux-x64-npm-1de959ecb45eab964ca5742f7cd225deb17d06ee51745e21ed1878ddb60ef607, not saving cache.
+Verify tree and version	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	﻿2026-11-13T06:59:16.8638420Z Post job cleanup.
+Verify tree and version	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:16.9536854Z [command]/usr/bin/git version
+Verify tree and version	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:16.9588557Z git version 2.56.0
+Verify tree and version	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:16.9632596Z Temporarily overriding HOME='/home/runner/work/_temp/9b73d805-718c-4217-a02e-19bde07ec48e' before making global git config changes
+Verify tree and version	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:16.9634247Z Adding repository directory to the temporary git global config as a safe directory
+Verify tree and version	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:16.9638036Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/stratum/stratum
+Verify tree and version	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:16.9677372Z Removing SSH command configuration
+Verify tree and version	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:16.9684509Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Verify tree and version	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:16.9730007Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Verify tree and version	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:17.0048012Z Removing HTTP extra header
+Verify tree and version	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:17.0054919Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Verify tree and version	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:17.0104085Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Verify tree and version	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:17.0399449Z Removing includeIf entries pointing to credentials config files
+Verify tree and version	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:17.0405940Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Verify tree and version	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:17.0434300Z includeif.gitdir:/home/runner/work/stratum/stratum/.git.path
+Verify tree and version	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:17.0435888Z includeif.gitdir:/home/runner/work/stratum/stratum/.git/worktrees/*.path
+Verify tree and version	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:17.0436839Z includeif.gitdir:/github/workspace/.git.path
+Verify tree and version	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:17.0437692Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Verify tree and version	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:17.0444770Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/stratum/stratum/.git.path
+Verify tree and version	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:17.0468652Z /home/runner/work/_temp/git-credentials-ca817244-b3e4-4298-8cbf-8dbe8dea07df.config
+Verify tree and version	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:17.0480349Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/stratum/stratum/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-ca817244\-b3e4\-4298\-8cbf\-8dbe8dea07df\.config
+Verify tree and version	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:17.0517912Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/stratum/stratum/.git/worktrees/*.path
+Verify tree and version	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:17.0544049Z /home/runner/work/_temp/git-credentials-ca817244-b3e4-4298-8cbf-8dbe8dea07df.config
+Verify tree and version	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:17.0553272Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/stratum/stratum/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-ca817244\-b3e4\-4298\-8cbf\-8dbe8dea07df\.config
+Verify tree and version	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:17.0587580Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+Verify tree and version	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:17.0613531Z /github/runner_temp/git-credentials-ca817244-b3e4-4298-8cbf-8dbe8dea07df.config
+Verify tree and version	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:17.0622232Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-ca817244\-b3e4\-4298\-8cbf\-8dbe8dea07df\.config
+Verify tree and version	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:17.0660916Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Verify tree and version	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:17.0687242Z /github/runner_temp/git-credentials-ca817244-b3e4-4298-8cbf-8dbe8dea07df.config
+Verify tree and version	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:17.0695475Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-ca817244\-b3e4\-4298\-8cbf\-8dbe8dea07df\.config
+Verify tree and version	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:17.0741698Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Verify tree and version	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:17.1014353Z Removing credentials config '/home/runner/work/_temp/git-credentials-ca817244-b3e4-4298-8cbf-8dbe8dea07df.config'
+Verify tree and version	Complete job	﻿2026-11-13T06:59:17.1169547Z Cleaning up orphan processes
+Rehearse (no signing, no publish)	Set up job	﻿2026-11-13T06:59:22.6311502Z Current runner version: '2.338.2'
+Rehearse (no signing, no publish)	Set up job	2026-11-13T06:59:22.6333811Z ##[group]Runner Image Provisioner
+Rehearse (no signing, no publish)	Set up job	2026-11-13T06:59:22.6334583Z Hosted Compute Agent
+Rehearse (no signing, no publish)	Set up job	2026-11-13T06:59:22.6335085Z Version: 20261028.624
+Rehearse (no signing, no publish)	Set up job	2026-11-13T06:59:22.6335671Z Commit: 54898b74c23fde5556c9b3c3a2290865feef0dfe
+Rehearse (no signing, no publish)	Set up job	2026-11-13T06:59:22.6336267Z Build Date: 2026-10-28T21:51:42Z
+Rehearse (no signing, no publish)	Set up job	2026-11-13T06:59:22.6336844Z Worker ID: {26901bd2-9653-4c41-8293-1aedab5e758d}
+Rehearse (no signing, no publish)	Set up job	2026-11-13T06:59:22.6337458Z Region: westus2
+Rehearse (no signing, no publish)	Set up job	2026-11-13T06:59:22.6337912Z Cloud: Azure
+Rehearse (no signing, no publish)	Set up job	2026-11-13T06:59:22.6338393Z ##[endgroup]
+Rehearse (no signing, no publish)	Set up job	2026-11-13T06:59:22.6339578Z ##[group]Operating System
+Rehearse (no signing, no publish)	Set up job	2026-11-13T06:59:22.6340240Z Ubuntu
+Rehearse (no signing, no publish)	Set up job	2026-11-13T06:59:22.6340777Z 26.04.1
+Rehearse (no signing, no publish)	Set up job	2026-11-13T06:59:22.6341210Z LTS
+Rehearse (no signing, no publish)	Set up job	2026-11-13T06:59:22.6341711Z ##[endgroup]
+Rehearse (no signing, no publish)	Set up job	2026-11-13T06:59:22.6342171Z ##[group]Runner Image
+Rehearse (no signing, no publish)	Set up job	2026-11-13T06:59:22.6342661Z Image: ubuntu-26.04
+Rehearse (no signing, no publish)	Set up job	2026-11-13T06:59:22.6343208Z Version: 20261101.186.1
+Rehearse (no signing, no publish)	Set up job	2026-11-13T06:59:22.6344094Z Included Software: https://github.com/actions/runner-images/blob/ubuntu26/20261101.186/images/ubuntu/Ubuntu2604-Readme.md
+Rehearse (no signing, no publish)	Set up job	2026-11-13T06:59:22.6345518Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu26%2F20261101.186
+Rehearse (no signing, no publish)	Set up job	2026-11-13T06:59:22.6346294Z ##[endgroup]
+Rehearse (no signing, no publish)	Set up job	2026-11-13T06:59:22.6347281Z ##[group]GITHUB_TOKEN Permissions
+Rehearse (no signing, no publish)	Set up job	2026-11-13T06:59:22.6348776Z Contents: read
+Rehearse (no signing, no publish)	Set up job	2026-11-13T06:59:22.6349372Z Metadata: read
+Rehearse (no signing, no publish)	Set up job	2026-11-13T06:59:22.6349987Z ##[endgroup]
+Rehearse (no signing, no publish)	Set up job	2026-11-13T06:59:22.6352285Z Secret source: Actions
+Rehearse (no signing, no publish)	Set up job	2026-11-13T06:59:22.6353116Z Cache mode: write
+Rehearse (no signing, no publish)	Set up job	2026-11-13T06:59:22.6353822Z Prepare workflow directory
+Rehearse (no signing, no publish)	Set up job	2026-11-13T06:59:22.6611922Z Prepare all required actions
+Rehearse (no signing, no publish)	Set up job	2026-11-13T06:59:22.6650644Z Getting action download info
+Rehearse (no signing, no publish)	Set up job	2026-11-13T06:59:23.0006038Z Download action repository 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+Rehearse (no signing, no publish)	Set up job	2026-11-13T06:59:23.1352585Z Download action repository 'actions/setup-node@820762786026740c76f36085b0efc47a31fe5020' (SHA:820762786026740c76f36085b0efc47a31fe5020)
+Rehearse (no signing, no publish)	Set up job	2026-11-13T06:59:23.2177799Z Download action repository 'sigstore/cosign-installer@756fe2d284c7292c4e9b62c8a28f1e5629c59532' (SHA:756fe2d284c7292c4e9b62c8a28f1e5629c59532)
+Rehearse (no signing, no publish)	Set up job	2026-11-13T06:59:23.5412219Z Complete job name: Rehearse (no signing, no publish)
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	﻿2026-11-13T06:59:23.6083196Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.6084022Z with:
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.6084390Z   repository: mazze93/stratum
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.6087604Z   token: ***
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.6088003Z   ssh-strict: true
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.6088367Z   ssh-user: git
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.6088735Z   persist-credentials: true
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.6089127Z   clean: true
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.6089489Z   sparse-checkout-cone-mode: true
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.6090130Z   fetch-depth: 1
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.6090485Z   fetch-tags: false
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.6090842Z   show-progress: true
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.6091203Z   lfs: false
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.6091541Z   submodules: false
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.6091900Z   set-safe-directory: true
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.6092328Z   allow-unsafe-pr-checkout: false
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.6093037Z ##[endgroup]
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.8222533Z Syncing repository: mazze93/stratum
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.8224079Z ##[group]Getting Git version info
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.8224647Z Working directory is '/home/runner/work/stratum/stratum'
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.8225551Z [command]/usr/bin/git version
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.8245807Z git version 2.56.0
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.8266608Z ##[endgroup]
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.8275565Z Temporarily overriding HOME='/home/runner/work/_temp/4789b32a-81f0-4197-8994-aa0418967e47' before making global git config changes
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.8277668Z Adding repository directory to the temporary git global config as a safe directory
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.8279447Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/stratum/stratum
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.8348559Z Deleting the contents of '/home/runner/work/stratum/stratum'
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.8351711Z ##[group]Determining repository object format
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.8353085Z ##[endgroup]
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.8353874Z ##[group]Initializing the repository
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.8356717Z [command]/usr/bin/git init /home/runner/work/stratum/stratum
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.8436496Z hint: Using 'master' as the name for the initial branch. This default branch name
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.8437483Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.8438254Z hint: to use in all of your new repositories, which will suppress this warning,
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.8438992Z hint: call:
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.8439402Z hint:
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.8440077Z hint: 	git config --global init.defaultBranch <name>
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.8440841Z hint:
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.8441549Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.8442298Z hint: 'development'. The just-created branch can be renamed via this command:
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.8442888Z hint:
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.8443229Z hint: 	git branch -m <name>
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.8443659Z hint:
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.8444420Z hint: Disable this message with "git config set advice.defaultBranchName false"
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.8445707Z Initialized empty Git repository in /home/runner/work/stratum/stratum/.git/
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.8455589Z [command]/usr/bin/git remote add origin https://github.com/mazze93/stratum
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.8500689Z ##[endgroup]
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.8501595Z ##[group]Disabling automatic garbage collection
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.8503890Z [command]/usr/bin/git config --local gc.auto 0
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.8535597Z ##[endgroup]
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.8536731Z ##[group]Setting up auth
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.8537316Z Removing SSH command configuration
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.8541256Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.8570618Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.8941320Z Removing HTTP extra header
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.8946511Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.8976420Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.9203364Z Removing includeIf entries pointing to credentials config files
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.9207460Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.9236996Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.9473293Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-42bb6139-b638-4d34-b8a4-57115afb054b.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.9506096Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/stratum/stratum/.git.path /home/runner/work/_temp/git-credentials-42bb6139-b638-4d34-b8a4-57115afb054b.config
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.9535654Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/stratum/stratum/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-42bb6139-b638-4d34-b8a4-57115afb054b.config
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.9571604Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-42bb6139-b638-4d34-b8a4-57115afb054b.config
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.9598914Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-42bb6139-b638-4d34-b8a4-57115afb054b.config
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.9624698Z ##[endgroup]
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.9625330Z ##[group]Fetching the repository
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:23.9630214Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +77297cb3b791d414b2421cd91a86877e2644e93d:refs/remotes/origin/main
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:25.7055063Z From https://github.com/mazze93/stratum
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:25.7056537Z  * [new ref]         77297cb3b791d414b2421cd91a86877e2644e93d -> origin/main
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:25.7061817Z [command]/usr/bin/git branch --list --remote origin/main
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:25.7085044Z   origin/main
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:25.7091394Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:25.7111895Z 77297cb3b791d414b2421cd91a86877e2644e93d
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:25.7115436Z ##[endgroup]
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:25.7116170Z ##[group]Determining the checkout info
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:25.7117676Z ##[endgroup]
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:25.7121012Z [command]/usr/bin/git sparse-checkout disable
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:25.7167311Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:25.7203114Z ##[group]Checking out the ref
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:25.7211723Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:25.8705105Z Switched to a new branch 'main'
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:25.8706557Z branch 'main' set up to track 'origin/main'.
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:25.8729777Z ##[endgroup]
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:25.8781397Z [command]/usr/bin/git log -1 --format=%H
+Rehearse (no signing, no publish)	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:25.8802464Z 77297cb3b791d414b2421cd91a86877e2644e93d
+Rehearse (no signing, no publish)	Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020	﻿2026-11-13T06:59:25.9179305Z ##[group]Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+Rehearse (no signing, no publish)	Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020	2026-11-13T06:59:25.9180146Z with:
+Rehearse (no signing, no publish)	Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020	2026-11-13T06:59:25.9180509Z   node-version: 24
+Rehearse (no signing, no publish)	Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020	2026-11-13T06:59:25.9180898Z   check-latest: false
+Rehearse (no signing, no publish)	Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020	2026-11-13T06:59:25.9184260Z   token: ***
+Rehearse (no signing, no publish)	Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020	2026-11-13T06:59:25.9184656Z   package-manager-cache: true
+Rehearse (no signing, no publish)	Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020	2026-11-13T06:59:25.9185140Z ##[endgroup]
+Rehearse (no signing, no publish)	Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020	2026-11-13T06:59:26.0904258Z Found in cache @ /opt/hostedtoolcache/node/24.22.2/x64
+Rehearse (no signing, no publish)	Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020	2026-11-13T06:59:26.0907444Z ##[group]Environment details
+Rehearse (no signing, no publish)	Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020	2026-11-13T06:59:26.7748780Z node: v24.22.2
+Rehearse (no signing, no publish)	Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020	2026-11-13T06:59:26.7750034Z npm: 11.19.1
+Rehearse (no signing, no publish)	Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020	2026-11-13T06:59:26.7750883Z yarn: 1.22.22
+Rehearse (no signing, no publish)	Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020	2026-11-13T06:59:26.7752829Z ##[endgroup]
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	﻿2026-11-13T06:59:26.8291404Z ##[group]Run sigstore/cosign-installer@756fe2d284c7292c4e9b62c8a28f1e5629c59532
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8292772Z with:
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8293543Z   cosign-release: v3.1.4
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8294431Z   install-dir: $HOME/.cosign
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8295315Z   use-sudo: false
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8296107Z   curl-retries: 6
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8296902Z ##[endgroup]
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8357606Z ##[start-action display=Run #!/bin/bash;id=__sigstore_cosign-installer.__run]
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8409004Z ##[group]Run #!/bin/bash
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8410459Z ^[[36;1m#!/bin/bash^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8411474Z ^[[36;1m# Substitute environment variables in install-dir input^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8412803Z ^[[36;1minstall_dir=$(envsubst <<<"${input_install_dir}")^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8413855Z ^[[36;1m^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8414562Z ^[[36;1m# cosign install script^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8415458Z ^[[36;1mshopt -s expand_aliases^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8416344Z ^[[36;1mif [ -z "$NO_COLOR" ]; then^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8417448Z ^[[36;1m  alias log_info="echo -e \"\033[1;32mINFO\033[0m:\""^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8418681Z ^[[36;1m  alias log_error="echo -e \"\033[1;31mERROR\033[0m:\""^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8419737Z ^[[36;1melse^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8420693Z ^[[36;1m  alias log_info="echo \"INFO:\""^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8421673Z ^[[36;1m  alias log_error="echo \"ERROR:\""^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8422584Z ^[[36;1mfi^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8423259Z ^[[36;1mset -e^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8423949Z ^[[36;1m^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8424703Z ^[[36;1mCURL_RETRIES="${input_curl_retries:-6}"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8426021Z ^[[36;1m# Retry options shared by every release download below. GitHub's release^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8427618Z ^[[36;1m# CDN intermittently returns transient HTTP 504s that can persist for^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8429186Z ^[[36;1m# ~15-20s, outlasting curl's default exponential backoff (~7s across 3^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8430809Z ^[[36;1m# retries). A fixed 5s delay with --retry-all-errors rides out those^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8432548Z ^[[36;1m# windows, while --retry-max-time 120 keeps a failing download bounded.^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8434349Z ^[[36;1mCURL_RETRY_OPTS=(--retry "${CURL_RETRIES}" --retry-delay 5 --retry-all-errors --retry-max-time 120)^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8435824Z ^[[36;1m^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8436586Z ^[[36;1m# This function helps compare versions.^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8437707Z ^[[36;1m# Returns 0 if version1 >= version2, 1 otherwise.^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8438851Z ^[[36;1m# Usage: is_version_ge "3.0.0" "$version_num"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8439939Z ^[[36;1mis_version_ge() {^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8440938Z ^[[36;1m    [ "$(printf '%s\n' "$1" "$2" | sort -V | head -n1)" == "$1" ]^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8442038Z ^[[36;1m}^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8442702Z ^[[36;1m^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8443627Z ^[[36;1m# Check for unsupported old versions (anything below v2.0.0)^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8444939Z ^[[36;1mif [[ "${input_cosign_release}" != "main" ]]; then^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8446157Z ^[[36;1m  # Extract version without 'v' prefix for comparison^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8447326Z ^[[36;1m  version_num="${input_cosign_release}"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8448328Z ^[[36;1m  version_num="${version_num#v}"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8449219Z ^[[36;1m^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8450142Z ^[[36;1m  # Check if version is less than v2.0.0^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8451237Z ^[[36;1m  if ! is_version_ge "2.0.0" "$version_num"; then^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8452555Z ^[[36;1m    log_error "cosign versions below v2.0.0 are no longer supported."^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8453979Z ^[[36;1m    log_error "Requested version: ${input_cosign_release}"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8455234Z ^[[36;1m    log_error "Please use cosign v2.6.0 or later."^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8456744Z ^[[36;1m    log_error "See https://github.com/sigstore/cosign/releases for available versions."^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8458156Z ^[[36;1m    exit 1^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8458880Z ^[[36;1m  fi^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8459562Z ^[[36;1mfi^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8460390Z ^[[36;1m^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8461257Z ^[[36;1mmkdir -p "${install_dir}"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8462119Z ^[[36;1m^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8462930Z ^[[36;1mif [[ "${input_cosign_release}" == "main" ]]; then^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8464283Z ^[[36;1m  log_info "installing cosign via 'go install' from its main version"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8465544Z ^[[36;1m  GOBIN=$(go env GOPATH)/bin^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8466684Z ^[[36;1m  go install github.com/sigstore/cosign/v3/cmd/cosign@main^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8467969Z ^[[36;1m  ln -s "$GOBIN/cosign" "${install_dir}/cosign"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8468978Z ^[[36;1m  exit 0^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8469680Z ^[[36;1mfi^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8470444Z ^[[36;1m^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8471119Z ^[[36;1mshaprog() {^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8471896Z ^[[36;1m  case ${runner_os} in^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8472750Z ^[[36;1m    Linux|linux)^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8473594Z ^[[36;1m      sha256sum "$1" | cut -d' ' -f1^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8474512Z ^[[36;1m      ;;^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8475234Z ^[[36;1m    macOS|macos)^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8476086Z ^[[36;1m      shasum -a256 "$1" | cut -d' ' -f1^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8477022Z ^[[36;1m      ;;^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8477743Z ^[[36;1m    Windows|windows)^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8479293Z ^[[36;1m      powershell -command "(Get-FileHash \"$1\" -Algorithm SHA256 | Select-Object -ExpandProperty Hash).ToLower()"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8481067Z ^[[36;1m      ;;^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8481776Z ^[[36;1m    *)^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8482608Z ^[[36;1m      log_error "unsupported OS ${runner_os}"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8483616Z ^[[36;1m      exit 1^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8484368Z ^[[36;1m      ;;^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8485083Z ^[[36;1m  esac^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8485782Z ^[[36;1m}^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8486460Z ^[[36;1m^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8487754Z ^[[36;1m## curl -sL https://github.com/sigstore/cosign/releases/download/v3.1.4/cosign_checksums.txt |\^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8490056Z ^[[36;1m##   gawk 'match($2,/^cosign-([[:alnum:]]+)-([[:alnum:]]+)(\.[[:alnum:]]+)?$/,a){printf "bootstrap_%s_%s_sha=\"%s\"\n",a[1],a[2],$1}' |\^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8491823Z ^[[36;1m##   LANG=C sort^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8492666Z ^[[36;1mbootstrap_version='v3.1.4'^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8494188Z ^[[36;1mbootstrap_darwin_amd64_sha="9d1e4abe2b6be279ed0d2ff706fde1ccd738747c834e3e6d44039c238867334f"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8496333Z ^[[36;1mbootstrap_darwin_arm64_sha="9f9b8cd557cf2e5b3df3373a00baa005a86b02391e3e06dd0ce37b3a1533d3a4"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8498450Z ^[[36;1mbootstrap_linux_amd64_sha="424e2c97d0b45fd7a6b608a87f090f35633f4c23ece5f092d48bba11aaf4bbfa"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8500644Z ^[[36;1mbootstrap_linux_arm64_sha="ade83b7aac62e131cacfe96d958948b2150cc9efec46a570a2649b8e27dedad2"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8502716Z ^[[36;1mbootstrap_linux_arm_sha="09e77a313910cf5c4774508d85d017d9c60983f41bf657f83ecbd3892f7952cb"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8504787Z ^[[36;1mbootstrap_linux_ppc64le_sha="0887fca23319ea017cc827e6a845ba83722a36bf9e932f35c747ca83c14cec49"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8506930Z ^[[36;1mbootstrap_linux_riscv64_sha="24f3865df0fd9b055827b888d56e13583112ac7d4c87b45967af1f0febf35455"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8509023Z ^[[36;1mbootstrap_linux_s390x_sha="777978d576af893a3daf1fcf3b0e9178cebcbc083a669f6125b6c97b8e1fe433"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8511201Z ^[[36;1mbootstrap_windows_amd64_sha="cbe953787074611f1334cbf37dc1cf953995bb8c45398eb4fc7bb781d29c1f2a"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8512713Z ^[[36;1m^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8513439Z ^[[36;1mcosign_executable_name=cosign^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8514469Z ^[[36;1mbootstrap_executable_name=cosign-bootstrap^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8515460Z ^[[36;1m^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8516166Z ^[[36;1mtrap "popd >/dev/null" EXIT^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8517030Z ^[[36;1m^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8517755Z ^[[36;1mpushd "${install_dir}" > /dev/null^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8518661Z ^[[36;1m^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8519380Z ^[[36;1mcase ${runner_os} in^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8520274Z ^[[36;1m  Linux|linux)^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8521071Z ^[[36;1m    case ${runner_arch} in^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8522080Z ^[[36;1m      X64|amd64)^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8522981Z ^[[36;1m        bootstrap_filename='cosign-linux-amd64'^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8524123Z ^[[36;1m        bootstrap_sha=${bootstrap_linux_amd64_sha}^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8525303Z ^[[36;1m        desired_cosign_filename='cosign-linux-amd64'^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8526334Z ^[[36;1m        ;;^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8527044Z ^[[36;1m^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8527707Z ^[[36;1m      ARM|arm)^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8528579Z ^[[36;1m        bootstrap_filename='cosign-linux-arm'^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8529691Z ^[[36;1m        bootstrap_sha=${bootstrap_linux_arm_sha}^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8530923Z ^[[36;1m        desired_cosign_filename='cosign-linux-arm'^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8531947Z ^[[36;1m        ;;^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8532661Z ^[[36;1m^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8533334Z ^[[36;1m      ARM64|arm64)^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8534271Z ^[[36;1m        bootstrap_filename='cosign-linux-arm64'^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8535431Z ^[[36;1m        bootstrap_sha=${bootstrap_linux_arm64_sha}^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8536612Z ^[[36;1m        desired_cosign_filename='cosign-linux-arm64'^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8537650Z ^[[36;1m        ;;^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8538364Z ^[[36;1m^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8539025Z ^[[36;1m      *)^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8540023Z ^[[36;1m        log_error "unsupported architecture ${runner_arch}"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8541120Z ^[[36;1m        exit 1^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8541874Z ^[[36;1m        ;;^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8542597Z ^[[36;1m    esac^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8543293Z ^[[36;1m    ;;^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8543983Z ^[[36;1m^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8544658Z ^[[36;1m  macOS|macos)^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8545457Z ^[[36;1m    case ${runner_arch} in^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8546325Z ^[[36;1m      X64|amd64)^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8547234Z ^[[36;1m        bootstrap_filename='cosign-darwin-amd64'^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8548382Z ^[[36;1m        bootstrap_sha=${bootstrap_darwin_amd64_sha}^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8549708Z ^[[36;1m        desired_cosign_filename='cosign-darwin-amd64'^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8550835Z ^[[36;1m        ;;^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8551549Z ^[[36;1m^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8552221Z ^[[36;1m      ARM64|arm64)^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8553162Z ^[[36;1m        bootstrap_filename='cosign-darwin-arm64'^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8554315Z ^[[36;1m        bootstrap_sha=${bootstrap_darwin_arm64_sha}^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8555499Z ^[[36;1m        desired_cosign_filename='cosign-darwin-arm64'^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8556525Z ^[[36;1m        ;;^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8557226Z ^[[36;1m^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8557874Z ^[[36;1m      *)^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8558785Z ^[[36;1m        log_error "unsupported architecture ${runner_arch}"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8559928Z ^[[36;1m        exit 1^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8560705Z ^[[36;1m        ;;^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8561426Z ^[[36;1m    esac^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8562120Z ^[[36;1m    ;;^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8562804Z ^[[36;1m^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8563481Z ^[[36;1m  Windows|windows)^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8564323Z ^[[36;1m    case ${runner_arch} in^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8565184Z ^[[36;1m      X64|amd64)^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8566137Z ^[[36;1m        bootstrap_filename='cosign-windows-amd64.exe'^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8567339Z ^[[36;1m        bootstrap_sha=${bootstrap_windows_amd64_sha}^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8568583Z ^[[36;1m        desired_cosign_filename='cosign-windows-amd64.exe'^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8569766Z ^[[36;1m        cosign_executable_name=cosign.exe^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8570974Z ^[[36;1m        bootstrap_executable_name=cosign-bootstrap.exe^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8572026Z ^[[36;1m        ;;^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8572745Z ^[[36;1m      *)^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8573655Z ^[[36;1m        log_error "unsupported architecture ${runner_arch}"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8574733Z ^[[36;1m        exit 1^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8575484Z ^[[36;1m        ;;^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8576204Z ^[[36;1m    esac^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8576895Z ^[[36;1m    ;;^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8577583Z ^[[36;1m  *)^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8578515Z ^[[36;1m    log_error "unsupported os ${runner_os}"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8579483Z ^[[36;1m    exit 1^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8580280Z ^[[36;1m    ;;^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8580995Z ^[[36;1mesac^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8581683Z ^[[36;1m^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8582342Z ^[[36;1mSUDO=^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8583328Z ^[[36;1mif [[ "${input_use_sudo}" == "true" ]] && command -v sudo >/dev/null; then^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8584504Z ^[[36;1m  SUDO=sudo^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8585222Z ^[[36;1mfi^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8585886Z ^[[36;1m^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8586732Z ^[[36;1mexpected_bootstrap_version_digest=${bootstrap_sha}^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8589440Z ^[[36;1mlog_info "Downloading bootstrap version '${bootstrap_version}' of cosign to verify version to be installed...\n      https://github.com/sigstore/cosign/releases/download/${bootstrap_version}/${bootstrap_filename}"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8593294Z ^[[36;1m$SUDO curl "${CURL_RETRY_OPTS[@]}" -fsSL "https://github.com/sigstore/cosign/releases/download/${bootstrap_version}/${bootstrap_filename}" -o "${bootstrap_executable_name}"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8595685Z ^[[36;1mshaBootstrap=$(shaprog "${bootstrap_executable_name}")^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8597095Z ^[[36;1mif [[ "$shaBootstrap" != "${expected_bootstrap_version_digest}" ]]; then^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8598635Z ^[[36;1m  log_error "Unable to validate cosign version: '${input_cosign_release}'"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8599952Z ^[[36;1m  exit 1^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8600654Z ^[[36;1mfi^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8601463Z ^[[36;1m$SUDO chmod +x "${bootstrap_executable_name}"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8602448Z ^[[36;1m^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8603492Z ^[[36;1m# If the bootstrap and specified `cosign` releases are the same, we're done.^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8605019Z ^[[36;1mif [[ "${input_cosign_release}" == "${bootstrap_version}" ]]; then^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8606803Z ^[[36;1m  log_info "bootstrap version successfully verified and matches requested version so nothing else to do"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8608782Z ^[[36;1m  $SUDO mv "${bootstrap_executable_name}" "${cosign_executable_name}"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8610039Z ^[[36;1m  exit 0^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8610742Z ^[[36;1mfi^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8611412Z ^[[36;1m^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8612246Z ^[[36;1msemver='^v([0-9]+\.){0,2}(\*|[0-9]+)(-?r?c?)(\.[0-9]+)$'^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8613447Z ^[[36;1mif [[ "${input_cosign_release}" =~ $semver ]]; then^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8614811Z ^[[36;1m  log_info "Custom cosign version '${input_cosign_release}' requested"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8616011Z ^[[36;1melse^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8617162Z ^[[36;1m  log_error "Unable to validate requested cosign version: '${input_cosign_release}'"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8618503Z ^[[36;1m  exit 1^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8619208Z ^[[36;1mfi^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8619946Z ^[[36;1m^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8620634Z ^[[36;1m# Download custom cosign^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8622999Z ^[[36;1mlog_info "Downloading platform-specific version '${input_cosign_release}' of cosign...\n      https://github.com/sigstore/cosign/releases/download/${input_cosign_release}/${desired_cosign_filename}"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8626733Z ^[[36;1m$SUDO curl "${CURL_RETRY_OPTS[@]}" -fsSL "https://github.com/sigstore/cosign/releases/download/${input_cosign_release}/${desired_cosign_filename}" -o "cosign_${input_cosign_release}"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8629171Z ^[[36;1mshaCustom=$(shaprog "cosign_${input_cosign_release}");^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8630316Z ^[[36;1m^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8631086Z ^[[36;1m# same hash means it is the same release^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8632162Z ^[[36;1mif [[ "$shaCustom" != "$shaBootstrap" ]]; then^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8634540Z ^[[36;1m  log_info "Downloading cosign public key '${input_cosign_release}' of cosign...\n    https://raw.githubusercontent.com/sigstore/cosign/${input_cosign_release}/release/release-cosign.pub"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8637686Z ^[[36;1m  RELEASE_COSIGN_PUB_KEY=https://raw.githubusercontent.com/sigstore/cosign/${input_cosign_release}/release/release-cosign.pub^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8640227Z ^[[36;1m  RELEASE_COSIGN_PUB_KEY_SHA='f4cea466e5e887a45da5031757fa1d32655d83420639dc1758749b744179f126'^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8641682Z ^[[36;1m^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8642559Z ^[[36;1m  log_info "Verifying public key matches expected value"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8644020Z ^[[36;1m  $SUDO curl "${CURL_RETRY_OPTS[@]}" -fsSL "$RELEASE_COSIGN_PUB_KEY" -o public.key^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8645388Z ^[[36;1m  sha_fetched_key=$(shaprog public.key)^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8646590Z ^[[36;1m  if [[ "$sha_fetched_key" != "$RELEASE_COSIGN_PUB_KEY_SHA" ]]; then^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8648068Z ^[[36;1m    log_error "Fetched public key does not match expected digest, exiting"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8649298Z ^[[36;1m    exit 1^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8650092Z ^[[36;1m  fi^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8650780Z ^[[36;1m^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8651569Z ^[[36;1m  if is_version_ge "3.0.1" "$version_num"; then^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8652816Z ^[[36;1m    # we're trying to get something greater than or equal to v3.0.1^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8654298Z ^[[36;1m    keyless_signature_file=${desired_cosign_filename}.sigstore.json^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8657244Z ^[[36;1m    log_info "Downloading keyless verification bundle for platform-specific '${input_cosign_release}' of cosign...\n      https://github.com/sigstore/cosign/releases/download/${input_cosign_release}/${keyless_signature_file}"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8660996Z ^[[36;1m    $SUDO curl "${CURL_RETRY_OPTS[@]}" -fsSLO "https://github.com/sigstore/cosign/releases/download/${input_cosign_release}/${keyless_signature_file}"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8662879Z ^[[36;1m^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8664057Z ^[[36;1m    log_info "Using bootstrap cosign to verify keyless signature of desired cosign version"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8667422Z ^[[36;1m    "./${bootstrap_executable_name}" verify-blob --certificate-identity=keyless@projectsigstore.iam.gserviceaccount.com --certificate-oidc-issuer=https://accounts.google.com --bundle "${keyless_signature_file}" "cosign_${input_cosign_release}"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8670545Z ^[[36;1m^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8671348Z ^[[36;1m    if is_version_ge "3.0.3" "$version_num"; then^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8672603Z ^[[36;1m      # we're trying to get something greater than or equal to v3.0.3^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8674047Z ^[[36;1m      kms_signature_file=${desired_cosign_filename}-kms.sigstore.json^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8676883Z ^[[36;1m      log_info "Downloading KMS verification bundle for platform-specific '${input_cosign_release}' of cosign...\n      https://github.com/sigstore/cosign/releases/download/${input_cosign_release}/${kms_signature_file}"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8680476Z ^[[36;1m      $SUDO curl "${CURL_RETRY_OPTS[@]}" -fsSLO "https://github.com/sigstore/cosign/releases/download/${input_cosign_release}/${kms_signature_file}"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8682379Z ^[[36;1m^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8683491Z ^[[36;1m      log_info "Using bootstrap cosign to verify signature of desired cosign version"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8685664Z ^[[36;1m      "./${bootstrap_executable_name}" verify-blob --key public.key --bundle "${kms_signature_file}" "cosign_${input_cosign_release}"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8687371Z ^[[36;1m    fi^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8688061Z ^[[36;1m  else^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8688902Z ^[[36;1m    signature_file=${desired_cosign_filename}.sig^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8691571Z ^[[36;1m    log_info "Downloading detached signature for platform-specific '${input_cosign_release}' of cosign...\n      https://github.com/sigstore/cosign/releases/download/${input_cosign_release}/${signature_file}"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8694946Z ^[[36;1m    $SUDO curl "${CURL_RETRY_OPTS[@]}" -fsSLO "https://github.com/sigstore/cosign/releases/download/${input_cosign_release}/${signature_file}"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8696741Z ^[[36;1m^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8697832Z ^[[36;1m    log_info "Using bootstrap cosign to verify signature of desired cosign version"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8700036Z ^[[36;1m    "./${bootstrap_executable_name}" verify-blob --key public.key --signature "${signature_file}" "cosign_${input_cosign_release}"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8701881Z ^[[36;1m  fi^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8702551Z ^[[36;1m^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8703519Z ^[[36;1m  $SUDO mv "cosign_${input_cosign_release}" "${cosign_executable_name}"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8704819Z ^[[36;1m  $SUDO chmod +x "${cosign_executable_name}"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8706211Z ^[[36;1m  # best-effort: on Windows the just-run bootstrap binary may still be locked briefly^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8708250Z ^[[36;1m  $SUDO rm -f "${bootstrap_executable_name}" || log_info "Unable to remove ${bootstrap_executable_name}, leaving it in place"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8710005Z ^[[36;1m  log_info "Installation complete!"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8710918Z ^[[36;1mfi^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8768124Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8769199Z env:
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8770029Z   input_cosign_release: v3.1.4
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8770891Z   input_install_dir: $HOME/.cosign
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8771766Z   input_use_sudo: false
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8772518Z   input_curl_retries: 6
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8773261Z   runner_arch: X64
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8773965Z   runner_os: Linux
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8774659Z ##[endgroup]
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:26.8957931Z ^[[1;32mINFO^[[0m: Downloading bootstrap version 'v3.1.4' of cosign to verify version to be installed...
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:27.7823430Z       https://github.com/sigstore/cosign/releases/download/v3.1.4/cosign-linux-amd64
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:27.7824957Z ^[[1;32mINFO^[[0m: bootstrap version successfully verified and matches requested version so nothing else to do
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:27.7851188Z ##[end-action id=__sigstore_cosign-installer.__run;outcome=success;conclusion=success;duration_ms=949]
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:27.7855476Z ##[start-action display=Run envsubst <<<"${input_install_dir}" >> "$GITHUB_PATH";id=__sigstore_cosign-installer.__run_2]
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:27.7875775Z ##[group]Run envsubst <<<"${input_install_dir}" >> "$GITHUB_PATH"
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:27.7876285Z ^[[36;1menvsubst <<<"${input_install_dir}" >> "$GITHUB_PATH"^[[0m
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:27.7921802Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:27.7922077Z env:
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:27.7922265Z   input_install_dir: $HOME/.cosign
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:27.7922478Z ##[endgroup]
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:27.7999183Z ##[end-action id=__sigstore_cosign-installer.__run_2;outcome=success;conclusion=success;duration_ms=14]
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:27.8002189Z ##[start-action display=Run $install_dir = $ExecutionContext.InvokeCommand.ExpandString("${env:input_install_dir}");id=__sigstore_cosign-installer.__run_3]
+Rehearse (no signing, no publish)	Install cosign (same pin as attest)	2026-11-13T06:59:27.8006487Z ##[end-action id=__sigstore_cosign-installer.__run_3;outcome=skipped;conclusion=skipped;duration_ms=0]
+Rehearse (no signing, no publish)	Run cosign version	﻿2026-11-13T06:59:27.8054762Z ##[group]Run cosign version
+Rehearse (no signing, no publish)	Run cosign version	2026-11-13T06:59:27.8055010Z ^[[36;1mcosign version^[[0m
+Rehearse (no signing, no publish)	Run cosign version	2026-11-13T06:59:27.8095455Z shell: /usr/bin/bash -e {0}
+Rehearse (no signing, no publish)	Run cosign version	2026-11-13T06:59:27.8095710Z ##[endgroup]
+Rehearse (no signing, no publish)	Run cosign version	2026-11-13T06:59:27.8364589Z   ______   ______        _______. __    _______ .__   __.
+Rehearse (no signing, no publish)	Run cosign version	2026-11-13T06:59:27.8365746Z  /      | /  __  \      /       ||  |  /  _____||  \ |  |
+Rehearse (no signing, no publish)	Run cosign version	2026-11-13T06:59:27.8366630Z |  ,----'|  |  |  |    |   (----`|  | |  |  __  |   \|  |
+Rehearse (no signing, no publish)	Run cosign version	2026-11-13T06:59:27.8367443Z |  |     |  |  |  |     \   \    |  | |  | |_ | |  . `  |
+Rehearse (no signing, no publish)	Run cosign version	2026-11-13T06:59:27.8367992Z |  `----.|  `--'  | .----)   |   |  | |  |__| | |  |\   |
+Rehearse (no signing, no publish)	Run cosign version	2026-11-13T06:59:27.8368606Z  \______| \______/  |_______/    |__|  \______| |__| \__|
+Rehearse (no signing, no publish)	Run cosign version	2026-11-13T06:59:27.8369328Z cosign: A tool for Container Signing, Verification and Storage in an OCI registry
+Rehearse (no signing, no publish)	Run cosign version	2026-11-13T06:59:27.8370033Z 
+Rehearse (no signing, no publish)	Run cosign version	2026-11-13T06:59:27.8370192Z GitVersion:    v3.1.4
+Rehearse (no signing, no publish)	Run cosign version	2026-11-13T06:59:27.8370642Z GitCommit:     0e48502cf5ef34e2e60bbd3617aa19945712f705
+Rehearse (no signing, no publish)	Run cosign version	2026-11-13T06:59:27.8370996Z GitTreeState:  clean
+Rehearse (no signing, no publish)	Run cosign version	2026-11-13T06:59:27.8371312Z BuildDate:     2026-10-20T17:33:02Z
+Rehearse (no signing, no publish)	Run cosign version	2026-11-13T06:59:27.8371584Z GoVersion:     go1.27.3
+Rehearse (no signing, no publish)	Run cosign version	2026-11-13T06:59:27.8371801Z Compiler:      gc
+Rehearse (no signing, no publish)	Run cosign version	2026-11-13T06:59:27.8372046Z Platform:      linux/amd64
+Rehearse (no signing, no publish)	Run cosign version	2026-11-13T06:59:27.8372194Z 
+Rehearse (no signing, no publish)	Bundle exactly as a release would, then run the CLI from inside it	﻿2026-11-13T06:59:27.8417603Z ##[group]Run v="v$(node -p 'require("./package.json").version')"
+Rehearse (no signing, no publish)	Bundle exactly as a release would, then run the CLI from inside it	2026-11-13T06:59:27.8418020Z ^[[36;1mv="v$(node -p 'require("./package.json").version')"^[[0m
+Rehearse (no signing, no publish)	Bundle exactly as a release would, then run the CLI from inside it	2026-11-13T06:59:27.8418559Z ^[[36;1mtar -czf "stratum-$v.tar.gz" cli/package.json cli/bin/stratum.mjs cli/lib data/genesis-projection.golden.json data/*-trace.jsonl^[[0m
+Rehearse (no signing, no publish)	Bundle exactly as a release would, then run the CLI from inside it	2026-11-13T06:59:27.8419065Z ^[[36;1msha256sum "stratum-$v.tar.gz"^[[0m
+Rehearse (no signing, no publish)	Bundle exactly as a release would, then run the CLI from inside it	2026-11-13T06:59:27.8419410Z ^[[36;1mmkdir -p /tmp/rehearse && tar -xzf "stratum-$v.tar.gz" -C /tmp/rehearse^[[0m
+Rehearse (no signing, no publish)	Bundle exactly as a release would, then run the CLI from inside it	2026-11-13T06:59:27.8420037Z ^[[36;1mtest "$(node /tmp/rehearse/cli/bin/stratum.mjs --version)" = "${v#v}"^[[0m
+Rehearse (no signing, no publish)	Bundle exactly as a release would, then run the CLI from inside it	2026-11-13T06:59:27.8420423Z ^[[36;1mnode /tmp/rehearse/cli/bin/stratum.mjs help > /dev/null^[[0m
+Rehearse (no signing, no publish)	Bundle exactly as a release would, then run the CLI from inside it	2026-11-13T06:59:27.8464672Z shell: /usr/bin/bash -e {0}
+Rehearse (no signing, no publish)	Bundle exactly as a release would, then run the CLI from inside it	2026-11-13T06:59:27.8464903Z ##[endgroup]
+Rehearse (no signing, no publish)	Bundle exactly as a release would, then run the CLI from inside it	2026-11-13T06:59:27.8898717Z d257c02991b7c0118a197703c9a1b408b6a1f58f9f968f2e40ad758eaa439ea6  stratum-v0.5.0.tar.gz
+Rehearse (no signing, no publish)	npm publish --dry-run	﻿2026-11-13T06:59:27.9644381Z ##[group]Run npm publish --workspace cli --dry-run --access public
+Rehearse (no signing, no publish)	npm publish --dry-run	2026-11-13T06:59:27.9644856Z ^[[36;1mnpm publish --workspace cli --dry-run --access public^[[0m
+Rehearse (no signing, no publish)	npm publish --dry-run	2026-11-13T06:59:27.9692385Z shell: /usr/bin/bash -e {0}
+Rehearse (no signing, no publish)	npm publish --dry-run	2026-11-13T06:59:27.9692621Z ##[endgroup]
+Rehearse (no signing, no publish)	npm publish --dry-run	2026-11-13T06:59:28.5734271Z npm warn publish npm auto-corrected some errors in your package.json when publishing.  Please run "npm pkg fix" to address these errors.
+Rehearse (no signing, no publish)	npm publish --dry-run	2026-11-13T06:59:28.5735346Z npm warn publish errors corrected:
+Rehearse (no signing, no publish)	npm publish --dry-run	2026-11-13T06:59:28.5736118Z npm warn publish "bin[stratum]" script name bin/stratum.mjs was invalid and removed
+Rehearse (no signing, no publish)	npm publish --dry-run	2026-11-13T06:59:28.5758791Z npm notice
+Rehearse (no signing, no publish)	npm publish --dry-run	2026-11-13T06:59:28.5761007Z npm notice 📦  @stratum-ledger/cli@0.5.0
+Rehearse (no signing, no publish)	npm publish --dry-run	2026-11-13T06:59:28.5761623Z npm notice Tarball Contents
+Rehearse (no signing, no publish)	npm publish --dry-run	2026-11-13T06:59:28.5764122Z npm notice 1.1kB LICENSE
+Rehearse (no signing, no publish)	npm publish --dry-run	2026-11-13T06:59:28.5764532Z npm notice 2.1kB README.md
+Rehearse (no signing, no publish)	npm publish --dry-run	2026-11-13T06:59:28.5764939Z npm notice 19.5kB bin/stratum.mjs
+Rehearse (no signing, no publish)	npm publish --dry-run	2026-11-13T06:59:28.5765376Z npm notice 3.4kB lib/ingress.d.mts
+Rehearse (no signing, no publish)	npm publish --dry-run	2026-11-13T06:59:28.5766156Z npm notice 29.8kB lib/ingress.mjs
+Rehearse (no signing, no publish)	npm publish --dry-run	2026-11-13T06:59:28.5766532Z npm notice 996B package.json
+Rehearse (no signing, no publish)	npm publish --dry-run	2026-11-13T06:59:28.5767187Z npm notice Tarball Details
+Rehearse (no signing, no publish)	npm publish --dry-run	2026-11-13T06:59:28.5767964Z npm notice name: @stratum-ledger/cli
+Rehearse (no signing, no publish)	npm publish --dry-run	2026-11-13T06:59:28.5768682Z npm notice version: 0.5.0
+Rehearse (no signing, no publish)	npm publish --dry-run	2026-11-13T06:59:28.5769715Z npm notice filename: stratum-ledger-cli-0.5.0.tgz
+Rehearse (no signing, no publish)	npm publish --dry-run	2026-11-13T06:59:28.5770632Z npm notice package size: 18.6 kB
+Rehearse (no signing, no publish)	npm publish --dry-run	2026-11-13T06:59:28.5771273Z npm notice unpacked size: 56.9 kB
+Rehearse (no signing, no publish)	npm publish --dry-run	2026-11-13T06:59:28.5772003Z npm notice shasum: 27c8a027f9f6ee69c6ac863305dfc80b1944fe0c
+Rehearse (no signing, no publish)	npm publish --dry-run	2026-11-13T06:59:28.5772899Z npm notice integrity: sha512-vrLm3aAzjA/QF[...]XzInmBHN/+Gfg==
+Rehearse (no signing, no publish)	npm publish --dry-run	2026-11-13T06:59:28.5773625Z npm notice total files: 6
+Rehearse (no signing, no publish)	npm publish --dry-run	2026-11-13T06:59:28.5774117Z npm notice
+Rehearse (no signing, no publish)	npm publish --dry-run	2026-11-13T06:59:28.5788155Z npm warn publish This command requires you to be logged in to https://registry.npmjs.org/ (dry-run)
+Rehearse (no signing, no publish)	npm publish --dry-run	2026-11-13T06:59:28.7476001Z npm notice Publishing to https://registry.npmjs.org/ with tag latest and public access (dry-run)
+Rehearse (no signing, no publish)	npm publish --dry-run	2026-11-13T06:59:28.7476878Z + @stratum-ledger/cli@0.5.0
+Rehearse (no signing, no publish)	Post Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020	﻿2026-11-13T06:59:28.7860281Z Post job cleanup.
+Rehearse (no signing, no publish)	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	﻿2026-11-13T06:59:28.8911838Z Post job cleanup.
+Rehearse (no signing, no publish)	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:28.9630882Z [command]/usr/bin/git version
+Rehearse (no signing, no publish)	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:28.9675235Z git version 2.56.0
+Rehearse (no signing, no publish)	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:28.9705327Z Temporarily overriding HOME='/home/runner/work/_temp/9cb4f353-0752-4180-83cc-da7229bf7258' before making global git config changes
+Rehearse (no signing, no publish)	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:28.9706708Z Adding repository directory to the temporary git global config as a safe directory
+Rehearse (no signing, no publish)	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:28.9709006Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/stratum/stratum
+Rehearse (no signing, no publish)	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:28.9742332Z Removing SSH command configuration
+Rehearse (no signing, no publish)	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:28.9748082Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Rehearse (no signing, no publish)	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:28.9782130Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Rehearse (no signing, no publish)	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:29.0043171Z Removing HTTP extra header
+Rehearse (no signing, no publish)	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:29.0048257Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Rehearse (no signing, no publish)	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:29.0083292Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Rehearse (no signing, no publish)	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:29.0346505Z Removing includeIf entries pointing to credentials config files
+Rehearse (no signing, no publish)	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:29.0352060Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Rehearse (no signing, no publish)	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:29.0376213Z includeif.gitdir:/home/runner/work/stratum/stratum/.git.path
+Rehearse (no signing, no publish)	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:29.0376937Z includeif.gitdir:/home/runner/work/stratum/stratum/.git/worktrees/*.path
+Rehearse (no signing, no publish)	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:29.0377333Z includeif.gitdir:/github/workspace/.git.path
+Rehearse (no signing, no publish)	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:29.0377679Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Rehearse (no signing, no publish)	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:29.0382604Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/stratum/stratum/.git.path
+Rehearse (no signing, no publish)	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:29.0403325Z /home/runner/work/_temp/git-credentials-42bb6139-b638-4d34-b8a4-57115afb054b.config
+Rehearse (no signing, no publish)	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:29.0412056Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/stratum/stratum/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-42bb6139\-b638\-4d34\-b8a4\-57115afb054b\.config
+Rehearse (no signing, no publish)	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:29.0442320Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/stratum/stratum/.git/worktrees/*.path
+Rehearse (no signing, no publish)	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:29.0463058Z /home/runner/work/_temp/git-credentials-42bb6139-b638-4d34-b8a4-57115afb054b.config
+Rehearse (no signing, no publish)	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:29.0470158Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/stratum/stratum/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-42bb6139\-b638\-4d34\-b8a4\-57115afb054b\.config
+Rehearse (no signing, no publish)	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:29.0504478Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+Rehearse (no signing, no publish)	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:29.0524331Z /github/runner_temp/git-credentials-42bb6139-b638-4d34-b8a4-57115afb054b.config
+Rehearse (no signing, no publish)	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:29.0530770Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-42bb6139\-b638\-4d34\-b8a4\-57115afb054b\.config
+Rehearse (no signing, no publish)	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:29.0559993Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Rehearse (no signing, no publish)	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:29.0579223Z /github/runner_temp/git-credentials-42bb6139-b638-4d34-b8a4-57115afb054b.config
+Rehearse (no signing, no publish)	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:29.0585001Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-42bb6139\-b638\-4d34\-b8a4\-57115afb054b\.config
+Rehearse (no signing, no publish)	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:29.0613919Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Rehearse (no signing, no publish)	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-11-13T06:59:29.0848261Z Removing credentials config '/home/runner/work/_temp/git-credentials-42bb6139-b638-4d34-b8a4-57115afb054b.config'
+Rehearse (no signing, no publish)	Complete job	﻿2026-11-13T06:59:29.0992158Z Cleaning up orphan processes
