@@ -206,3 +206,37 @@ It is recorded in auto-memory `preserve-work-baseline`. From now on, intermediat
 **How to reverse:**
 - `gh api -X DELETE repos/mazze93/stratum/environments/npm-publish`
 - `npm trust revoke`
+
+## 2026-11-13 · Ship burst: #103, Dependabot, release pins
+
+**Decision:** Merge #103 (ingress verification, ig-005) before #106, so v0.5.0 ships with `stratum emit` verified in its own ledger.
+
+**Why:**
+- #103 was missed in the earlier sweep, until mazze asked "what about the ingress client".
+- Simulated merges against main and the release branch both kept DECISIONS.md byte-identical and every trace valid (`evidence/pr103-merge-sim/`).
+- mazze approved: "if its clean merge it, bring everything up to date and safely merged, clean dependabot".
+
+**Failure, reported:**
+- The first merge attempt failed with "Pull Request is still a draft". Nothing merged.
+- Retried after `gh pr ready 103`, using `--match-head-commit f0ba2a6`. Merged as a60fa31.
+- Logs: `evidence/ship-2026-11-13/103-*.log`.
+
+**Decision:** Dependabot #98 and #99 are applied to `release.yml` inside #106 (commit 1c2a26a). The PRs were closed as superseded.
+
+**Why:**
+- Both target `release-attest.yml`, which #106 renames, so they couldn't merge as opened.
+- Each SHA was checked against its upstream tag with `git ls-remote`: exact match, with a GitHub-verified signature.
+
+**Reversal of earlier advice, disclosed:**
+- I had said to hold these until after v0.5.0, so the release pins stay as rehearsed.
+- A side agent flagged that the rehearsal never runs the attest actions.
+- Mitigation (5dd0ae5): the rehearsal now installs cosign with the same pin.
+- Residual risk: action-gh-release v3.0.4 first runs on the tag. If it fails, the tag is spent and the fix is v0.5.1. npm is not affected, because publish needs attest.
+
+**How to reverse:**
+- `gh pr reopen 98 99`
+- Revert 1c2a26a and 5dd0ae5 on the release branch.
+
+**State:**
+- 0 open Dependabot security alerts.
+- #107 (vitest 5.1.0, @types/node 26.6.6) is updated with main, and CI is pending.
