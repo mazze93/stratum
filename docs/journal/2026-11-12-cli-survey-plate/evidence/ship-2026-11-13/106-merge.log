@@ -1,0 +1,19 @@
+2026-11-13T06:34:48Z
+Analyze (actions)	pass	47s	https://github.com/mazze93/stratum/actions/runs/43379515817/job/131733750965	
+Analyze (javascript-typescript)	pass	53s	https://github.com/mazze93/stratum/actions/runs/43379515817/job/131733750672	
+Analyze (python)	pass	55s	https://github.com/mazze93/stratum/actions/runs/43379515817/job/131733751075	
+CodeQL	pass	3s	https://github.com/mazze93/stratum/runs/131733982742	
+Re-run reproducible_check bindings	pass	44s	https://github.com/mazze93/stratum/actions/runs/43379515868/job/131733750707	
+Typecheck, tests, cross-validation	pass	20s	https://github.com/mazze93/stratum/actions/runs/43379515835/job/131733750766	
+Workers Builds: stratum	pass	0	https://dash.cloudflare.com/a478cd1da11cbde86fb26a63697c34e0/workers/services/view/stratum/production/builds/13ff8e79-2e6e-4fd1-88d7-aa5e285ad37b	
+Cursor Approval Agent: Pull Request Router and Approver	skipping	0	https://cursor.com/agents/bc-81b1686f-730a-4833-9cdd-c98344d38f87	
+Cursor Security Agent: Security Reviewer	skipping	1s	https://cursor.com/agents/bc-190924d7-3533-4f54-bd48-fac03e946012	
+Greptile TREX	skipping	1s	https://greptile.com/	
+--- merge
+X Pull request mazze93/stratum#106 is not mergeable: the base branch policy prohibits the merge.
+To have the pull request merged after all the requirements have been met, add the `--auto` flag.
+To use administrator privileges to immediately merge the pull request, add the `--admin` flag.
+exit=1
+--- retry after resolving Bugbot thread PRRT_kwDOTUGo-M629UXd (fixed in b197862)
+2026-11-13T06:35:09Z
+exit=0

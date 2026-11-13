@@ -240,3 +240,28 @@ It is recorded in auto-memory `preserve-work-baseline`. From now on, intermediat
 **State:**
 - 0 open Dependabot security alerts.
 - #107 (vitest 5.1.0, @types/node 26.6.6) is updated with main, and CI is pending.
+
+## 2026-11-13 · #107 and #106 merged; v0.5.0 in production
+
+**Merged (all with merge commits):**
+- #107 (dev deps: vitest 5.1.0, @types/node 26.6.6) → c6948df.
+- #106 (release v0.5.0) → ea50cb6.
+
+**Verified:**
+- Production `/api/health` reports `version: 0.5.0` at 06:36Z. The masthead reads v0.5.0.
+- Final release gates are in `evidence/ship-2026-11-13/release-gates-final.log`. That log also carries an appended correction: my `grep ig-005` probe was faulty and stopped the chain, and actionlint and audit were re-run separately. Both are clean.
+
+**Decision:** Gate `attest` and `publish` on `github.event_name == 'push' && github.ref_type == 'tag'` (b197862).
+
+**Why:** Cursor Bugbot (medium) found that a workflow_dispatch run against a tag satisfies `ref_type == 'tag'`. That run would sign, overwrite Release assets, and request publish, which breaks the workflow's own contract. The finding is real, and I had missed it until I read the review comments before merging.
+
+**Failure, reported:**
+- The first #106 merge attempt was refused: "base branch policy prohibits the merge", because a review conversation was unresolved.
+- I resolved the Bugbot thread only after replying with the fix commit. The CodeQL thread was already resolved.
+- The retry succeeded. `--admin` was not used.
+
+**How to reverse:** v0.5.0 is not tagged yet, so nothing is published. To roll back, revert the merge: `git revert -m 1 ea50cb6` via PR.
+
+**Next:**
+- Rehearsal run 43379834546 (dispatch on main).
+- Then mazze creates the signed tag and approves the npm-publish deployment.
