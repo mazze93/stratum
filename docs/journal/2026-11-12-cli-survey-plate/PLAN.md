@@ -62,3 +62,25 @@ Already-approved follow-ups that go into the same journal:
    - `survey.test.ts`.
    - `cli-trace.jsonl` decisions/foreclosures, validated; DECISIONS.md regenerated.
 6. **Ship.** Check, test, reference, all traces; then CLAUDE.md; then the PR. Merging needs mazze.
+
+## Scope expansion (2026-11-12, mazze: "approved and accepted on all")
+
+New asks: semver best practice and current tags; docs and site that reflect the real development; no stranded worktrees anywhere on the machine; and a real signed, verified package for outside adopters.
+
+7. **Worktree audit** (system-wide). Report: `~/Projects/inbox/2026-11-12/wt.json`.
+   - 7 hold loss risk (dirty or unpushed), 2 have broken registrations, and 4 directories in `tools/worktrees` are claimed by no repo.
+   - Rescue first; remove only what is merged, clean and pushed.
+8. **Truth pass on docs** (branch `release/v0.5.0`).
+   - `SECURITY.md` claims GPG-signed tags and required signed commits. Neither is true: signing is SSH, `v0.4.0` is a lightweight unsigned tag, and `required_signatures` is off.
+   - The README says "22 tests" (actually 129), and install is `npm link` only.
+   - There is no CHANGELOG.
+9. **Release pipeline.**
+   - `release-attest.yml` bundles `cli/bin/stratum.mjs` without `cli/lib/ingress.mjs`, so the next tagged bundle would crash on start.
+   - Add npm publish with provenance via trusted publishing (OIDC; no token) and GitHub build-provenance attestations, alongside the cosign bundle.
+10. **Versioning.**
+    - 41 commits since v0.4.0 (2026-09-09), including breaking changes: event schema v2, no default log. That makes this v0.5.0 under 0.x rules.
+    - Single-source the version (four package.json files, the worker `/api/health`, and the landing masthead are all hardcoded). A CI check keeps them equal.
+    - Tags are annotated and SSH-signed from now on.
+11. **Communicate.** The landing masthead version and changelog link. A post on the spine (mazzeleczzare.com) when the package ships.
+
+New release-related decisions go in a new `data/release-trace.jsonl` (`rl-*`) so they can't collide with the open `wt-*` numbering.
