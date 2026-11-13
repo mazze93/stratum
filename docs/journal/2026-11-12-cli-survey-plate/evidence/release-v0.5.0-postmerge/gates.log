@@ -1,0 +1,12 @@
+✓ version 0.5.0 is consistent
+      Tests  129 passed (129)
+   Start at  23:41:36
+   Duration  11.05s (tests 94%, transform 4%, import 1%)
+
+
+9/9 re-checker properties hold.
+✓ DECISIONS in sync
+npm warn publish This command requires you to be logged in to https://registry.npmjs.org/ (dry-run)
+npm notice Publishing to https://registry.npmjs.org/ with tag latest and public access (dry-run)
++ @stratum-ledger/cli@0.5.0
+exit=0
