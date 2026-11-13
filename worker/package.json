@@ -1,6 +1,6 @@
 {
   "name": "@stratum/worker",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Stratum API — Cloudflare Worker + Durable Object log gate, serves the Atrium.",
   "type": "module",
   "private": true,
@@ -11,10 +11,10 @@
   },
   "dependencies": {
     "@stratum/core": "*",
-    "hono": "^4.13.12"
+    "hono": "^4.13.16"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^5.20261003.1",
-    "wrangler": "^4.147.0"
+    "wrangler": "^4.161.0"
   }
 }

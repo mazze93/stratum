@@ -469,7 +469,7 @@ docs/TRUST.md ships as a skeleton that RESOLVES the two decidable questions (den
 
 *~/Projects container decisions, compiled from the workspace journal.*
 
-> `data/workspace-trace.jsonl` · epoch 12 · 13 events · 10 decisions · 1 foreclosures
+> `data/workspace-trace.jsonl` · epoch 22 · 23 events · 14 decisions · 3 foreclosures
 
 ## Decisions
 
@@ -553,6 +553,38 @@ Force sharp to ^0.35.5 with a root npm `overrides` entry, closing Dependabot ale
 
 > **Shadow [TRACE · certainty 0.9]** — Even the latest wrangler (4.148.0) still pins sharp 0.35.4, so a wrangler bump cannot fix it yet. Touchstone probes: (1) adding the override and running `npm install` exits 0 but leaves the locked 0.35.4 in place — the lockfile must be re-resolved (`npm update sharp`), or the fix is a no-op that looks applied; (2) after the re-resolve, all 17 @img/sharp-* platform packages are at 0.35.5 and all 10 libvips packages at 1.3.4 in package-lock.json; (3) a clean `npm ci` in node:24-bookworm (Debian glibc 2.36, the platform the RCE targets and CI runs on) loads sharp 0.35.5 with rsvg 2.63.2, and vitest passes 80/80; (4) `wrangler dev` serves health, head and the landing page. The override is a range, not an exact pin, so a later miniflare pin of 0.35.6+ is not downgraded. Reopen: once miniflare pins sharp >=0.35.5, delete the override — a stale override is rot.
 
+### wt-013 — ● VERIFIED · validated
+
+**claude-opus-5.5** · 2026-10-21T14:13:13-04:00
+
+AGENTS.md is a tracked symlink to CLAUDE.md: one instruction source for every agent, which cannot drift.
+
+> **Shadow [TRACE · certainty 0.95]** — Owner decision 2026-10-21 ("agents should point to claude.md and that's that"). The untracked AGENTS.md here was a Codex-renamed copy of CLAUDE.md with no unique content; across three repos every such copy had already drifted within ten days.
+
+### wt-016 — ● VERIFIED · validated
+
+**claude-sonnet-5.5** · 2026-10-29T23:13:10-04:00
+
+cli/mise.toml (a single line, aube = "latest") is deleted from the working tree, closing the choice that 7a615b1 left deliberately open and that wt-009 carried across the re-clone. mazze does not use aube; the file was never in git history. Recoverable from the retired clone at ~/Projects/archive/stratum.pre-reclone-2026-10-06-home-2026-10-12/cli/mise.toml (sha256 217bad5a28195e6adcba24f381698546bbc06ff09d45cd8603c892a204d06ee2).
+
+> **Shadow [TRACE · certainty 0.95]** — Corroborated before acting rather than inferred from the diff: git log --all shows no history for the path in any ref; the bytes are identical to the archived copy, so the Jul 23 mtime is a preserved copy date, not recent work; 7a615b1 (2026-09-06, present only in the archived clone) records why it was left untracked, an unpinned tool version being a choice to make consciously; nothing in cli/, core/, worker/, scripts/, package.json or .github references aube; CI pins node 24 and package.json engines say node >=20, so no toolchain file is consumed. The sibling repos checkmate and stele do track a mise.toml, but those pin node/pnpm/python and define tasks; this one pinned one unrelated tool. Deleted on mazze's instruction ('I don't use aube, delete it'). 7a615b1 stays reachable only through the archived clone, so deleting that clone would orphan the citations in wt-009 and the 2026-10-07 journal export; that deletion is still mazze's call.
+
+### wt-019 — ● VERIFIED · validated
+
+**claude-opus-5.5** · 2026-11-12T22:22:46-05:00
+
+CLAUDE.md (and AGENTS.md, its symlink) is refreshed against the tree at 3553a6c. Corrections: test:reference names all four suites; CI names the all-traces and DECISIONS.md-sync gates plus the codeql, recheck and release-attest workflows; Architecture gains the ADR-003 trust layer (canonical.ts/canonical.py JCS, chain.ts, schemas/event.v2.schema.json) and cli/lib/ingress.mjs (stratum emit/outbox, exit 3/4, docs/API.md); data/canonical.golden.json joins the generated-files list; every trace is named; the next ADR is ADR-004; /home/ is noted. Delivered as PR #104.
+
+> **Shadow [TRACE · certainty 0.9]** — Found by /init: the file existed, so the task became a drift audit rather than a rewrite. Every claim was checked against disk before it was kept. #101 (ingress) landed mid-session, which made 'zero-dependency single-file CLI' stale too, so it was folded in. The golden-regeneration command switched to >| because mazze's shell has noclobber. Not done: a full rewrite (the existing file was mostly accurate, and churn would hide the six real fixes) and a wt entry being skipped as 'docs-only' (mazze approved recording it).
+
+### wt-021 — ● VERIFIED · validated
+
+**claude-opus-5.5** · 2026-11-12T22:25:40-05:00
+
+The 11 open Dependabot alerts (5 high, 5 moderate, 1 low; all dev-scope, all in undici and vite) are cleared by raising worker's wrangler range to ^4.161.0, whose miniflare pins undici 7.30.1, and updating vite in range to 8.3.8 under vitest.
+
+> **Shadow [TRACE · certainty 0.9]** — undici is pinned exactly (7.29.1) by miniflare 5.20261001.0-alpha, so `npm update` cannot reach the fix. An npm override forcing undici under the old miniflare was rejected: it pairs a deploy tool with a transport it was never released against. The wrangler bump is the maintained path, and it was confirmed with `wrangler deploy --dry-run` before commit. Merging this PR is a production deploy because Workers Builds runs the lockfile's wrangler. No runtime dependency changed.
+
 ## Foreclosures — ghost edges
 
 ### wt-008 — standing
@@ -563,12 +595,34 @@ Reusing an existing cross-project Cloudflare API token for the stratum Worker's 
 
 > **Shadow [TRACE · certainty 0.8]** — The Connect-to-a-repository dialog defaulted the API token field to `mazze-leczzare-blog build token` — an existing token from an unrelated project, already flagged by Cloudflare's own UI as missing email-routing permissions, evidence the default was picked by recency rather than scope. Letting a stratum production deploy run on another project's credential is the kind of scope leak this ledger's evidence-gated trust model exists to name, even outside the log itself. Switched to Create new token. Reopen only if Cloudflare starts scoping the token suggestion by project/zone instead of defaulting to most-recently-used.
 
+### wt-014 — standing
+
+Not chosen: a maintained AGENTS.md copy, or a one-line stub telling agents to read CLAUDE.md.
+
+*Ghost edges:* ~~`agents-md-copy`~~ · ~~`agents-md-stub`~~
+
+> **Shadow [TRACE · certainty 0.85]** — A copy drifts by construction (the evidence for wt-013). A stub relies on the agent taking an extra read step and leaves the auto-loaded file content-free. Reopen if an agent harness refuses to follow symlinks.
+
+### wt-017 — standing
+
+cli/mise.toml is neither pinned-and-tracked nor gitignored; it is removed outright.
+
+*Ghost edges:* ~~`pin-and-track-aube`~~ · ~~`gitignore-cli-mise-toml`~~
+
+> **Shadow [TRACE · certainty 0.85]** — Pin-and-track would commit a toolchain file with no consumer. Gitignoring would keep an unused file on disk and hide it from status, which is how it survived two clones unexamined. Reopen if cli/ gains a real toolchain requirement: then track a mise.toml with exact versions, as checkmate and stele do.
+
 ## Checked-evidence ledger
 
 | verification | target | what was checked | when |
 |---|---|---|---|
 | `wt-010` | `wt-009` | git rev-parse HEAD origin/main → 706edf352a91a681c5416ebae1396230baeb286e (both) | 2026-10-06T18:34:00-04:00 |
 | `wt-010` | `wt-009` | npm run check && npm test && npm run test:reference && npm run validate:trace — exit 0 (26/26 vitest, 16/16 invariants) | 2026-10-06T18:36:03-04:00 |
+| `wt-015` | `wt-013` | git ls-files -s AGENTS.md → 120000 681311eb9cf453d0faddf3aacaec7357e97ba8e9 0	AGENTS.md | 2026-10-21T14:13:13-04:00 |
+| `wt-015` | `wt-013` | readlink AGENTS.md → CLAUDE.md; head -1 AGENTS.md → '# CLAUDE.md' — exit 0 | 2026-10-21T14:13:13-04:00 |
+| `wt-018` | `wt-016` | test ! -e cli/mise.toml; git log --all --oneline -- cli/mise.toml (empty); git grep aube -- cli core worker scripts package.json .github (empty) — exit 0 | 2026-10-29T23:13:10-04:00 |
+| `wt-018` | `wt-016` | archive cli/mise.toml sha256 217bad5a28195e6adcba24f381698546bbc06ff09d45cd8603c892a204d06ee2 (24 bytes), restore source for wt-016 | 2026-10-29T23:13:10-04:00 |
+| `wt-020` | `wt-019` | grep -q ADR-004 CLAUDE.md && grep -q cli/lib/ingress.mjs CLAUDE.md && grep -q core/src/chain.ts CLAUDE.md && grep -q canonical.golden.json CLAUDE.md && test -e cli/lib/ingress.mjs && test -e core/src/chain.ts && test -e core/src/canonical.ts && test -e schemas/event.v2.schema.json && test -e data/canonical.golden.json && test -e scripts/render-canonical-golden.py && test -e atrium/public/home/index.html && test -e docs/API.md && test -L AGENTS.md | 2026-11-13T03:22:53.506Z |
+| `wt-022` | `wt-021` | npm ci --no-audit --no-fund && node -e 'const v=n=>require(require.resolve(n+"/package.json",{paths:[require.resolve("miniflare",{paths:["worker"]}),"."]})).version;const u=v("undici"),t=v("vite");const ge=(a,b)=>{a=a.split(".").map(Number);b=b.split(".").map(Number);for(let i=0;i<3;i++){if(a[i]!==b[i])return a[i]>b[i]}return true};console.log("undici",u,"vite",t);process.exit(ge(u,"7.30.1")&&ge(t,"8.3.3")?0:1)' | 2026-11-13T03:26:12.252Z |
 
 ---
 
@@ -576,7 +630,7 @@ Reusing an existing cross-project Cloudflare API token for the stratum Worker's 
 
 *ADR-003: bound evidence, an authority registry, atomic persistence.*
 
-> `data/trust-trace.jsonl` · epoch 30 · 31 events · 18 decisions · 4 foreclosures
+> `data/trust-trace.jsonl` · epoch 34 · 35 events · 20 decisions · 4 foreclosures
 
 ## Decisions
 
@@ -734,6 +788,22 @@ Proposed, awaiting mazze: each stored row records which contract accepted it (a 
 
 > **Shadow [TRACE · certainty 0.7]** — The same principle as tp-016 ('verified remains verified; status is a fold'), applied to storage rather than projection. Today a row the old code accepted, such as schema_version 2 written before phase 2 deployed (folded then under v1 rules), would be re-judged by v2 guards on load, either refused or re-folded. No known real log is affected now; that is luck, not design. Born asserted because it changes storage semantics.
 
+### tp-031 — ● VERIFIED · validated
+
+**claude** · 2026-10-30T16:20:00-04:00
+
+The CLI has no default log. Every command that touches a log refuses unless one is named by --log, STRATUM_LOG or config, and a bare --log is refused instead of read as a log named 'true'. Appends are permanent, so a log is never guessed.
+
+> **Shadow [TRACE · certainty 0.9]** — Twice an agent's writes fell through to the machine's configured default log, macos-vuln-pipeline (MAX). On 2026-10-24 an unquoted zsh variable swallowed --log (checkmate inc_ztZNYXxw6aR_29Vl). On 2026-10-30 five unrelated decisions landed there as seq 7-11 (inc_5he7fLwavybF7G8p). Removing the config value alone would only have moved the silent fallback to the hard-coded 'workspace'. Same class as tp-016's fail-closed stance and the agent_id default (inc_aJvG5BbagJ9NG__n), which is left for a separate decision. Directed by mazze: 'remove the default so the cli must be told'.
+
+### tp-032 — ● VERIFIED · validated
+
+**claude** · 2026-10-30T16:30:00-04:00
+
+The local Stratum checkout is production's mirror: it stays on main, in sync with origin/main and therefore with the deployed Worker, because the installed CLI runs from it. Development happens only in worktrees and reaches main through reviewed PRs, so the ledger's code, and the decisions it records about itself, stay authoritative.
+
+> **Shadow [TRACE · certainty 0.95]** — Ruled by mazze on 2026-10-30, recorded by the agent, not minted as mazze's authority: 'the local stratum must be retained at main in sync as production, with local work and development on their own copies so that the ledger is authoritative, and stratum must dogfood its own decisions'. Found because the main checkout sat on chore/claude-md-action-majors, 2 commits past main, so the CLI every session ran was unreviewed branch code, and the tp-031 fix could never take effect there. Production equalled main at the time: main 8e7e854 was committed 18:16:42Z on 2026-10-21 and deployed 26 s later by Workers Builds, which deploys every push to main.
+
 ## Foreclosures — ghost edges
 
 ### tp-006 — standing
@@ -767,6 +837,118 @@ Stacked PRs (a PR based on another unmerged PR's branch) are foreclosed for this
 *Ghost edges:* ~~`stacked-pr-chain`~~
 
 > **Shadow [TRACE · certainty 0.9]** — The stack stranded work and hid it from CI. CI runs only on PRs targeting main, so #74 to #76 never ran it, and my local green was the only gate. #74 was merged into its stacked base after #73 had been squash-merged into main, so phase 1 never reached main until a merge plus a retarget recovered it. Stacking also forced a force-push and a diff3-marker cleanup earlier. Reopen only if CI is configured to run on all PR bases.
+
+## Checked-evidence ledger
+
+*No checked evidence yet — every decision above is provisional or axiomatic.*
+
+---
+
+# Ingress
+
+*How automated clients write into Stratum (cognitive-topology T1).*
+
+> `data/ingress-trace.jsonl` · epoch 5 · 6 events · 3 decisions · 2 foreclosures
+
+## Decisions
+
+### ig-000 — ● VERIFIED · validated
+
+**claude** · 2026-11-11T16:50:00-05:00
+
+Automated clients write into Stratum through one upstream ingress module, cli/lib/ingress.mjs, reached from the shell as `stratum emit` (cognitive-topology T1). The event id is a digest of the canonical masked record, so a retry can never create a second event. Evidence is produced only by running the check in that process and binding the observed exit code to the pinned commit (v2); a caller cannot supply evidence, checked_at or a binding. A ratification needs a human at an interactive terminal who types the event id back. Prose lands only in claim.narrative. Unset config is a no-op with a notice; a configured ledger that fails queues the record in an outbox and shows the unrecorded count until it drains.
+
+> **Shadow [TRACE · certainty 0.85]** — Client form chosen per the 2026-10-21 council: evaluate a CLI shell-out before a new lib. The CLI already had the deterministic capture path (`verify --run`, ADR-003 bindings); what it lacked was a deterministic id, a refusal of supplied evidence, the TTY gate and the two degradation modes. So the binding code moved into the shared module and the CLI's verify now calls it, one source of truth. No worker or core change was needed, which was one of the council's conditions that could have flipped the call. The cognitive-topology plugin's source is in no GitHub repo, so the spec's plugins/topology-core/lib/stratum.<ext> had no home; upstream it serves Stele, Temenos and macprobe as well. A 409 is shared by a duplicate id and every other guard refusal, so the client reads the event back and compares identity views before calling a retry already recorded. Seven mutants of the module (accept supplied evidence, ignore the observed exit, mask after the id, drop the TTY gate, treat any 409 as already, drop a failure silently, skip the unconfigured guard) each fail the suite. Perimeter: a binding is still the writer's statement; it is re-checkable, not proven, and a model with shell access can still run a check that asserts nothing.
+
+### ig-001 — ◐ PROVISIONAL · pending_evidence
+
+**claude** · 2026-11-11T16:51:00-05:00
+
+docs/API.md is the upstream HTTP reference for every ingress client, each statement cited to a source line. When the page and the source disagree, the source wins and the page is the bug.
+
+> **Shadow [TRACE · certainty 0.9]** — Before it, each client reverse-engineered the envelope; the ct-reshape spec v0.6.0 did, and got four things wrong against source: birth_status is required on every record, not only originating ones; the evidence kind has no enum; schema_version is per event and v1 or v2, and under v2 checked_at counts for nothing; and a 409 does not by itself tell a retry from a refusal. Unknown top-level and evidence keys are dropped, not refused, in both the TypeScript port and the Python oracle.
+
+### ig-004 — ○ narrative · asserted
+
+**claude** · 2026-11-11T16:54:00-05:00
+
+Proposed, awaiting mazze: a narrower token for automated writers, write-only and scoped to one log, so a plugin's environment stops holding the one STRATUM_TOKEN that also reads every private log and writes to all of them.
+
+> **Shadow [TRACE · certainty 0.75]** — Raised as a backlog decision, not code, per the council's X1 condition. Today auth.ts has one secret for every private read and every write. Append-only plus a leaked master key means permanent pollution of every log. Touches worker auth, so it sits next to the authority registry (R4) and is not part of T1. Born asserted because it changes the trust boundary.
+
+## Foreclosures — ghost edges
+
+### ig-002 — standing
+
+A per-client Stratum library inside each plugin (the ct-reshape spec's plugins/topology-core/lib/stratum.<ext>) is foreclosed: there is one ingress module upstream, and clients shell out to `stratum emit`.
+
+*Ghost edges:* ~~`per-plugin-lib-stratum`~~
+
+> **Shadow [TRACE · certainty 0.85]** — Every ingress candidate needs the same envelope (council, Brick Layer), and the evidence rule is only as strong as the one place that enforces it. Copies drift. Reopen if a client cannot spawn node, and then port the module rather than reimplement it.
+
+### ig-003 — standing
+
+Automated clients emitting v1 verifications (a typed checked_at as the evidence) is foreclosed. Ingress writes verifications only as v2 with a reproducible_check binding it produced.
+
+*Ghost edges:* ~~`v1-typed-checked-at-from-clients`~~
+
+> **Shadow [TRACE · certainty 0.9]** — Under v1 the server enforces that a timestamp is present, never that a check happened (tp-007), which is exactly how model prose would be laundered into the verified tier. The CLI's own `verify --ref` stays as the human's legacy path. Reopen never for automated clients.
+
+## Checked-evidence ledger
+
+*No checked evidence yet — every decision above is provisional or axiomatic.*
+
+---
+
+# Releases
+
+*Versioning, signed distribution, and how a release reaches adopters.*
+
+> `data/release-trace.jsonl` · epoch 4 · 5 events · 2 decisions · 3 foreclosures
+
+## Decisions
+
+### rl-001 — ◐ PROVISIONAL · pending_evidence
+
+**claude-opus-5.5** · 2026-11-12T23:37:28-05:00
+
+Stratum ships as a package. @stratum-ledger/cli is published to npm from .github/workflows/release.yml with npm provenance, inside the npm-publish GitHub environment (maintainer approval, v* tags only). Each tagged release also carries a SHA-256-summed, cosign-keyless-signed, build-provenance-attested bundle. The first publish bootstraps with an environment-scoped token; afterwards npm Trusted Publishing (OIDC) replaces it and the token is revoked.
+
+> **Shadow [TRACE · certainty 0.85]** — Asked for by mazze: people who wanted to adopt the ledger had held back for lack of formal, verified, signed distribution. Checked before choosing: `npm help trust` (npm 11.20.0) says the package must already exist, so a token-free first publish is impossible. A local rehearsal found two defects before any tag existed: the bundle lacked cli/package.json, so `stratum --version` crashed, and the package had no README. Both were fixed, and rehearsal 2 was green, including a global install of the packed tarball.
+
+### rl-004 — ○ narrative · asserted
+
+**claude-opus-5.5** · 2026-11-12T23:37:28-05:00
+
+The next version is 0.5.0, a minor bump with Breaking changes noted. SemVer 0.x rules: no default log (tp-031) and bound evidence (schema v2, ADR-003) change behavior that callers depended on. Root package.json is the single source, and scripts/check-version.mjs holds the other package.json files, the landing masthead, CHANGELOG.md and any release tag to it in CI and in the release gate. Tags from v0.5.0 are annotated and SSH-signed; v0.4.0 stays a lightweight unsigned tag, because version tags are never moved (ruleset 27174967).
+
+> **Shadow [TRACE · certainty 0.9]** — There were 44 commits since v0.4.0 (2026-09-09), and the version was hardcoded in 6 places with nothing keeping them equal. A 0.4.x patch would have hidden two breaking changes. Recovery from a failed tagged run is to re-run the failed jobs for credential faults, or ship a new patch version for code faults (docs/RELEASING.md); a side agent flagged that the tag lock makes this matter.
+
+## Foreclosures — ghost edges
+
+### rl-002 — standing
+
+Publishing the first version from the maintainer's laptop.
+
+*Ghost edges:* ~~`local-first-publish`~~
+
+> **Shadow [TRACE · certainty 0.9]** — A local `npm publish` cannot produce provenance, because there is no OIDC identity, so the first release adopters see would be the one release they cannot verify. Reopen if the CI publish fails twice for reasons that a re-run cannot fix.
+
+### rl-003 — standing
+
+Publishing a 0.0.0 placeholder only to enable Trusted Publishing before the real release.
+
+*Ghost edges:* ~~`placeholder-0.0.0`~~
+
+> **Shadow [TRACE · certainty 0.85]** — npm never reuses a version number, so a placeholder burns a public version, and its page would advertise an empty package. Reopen if the environment-token route is refused by npm policy.
+
+### rl-005 — standing
+
+Submitting the formula to homebrew-core now.
+
+*Ghost edges:* ~~`homebrew-core-submission`~~
+
+> **Shadow [TRACE · certainty 0.8]** — homebrew-core requires notability, roughly 75 stars, 30 forks or 30 watchers (from memory of Homebrew's policy; not re-fetched this session). The repo has 2 stars. A tap, mazze93/homebrew-tap, gives `brew install mazze93/tap/stratum` today, pinned by sha256 to the npm tarball. Reopen when the repo meets the notability bar.
 
 ## Checked-evidence ledger
 

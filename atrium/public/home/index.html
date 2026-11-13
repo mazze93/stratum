@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="vellum" data-contrast="standard" data-motion="full">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Stratum — Your ledgers</title>
+<meta name="description" content="A private overview of your Stratum logs: each ledger's current epoch at a glance, with a door into the live Atrium for any one of them." />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="stylesheet" href="/fonts/fonts.css" />
+<link rel="stylesheet" href="/styles.css" />
+<style>
+  /* Page-local layout only; all color/type comes from styles.css tokens. */
+  .ledger-grid { display: grid; gap: 12px; margin: 20px 0; }
+  .ledger-card {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 16px; padding: 14px 16px; border: 1px solid var(--line, #d8d2c4);
+    border-radius: 8px; text-decoration: none; color: inherit;
+  }
+  .ledger-card:hover { border-color: var(--s-semantic, #8a7); }
+  .ledger-id { font-weight: 600; letter-spacing: 0.5px; }
+  .ledger-note { font-size: 12px; opacity: 0.65; margin-top: 2px; }
+  .ledger-epoch { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .ledger-state { font-size: 12px; white-space: nowrap; }
+  .needs-token { opacity: 0.55; }
+  .ctl-row { display: flex; gap: 8px; align-items: center; margin: 12px 0; flex-wrap: wrap; }
+  .ctl-row input { flex: 1 1 220px; min-width: 0; padding: 6px 10px; font-family: var(--mono, monospace); }
+  .hint { font-size: 12px; opacity: 0.7; }
+</style>
+</head>
+<body>
+
+<div class="app-shell">
+
+  <header class="top-bar">
+    <div class="brand">
+      <a class="wordmark-link" href="/" title="Back to the survey plate">
+        <svg viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" focusable="false">
+          <path d="M2 9 C8 7.5 14 10.5 20 9 C24 8 28 9.5 30 9 L30 14 C24 15.5 18 12.5 12 14 C8 15 4 13.5 2 14 Z" fill="var(--s-episodic)"/>
+          <path d="M2 15 C8 13.5 14 16.5 20 15 C24 14 28 15.5 30 15 L30 20 C24 21.5 18 18.5 12 20 C8 21 4 19.5 2 20 Z" fill="var(--s-session)"/>
+          <path d="M2 21 C8 19.5 14 22.5 20 21 C24 20 28 21.5 30 21 L30 27 C24 28.5 18 25.5 12 27 C8 28 4 26.5 2 27 Z" fill="var(--s-semantic)"/>
+        </svg>
+        <h1 class="wordmark">STRATUM</h1>
+      </a>
+      <span class="sub-mark">Your ledgers</span>
+    </div>
+  </header>
+
+  <main style="max-width: 760px; margin: 0 auto; padding: 8px 16px 48px;">
+    <p class="hint">
+      Each row is one of your logs at its current head. Private logs need your
+      bearer token to read. Click any ledger to open it live in the Atrium.
+    </p>
+
+    <div class="ctl-row">
+      <input id="token-input" type="password" placeholder="bearer token (private logs)" autocomplete="off" spellcheck="false" />
+      <button id="token-set" class="btn">Set token</button>
+      <button id="token-clear" class="btn">Clear</button>
+      <span class="hint" id="token-state"></span>
+    </div>
+
+    <div class="ctl-row">
+      <input id="logs-input" type="text" placeholder="your private log names, comma-separated" autocomplete="off" spellcheck="false" />
+      <button id="logs-set" class="btn">Save names</button>
+      <button id="logs-clear" class="btn">Clear</button>
+    </div>
+
+    <div class="ledger-grid" id="ledgers"></div>
+
+    <p class="hint" id="footnote"></p>
+  </main>
+</div>
+
+<script type="module">
+import { api, getToken, setToken } from "/api.js";
+
+/* PRIVACY: this file is a public static asset. It must NOT name any private
+   ledger. The only log baked in here is the public `demo` exhibit. Your
+   private log names are held in this browser only (localStorage), entered by
+   you below and never shipped in the page source — so the public site never
+   reveals that your private ledgers exist or what they are for. There is no
+   "list logs" endpoint on the worker (logs are addressed by name), which is
+   why the names live client-side rather than being fetched. */
+const PUBLIC_LOGS = [
+  { id: "demo", note: "public exhibit", visibility: "public" },
+];
+
+const LOGS_KEY = "stratum.logs";
+const getLogs = () => {
+  try {
+    return (localStorage.getItem(LOGS_KEY) || "")
+      .split(",").map((s) => s.trim()).filter(Boolean);
+  } catch { return []; }
+};
+const setLogs = (csv) => {
+  try {
+    const list = csv.split(",").map((s) => s.trim()).filter(Boolean);
+    if (list.length) localStorage.setItem(LOGS_KEY, list.join(","));
+    else localStorage.removeItem(LOGS_KEY);
+  } catch { /* storage blocked; names just won't persist */ }
+};
+
+const $ = (id) => document.getElementById(id);
+const grid = $("ledgers");
+
+function tokenState() {
+  const has = getToken() !== "";
+  $("token-state").textContent = has ? "token set" : "no token — private logs will show as locked";
+}
+
+function row(log, body) {
+  const a = document.createElement("a");
+  a.className = "ledger-card";
+  a.href = `/atrium/?log=${encodeURIComponent(log.id)}`;
+  a.innerHTML = `
+    <span>
+      <span class="ledger-id">${log.id}</span>
+      ${log.note ? `<span class="ledger-note">${log.note}</span>` : ""}
+    </span>
+    <span class="ledger-state">${body}</span>`;
+  return a;
+}
+
+function currentLogs() {
+  // Your private logs first, then the public demo exhibit.
+  const privates = getLogs().map((id) => ({ id, note: "", visibility: "private" }));
+  return [...privates, ...PUBLIC_LOGS];
+}
+
+async function load() {
+  tokenState();
+  grid.innerHTML = "";
+  const hasToken = getToken() !== "";
+  for (const log of currentLogs()) {
+    try {
+      const stats = await api.head(log.id);
+      const epoch = typeof stats.head === "number" ? stats.head : null;
+      const label = epoch === null ? "?" : epoch < 0 ? "empty" : `epoch ${epoch}`;
+      const digest = epoch !== null && epoch >= 0 ? (stats.head_digest || "").slice(0, 10) : "";
+      grid.appendChild(row(log, `<span class="ledger-epoch">${label}</span>` +
+        (digest ? ` · <span class="mono" style="opacity:.6">${digest}</span>` : "")));
+    } catch (e) {
+      if (e.status === 401 || e.status === 403) {
+        const card = row(log, hasToken ? "forbidden" : "locked — set token");
+        card.classList.add("needs-token");
+        if (!hasToken) card.removeAttribute("href");
+        grid.appendChild(card);
+      } else {
+        const card = row(log, "unreachable");
+        card.classList.add("needs-token");
+        grid.appendChild(card);
+      }
+    }
+  }
+}
+
+$("token-set").addEventListener("click", () => {
+  setToken($("token-input").value.trim());
+  $("token-input").value = "";
+  load();
+});
+$("token-clear").addEventListener("click", () => {
+  setToken("");
+  load();
+});
+
+$("logs-input").value = getLogs().join(", ");
+$("logs-set").addEventListener("click", () => {
+  setLogs($("logs-input").value);
+  $("logs-input").value = getLogs().join(", ");
+  load();
+});
+$("logs-clear").addEventListener("click", () => {
+  setLogs("");
+  $("logs-input").value = "";
+  load();
+});
+
+$("footnote").textContent =
+  "Only the public demo exhibit is named in this page. Your private log names " +
+  "are stored in this browser only, never in the public source.";
+
+load();
+</script>
+</body>
+</html>

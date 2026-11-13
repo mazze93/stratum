@@ -7,13 +7,24 @@
  *
  * Config: ~/.config/stratum/config.json  (endpoint, token, log, agent)
  * Env overrides: STRATUM_ENDPOINT, STRATUM_TOKEN, STRATUM_LOG, STRATUM_AGENT
+ *
+ * There is no built-in default log. A command that touches a log needs one
+ * from --log, STRATUM_LOG or config, or it refuses: appends are permanent, and
+ * a silent fallback is how decisions landed in the wrong log.
  */
 
-import { spawnSync } from "node:child_process";
-import { createHash } from "node:crypto";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
-import { isAbsolute, join, relative, resolve, sep } from "node:path";
+import { join } from "node:path";
+import {
+  EXIT,
+  IngressError,
+  emit as ingressEmit,
+  flushOutbox,
+  readOutbox,
+  resolveConfig,
+  runBoundCheck as bindCheck,
+} from "../lib/ingress.mjs";
 
 const CONFIG_DIR = join(homedir(), ".config", "stratum");
 const CONFIG_PATH = join(CONFIG_DIR, "config.json");
@@ -47,10 +58,11 @@ function saveConfig(cfg) {
 
 function settings(flags) {
   const cfg = loadConfig();
+  if (flags.log === true) fail("--log needs a log id");
   return {
     endpoint: flags.endpoint || process.env.STRATUM_ENDPOINT || cfg.endpoint || "https://stratum.mazzeleczzare.com",
     token: flags.token || process.env.STRATUM_TOKEN || cfg.token || "",
-    log: flags.log || process.env.STRATUM_LOG || cfg.log || "workspace",
+    log: flags.log || process.env.STRATUM_LOG || cfg.log || null,
     agent: flags.agent || process.env.STRATUM_AGENT || cfg.agent || "mazze",
   };
 }
@@ -119,8 +131,14 @@ async function call(s, path, opts = {}) {
   return data;
 }
 
+/** The API path for the named log. Refuses rather than guess one. */
+function logPath(s, suffix) {
+  if (!s.log) fail("no log named — pass --log <id> or set STRATUM_LOG (there is no default log)");
+  return `/api/logs/${s.log}${suffix}`;
+}
+
 const appendEvent = (s, record) =>
-  call(s, `/api/logs/${s.log}/events`, { method: "POST", body: JSON.stringify(record) });
+  call(s, logPath(s, "/events"), { method: "POST", body: JSON.stringify(record) });
 
 function record(s, type, extra) {
   return {
@@ -139,81 +157,23 @@ function record(s, type, extra) {
 }
 
 // -- v2 reproducible-check binding (ADR-003 §3) ------------------------------
+// The binding logic lives in ../lib/ingress.mjs, shared with `stratum emit`,
+// so the CLI and automated clients bind checks the same way.
 
-const git = (args, cwd) => {
-  const r = spawnSync("git", args, { cwd, encoding: "utf8" });
-  return r.status === 0 ? r.stdout.trim() : null;
-};
-
-const sha256File = (path) => createHash("sha256").update(readFileSync(path)).digest("hex");
-
-/**
- * Canonical repo identity from a remote URL — host/path, no scheme, no
- * ".git", and NEVER userinfo: an https remote can embed a token
- * (https://user:TOKEN@host/…), and this string is written to a public ledger.
- */
-function normalizeRepo(url) {
-  let u = String(url).trim();
-  const scp = u.match(/^[^@/]+@([^:/]+):(.+)$/); // git@github.com:owner/repo.git
-  if (scp) u = `${scp[1]}/${scp[2]}`;
-  else {
-    try {
-      const parsed = new URL(u);
-      u = `${parsed.hostname}${parsed.port ? `:${parsed.port}` : ""}${parsed.pathname}`;
-    } catch {
-      return null;
-    }
-  }
-  return u.replace(/\.git$/, "").replace(/\/+$/, "") || null;
-}
-
-/**
- * Run a check and bind its result: the command, the exact commit it ran
- * against, the exit code, and digests of named inputs / a deterministic
- * output file. Refuses a dirty tree — a binding pins a commit, so the tree
- * that was tested must BE that commit, or the evidence is a lie.
- */
 function runBoundCheck(flags) {
-  const cwd = process.cwd();
-  const top = git(["rev-parse", "--show-toplevel"], cwd);
-  if (top === null) fail("--run needs a git repository: a binding pins the commit the check ran against");
-  const dirty = git(["status", "--porcelain"], top);
-  if (dirty) fail("working tree is dirty — commit or stash first: the tested tree must be the pinned commit");
-  const commit = git(["rev-parse", "HEAD"], top);
-  const repo = flags.repo ? String(flags.repo) : normalizeRepo(git(["remote", "get-url", "origin"], top) || "");
-  if (!repo) fail("no origin remote to name the repo — pass --repo host/owner/name");
-  const expectExit = flags["expect-exit"] === undefined ? 0 : Number(flags["expect-exit"]);
-  if (!Number.isInteger(expectExit) || expectExit < 0 || expectExit > 255) fail("--expect-exit must be 0..255");
-
-  const inputs = flags.input
-    ? String(flags.input).split(",").map((pair) => {
-        const at = pair.indexOf("=");
-        if (at <= 0) fail(`--input expects id=path[,id=path…], got "${pair}"`);
-        return { id: pair.slice(0, at), sha256: sha256File(resolve(cwd, pair.slice(at + 1))) };
-      })
-    : [];
-
-  const command = String(flags.run);
-  console.error(color.dim(`$ ${command}   (at ${commit.slice(0, 12)})`));
-  const r = spawnSync(command, { cwd, shell: true, stdio: "inherit" });
-  const exit = r.status ?? 255;
-  if (exit !== expectExit) fail(`check failed: exit ${exit}, expected ${expectExit} — nothing recorded`);
-  if (git(["rev-parse", "HEAD"], top) !== commit) fail("HEAD moved during the check — nothing recorded");
-  if (git(["status", "--porcelain"], top)) {
-    console.error(color.gold("!") + " the check left the tree dirty; the binding still pins the commit it started from");
+  try {
+    return bindCheck({
+      command: String(flags.run),
+      expectExit: flags["expect-exit"],
+      inputs: flags.input ? String(flags.input) : undefined,
+      output: flags.output ? String(flags.output) : undefined,
+      repo: flags.repo ? String(flags.repo) : undefined,
+      log: (line) => console.error(color.dim(line)),
+    });
+  } catch (e) {
+    if (e instanceof IngressError) fail(e.message);
+    throw e;
   }
-  const binding = { type: "reproducible_check", command, repo, commit, expect_exit: expectExit };
-  if (inputs.length) binding.inputs = inputs;
-  if (flags.output) {
-    // Stored repo-relative (never cwd-relative or absolute) so a re-checker can
-    // find the same file in a clean checkout of the pinned commit.
-    const abs = resolve(cwd, String(flags.output));
-    const rel = relative(top, abs);
-    if (!rel || rel.startsWith("..") || isAbsolute(rel)) fail("--output must be a file inside the repository");
-    binding.output_sha256 = sha256File(abs);
-    binding.output_path = rel.split(sep).join("/");
-  }
-  return binding;
 }
 
 function fail(msg, code = 1) {
@@ -222,6 +182,18 @@ function fail(msg, code = 1) {
 }
 
 const ok = (msg) => console.log(color.green("✓") + " " + msg);
+
+/** Ids and types only: a narrative never reaches a terminal or a log here. */
+function reportFlush(r, cfg) {
+  for (const x of r.sent) console.error(color.dim(`  sent ${x.id} (${x.outcome})`));
+  for (const x of r.refused) {
+    console.error(color.red("✗") + ` guard refused ${x.id} (${x.type}): ${x.message} — moved to the refused file`);
+  }
+  if (r.pending > 0) {
+    const why = r.busy ? "another process is flushing" : r.failure;
+    console.error(color.red("✗") + ` ${r.pending} event(s) unrecorded for log ${cfg.log} — ${why}. Queued in ${cfg.outboxPath}; run: stratum outbox --flush`);
+  }
+}
 
 function shadowClaim(narrative, flags) {
   const claim = { narrative };
@@ -242,7 +214,7 @@ const commands = {
     saveConfig(cfg);
     const s = settings({});
     ok(`config written to ${CONFIG_PATH}`);
-    console.log(`  endpoint  ${s.endpoint}\n  log       ${s.log}\n  agent     ${s.agent}\n  token     ${s.token ? "set" : color.red("not set")}`);
+    console.log(`  endpoint  ${s.endpoint}\n  log       ${s.log || "none — pass --log or set STRATUM_LOG"}\n  agent     ${s.agent}\n  token     ${s.token ? "set" : color.red("not set")}`);
   },
 
   async health(pos, flags) {
@@ -353,7 +325,7 @@ const commands = {
     const s = settings(flags);
     const [id] = pos;
     if (!id) fail("usage: stratum status <event-id>");
-    const d = await call(s, `/api/logs/${s.log}/events/${encodeURIComponent(id)}`);
+    const d = await call(s, logPath(s, `/events/${encodeURIComponent(id)}`));
     console.log(`${color.bold(id)} · ${d.record.type} · ${d.record.agent_id}`);
     console.log(`  status     ${d.status}${d.under_review ? color.red(" · UNDER REVIEW") : ""}`);
     console.log(`  authority  ${tier(d.authority)}`);
@@ -371,7 +343,7 @@ const commands = {
   async tessera(pos, flags) {
     const s = settings(flags);
     const epoch = flags.epoch !== undefined ? `?epoch=${flags.epoch}` : "";
-    const p = await call(s, `/api/logs/${s.log}/projection${epoch}`);
+    const p = await call(s, logPath(s, `/projection${epoch}`));
     if (flags.json) { console.log(JSON.stringify(p, null, 2)); return; }
     const d = p.authoritative.recent_decisions;
     const f = p.authoritative.foreclosed_options;
@@ -389,7 +361,7 @@ const commands = {
 
   async log(pos, flags) {
     const s = settings(flags);
-    const events = await call(s, `/api/logs/${s.log}/events`);
+    const events = await call(s, logPath(s, "/events"));
     const n = Number(flags.n || 15);
     console.log(color.bold(`log ${s.log} · ${events.length} events`));
     for (const [seq, ev] of events.map((e, i) => [i, e]).slice(-n)) {
@@ -401,8 +373,73 @@ const commands = {
 
   async export(pos, flags) {
     const s = settings(flags);
-    const events = await call(s, `/api/logs/${s.log}/events`);
+    const events = await call(s, logPath(s, "/events"));
     console.log(JSON.stringify(events, null, 2));
+  },
+
+  /**
+   * Ingress for automated clients (docs/API.md, cli/lib/ingress.mjs). Reads
+   * one JSON emission from stdin or --file. Exit: 0 recorded, already
+   * recorded, or unconfigured no-op · 1 error · 2 guard refused ·
+   * 3 unrecorded (queued in the outbox) · 4 ratification without a human.
+   */
+  async emit(pos, flags) {
+    let input;
+    try {
+      const raw = flags.file ? readFileSync(String(flags.file), "utf8") : readFileSync(0, "utf8");
+      input = JSON.parse(raw);
+    } catch {
+      fail("emit reads one JSON emission from stdin or --file <path>");
+    }
+    let cfg;
+    let r;
+    try {
+      cfg = resolveConfig({ log: flags.log, agent: flags.agent, endpoint: flags.endpoint, token: flags.token });
+      r = await ingressEmit(input, cfg);
+    } catch (e) {
+      if (e instanceof IngressError) fail(e.message, e.code);
+      throw e;
+    }
+    if (!r.configured) {
+      console.error(color.gold("!") + " " + r.notice);
+      process.exit(flags.required ? EXIT.unrecorded : EXIT.ok);
+    }
+    reportFlush(r, cfg);
+    const mine = r.sent.find((x) => x.id === r.record.id);
+    const refusedMine = r.refused.find((x) => x.id === r.record.id);
+    if (mine) {
+      ok(`${r.record.id} ${mine.outcome === "already" ? "already recorded" : "recorded"} · ${r.record.type}`);
+      return;
+    }
+    if (refusedMine) process.exit(EXIT.refused);
+    process.exit(EXIT.unrecorded);
+  },
+
+  async outbox(pos, flags) {
+    let cfg;
+    try {
+      cfg = resolveConfig({ log: flags.log, agent: flags.agent || "outbox", endpoint: flags.endpoint, token: flags.token });
+    } catch (e) {
+      if (e instanceof IngressError) fail(e.message, e.code);
+      throw e;
+    }
+    if (cfg.mode !== "configured") fail("no log named — pass --log <id> or set STRATUM_LOG (there is no default log)");
+    if (!flags.flush) {
+      const q = readOutbox(cfg);
+      console.log(`${q.length} event(s) unrecorded for log ${cfg.log}`);
+      for (const rec of q) console.log(`  ${color.mono(rec.id)}  ${rec.type}`);
+      process.exit(q.length ? EXIT.unrecorded : EXIT.ok);
+    }
+    let r;
+    try {
+      r = await flushOutbox(cfg);
+    } catch (e) {
+      if (e instanceof IngressError) fail(e.message, e.code);
+      throw e;
+    }
+    reportFlush(r, cfg);
+    if (r.pending === 0 && r.refused.length === 0) ok("outbox empty");
+    process.exit(r.refused.length ? EXIT.refused : r.pending ? EXIT.unrecorded : EXIT.ok);
   },
 
   async playground(pos, flags) {
@@ -422,6 +459,11 @@ const HELP = `${color.bold("stratum")} — one command, one recorded decision
     verify <id> --ref "…" legacy v1: unbound evidence (a typed timestamp)
     ratify <id>           human ratification → ${color.gold("axiomatic")}
     dispute | reject | contradict <id>
+  ${color.bold("ingress")} (automated clients — docs/API.md)
+    emit                  one JSON emission on stdin or --file; deterministic id,
+                          checks run here, ratification needs a human at a TTY
+                          [--agent A] [--required]
+    outbox                unrecorded emissions for the log      [--flush]
   ${color.bold("read")}
     tessera               the projection      [--epoch N] [--json]
     status <id>           fold status, tier, evidence, shadow trace
@@ -431,10 +473,17 @@ const HELP = `${color.bold("stratum")} — one command, one recorded decision
     init                  [--endpoint URL] [--token T] [--log L] [--agent A]
     health · playground
 
-  flags: --log <id> targets another log for any command
-  exit codes: 0 ok · 1 error · 2 guard refused (contract violation)`;
+  --version prints the version
+  flags: --log <id> names the log; required (or STRATUM_LOG / config log) — there is no default
+  exit codes: 0 ok · 1 error · 2 guard refused (contract violation)
+              3 unrecorded, queued in the outbox · 4 ratification needs a human`;
 
 const { pos, flags } = parseArgs(process.argv.slice(2));
+if (flags.version || pos[0] === "version") {
+  const pkg = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8"));
+  console.log(pkg.version);
+  process.exit(0);
+}
 const cmd = pos.shift();
 if (!cmd || cmd === "help" || flags.help) {
   console.log(HELP);
