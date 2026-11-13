@@ -13,6 +13,10 @@ import { readFileSync } from "node:fs";
 const read = (p) => readFileSync(new URL(`../${p}`, import.meta.url), "utf8");
 const version = JSON.parse(read("package.json")).version;
 const problems = [];
+// SemVer 2.0.0 core, with optional pre-release and build metadata.
+if (!/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-[0-9A-Za-z.-]+)?(\+[0-9A-Za-z.-]+)?$/.test(version)) {
+  problems.push(`package.json version "${version}" is not SemVer`);
+}
 
 for (const p of ["core/package.json", "worker/package.json", "cli/package.json"]) {
   const v = JSON.parse(read(p)).version;
@@ -23,8 +27,10 @@ const landing = read("atrium/public/index.html");
 const mast = landing.match(/class="mast-ver"[^>]*>v([0-9][^ <]*)/);
 if (!mast) problems.push("atrium/public/index.html: no mast-ver version found");
 else if (mast[1] !== version) problems.push(`atrium/public/index.html masthead says v${mast[1]}`);
-// The changelog must carry an entry for this version.
-if (!new RegExp(`^## \\[${version.replace(/\./g, "\\.")}\\]`, "m").test(read("CHANGELOG.md"))) {
+// The changelog must carry an entry for this version. A literal prefix match,
+// not a regex built from the version string.
+const heading = `## [${version}]`;
+if (!read("CHANGELOG.md").split("\n").some((line) => line.startsWith(heading))) {
   problems.push(`CHANGELOG.md has no "## [${version}]" entry`);
 }
 const i = process.argv.indexOf("--tag");
