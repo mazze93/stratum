@@ -1,11 +1,11 @@
 # CHECKPOINT — CLI survey plate
 
-Last updated: 2026-11-12 (go-ahead: line-mode)
+Last updated: 2026-11-12 (follow-ups shipped: #104, #105)
 
 - [x] 0. Pre-flight. Mirror fast-forwarded to 3553a6c; assumption checked (DECISIONS.md)
 - [x] 1. Scaffold + intent committed and pushed
-- [ ] 2a. wt entry for the CLAUDE.md refresh on PR #104
-- [ ] 2b. Dependabot: undici + vite (dev-only) PR
+- [x] 2a. wt entry for the CLAUDE.md refresh on PR #104
+- [x] 2b. Dependabot: undici + vite (dev-only) PR
 - [ ] 3. Design spike: `cli/lib/survey.mjs` + samples. **Visual verdict from mazze**
 - [ ] 4. Wire into `stratum.mjs`
 - [ ] 5. Tests + `data/cli-trace.jsonl`

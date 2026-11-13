@@ -34,3 +34,16 @@ Append-only. `date · decision · why · how to reverse`.
 **Foreclosed.** A full-screen interactive TUI. **Reopen condition:** the line-mode plate ships and the next step still needs more than one command to act on.
 
 **How to reverse.** Add a `stratum survey` subcommand in raw mode. The render primitives in `cli/lib/survey.mjs` are shared, so nothing here gets thrown away.
+
+## 2026-11-12 · Follow-ups shipped as PRs; merge commits only
+
+**Decision.** Two PRs:
+
+- #104 carries `wt-019`/`wt-020` for the CLAUDE.md refresh.
+- #105 carries the dev-advisory fix (`wrangler ^4.161.0`, vite 8.3.8) with `wt-021`/`wt-022`. It is stacked on #104 so the `wt` numbering cannot collide.
+
+Both PR bodies require a **regular merge commit**: the bindings pin branch SHAs, and squash or rebase would orphan them (a side agent flagged it; recorded in auto-memory `binding-merge-method`).
+
+**Mistake on record.** `9c14494` (#105) says it adds `wt-022` but only regenerated DECISIONS.md. The check's stdout was mixed into the dry-run JSON, the parse failed, and the commit went out anyway. The next commit fixed it and says so. History was not rewritten.
+
+**Found a CLI defect, now in scope for phase 4.** `stratum verify --run … --dry-run` runs the check with `stdio: inherit`, so the check's stdout lands on the same stream as the record JSON. Dry-run output can't be piped as advertised. The fix is to send the check's stdout to stderr whenever `--dry-run` is set.
