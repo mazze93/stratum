@@ -319,11 +319,22 @@ describe("runAnchors — local verdict first, then exactly what Stratum has", ()
     expect(doCalls).toEqual(["stats:demo"]);
   });
 
-  test("an empty log is skipped: no hub call for it", async () => {
+  test("a never-anchored empty log is skipped after checking the hub", async () => {
     const { hub, lines, tick } = rig({ demo: new FakeLog(0) });
     await tick();
-    expect(hub.requests).toHaveLength(0);
+    expect(hub.requests).toHaveLength(1);
+    expect(posts(hub)).toHaveLength(0);
     expect(lines).toEqual([expect.objectContaining({ log: "demo", local: "empty", hub: "not-sent" })]);
+  });
+
+  test("a fully truncated anchored log is hub-ahead, never silently empty", async () => {
+    const demo = new FakeLog(3);
+    const { hub, tick } = rig({ demo });
+    await tick();
+    demo.dropTail(3);
+    const [line] = await tick();
+    expect(line).toMatchObject({ local: "hub-ahead", hub: "not-sent", rows: 0, hubLast: { rows: 3 } });
+    expect(posts(hub)).toHaveLength(1); // first anchor only; rows=0 is invalid at the hub
   });
 
   test("a timeout is reported as transport and the next log is still anchored", async () => {

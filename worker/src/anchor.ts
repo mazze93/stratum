@@ -253,7 +253,6 @@ async function anchorSteps(
     // A log that fails its own chain on load is news in itself; never anchor it.
     return { ...line, local: "load-failed", error: e instanceof Error ? e.message.slice(0, 200) : "unknown" };
   }
-  if (stats.events === 0) return { ...line, local: "empty" };
   line.rows = stats.events;
   line.head = stats.head_digest;
 
@@ -265,6 +264,14 @@ async function anchorSteps(
   const last = lastHubRow(read.body);
   // Without the hub's last anchor there is no honest prevHead: don't post.
   if (last === undefined) return { ...line, hub: "hub-malformed" };
+
+  // An emptied previously anchored log is a regression too. The hub rejects
+  // rows=0 as malformed, so report it locally without a misleading POST.
+  if (stats.events === 0) {
+    return last === null
+      ? { ...line, local: "empty" }
+      : { ...line, local: "hub-ahead", hubLast: last };
+  }
 
   let prevHead: string | null = null;
   if (last === null) line.local = "first";
