@@ -21,3 +21,10 @@ Scope: Stratum #108–111 and the spec dependency blog #225. Mazze authorized co
 - npm: do not retry v0.5.0. Prepare a corrected version and a working publishing identity; verify actual registry availability and executable before claiming distribution.
 - Homebrew: do not advertise until an unauthenticated installation succeeds.
 - Authority: R4, narrower automated-write credentials, contract-per-row migration and the broader architecture decisions remain explicit future work.
+
+## Validation at 78554798498cb37f0b896967b6c22e22f0cac4fa
+- CI run 43755988980 passed typecheck, tests, renderer checks, publish dry-run, reference suites, every trace and DECISIONS sync.
+- CodeQL run 43755988974 and binding re-check run 43755989087 passed.
+- Original PRs #108, #109, #110 and #111 are merged. Blog #225 is merged.
+- tp-040 binds the maintenance checks; tp-041 binds R2 implementation tests and does not claim operational provisioning.
+- Cloudflare browser connection timed out twice; no service token was created and no credentials were changed.

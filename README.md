@@ -115,14 +115,15 @@ curl -fLO https://github.com/mazze93/stratum/releases/download/v0.5.0/stratum-v0
 # Verify the bundle using SECURITY.md before extracting and running it.
 tar -xzf stratum-v0.5.0.tar.gz
 node cli/bin/stratum.mjs --version
-# From a source checkout: cd cli && npm link
+npm link ./cli # expose the command from this bundle
 stratum init --endpoint https://your-instance --token <token> --log workspace --agent mazze
 stratum decide "Ship the thing" --pending
 stratum verify dec-xxxx --run "npm test"   # runs the check, binds it to the commit
 stratum tessera
 ```
 
-From a clone instead: `cd cli && npm link`.
+The v0.5.0 bundle predates the ratification and identity fixes on `main`.
+Use a current source checkout for those fixes: `cd cli && npm link`.
 
 ## Verification discipline
 

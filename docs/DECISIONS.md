@@ -647,7 +647,7 @@ The tracks map is not homed in the blog repo or published as a site page in this
 
 *ADR-003: bound evidence, an authority registry, atomic persistence.*
 
-> `data/trust-trace.jsonl` · epoch 39 · 40 events · 22 decisions · 7 foreclosures
+> `data/trust-trace.jsonl` · epoch 41 · 42 events · 22 decisions · 7 foreclosures
 
 ## Decisions
 
@@ -821,7 +821,7 @@ The local Stratum checkout is production's mirror: it stays on main, in sync wit
 
 > **Shadow [TRACE · certainty 0.95]** — Ruled by mazze on 2026-10-30, recorded by the agent, not minted as mazze's authority: 'the local stratum must be retained at main in sync as production, with local work and development on their own copies so that the ledger is authoritative, and stratum must dogfood its own decisions'. Found because the main checkout sat on chore/claude-md-action-majors, 2 commits past main, so the CLI every session ran was unreviewed branch code, and the tp-031 fix could never take effect there. Production equalled main at the time: main 8e7e854 was committed 18:16:42Z on 2026-10-21 and deployed 26 s later by Workers Builds, which deploys every push to main.
 
-### tp-035 — ◐ PROVISIONAL · pending_evidence
+### tp-035 — ● VERIFIED · validated
 
 **claude** · 2026-11-15T00:20:00-05:00
 
@@ -831,7 +831,7 @@ R2: anchor each allowlisted log's head to checkmate's forward-only hub on a 15-m
 
 > **Shadow [TRACE · certainty 0.8]** — Hub-first chosen by mazze on 2026-11-15 ('Hub-first'), recorded by the agent, not minted as mazze's authority. Realizes the anchor ghost edge tp-009 left open and the second step of tp-019. Perimeter: the hub runs in the same Cloudflare account, so it crosses Stratum's storage-and-code domain but not the operator's estate; that gap closes when the hub's own head is anchored into a public transparency log (R2b). Scope touchstone P1: a same-length rewrite comes back from the hub as ledger-regression, so the local verdict, not the hub's kind, names the fault. P2: any checkmate agent credential can post a longer anchor under stratum:*, denying anchoring but erasing nothing; hub-ahead logs the row's by and at. Unverified: whether Access evaluates a Worker-to-Worker subrequest to checkmate's custom domain.
 
-### tp-039 — ◐ PROVISIONAL · pending_evidence
+### tp-039 — ● VERIFIED · validated
 
 **codex** · 2026-11-15T20:02:53.926Z
 
@@ -908,6 +908,8 @@ Reaching checkmate through a service binding with its break-glass bearer is fore
 | `tp-030` | `tp-021` | npm ci --no-audit --no-fund && npx vitest run worker/test/errors.test.ts worker/test/persist.test.ts @ 455dca3db2527750622269b1610124aa88c6ba59 (expect exit 0) | not recorded (binding is authoritative) |
 | `tp-033` | `tp-031` | npm ci --no-audit --no-fund && npx vitest run cli/test/log-required.test.ts @ 50333bfcb9c6d06d83fdb3e849cd36a1874fffe1 (expect exit 0) | not recorded (binding is authoritative) |
 | `tp-034` | `tp-032` | grep -qF "is a production deploy" CLAUDE.md && grep -qF "mirror (tp-032)" CLAUDE.md @ 50333bfcb9c6d06d83fdb3e849cd36a1874fffe1 (expect exit 0) | not recorded (binding is authoritative) |
+| `tp-040` | `tp-039` | npm ci --no-audit --no-fund && npm run check && npm test && python3 scripts/test_render_decisions.py && node scripts/check-package.mjs @ 78554798498cb37f0b896967b6c22e22f0cac4fa (expect exit 0) | not recorded (binding is authoritative) |
+| `tp-041` | `tp-035` | npm ci --no-audit --no-fund && npx vitest run worker/test/anchor.test.ts @ 78554798498cb37f0b896967b6c22e22f0cac4fa (expect exit 0) | not recorded (binding is authoritative) |
 
 ---
 
