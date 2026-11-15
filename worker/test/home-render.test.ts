@@ -1,3 +1,4 @@
+/// <reference types="node" />
 /**
  * Run the production row renderer with a DOM double that refuses HTML sinks.
  * Hostile ledger names, notes and status strings must remain literal text.
