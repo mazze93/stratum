@@ -9,6 +9,20 @@ All notable changes to Stratum. The format follows
 The decision record behind each change lives in the traces (`data/*-trace.jsonl`),
 projected to [docs/DECISIONS.md](docs/DECISIONS.md). Ids in brackets point there.
 
+## [Unreleased]
+
+### Added
+
+- Off-system anchor of each log's head (ADR-004, trust-primitives R2): a
+  15-minute Cron Trigger sends each `ANCHOR_LOGS` log's head digest to checkmate's
+  forward-only hub, so a dropped tail or a rewritten chain is refused there and
+  recorded as a critical incident. Inert until the `CHECKMATE_CLIENT_ID` /
+  `CHECKMATE_CLIENT_SECRET` Worker secrets exist. [tp-035..038]
+- `anchorVerdict` (`@stratum/core`) and its oracle twin `anchor_verdict`: judge
+  a log against an anchor as `extends`, `truncated` or `forked`. The genesis chain
+  prefixes at rows 1 and 10 are pinned in `data/canonical.golden.json`.
+- `StratumLogDO.anchorPoint(rows)`: the stored, load-verified chain value at a row.
+
 ## [0.5.0] — 2026-11-13
 
 The first release distributed as a package: `@stratum-ledger/cli` on npm, with

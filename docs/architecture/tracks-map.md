@@ -106,11 +106,11 @@ flowchart LR
 
 #### Stratum — the nexus
 - **Purpose:** an epistemic decision ledger. Status is a fold over append-only events; evidence and claim never merge (`stratum:docs/SPEC.md`).
-- **State: shipped.** v0.5.0 released 2026-11-13. Worker plus Durable Object single writer; Python oracle and TypeScript core byte-identical on the golden set; CLI `@stratum-ledger/cli`. Trust primitives (`stratum:docs/ADR-003-trust-primitives.md`, `docs/journal/2026-10-06-trust-primitives/CHECKPOINT.md`): R1 and R3 done, R2 in progress, R4 authority registry, R5 first external writer and R6 memory model open.
+- **State: shipped.** v0.5.0 GitHub bundle released 2026-11-13; npm publishing failed and Homebrew is not a verified install path. Worker plus Durable Object single writer; Python oracle and TypeScript core byte-identical on the golden set; CLI `@stratum-ledger/cli`. Trust primitives (`stratum:docs/ADR-003-trust-primitives.md`, `docs/journal/2026-10-06-trust-primitives/CHECKPOINT.md`): R1 and R3 done, R2 in progress, R4 authority registry, R5 first external writer and R6 memory model open.
 - **Produces:** decision, evidence and foreclosure events; derived status; `DECISIONS.md`; a verification re-checker.
 - **Consumes:** events over `/api/logs/{log}/events`, `stratum emit` (ingress, `cli/lib/ingress.mjs`), repo traces in `data/*-trace.jsonl`.
 - **Cathedral target:** the white paper's macOS workbench with twelve roles and six memory tiers (`stratum:docs/stratum-reshape-analysis-v0.4.0.md.md`: "Stratum v0.4.0 is the first brick. The cathedral is still the cognitive workbench").
-- **Waits on Mazze:** PR 108 (R2 anchor) and PR 109 (ingress ratification, ig-006/ig-007). Merging either is a production deploy.
+- **R2 operation:** PR 108 is merged, including full-truncation detection. Provisioning and a real Checkmate anchored tick remain unverified. PR 109 and blog PR 225 are merged.
 
 ### Integrity plane
 
@@ -162,9 +162,9 @@ flowchart LR
 
 #### cognitive-topology plugin and ct-reshape (Tessera)
 - **Purpose:** the paper's plugin, reshaped into gated tranches T1–T5 (council report, 2026-10-21: "A modified, T1 only, gated").
-- **State: T1 shipped; spec 0.7.0 ratified in draft.** T1 ingress lives upstream in Stratum (ig-000, PR #101, verified ig-005). Blog PR 225 records the ratified spec; Stratum PR 109 pins its hash. T2 and T4 are held until the plugin source has a repo home; T3 is split out as Context Synapse work (spec 0.7.0 §13).
+- **State: T1 shipped; spec 0.7.0 accepted.** T1 ingress lives upstream in Stratum (ig-000, PR #101, verified ig-005). Blog PR 225 and Stratum PR 109 are merged; ig-006 pins the spec hash. T2 and T4 are held until the plugin source has a repo home; T3 is split out as Context Synapse work (spec 0.7.0 §13).
 - **Produces:** events through `stratum emit`; the Tessera pages on the blog (`mazze-leczzare-blog:src/content/tesserae/`).
-- **Waits on Mazze:** merge of blog PR 225 and Stratum PR 109 (both deploy).
+- **Remaining:** plugin source home and the narrower token remain undecided; merging the spec did not adopt either.
 
 #### Context Synapse
 - **Purpose:** "a local-first macOS system for modeling, retrieving, and inspecting contextual weight across AI-assisted work"; "the bridge" between AI and neurodivergent intelligence (`context-synapse:README.md`).

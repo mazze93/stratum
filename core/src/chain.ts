@@ -26,3 +26,29 @@ export function chainDigest(records: readonly unknown[]): string {
   for (const r of records) prev = chainLink(prev, r);
   return prev;
 }
+
+/**
+ * How a log relates to an anchor someone holds for it (R2, ADR-004).
+ *
+ *   extends    rows <= len and the first `rows` records chain to `head`
+ *   truncated  rows > len: the anchor is ahead of this log (a dropped tail,
+ *              or a longer anchor someone else wrote under the same name)
+ *   forked     the prefix of that length chains to a different head
+ *
+ * The checkmate hub is not an extension proof (its own words), so Stratum
+ * carries one. Run it over NORMALIZED wire records (serializeLog, what
+ * GET /events returns), never over raw trace lines: a file can carry fields
+ * the stored chain does not hash. Reference twin: canonical.py `anchor_verdict`.
+ */
+export type AnchorVerdict = "extends" | "truncated" | "forked";
+
+export function anchorVerdict(
+  records: readonly unknown[],
+  anchor: { readonly rows: number; readonly head: string },
+): AnchorVerdict {
+  if (!Number.isSafeInteger(anchor.rows) || anchor.rows < 0) {
+    throw new RangeError(`anchor rows must be a non-negative integer, got ${String(anchor.rows)}`);
+  }
+  if (anchor.rows > records.length) return "truncated";
+  return chainDigest(records.slice(0, anchor.rows)) === anchor.head ? "extends" : "forked";
+}

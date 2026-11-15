@@ -45,7 +45,8 @@ export interface EventStore {
 }
 
 export class PersistentLog {
-  private cache: { log: EpisodicLog; head: string } | null = null;
+  /** links[i] = the stored, load-verified chain value at row i+1. */
+  private cache: { log: EpisodicLog; links: string[] } | null = null;
 
   constructor(private readonly store: EventStore) {}
 
@@ -55,10 +56,23 @@ export class PersistentLog {
 
   /** Content address of the log at its head (GENESIS_DIGEST when empty). */
   get headDigest(): string {
-    return this.load().head;
+    return this.load().links.at(-1) ?? GENESIS_DIGEST;
   }
 
-  private load(): { log: EpisodicLog; head: string } {
+  /**
+   * The chain value at row `rows` (1-based): what an anchor taken when the log
+   * had `rows` events must equal (R2, ADR-004). It is the STORED value, read
+   * only after load() re-walked and matched every row, so it is verified, not
+   * trusted. null past the head — the anchor is ahead of this log.
+   */
+  chainAt(rows: number): string | null {
+    if (!Number.isSafeInteger(rows) || rows < 1) {
+      throw new RangeError(`chainAt rows must be a positive integer, got ${String(rows)}`);
+    }
+    return this.load().links[rows - 1] ?? null;
+  }
+
+  private load(): { log: EpisodicLog; links: string[] } {
     if (this.cache !== null) return this.cache;
     const rows = this.store.readAll();
     const log = loadLog(rows.map((r) => r.record));
@@ -74,7 +88,7 @@ export class PersistentLog {
         throw new ContractViolation(`chain break at seq ${r.seq}: stored log was altered`);
       }
     });
-    this.cache = { log, head: prev };
+    this.cache = { log, links };
     return this.cache;
   }
 
@@ -107,11 +121,11 @@ export class PersistentLog {
       const out = this.store.transaction(() => {
         const sequenced = state.log.append(event);
         const record = eventToRecord(sequenced);
-        const chain = chainLink(state.head, record);
+        const chain = chainLink(state.links.at(-1) ?? GENESIS_DIGEST, record);
         this.store.insert(sequenced.seq, sequenced.id, JSON.stringify(record), chain);
         return { event: sequenced, chain };
       });
-      state.head = out.chain;
+      state.links.push(out.chain);
       return out;
     } catch (e) {
       if (state.log.head !== before) this.cache = null;
@@ -135,7 +149,7 @@ export class PersistentLog {
     this.store.transaction(() => {
       for (const r of rows) this.store.insert(r.seq, r.id, JSON.stringify(r.record), r.chain);
     });
-    this.cache = { log: seeded, head: prev };
+    this.cache = { log: seeded, links: rows.map((r) => r.chain) };
     return true;
   }
 }
