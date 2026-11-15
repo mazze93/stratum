@@ -4,7 +4,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { describe, expect, test } from "vitest";
 import { canonicalize } from "../src/canonical.js";
-import { chainDigest, chainLink, GENESIS_DIGEST } from "../src/chain.js";
+import { anchorVerdict, chainDigest, chainLink, GENESIS_DIGEST } from "../src/chain.js";
 import { ContractViolation } from "../src/contract.js";
 import { loadLog, serializeLog } from "../src/serialize.js";
 import { sha256Hex } from "../src/sha256.js";
@@ -13,7 +13,10 @@ const root = new URL("../../", import.meta.url);
 const golden = JSON.parse(readFileSync(new URL("data/canonical.golden.json", root), "utf8")) as {
   cases: { name: string; value: unknown; canonical: string }[];
   refused: { name: string; value: unknown }[];
-  traces: Record<string, { events: number; head_digest: string }>;
+  traces: Record<
+    string,
+    { events: number; head_digest: string; prefix_digests: Record<string, string> }
+  >;
 };
 
 /** Normalized wire records — what a log's head digest is defined over. */
@@ -76,6 +79,69 @@ describe("hash chain over persisted records (tp-009)", () => {
     expect(chainLink(GENESIS_DIGEST, r)).toBe(
       createHash("sha256").update(GENESIS_DIGEST + '{"a":[true],"b":1}').digest("hex"),
     );
+  });
+});
+
+describe("anchorVerdict — how a log relates to an anchor (R2, ADR-004)", () => {
+  const recs = wire("genesis-trace.jsonl") as Record<string, unknown>[];
+  const at = (n: number) => chainDigest(recs.slice(0, n));
+
+  test("golden prefix digests are byte-identical across implementations", () => {
+    const want = golden.traces["genesis-trace.jsonl"]!.prefix_digests;
+    expect(Object.keys(want).sort()).toEqual(["1", "10"]);
+    for (const [n, head] of Object.entries(want)) {
+      expect(at(Number(n)), `row ${n}`).toBe(head);
+      expect(anchorVerdict(recs, { rows: Number(n), head })).toBe("extends");
+    }
+  });
+  test("extends at every prefix, including the empty one and the head", () => {
+    for (let n = 0; n <= recs.length; n++) {
+      expect(anchorVerdict(recs, { rows: n, head: at(n) }), `row ${n}`).toBe("extends");
+    }
+    expect(anchorVerdict([], { rows: 0, head: GENESIS_DIGEST })).toBe("extends");
+  });
+  test("truncated when the anchor is past this log's head (a dropped tail)", () => {
+    const head = at(recs.length);
+    expect(anchorVerdict(recs.slice(0, -1), { rows: recs.length, head })).toBe("truncated");
+    expect(anchorVerdict(recs, { rows: recs.length + 1, head })).toBe("truncated");
+  });
+  test("forked for a one-byte change in a middle record", () => {
+    const head = at(recs.length);
+    const edited = recs.map((r, i) =>
+      i === 9 ? { ...r, agent_id: `${String(r.agent_id)}x` } : r,
+    );
+    expect(anchorVerdict(edited, { rows: recs.length, head })).toBe("forked");
+    // the prefix before the edit still extends
+    expect(anchorVerdict(edited, { rows: 9, head: at(9) })).toBe("extends");
+  });
+  test("forked for a recomputed chain over an edited record (same length)", () => {
+    const edited = [{ ...recs[0]!, agent_id: "forged" }, ...recs.slice(1)];
+    expect(anchorVerdict(edited, { rows: 1, head: at(1) })).toBe("forked");
+    expect(anchorVerdict(recs, { rows: 1, head: chainDigest(edited.slice(0, 1)) })).toBe("forked");
+  });
+  test("refuses a nonsense row count", () => {
+    for (const rows of [-1, 1.5, Number.NaN, Number.POSITIVE_INFINITY]) {
+      expect(() => anchorVerdict(recs, { rows, head: GENESIS_DIGEST })).toThrow(RangeError);
+    }
+  });
+  test("the TypeScript verdict equals the oracle's at every row of every live trace", () => {
+    const names = readdirSync(new URL("data/", root)).filter((n) => n.endsWith("-trace.jsonl"));
+    const oracle = JSON.parse(
+      execFileSync(
+        "python3",
+        ["-I", "-c",
+         "import json,sys;sys.path.insert(0,sys.argv[1]);from canonical import chain_digest;from tessera_projection import load_log,serialize_log;" +
+         "out={}\nfor n in sys.argv[3:]:\n w=serialize_log(load_log([json.loads(l) for l in open(sys.argv[2]+'/'+n) if l.strip()]))\n out[n]=[chain_digest(w[:k]) for k in range(len(w)+1)]\nprint(json.dumps(out))",
+         fileURLToPath(new URL("reference", root)), fileURLToPath(new URL("data", root)), ...names],
+        { encoding: "utf8" },
+      ),
+    ) as Record<string, string[]>;
+    for (const n of names) {
+      const w = wire(n);
+      oracle[n]!.forEach((head, k) => {
+        expect(anchorVerdict(w, { rows: k, head }), `${n} row ${k}`).toBe("extends");
+      });
+    }
   });
 });
 

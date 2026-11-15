@@ -105,7 +105,11 @@
   "traces": {
     "genesis-trace.jsonl": {
       "events": 20,
-      "head_digest": "67f7689bb298131b673ee5da969b2aa74509b773351dd7c3afc57be7e8b4bbc0"
+      "head_digest": "67f7689bb298131b673ee5da969b2aa74509b773351dd7c3afc57be7e8b4bbc0",
+      "prefix_digests": {
+        "1": "6dd60dc51a11d7cec75cc2379f1933f83eaa4c008a747d0dd5bfefc60c625959",
+        "10": "fdf868d7e9287a3c0613d2d8df3b50f9c645c643bb21d4279f54ac653f5fe040"
+      }
     }
   }
 }

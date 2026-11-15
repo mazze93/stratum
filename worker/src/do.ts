@@ -179,6 +179,16 @@ export class StratumLogDO extends DurableObject<Env> {
     return { ok: true, seeded: true, events: this.store.log.head + 1 };
   }
 
+  /**
+   * The stored, load-verified chain value at row `rows` (1-based), or null
+   * past the head (R2, ADR-004). The anchor cron compares it with the hub's
+   * last head for this log, and sends it as prevHead.
+   */
+  anchorPoint(rows: number): string | null {
+    this.ensureLog(); // a broken chain fails closed here, legibly
+    return this.store.chainAt(rows);
+  }
+
   /** The log's content address at its head (tp-009) — what anchors and evidence cite. */
   stats(): { events: number; head: number; head_digest: string } {
     const log = this.ensureLog();

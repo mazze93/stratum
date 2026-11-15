@@ -630,7 +630,7 @@ cli/mise.toml is neither pinned-and-tracked nor gitignored; it is removed outrig
 
 *ADR-003: bound evidence, an authority registry, atomic persistence.*
 
-> `data/trust-trace.jsonl` · epoch 34 · 35 events · 20 decisions · 4 foreclosures
+> `data/trust-trace.jsonl` · epoch 38 · 39 events · 21 decisions · 7 foreclosures
 
 ## Decisions
 
@@ -804,6 +804,16 @@ The local Stratum checkout is production's mirror: it stays on main, in sync wit
 
 > **Shadow [TRACE · certainty 0.95]** — Ruled by mazze on 2026-10-30, recorded by the agent, not minted as mazze's authority: 'the local stratum must be retained at main in sync as production, with local work and development on their own copies so that the ledger is authoritative, and stratum must dogfood its own decisions'. Found because the main checkout sat on chore/claude-md-action-majors, 2 commits past main, so the CLI every session ran was unreviewed branch code, and the tp-031 fix could never take effect there. Production equalled main at the time: main 8e7e854 was committed 18:16:42Z on 2026-10-21 and deployed 26 s later by Workers Builds, which deploys every push to main.
 
+### tp-035 — ◐ PROVISIONAL · pending_evidence
+
+**claude** · 2026-11-15T00:20:00-05:00
+
+R2: anchor each allowlisted log's head to checkmate's forward-only hub on a 15-minute Cron Trigger, never on the write path. Per log the cron reads the hub's last anchor for stratum:<logId>, judges locally from the DO's stored, load-verified chain at that row (first, extends, hub-ahead, forked), then posts exactly what Stratum has; the hub refuses any disagreement with 409 and a critical incident. Stratum's local verdict is the label of record. A pure anchorVerdict, with its oracle twin anchor_verdict, judges any anchor against normalized wire records. Inert until the CHECKMATE_CLIENT_ID / CHECKMATE_CLIENT_SECRET Access service token exists. ADR-004.
+
+*Revision chain:* `tp-009 → tp-035`
+
+> **Shadow [TRACE · certainty 0.8]** — Hub-first chosen by mazze on 2026-11-15 ('Hub-first'), recorded by the agent, not minted as mazze's authority. Realizes the anchor ghost edge tp-009 left open and the second step of tp-019. Perimeter: the hub runs in the same Cloudflare account, so it crosses Stratum's storage-and-code domain but not the operator's estate; that gap closes when the hub's own head is anchored into a public transparency log (R2b). Scope touchstone P1: a same-length rewrite comes back from the hub as ledger-regression, so the local verdict, not the hub's kind, names the fault. P2: any checkmate agent credential can post a longer anchor under stratum:*, denying anchoring but erasing nothing; hub-ahead logs the row's by and at. Unverified: whether Access evaluates a Worker-to-Worker subrequest to checkmate's custom domain.
+
 ## Foreclosures — ghost edges
 
 ### tp-006 — standing
@@ -837,6 +847,30 @@ Stacked PRs (a PR based on another unmerged PR's branch) are foreclosed for this
 *Ghost edges:* ~~`stacked-pr-chain`~~
 
 > **Shadow [TRACE · certainty 0.9]** — The stack stranded work and hid it from CI. CI runs only on PRs targeting main, so #74 to #76 never ran it, and my local green was the only gate. #74 was merged into its stacked base after #73 had been squash-merged into main, so phase 1 never reached main until a merge plus a retarget recovered it. Stacking also forced a force-push and a diff3-marker cleanup earlier. Reopen only if CI is configured to run on all PR bases.
+
+### tp-036 — standing
+
+Anchoring inside appendEvent is foreclosed: the anchor runs on a schedule, never on the write path.
+
+*Ghost edges:* ~~`anchor-in-append-path`~~
+
+> **Shadow [TRACE · certainty 0.85]** — An anchor per append would make every write wait on checkmate's uptime and add an outbound call to the single-writer gate, coupling tp-001's persistence invariant to a remote service. The cost of the schedule is a detection window: rows appended and then dropped inside one 15-minute window are never witnessed. Reopen if that window turns out to matter.
+
+### tp-037 — standing
+
+Sigstore Rekor as the first anchor is foreclosed: Rekor comes later, as a layer over the hub's own head (R2b), not as Stratum's first witness.
+
+*Ghost edges:* ~~`anchor-hub-head-to-rekor`~~ · ~~`rekor-first-anchor`~~
+
+> **Shadow [TRACE · certainty 0.8]** — Rekor v2 removed the search index and the get-by-index reads, so a Rekor witness is only as complete as a bundle index we store ourselves, and the cheapest place to store it is inside the estate it is meant to guard. Private log names and heads would also become public unless hashed, and reading private heads from CI needs a narrower token than exists today (ig-004). One Rekor entry per hub head covers every ledger the hub witnesses, so the layering keeps this PR small and private names private. Reopen with a bundle store outside the operator's estate, or a verifiable index.
+
+### tp-038 — standing
+
+Reaching checkmate through a service binding with its break-glass bearer is foreclosed: the anchor goes over HTTPS to checkmate's Access-protected custom domain with an Access service token.
+
+*Ghost edges:* ~~`service-binding-break-glass-bearer`~~
+
+> **Shadow [TRACE · certainty 0.75]** — A service binding skips Cloudflare Access, so the hub would authenticate Stratum with AGENT_INGEST_TOKEN, which checkmate documents as local dev and break-glass only. The Access path is the one claude-stamp's ledger-anchor.py already uses. Reopen if Access does not evaluate a Worker-to-Worker subrequest to the custom domain; the fallback is a binding plus a dedicated, anchor-only bearer on checkmate's side, which is a checkmate change.
 
 ## Checked-evidence ledger
 

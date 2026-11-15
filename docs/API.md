@@ -47,6 +47,35 @@ Durable Object per log (`worker/src/do.ts`), which runs every contract guard in
 | `POST /api/logs/{logId}/events` | append one event; see below | `index.ts:91-101` |
 | `POST /api/logs/{logId}/seed` | seed an **empty** log from an array of records; always needs the token, even on a playground; `201` seeded, `200` already non-empty (no change) | `index.ts:103-119`, `do.ts:162-180` |
 
+## Outbound: the head anchor (ADR-004)
+
+The Worker also makes **outbound** calls, never on a request path. A Cron Trigger
+(`*/15 * * * *`, `worker/wrangler.jsonc`) runs `runAnchors` in
+`worker/src/anchor.ts` through the `scheduled` handler in `worker/src/index.ts`.
+
+- For each id in the `ANCHOR_LOGS` var (default `demo`): `GET
+  {CHECKMATE_URL}/api/hub/ledger-anchors?ledger=stratum:<logId>`, then `POST
+  {CHECKMATE_URL}/api/hub/ledger-anchor` with `{ledger, rows, head, prevHead?}`,
+  where `rows` and `head` are this log's `/head` `events` and `head_digest`, and
+  `prevHead` is the stored chain value at the hub's last anchored row
+  (`StratumLogDO.anchorPoint`).
+- Auth: `CF-Access-Client-Id` / `CF-Access-Client-Secret` from the Worker secrets
+  `CHECKMATE_CLIENT_ID` / `CHECKMATE_CLIENT_SECRET`. While either is unset, nothing
+  is sent and the tick logs `not-configured`.
+- `CHECKMATE_URL` must be a bare `https://` origin (default
+  `https://checkmate.mazzeleczzare.com`); loopback `http://` is accepted for local
+  smoke only. Ids over 56 characters and `playground-*` ids refuse the whole config.
+- 8 s timeout per request, no retries inside a tick. Redirects are never followed
+  (`redirect: "manual"`), so the service-token secret cannot travel with one; a 3xx
+  is `hub-error:<status>`. A `200` counts only when the body is the hub's
+  `{"ok":true,…}`; anything else is `hub-malformed`.
+- One JSON log line per log: `{"event":"stratum.anchor","log","ledger","local","hub",…}`,
+  where `local` is `first` · `extends` · `hub-ahead` · `forked` · `empty` ·
+  `load-failed` · `unknown`, and `hub` is `anchored` · `unchanged` · `refused:<kind>`
+  (with `incident`) · `not-sent` · `transport` · `hub-error:<status>` ·
+  `hub-malformed` · `error`. `local` is the label of record. Credentials never
+  appear in it.
+
 ## Appending an event
 
 ```
