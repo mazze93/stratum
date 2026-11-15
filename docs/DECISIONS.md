@@ -882,7 +882,7 @@ Reaching checkmate through a service binding with its break-glass bearer is fore
 
 *How automated clients write into Stratum (cognitive-topology T1).*
 
-> `data/ingress-trace.jsonl` · epoch 5 · 6 events · 3 decisions · 2 foreclosures
+> `data/ingress-trace.jsonl` · epoch 7 · 8 events · 4 decisions · 2 foreclosures
 
 ## Decisions
 
@@ -909,6 +909,14 @@ docs/API.md is the upstream HTTP reference for every ingress client, each statem
 Proposed, awaiting mazze: a narrower token for automated writers, write-only and scoped to one log, so a plugin's environment stops holding the one STRATUM_TOKEN that also reads every private log and writes to all of them.
 
 > **Shadow [TRACE · certainty 0.75]** — Raised as a backlog decision, not code, per the council's X1 condition. Today auth.ts has one secret for every private read and every write. Append-only plus a leaked master key means permanent pollution of every log. Touches worker auth, so it sits next to the authority registry (R4) and is not part of T1. Born asserted because it changes the trust boundary.
+
+### ig-006 — ◆ AXIOMATIC · ratified
+
+**claude** · 2026-11-15T01:30:00-05:00
+
+ct-reshape spec 0.7.0 governs how cognitive-topology writes into Stratum. It re-baselines 0.6.0 against Stratum source and the T1 build: §5 corrected in four places, real paths, T1 delivered upstream, T3 split out as ContextSynapse work, roles, memory tiers and the workbench kept as cathedral target. Two questions stay open in its §13: where the plugin source lives, and the narrower token (ig-004). The document is github.com/mazze93/mazze-leczzare-blog public/cognitive-topology/reshape/cognitive-topology-reshape.spec.md, sha256 48a96097f30a856e055341dbd4e6d387e62f72d0c62f275e7582c6d766865187.
+
+> **Shadow [TRACE · certainty 0.9]** — 0.6.0's header said Draft while the blog changelog said ratified 2026-09-06; ct-001 on that date ratified the reshape decision ct-000, not the document's content. The 2026-10-21 decision council asked for a re-baseline before ratification. Born asserted because adopting a governing spec is an act of authority, folded by ig-007.
 
 ## Foreclosures — ghost edges
 
