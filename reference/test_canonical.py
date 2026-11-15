@@ -12,8 +12,9 @@ Run:  python3 test_canonical.py
 import json
 from pathlib import Path
 
-from canonical import CanonicalError, GENESIS_DIGEST, canonicalize, chain_digest, log_digest
-from tessera_projection import load_log
+from canonical import (CanonicalError, GENESIS_DIGEST, anchor_verdict, canonicalize, chain_digest,
+                       log_digest)
+from tessera_projection import load_log, serialize_log
 
 ROOT = Path(__file__).resolve().parent.parent
 GOLDEN = json.loads((ROOT / "data" / "canonical.golden.json").read_text())
@@ -57,6 +58,54 @@ def test_chain_detects_edit_delete_reorder():
     assert chain_digest([recs[1], recs[0], *recs[2:]]) != head
     assert chain_digest([{**recs[0], "agent_id": "forged"}, *recs[1:]]) != head
     assert chain_digest([]) == GENESIS_DIGEST
+
+
+def _wire(name):
+    return serialize_log(load_log(_trace(name)))
+
+
+def test_golden_prefix_digests_are_current():
+    # R2 (ADR-004): anchors name a row; the chain at that row is pinned too.
+    want = GOLDEN["traces"]["genesis-trace.jsonl"]["prefix_digests"]
+    assert sorted(want) == ["1", "10"]
+    w = _wire("genesis-trace.jsonl")
+    for n, head in want.items():
+        assert chain_digest(w[: int(n)]) == head, n
+        assert anchor_verdict(w, int(n), head) == "extends", n
+
+
+def test_anchor_verdict_extends_at_every_prefix():
+    w = _wire("genesis-trace.jsonl")
+    for n in range(len(w) + 1):
+        assert anchor_verdict(w, n, chain_digest(w[:n])) == "extends", n
+    assert anchor_verdict([], 0, GENESIS_DIGEST) == "extends"
+
+
+def test_anchor_verdict_truncated_past_the_head():
+    w = _wire("genesis-trace.jsonl")
+    head = chain_digest(w)
+    assert anchor_verdict(w[:-1], len(w), head) == "truncated"
+    assert anchor_verdict(w, len(w) + 1, head) == "truncated"
+
+
+def test_anchor_verdict_forked_on_edit():
+    w = _wire("genesis-trace.jsonl")
+    edited = [*w[:9], {**w[9], "agent_id": w[9]["agent_id"] + "x"}, *w[10:]]
+    assert anchor_verdict(edited, len(w), chain_digest(w)) == "forked"
+    assert anchor_verdict(edited, 9, chain_digest(w[:9])) == "extends"
+    forged = [{**w[0], "agent_id": "forged"}, *w[1:]]
+    assert anchor_verdict(forged, 1, chain_digest(w[:1])) == "forked"
+    assert anchor_verdict(w, 1, chain_digest(forged[:1])) == "forked"
+
+
+def test_anchor_verdict_refuses_nonsense_rows():
+    w = _wire("genesis-trace.jsonl")
+    for rows in (-1, 1.5, True, None, "3"):
+        try:
+            anchor_verdict(w, rows, GENESIS_DIGEST)
+        except ValueError:
+            continue
+        raise AssertionError(f"accepted rows={rows!r}")
 
 
 def test_key_order_is_utf16_not_codepoint():

@@ -239,7 +239,8 @@ Two sibling repos already solve parts of this. Borrowed, with credit:
   a 409 plus an incident. Stratum's head digest is exactly what such a
   witness needs. Wiring an anchor is **not** in this ADR. It needs an
   off-system witness, and that is a deploy decision (recorded as a
-  reopenable ghost edge).
+  reopenable ghost edge). The anchor is now wired in
+  [ADR-004](ADR-004-off-system-anchor.md) (`tp-035`).
 - **Re-derive, never trust.** `verify-release.py` re-derives every value the
   exporter supplied: "it can only cause failure." That is the rule for
   bindings. The guard checks formats and digests and verifies signatures

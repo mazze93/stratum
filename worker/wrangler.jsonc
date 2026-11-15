@@ -38,5 +38,15 @@
   },
   "observability": {
     "enabled": true
+  },
+  // R2 off-system anchor (ADR-004, worker/src/anchor.ts). Inert until the
+  // CHECKMATE_CLIENT_ID / CHECKMATE_CLIENT_SECRET secrets exist. Name only logs
+  // that are never reseeded: a truncation becomes a critical hub incident.
+  "triggers": {
+    "crons": ["*/15 * * * *"]
+  },
+  "vars": {
+    "CHECKMATE_URL": "https://checkmate.mazzeleczzare.com",
+    "ANCHOR_LOGS": "demo"
   }
 }

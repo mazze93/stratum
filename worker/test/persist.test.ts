@@ -218,3 +218,61 @@ describe("PersistentLog — hash chain in storage (tp-009)", () => {
     expect(chain).toBe(chainDigest(serializeLog(p.log)));
   });
 });
+
+describe("PersistentLog.chainAt — the anchor point (R2, ADR-004)", () => {
+  const build = (n: number) => {
+    const store = new FakeStore();
+    const p = new PersistentLog(store);
+    for (let i = 1; i <= n; i++) p.append(decision(`a-${i}`));
+    return { store, p };
+  };
+
+  test("chainAt(n) equals chainDigest of the first n wire records, for every n", () => {
+    const { store, p } = build(6);
+    const wire = serializeLog(p.log);
+    for (let n = 1; n <= wire.length; n++) {
+      expect(p.chainAt(n), `row ${n}`).toBe(chainDigest(wire.slice(0, n)));
+      expect(p.chainAt(n)).toBe(store.rows[n - 1]!.chain); // the stored value
+    }
+    expect(p.chainAt(wire.length)).toBe(p.headDigest);
+  });
+
+  test("a fresh load (no cache) answers the same, and a seeded log too", () => {
+    const { store, p } = build(4);
+    const reloaded = new PersistentLog(store);
+    for (let n = 1; n <= 4; n++) expect(reloaded.chainAt(n)).toBe(p.chainAt(n));
+
+    const seededStore = new FakeStore();
+    const seeded = new PersistentLog(seededStore);
+    expect(seeded.seedIfEmpty(serializeLog(p.log))).toBe(true);
+    for (let n = 1; n <= 4; n++) expect(seeded.chainAt(n)).toBe(p.chainAt(n));
+  });
+
+  test("null past the head: the anchor is ahead of this log", () => {
+    const { p } = build(3);
+    expect(p.chainAt(4)).toBeNull();
+    expect(new PersistentLog(new FakeStore()).chainAt(1)).toBeNull();
+  });
+
+  test("a tampered stored chain makes chainAt throw: load fails closed first", () => {
+    const { store } = build(3);
+    store.rows[0]!.chain = "f".repeat(64);
+    expect(() => new PersistentLog(store).chainAt(3)).toThrow(/chain break at seq 0/);
+  });
+
+  test("tracks appends and survives a rolled-back append", () => {
+    const { store, p } = build(2);
+    const at2 = p.chainAt(2);
+    store.failInsertAt = store.inserts;
+    expect(() => p.append(decision("a-3"))).toThrow("injected storage failure");
+    expect(p.chainAt(3)).toBeNull();
+    const { chain } = p.append(decision("a-3"));
+    expect(p.chainAt(3)).toBe(chain);
+    expect(p.chainAt(2)).toBe(at2);
+  });
+
+  test("refuses a nonsense row number", () => {
+    const { p } = build(1);
+    for (const n of [0, -1, 1.5, Number.NaN]) expect(() => p.chainAt(n)).toThrow(RangeError);
+  });
+});
