@@ -633,12 +633,13 @@ The tracks map is not homed in the blog repo or published as a site page in this
 |---|---|---|---|
 | `wt-010` | `wt-009` | git rev-parse HEAD origin/main → 706edf352a91a681c5416ebae1396230baeb286e (both) | 2026-10-06T18:34:00-04:00 |
 | `wt-010` | `wt-009` | npm run check && npm test && npm run test:reference && npm run validate:trace — exit 0 (26/26 vitest, 16/16 invariants) | 2026-10-06T18:36:03-04:00 |
+| `wt-012` | `wt-011` | npm ci --no-audit --no-fund && node -e 'const v=require("sharp").versions;console.log(v.sharp,v.rsvg);process.exit(v.sharp==="0.35.5"&&v.rsvg==="2.63.2"?0:1)' @ d68d6e6424b054707ec32927edf55ca9b60cd551 (expect exit 0) | not recorded (binding is authoritative) |
 | `wt-015` | `wt-013` | git ls-files -s AGENTS.md → 120000 681311eb9cf453d0faddf3aacaec7357e97ba8e9 0	AGENTS.md | 2026-10-21T14:13:13-04:00 |
 | `wt-015` | `wt-013` | readlink AGENTS.md → CLAUDE.md; head -1 AGENTS.md → '# CLAUDE.md' — exit 0 | 2026-10-21T14:13:13-04:00 |
 | `wt-018` | `wt-016` | test ! -e cli/mise.toml; git log --all --oneline -- cli/mise.toml (empty); git grep aube -- cli core worker scripts package.json .github (empty) — exit 0 | 2026-10-29T23:13:10-04:00 |
 | `wt-018` | `wt-016` | archive cli/mise.toml sha256 217bad5a28195e6adcba24f381698546bbc06ff09d45cd8603c892a204d06ee2 (24 bytes), restore source for wt-016 | 2026-10-29T23:13:10-04:00 |
-| `wt-020` | `wt-019` | grep -q ADR-004 CLAUDE.md && grep -q cli/lib/ingress.mjs CLAUDE.md && grep -q core/src/chain.ts CLAUDE.md && grep -q canonical.golden.json CLAUDE.md && test -e cli/lib/ingress.mjs && test -e core/src/chain.ts && test -e core/src/canonical.ts && test -e schemas/event.v2.schema.json && test -e data/canonical.golden.json && test -e scripts/render-canonical-golden.py && test -e atrium/public/home/index.html && test -e docs/API.md && test -L AGENTS.md | 2026-11-13T03:22:53.506Z |
-| `wt-022` | `wt-021` | npm ci --no-audit --no-fund && node -e 'const v=n=>require(require.resolve(n+"/package.json",{paths:[require.resolve("miniflare",{paths:["worker"]}),"."]})).version;const u=v("undici"),t=v("vite");const ge=(a,b)=>{a=a.split(".").map(Number);b=b.split(".").map(Number);for(let i=0;i<3;i++){if(a[i]!==b[i])return a[i]>b[i]}return true};console.log("undici",u,"vite",t);process.exit(ge(u,"7.30.1")&&ge(t,"8.3.3")?0:1)' | 2026-11-13T03:26:12.252Z |
+| `wt-020` | `wt-019` | grep -q ADR-004 CLAUDE.md && grep -q cli/lib/ingress.mjs CLAUDE.md && grep -q core/src/chain.ts CLAUDE.md && grep -q canonical.golden.json CLAUDE.md && test -e cli/lib/ingress.mjs && test -e core/src/chain.ts && test -e core/src/canonical.ts && test -e schemas/event.v2.schema.json && test -e data/canonical.golden.json && test -e scripts/render-canonical-golden.py && test -e atrium/public/home/index.html && test -e docs/API.md && test -L AGENTS.md @ a89d2d39b12d600ac4980698e92ecae61f89628e (expect exit 0) | 2026-11-13T03:22:53.506Z |
+| `wt-022` | `wt-021` | npm ci --no-audit --no-fund && node -e 'const v=n=>require(require.resolve(n+"/package.json",{paths:[require.resolve("miniflare",{paths:["worker"]}),"."]})).version;const u=v("undici"),t=v("vite");const ge=(a,b)=>{a=a.split(".").map(Number);b=b.split(".").map(Number);for(let i=0;i<3;i++){if(a[i]!==b[i])return a[i]>b[i]}return true};console.log("undici",u,"vite",t);process.exit(ge(u,"7.30.1")&&ge(t,"8.3.3")?0:1)' @ 9c144941c437fa48129705c31f7b572e79b0548b (expect exit 0) | 2026-11-13T03:26:12.252Z |
 
 ---
 
@@ -646,7 +647,7 @@ The tracks map is not homed in the blog repo or published as a site page in this
 
 *ADR-003: bound evidence, an authority registry, atomic persistence.*
 
-> `data/trust-trace.jsonl` · epoch 38 · 39 events · 21 decisions · 7 foreclosures
+> `data/trust-trace.jsonl` · epoch 41 · 42 events · 22 decisions · 7 foreclosures
 
 ## Decisions
 
@@ -820,7 +821,7 @@ The local Stratum checkout is production's mirror: it stays on main, in sync wit
 
 > **Shadow [TRACE · certainty 0.95]** — Ruled by mazze on 2026-10-30, recorded by the agent, not minted as mazze's authority: 'the local stratum must be retained at main in sync as production, with local work and development on their own copies so that the ledger is authoritative, and stratum must dogfood its own decisions'. Found because the main checkout sat on chore/claude-md-action-majors, 2 commits past main, so the CLI every session ran was unreviewed branch code, and the tp-031 fix could never take effect there. Production equalled main at the time: main 8e7e854 was committed 18:16:42Z on 2026-10-21 and deployed 26 s later by Workers Builds, which deploys every push to main.
 
-### tp-035 — ◐ PROVISIONAL · pending_evidence
+### tp-035 — ● VERIFIED · validated
 
 **claude** · 2026-11-15T00:20:00-05:00
 
@@ -829,6 +830,12 @@ R2: anchor each allowlisted log's head to checkmate's forward-only hub on a 15-m
 *Revision chain:* `tp-009 → tp-035`
 
 > **Shadow [TRACE · certainty 0.8]** — Hub-first chosen by mazze on 2026-11-15 ('Hub-first'), recorded by the agent, not minted as mazze's authority. Realizes the anchor ghost edge tp-009 left open and the second step of tp-019. Perimeter: the hub runs in the same Cloudflare account, so it crosses Stratum's storage-and-code domain but not the operator's estate; that gap closes when the hub's own head is anchored into a public transparency log (R2b). Scope touchstone P1: a same-length rewrite comes back from the hub as ledger-regression, so the local verdict, not the hub's kind, names the fault. P2: any checkmate agent credential can post a longer anchor under stratum:*, denying anchoring but erasing nothing; hub-ahead logs the row's by and at. Unverified: whether Access evaluates a Worker-to-Worker subrequest to checkmate's custom domain.
+
+### tp-039 — ● VERIFIED · validated
+
+**codex** · 2026-11-15T20:02:53.926Z
+
+Follow through on the v0.5.0 survey: remove implicit human attribution from CLI writes, require the terminal gesture on ratify, render v2 bound evidence, compare every trace against the oracle, correct unavailable install claims, and fail release gates on malformed executable manifests or npm normalization. This does not authenticate human presence server-side; R4 remains open.
 
 ## Foreclosures — ghost edges
 
@@ -890,7 +897,19 @@ Reaching checkmate through a service binding with its break-glass bearer is fore
 
 ## Checked-evidence ledger
 
-*No checked evidence yet — every decision above is provisional or axiomatic.*
+| verification | target | what was checked | when |
+|---|---|---|---|
+| `tp-024` | `tp-001` | npm ci --no-audit --no-fund && npx vitest run worker/test/persist.test.ts @ f34d19077b8697047bf55cb1499cd6d5e6849029 (expect exit 0) | not recorded (binding is authoritative) |
+| `tp-025` | `tp-013` | npm ci --no-audit --no-fund && npx vitest run core/test/canonical.test.ts worker/test/persist.test.ts && cd reference && python3 test_canonical.py @ f34d19077b8697047bf55cb1499cd6d5e6849029 (expect exit 0) | not recorded (binding is authoritative) |
+| `tp-026` | `tp-002` | npm ci --no-audit --no-fund && npx vitest run core/test/binding.test.ts core/test/schema.test.ts && cd reference && python3 test_binding.py @ 927073684b821ecb4c1e21cd8509b451706399f5 (expect exit 0) | not recorded (binding is authoritative) |
+| `tp-027` | `tp-014` | npm ci --no-audit --no-fund && npx vitest run core/test/binding.test.ts core/test/schema.test.ts && cd reference && python3 test_binding.py @ 927073684b821ecb4c1e21cd8509b451706399f5 (expect exit 0) | not recorded (binding is authoritative) |
+| `tp-028` | `tp-011` | npm ci --no-audit --no-fund && npx vitest run core/test/binding.test.ts core/test/schema.test.ts && cd reference && python3 test_binding.py @ 927073684b821ecb4c1e21cd8509b451706399f5 (expect exit 0) | not recorded (binding is authoritative) |
+| `tp-029` | `tp-015` | npm ci --no-audit --no-fund && npx vitest run cli/test/verify.test.ts @ 927073684b821ecb4c1e21cd8509b451706399f5 (expect exit 0) | not recorded (binding is authoritative) |
+| `tp-030` | `tp-021` | npm ci --no-audit --no-fund && npx vitest run worker/test/errors.test.ts worker/test/persist.test.ts @ 455dca3db2527750622269b1610124aa88c6ba59 (expect exit 0) | not recorded (binding is authoritative) |
+| `tp-033` | `tp-031` | npm ci --no-audit --no-fund && npx vitest run cli/test/log-required.test.ts @ 50333bfcb9c6d06d83fdb3e849cd36a1874fffe1 (expect exit 0) | not recorded (binding is authoritative) |
+| `tp-034` | `tp-032` | grep -qF "is a production deploy" CLAUDE.md && grep -qF "mirror (tp-032)" CLAUDE.md @ 50333bfcb9c6d06d83fdb3e849cd36a1874fffe1 (expect exit 0) | not recorded (binding is authoritative) |
+| `tp-040` | `tp-039` | npm ci --no-audit --no-fund && npm run check && npm test && python3 scripts/test_render_decisions.py && node scripts/check-package.mjs @ 78554798498cb37f0b896967b6c22e22f0cac4fa (expect exit 0) | not recorded (binding is authoritative) |
+| `tp-041` | `tp-035` | npm ci --no-audit --no-fund && npx vitest run worker/test/anchor.test.ts @ 78554798498cb37f0b896967b6c22e22f0cac4fa (expect exit 0) | not recorded (binding is authoritative) |
 
 ---
 
@@ -954,7 +973,9 @@ Automated clients emitting v1 verifications (a typed checked_at as the evidence)
 
 ## Checked-evidence ledger
 
-*No checked evidence yet — every decision above is provisional or axiomatic.*
+| verification | target | what was checked | when |
+|---|---|---|---|
+| `ig-005` | `ig-000` | npm ci --no-audit --no-fund && npx vitest run cli/test/ingress.test.ts @ 3553a6c01da6c9db6a78fe53277d9d3a62070068 (expect exit 0) | not recorded (binding is authoritative) |
 
 ---
 
@@ -1010,7 +1031,7 @@ Submitting the formula to homebrew-core now.
 
 ## Checked-evidence ledger
 
-*No checked evidence yet — every decision above is provisional or axiomatic.*
+*No checked verification evidence recorded in this trace.*
 
 ---
 

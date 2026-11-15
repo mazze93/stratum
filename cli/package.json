@@ -4,7 +4,7 @@
   "description": "stratum — one command, one recorded decision. Zero-dependency CLI for the Stratum epistemic decision ledger: append-only events, evidence-gated trust, bound reproducible checks.",
   "type": "module",
   "bin": {
-    "stratum": "./bin/stratum.mjs"
+    "stratum": "bin/stratum.mjs"
   },
   "files": [
     "bin/",

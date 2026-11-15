@@ -70,7 +70,7 @@ describe("stratum verify --run (ADR-003 §3)", () => {
   test("output_path is repo-relative even when run from a subdirectory", () => {
     sh(["mkdir", "-p", "sub"]);
     const r = spawnSync("node", [CLI, "verify", "d-1", "--run", "echo x > ../report.json", "--output", "../report.json", "--dry-run"], {
-      cwd: join(repo, "sub"), encoding: "utf8", env: { ...process.env, HOME: home, NO_COLOR: "1" },
+      cwd: join(repo, "sub"), encoding: "utf8", env: { ...process.env, HOME: home, NO_COLOR: "1", STRATUM_AGENT: "tester" },
     });
     expect(r.status, r.stderr).toBe(0);
     expect(JSON.parse(r.stdout).evidence[0].binding.output_path).toBe("report.json");

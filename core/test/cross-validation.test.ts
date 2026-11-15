@@ -10,7 +10,9 @@
  * MEMORY_MODEL §8 names as the open risk.
  */
 
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
 import { expect, test } from "vitest";
 import {
   authoritativeFingerprint,
@@ -63,4 +65,16 @@ function canonical(x: unknown): unknown {
     );
   }
   return x;
+}
+
+const dataDir = new URL("../../data/", import.meta.url);
+for (const filename of readdirSync(dataDir).filter((name) => name.endsWith("-trace.jsonl"))) {
+  test(`TS and oracle agree on every projection field: ${filename}`, () => {
+    const path = fileURLToPath(new URL(filename, dataDir));
+    const records = readFileSync(path, "utf8").split("\n").filter((line) => line.trim()).map((line) => JSON.parse(line) as unknown);
+    const oracle = JSON.parse(execFileSync("python3", [
+      fileURLToPath(new URL("../../scripts/validate-trace.py", import.meta.url)), path, "--json",
+    ], { encoding: "utf8" })) as unknown;
+    expect(canonical(projectTessera(loadLog(records)))).toEqual(canonical(oracle));
+  });
 }

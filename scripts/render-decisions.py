@@ -53,6 +53,29 @@ TRACES = [
 ]
 
 
+def checked_evidence(record, evidence):
+    """Mirror the oracle: v2 reproducible bindings count; timestamps do not."""
+    if record["schema_version"] >= 2:
+        return (evidence.get("binding") or {}).get("type") == "reproducible_check"
+    return evidence.get("checked_at") is not None
+
+
+def evidence_detail(record, evidence):
+    if record["schema_version"] < 2:
+        return evidence["ref"]
+    binding = evidence.get("binding") or {}
+    if binding.get("type") == "reproducible_check":
+        return (f"{binding['command']} @ {binding['commit']} "
+                f"(expect exit {binding['expect_exit']})")
+    if binding.get("type") == "signed_attestation":
+        return f"attestation {binding['subject_sha256']} · key {binding['key_id']} (registry not implemented)"
+    return evidence["ref"]
+
+
+def table_cell(value):
+    return str(value).replace("\n", " ").replace("|", "&#124;")
+
+
 def render_trace(path: Path, title: str, blurb: str, w) -> None:
     """Append one trace's projection to the output via `w`."""
     records = [json.loads(l) for l in path.read_text().splitlines() if l.strip()]
@@ -89,8 +112,8 @@ def render_trace(path: Path, title: str, blurb: str, w) -> None:
             w(f"*Revision chain:* `{' → '.join(d['revision_chain'])}`")
             w("")
         for e in r.get("evidence", []):
-            state = f"checked {e['checked_at']}" if e.get("checked_at") else "cited — not checked"
-            w(f"- evidence · `{e['kind']}` · {e['ref']} · **{state}**")
+            state = ("bound reproducible check" if r["schema_version"] >= 2 else f"checked {e['checked_at']}") if checked_evidence(r, e) else "cited — not checked"
+            w(f"- evidence · `{e['kind']}` · {evidence_detail(r, e)} · **{state}**")
         if r.get("evidence"):
             w("")
         shadow = (r.get("claim") or {}).get("shadow")
@@ -125,15 +148,15 @@ def render_trace(path: Path, title: str, blurb: str, w) -> None:
 
     w("## Checked-evidence ledger")
     w("")
-    rows = [(v, e) for v in verifications for e in v.get("evidence", []) if e.get("checked_at")]
+    rows = [(v, e) for v in verifications for e in v.get("evidence", []) if checked_evidence(v, e)]
     if not rows:
-        w("*No checked evidence yet — every decision above is provisional or axiomatic.*")
+        w("*No checked verification evidence recorded in this trace.*")
         w("")
         return
     w("| verification | target | what was checked | when |")
     w("|---|---|---|---|")
     for v, e in rows:
-        w(f"| `{v['id']}` | `{v['targets'][0]}` | {e['ref']} | {e['checked_at']} |")
+        w(f"| `{v['id']}` | `{v['targets'][0]}` | {table_cell(evidence_detail(v, e))} | {table_cell(e.get('checked_at') or 'not recorded (binding is authoritative)')} |")
     w("")
 
 
