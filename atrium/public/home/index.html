@@ -127,7 +127,7 @@ function row(log, body) {
 
   const state = document.createElement("span");
   state.className = "ledger-state";
-  state.innerHTML = body;
+  state.append(body); // strings stay text; only locally constructed nodes carry markup
 
   a.appendChild(left);
   a.appendChild(state);
@@ -142,7 +142,7 @@ function currentLogs() {
 
 async function load() {
   tokenState();
-  grid.innerHTML = "";
+  grid.replaceChildren();
   const hasToken = getToken() !== "";
   for (const log of currentLogs()) {
     try {
@@ -150,8 +150,19 @@ async function load() {
       const epoch = typeof stats.head === "number" ? stats.head : null;
       const label = epoch === null ? "?" : epoch < 0 ? "empty" : `epoch ${epoch}`;
       const digest = epoch !== null && epoch >= 0 ? (stats.head_digest || "").slice(0, 10) : "";
-      grid.appendChild(row(log, `<span class="ledger-epoch">${label}</span>` +
-        (digest ? ` · <span class="mono" style="opacity:.6">${digest}</span>` : "")));
+      const detail = document.createElement("span");
+      const epochSpan = document.createElement("span");
+      epochSpan.className = "ledger-epoch";
+      epochSpan.textContent = label;
+      detail.append(epochSpan);
+      if (digest) {
+        const digestSpan = document.createElement("span");
+        digestSpan.className = "mono";
+        digestSpan.style.opacity = ".6";
+        digestSpan.textContent = digest;
+        detail.append(" · ", digestSpan);
+      }
+      grid.appendChild(row(log, detail));
     } catch (e) {
       if (e.status === 401 || e.status === 403) {
         const card = row(log, hasToken ? "forbidden" : "locked — set token");
