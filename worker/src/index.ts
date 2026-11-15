@@ -8,6 +8,7 @@
 
 import { Hono } from "hono";
 import pkg from "../package.json" with { type: "json" };
+import { runAnchors } from "./anchor.js";
 import { bearerOk, canRead, canWrite, isValidLogId } from "./auth.js";
 import { errorBody } from "./errors.js";
 import type { Env } from "./env.js";
@@ -132,4 +133,21 @@ app.notFound((c) => {
   return c.text("not found", 404);
 });
 
-export default app;
+/**
+ * Cron Trigger (worker/wrangler.jsonc `triggers.crons`): anchor each
+ * allowlisted log's head to the checkmate hub (R2, ADR-004). Never on the
+ * write path; inert until CHECKMATE_CLIENT_ID / _SECRET exist.
+ */
+const scheduled: ExportedHandlerScheduledHandler<Env> = (_controller, env, ctx) => {
+  ctx.waitUntil(
+    runAnchors({
+      env,
+      fetch: (input, init) => fetch(input, init),
+      stats: (logId) => stub(env, logId).stats(),
+      anchorPoint: (logId, rows) => stub(env, logId).anchorPoint(rows),
+      log: (line) => console.log(JSON.stringify(line)),
+    }),
+  );
+};
+
+export default { fetch: app.fetch, scheduled } satisfies ExportedHandler<Env>;

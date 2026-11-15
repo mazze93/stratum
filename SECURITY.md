@@ -89,6 +89,20 @@ modern integrity guarantee on its own. That is why every release artifact also
 carries a SHA-256 checksum and a Sigstore signature over the artifact bytes, and
 why Stratum's own evidence bindings and storage chain use SHA-256 throughout.
 
+## Off-system anchor (ADR-004)
+
+The `stratum` Worker anchors the head digest of each log named in `ANCHOR_LOGS`
+to checkmate's forward-only hub every 15 minutes, so a dropped tail or a
+recomputed chain is refused there and recorded as a critical incident. It sends
+one outbound pair of requests per log per tick, authenticated with an Access
+service token held as the Worker secrets `CHECKMATE_CLIENT_ID` and
+`CHECKMATE_CLIENT_SECRET`. Neither is ever logged. Until both exist the cron makes
+no outbound call.
+
+The hub runs in the same Cloudflare account, so it detects faults in Stratum's
+storage and code, not a compromise of the whole account. The perimeter is spelled
+out in [docs/ADR-004-off-system-anchor.md](docs/ADR-004-off-system-anchor.md) §4.
+
 ## Automated scanning
 
 - **CodeQL** static analysis (`security-extended`) on every push and PR to `main`,

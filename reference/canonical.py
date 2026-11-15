@@ -120,6 +120,24 @@ def chain_digest(records) -> str:
     return prev
 
 
+def anchor_verdict(records, rows: int, head: str) -> str:
+    """How a log relates to an anchor (rows, head) — R2, ADR-004. TS twin:
+    core/src/chain.ts `anchorVerdict`.
+
+      "extends"    rows <= len and the first `rows` records chain to `head`
+      "truncated"  rows > len: the anchor is ahead of this log
+      "forked"     the prefix of that length chains to a different head
+
+    Pass normalized wire records (serialize_log), never raw trace lines.
+    """
+    if isinstance(rows, bool) or not isinstance(rows, int) or rows < 0:
+        raise ValueError(f"anchor rows must be a non-negative integer, got {rows!r}")
+    records = list(records)
+    if rows > len(records):
+        return "truncated"
+    return "extends" if chain_digest(records[:rows]) == head else "forked"
+
+
 def log_digest(log) -> str:
     """Content address of a log as the contract sees it: the chain over its
     normalized wire records (serialize_log), so a trace file and a Durable
