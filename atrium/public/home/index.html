@@ -111,12 +111,26 @@ function row(log, body) {
   const a = document.createElement("a");
   a.className = "ledger-card";
   a.href = `/atrium/?log=${encodeURIComponent(log.id)}`;
-  a.innerHTML = `
-    <span>
-      <span class="ledger-id">${log.id}</span>
-      ${log.note ? `<span class="ledger-note">${log.note}</span>` : ""}
-    </span>
-    <span class="ledger-state">${body}</span>`;
+
+  const left = document.createElement("span");
+  const idSpan = document.createElement("span");
+  idSpan.className = "ledger-id";
+  idSpan.textContent = log.id;
+  left.appendChild(idSpan);
+
+  if (log.note) {
+    const noteSpan = document.createElement("span");
+    noteSpan.className = "ledger-note";
+    noteSpan.textContent = log.note;
+    left.appendChild(noteSpan);
+  }
+
+  const state = document.createElement("span");
+  state.className = "ledger-state";
+  state.innerHTML = body;
+
+  a.appendChild(left);
+  a.appendChild(state);
   return a;
 }
 
