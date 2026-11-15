@@ -469,7 +469,7 @@ docs/TRUST.md ships as a skeleton that RESOLVES the two decidable questions (den
 
 *~/Projects container decisions, compiled from the workspace journal.*
 
-> `data/workspace-trace.jsonl` · epoch 22 · 23 events · 14 decisions · 3 foreclosures
+> `data/workspace-trace.jsonl` · epoch 24 · 25 events · 15 decisions · 4 foreclosures
 
 ## Decisions
 
@@ -585,6 +585,14 @@ The 11 open Dependabot alerts (5 high, 5 moderate, 1 low; all dev-scope, all in 
 
 > **Shadow [TRACE · certainty 0.9]** — undici is pinned exactly (7.29.1) by miniflare 5.20261001.0-alpha, so `npm update` cannot reach the fix. An npm override forcing undici under the old miniflare was rejected: it pairs a deploy tool with a transport it was never released against. The wrangler bump is the maintained path, and it was confirmed with `wrangler deploy --dry-run` before commit. Merging this PR is a production deploy because Workers Builds runs the lockfile's wrangler. No runtime dependency changed.
 
+### wt-023 — ◐ PROVISIONAL · pending_evidence
+
+**claude-opus-5.5** · 2026-11-15T03:20:00-05:00
+
+The map of the wider architecture's tracks lives in Stratum at docs/architecture/tracks-map.md, as a public-safe map: every edge is marked documented (with a repo:path citation) or inferred, and private-repo internals stay out of it.
+
+> **Shadow [TRACE · certainty 0.8]** — Stratum is the nexus most edges point at (Stele, Temenos, Checkmate, the cognitive-topology plugin, Context Synapse ADR-006, praxis-api), and the reshape analysis and the white paper already live in docs/. The repo is public, so the committed map names private repos only at the level Stratum's own docs already do and cites no private file content; a fuller working copy with a private appendix is kept outside the repo. The map records edges and tensions; it builds none and ratifies none. Its three bricks (R4 authority registry, a shared operational-context boundary ADR, a repo home for the cognitive-topology plugin with one Tessera schema) are proposals for Mazze, not decisions.
+
 ## Foreclosures — ghost edges
 
 ### wt-008 — standing
@@ -610,6 +618,14 @@ cli/mise.toml is neither pinned-and-tracked nor gitignored; it is removed outrig
 *Ghost edges:* ~~`pin-and-track-aube`~~ · ~~`gitignore-cli-mise-toml`~~
 
 > **Shadow [TRACE · certainty 0.85]** — Pin-and-track would commit a toolchain file with no consumer. Gitignoring would keep an unused file on disk and hide it from status, which is how it survived two clones unexamined. Reopen if cli/ gains a real toolchain requirement: then track a mise.toml with exact versions, as checkmate and stele do.
+
+### wt-024 — standing
+
+The tracks map is not homed in the blog repo or published as a site page in this change.
+
+*Ghost edges:* ~~`tracks-map-in-blog`~~ · ~~`tracks-map-as-site-page`~~
+
+> **Shadow [TRACE · certainty 0.75]** — Merging to the blog deploys the public site, and the map is a working architecture document with open tensions, not an essay. Stratum keeps it beside the paper and the reshape analysis, where merging changes no rendered page. Reopen when Mazze wants a public Tessera page for the map; it can then be projected from this file.
 
 ## Checked-evidence ledger
 
