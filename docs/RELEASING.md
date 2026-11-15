@@ -5,6 +5,11 @@ Release, and `@stratum-ledger/cli` on npm with provenance. Version tags (`v*`)
 are protected by a ruleset, so **a tag can never be moved or deleted**. Rehearse
 before you tag.
 
+**v0.5.0 status:** the GitHub bundle exists; npm publishing failed with `EOTP`
+and its invalid bin entry would remove the command. Do not rerun that publish.
+Prepare a corrected patch release and a CI-capable npm credential or Trusted
+Publisher before publishing. No corrected npm release is claimed yet.
+
 ## 1. Prepare (in a PR)
 
 - Pick the version: SemVer. While `0.x`, a breaking change bumps the **minor**
@@ -23,6 +28,7 @@ GitHub → Actions → **Release** → *Run workflow* on `main`. The rehearsal:
 - verifies the tree (typecheck, tests, oracle, every trace, version);
 - builds the bundle exactly as a release would;
 - runs the CLI from inside the bundle;
+- checks the bin manifest and rejects npm auto-correction/removal warnings;
 - runs `npm publish --dry-run`.
 
 It signs nothing and publishes nothing. Tag only after it is green.
@@ -68,7 +74,7 @@ The `cosign verify-blob` command is in [SECURITY.md](../SECURITY.md).
 
 ## One-time: move npm to Trusted Publishing
 
-The first publish (v0.5.0) bootstraps with the `NPM_TOKEN` environment secret,
+The first successful publish (v0.5.0 failed) bootstraps with the `NPM_TOKEN` environment secret,
 because npm can configure trust only on a package that already exists. Afterwards:
 
 ```sh
@@ -82,8 +88,9 @@ bound to the workflow **filename**, so renaming `release.yml` breaks publishing.
 
 ## Homebrew
 
-`brew install mazze93/tap/stratum` installs from the tap repo
-`mazze93/homebrew-tap`. After each npm publish, update the formula's `url` and
+The tap is not currently a verified public install path. Keep it out of install
+instructions until an unauthenticated install succeeds. After a successful npm
+publish, update the formula in `mazze93/homebrew-tap`: its `url` and
 `sha256` to the new npm tarball:
 
 ```sh

@@ -53,6 +53,8 @@ jobs:
         run: |
           npm run test:reference
           for t in data/*-trace.jsonl; do python3 scripts/validate-trace.py "$t"; done
+      - name: Publish manifest and normalization gate
+        run: node scripts/check-package.mjs
       - name: Package contents (dry run)
         run: npm pack --workspace cli --dry-run
 
@@ -80,7 +82,7 @@ jobs:
           test "$(node /tmp/rehearse/cli/bin/stratum.mjs --version)" = "${v#v}"
           node /tmp/rehearse/cli/bin/stratum.mjs help > /dev/null
       - name: npm publish --dry-run
-        run: npm publish --workspace cli --dry-run --access public
+        run: node scripts/check-package.mjs
 
   attest:
     name: Bundle, sign, attest
@@ -157,6 +159,8 @@ jobs:
           node -e 'const [a,b,c]=process.argv[1].split(".").map(Number);process.exit(a>11||(a===11&&(b>5||(b===5&&c>=1)))?0:1)' "$(npm --version)" \
             || npm install -g npm@11
           npm --version
+      - name: Refuse broken publish manifest
+        run: node scripts/check-package.mjs
       - name: Publish with provenance
         # Bootstrap: the first publish authenticates with NPM_TOKEN, an
         # environment secret. Once `npm trust github …` links this workflow,

@@ -9,21 +9,21 @@ Zero dependencies. Node 20+.
 
 ## Install
 
+The v0.5.0 npm publish failed. Use the signed
+[GitHub release bundle](https://github.com/mazze93/stratum/releases/tag/v0.5.0)
+or link a source checkout:
+
 ```sh
-npm install -g @stratum-ledger/cli
-# or
-brew install mazze93/tap/stratum
+cd cli && npm link
 ```
+
+npm and Homebrew installation are unavailable until a corrected release is published.
 
 ## Verify what you installed
 
-The package is published only from this repository's release workflow, with npm
-provenance (a Sigstore-signed statement that links it to the source commit and
-the workflow run):
-
-```sh
-npm audit signatures
-```
+A future npm release must carry provenance linking it to the source commit and
+workflow run. Do not treat an attestation for the failed publish as proof that a
+package is available.
 
 Each GitHub Release also carries a SHA-256 checksum, a cosign keyless signature,
 and a build-provenance attestation for the release bundle. The layers and the
@@ -33,7 +33,7 @@ commands to verify each one are in
 ## Use
 
 ```sh
-stratum init --endpoint https://your-instance --token <token> --log workspace
+stratum init --endpoint https://your-instance --token <token> --log workspace --agent mazze
 stratum decide "Pin actions by SHA" --pending     # record a decision
 stratum verify dec-xxxx --run "npm test"          # run the check, bind it to the commit
 stratum foreclose "Mutable action tags"           # record the road not taken

@@ -106,14 +106,17 @@ npm run test:reference   # the Python oracle's own 16/16
 npm run dev              # wrangler dev + the Atrium on localhost
 ```
 
-CLI: zero dependencies, Node 20+. It is published with npm provenance, and the
-release bundle is cosign-signed. See [SECURITY.md](SECURITY.md#provenance--signed-stamped-verifiable)
+CLI: zero dependencies, Node 20+. The v0.5.0 GitHub release bundle is signed and
+attested. Its npm publish failed; npm and Homebrew installation remain unavailable. See [SECURITY.md](SECURITY.md#provenance--signed-stamped-verifiable)
 for how to verify each layer.
 
 ```sh
-npm install -g @stratum-ledger/cli      # or: brew install mazze93/tap/stratum
-npm audit signatures                    # verify the package's provenance
-stratum init --endpoint https://your-instance --token <token> --log workspace
+curl -fLO https://github.com/mazze93/stratum/releases/download/v0.5.0/stratum-v0.5.0.tar.gz
+# Verify the bundle using SECURITY.md before extracting and running it.
+tar -xzf stratum-v0.5.0.tar.gz
+node cli/bin/stratum.mjs --version
+# From a source checkout: cd cli && npm link
+stratum init --endpoint https://your-instance --token <token> --log workspace --agent mazze
 stratum decide "Ship the thing" --pending
 stratum verify dec-xxxx --run "npm test"   # runs the check, binds it to the commit
 stratum tessera

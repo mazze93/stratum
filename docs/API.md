@@ -38,7 +38,7 @@ Durable Object per log (`worker/src/do.ts`), which runs every contract guard in
 
 | Method and path | Returns | Source |
 |---|---|---|
-| `GET /api/health` | `{"ok":true,"service":"stratum","version":"0.4.0"}` | `index.ts:26-28` |
+| `GET /api/health` | `{"ok":true,"service":"stratum","version":"0.5.0"}` | `index.ts:26-28` |
 | `POST /api/playground` | `201 {"log":"playground-xxxxxxxx","events":N}`; unauthenticated callers are rate-gated (5 per IP per hour, 200 per day) and get `429` with `Retry-After` | `index.ts:34-50`, `gate-policy.ts:7-8` |
 | `GET /api/logs/{logId}/projection[?epoch=N]` | the Tessera projection; `N` is an integer `>= -1`, omitted means head; a bad `N` is `400` | `index.ts:62-72` |
 | `GET /api/logs/{logId}/events` | every event record, in append order | `index.ts:74-76` |

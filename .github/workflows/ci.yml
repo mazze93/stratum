@@ -24,6 +24,10 @@ jobs:
       - run: npm ci
       - run: npm run check
       - run: npm test
+      - name: Renderer evidence semantics
+        run: python3 scripts/test_render_decisions.py
+      - name: Package publish manifest
+        run: node scripts/check-package.mjs
       - name: Python reference cross-validation
         run: npm run test:reference
       - name: Golden-trace validation

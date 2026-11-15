@@ -25,8 +25,9 @@ projected to [docs/DECISIONS.md](docs/DECISIONS.md). Ids in brackets point there
 
 ## [0.5.0] — 2026-11-13
 
-The first release distributed as a package: `@stratum-ledger/cli` on npm, with
-provenance, plus a signed, attested release bundle.
+Signed, attested GitHub release bundle. The planned npm publish failed with
+`EOTP`; the v0.5.0 npm manifest also has an invalid bin entry. Do not retry that
+publish. A corrected package requires a new patch release.
 
 ### Breaking
 
@@ -40,7 +41,7 @@ provenance, plus a signed, attested release bundle.
 
 ### Added
 
-- `@stratum-ledger/cli` on npm, published from CI with provenance; `stratum --version`.
+- npm release workflow for `@stratum-ledger/cli` (first publish failed); `stratum --version`.
 - `stratum emit` and `stratum outbox`: one ingress door for automated writers
   (hooks, plugins, scripts). Checks run locally, ids are deterministic, and
   ratification needs a human at a terminal. Wire contract: [docs/API.md](docs/API.md).

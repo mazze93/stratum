@@ -18,6 +18,7 @@ import { homedir } from "node:os";
 import { join } from "node:path";
 import {
   EXIT,
+  confirmHumanGesture,
   IngressError,
   emit as ingressEmit,
   flushOutbox,
@@ -63,7 +64,7 @@ function settings(flags) {
     endpoint: flags.endpoint || process.env.STRATUM_ENDPOINT || cfg.endpoint || "https://stratum.mazzeleczzare.com",
     token: flags.token || process.env.STRATUM_TOKEN || cfg.token || "",
     log: flags.log || process.env.STRATUM_LOG || cfg.log || null,
-    agent: flags.agent || process.env.STRATUM_AGENT || cfg.agent || "mazze",
+    agent: flags.agent || process.env.STRATUM_AGENT || cfg.agent || null,
   };
 }
 
@@ -140,7 +141,14 @@ function logPath(s, suffix) {
 const appendEvent = (s, record) =>
   call(s, logPath(s, "/events"), { method: "POST", body: JSON.stringify(record) });
 
+function requireAgent(s) {
+  if (typeof s.agent !== "string" || !s.agent.trim()) {
+    fail("no agent named — pass --agent <id> or set STRATUM_AGENT (there is no default identity)");
+  }
+}
+
 function record(s, type, extra) {
+  requireAgent(s);
   return {
     id: newId(type.slice(0, 3)),
     type,
@@ -214,7 +222,7 @@ const commands = {
     saveConfig(cfg);
     const s = settings({});
     ok(`config written to ${CONFIG_PATH}`);
-    console.log(`  endpoint  ${s.endpoint}\n  log       ${s.log || "none — pass --log or set STRATUM_LOG"}\n  agent     ${s.agent}\n  token     ${s.token ? "set" : color.red("not set")}`);
+    console.log(`  endpoint  ${s.endpoint}\n  log       ${s.log || "none — pass --log or set STRATUM_LOG"}\n  agent     ${s.agent || "none — pass --agent or set STRATUM_AGENT"}\n  token     ${s.token ? "set" : color.red("not set")}`);
   },
 
   async health(pos, flags) {
@@ -293,6 +301,14 @@ const commands = {
     const s = settings(flags);
     const [target] = pos;
     if (!target) fail("usage: stratum ratify <event-id>");
+    logPath(s, "/events"); // refuse a missing log before prompting
+    requireAgent(s);
+    try {
+      await confirmHumanGesture(target);
+    } catch (e) {
+      if (e instanceof IngressError) fail(e.message, e.code);
+      throw e;
+    }
     await appendEvent(s, record(s, "ratification", { targets: [target] }));
     ok(`${target} → ratified · ${color.gold("axiomatic")} (authority-declared, not evidence-checked)`);
   },
@@ -474,6 +490,7 @@ const HELP = `${color.bold("stratum")} — one command, one recorded decision
     health · playground
 
   --version prints the version
+  writes require --agent <id>, STRATUM_AGENT or config agent; no default identity
   flags: --log <id> names the log; required (or STRATUM_LOG / config log) — there is no default
   exit codes: 0 ok · 1 error · 2 guard refused (contract violation)
               3 unrecorded, queued in the outbox · 4 ratification needs a human`;

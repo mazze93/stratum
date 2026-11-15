@@ -33,6 +33,8 @@ const heading = `## [${version}]`;
 if (!read("CHANGELOG.md").split("\n").some((line) => line.startsWith(heading))) {
   problems.push(`CHANGELOG.md has no "## [${version}]" entry`);
 }
+const apiVersion = read("docs/API.md").match(/"version":"([^"]+)"/);
+if (!apiVersion || apiVersion[1] !== version) problems.push("docs/API.md health example version is missing or stale");
 const i = process.argv.indexOf("--tag");
 const tag = i > 0 ? process.argv[i + 1] : process.env.GITHUB_REF_TYPE === "tag" ? process.env.GITHUB_REF_NAME : null;
 if (tag && tag !== `v${version}`) problems.push(`tag ${tag} is not v${version}`);

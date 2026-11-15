@@ -450,8 +450,9 @@ function parseInputs(inputs) {
 
 /**
  * A ratification is a human's act. Require an interactive terminal on both
- * ends and the target id typed back. An agent's shell tool has no TTY, so it
- * gets the refusal and the command to hand the human.
+ * ends and the target id typed back. This is an accidental-use guard, not a
+ * proof of human presence: an agent can allocate a PTY. R4 must enforce
+ * signed authority with user presence server-side.
  *
  * @param {string} target
  * @param {{stdin?: {isTTY?: boolean}, stderr?: {isTTY?: boolean, write: (s: string) => void},
@@ -462,7 +463,7 @@ export async function confirmHumanGesture(target, io = {}) {
   const stderr = io.stderr || process.stderr;
   if (!stdin.isTTY || !stderr.isTTY) {
     throw new IngressError(
-      `ratification needs a human at a terminal — nothing recorded. Run it yourself:  stratum ratify ${target}`,
+      `ratification needs a human at a terminal — nothing recorded. Use an interactive terminal with an explicit agent and log: stratum ratify ${target} --agent <id> --log <log>`,
       EXIT.gesture,
     );
   }
