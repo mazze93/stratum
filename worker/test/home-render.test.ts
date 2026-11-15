@@ -4,6 +4,7 @@
  * Hostile ledger names, notes and status strings must remain literal text.
  */
 import { readFileSync } from "node:fs";
+import { URL } from "node:url";
 import { runInNewContext } from "node:vm";
 import { expect, test } from "vitest";
 
