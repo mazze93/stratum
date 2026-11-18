@@ -5,6 +5,7 @@ tags: [architecture, cathedral, egregore, stratum, tracks-map, map-of-content]
 status: draft
 created: 2026-11-15
 checked_against: "GitHub main of each named repo, read 2026-11-15"
+updated: "2026-11-18: R2 live (Stratum #120), Stele PR 119 merged"
 ---
 
 # Tracks map — the wider architecture
@@ -77,7 +78,7 @@ flowchart LR
   STE -->|"E04 decisions in stele-trace"| ST
   TEM -->|"E05 POST decision events"| ST
   CM -->|"E06 reads checkmate log"| ST
-  ST -.->|"E07 anchor head · R2 PR 108"| CM
+  ST -->|"E07 anchor head · R2 live"| CM
   CSTAMP -->|"E08 anchor"| CM
   ALE -->|"E09 seeds"| APA
   APA -->|"E10 adapter"| ALE
@@ -106,11 +107,11 @@ flowchart LR
 
 #### Stratum — the nexus
 - **Purpose:** an epistemic decision ledger. Status is a fold over append-only events; evidence and claim never merge (`stratum:docs/SPEC.md`).
-- **State: shipped.** v0.5.0 GitHub bundle released 2026-11-13; npm publishing failed and Homebrew is not a verified install path. Worker plus Durable Object single writer; Python oracle and TypeScript core byte-identical on the golden set; CLI `@stratum-ledger/cli`. Trust primitives (`stratum:docs/ADR-003-trust-primitives.md`, `docs/journal/2026-10-06-trust-primitives/CHECKPOINT.md`): R1 and R3 done, R2 in progress, R4 authority registry, R5 first external writer and R6 memory model open.
+- **State: shipped.** v0.5.0 GitHub bundle released 2026-11-13; npm publishing failed and Homebrew is not a verified install path. Worker plus Durable Object single writer; Python oracle and TypeScript core byte-identical on the golden set; CLI `@stratum-ledger/cli`. Trust primitives (`stratum:docs/ADR-003-trust-primitives.md`, `docs/journal/2026-10-06-trust-primitives/CHECKPOINT.md`): R1, R2 and R3 done, R4 authority registry, R5 first external writer and R6 memory model open.
 - **Produces:** decision, evidence and foreclosure events; derived status; `DECISIONS.md`; a verification re-checker.
 - **Consumes:** events over `/api/logs/{log}/events`, `stratum emit` (ingress, `cli/lib/ingress.mjs`), repo traces in `data/*-trace.jsonl`.
 - **Cathedral target:** the white paper's macOS workbench with twelve roles and six memory tiers (`stratum:docs/stratum-reshape-analysis-v0.4.0.md.md`: "Stratum v0.4.0 is the first brick. The cathedral is still the cognitive workbench").
-- **R2 operation:** PR 108 is merged, including full-truncation detection. Provisioning and a real Checkmate anchored tick remain unverified. PR 109 and blog PR 225 are merged.
+- **R2 operation:** live. PR 108 merged the anchor cron and full-truncation detection; the first production tick, 2026-11-15 21:00Z, anchored `stratum:demo` to the Checkmate hub, and sampled ticks since log `extends / unchanged` (`stratum:docs/ADR-004-off-system-anchor.md`, Accepted in #120; trust-primitives CHECKPOINT R2). R2b, Rekor over the hub head, is not started. PR 109 and blog PR 225 are merged.
 
 ### Integrity plane
 
@@ -137,7 +138,8 @@ flowchart LR
 - **State: shipped.** v1.2.0, live page. ADR-0005 places Stele in the ecosystem as "direction, not a build order".
 - **Produces:** an offline bundle, compiled instructions, an audit chain, recorded demos.
 - **Consumes:** pasted config, model responses, the project registry.
-- **Waits on Mazze:** draft PR 119 (approved objective for the gate–runner pairing; needs his SSH-signed tag). The landing-page deploy waits on two repo secrets he adds.
+- **Gate–runner pairing:** PR 119 (approved objective for the pairing) merged 2026-11-17.
+- **Waits on Mazze:** the landing-page deploy waits on two repo secrets they add (not rechecked 2026-11-18).
 
 #### Checkmate — the claim hub (private repo)
 - **Purpose:** a security-claim control plane: an append-only ledger written by the human and by agents.
@@ -223,16 +225,16 @@ flowchart LR
 | ID | From → To | What flows | Mark | Built? | Source |
 |---|---|---|---|---|---|
 | E01 | White paper → Stratum | design basis | D | target | paper PDF, Appendix; `stratum:docs/stratum-reshape-analysis-v0.4.0.md.md` |
-| E02 | ct plugin → Stratum | events via `stratum emit` | D | T1 built | `stratum:docs/DECISIONS.md` ig-000–ig-005; PR 109 adds ig-006/007 (waits on Mazze) |
-| E03 | Blog → ct-reshape | hosts spec, changelog, trace | D | built | `mazze-leczzare-blog:public/cognitive-topology/reshape/`; PR 225 (waits on Mazze) |
+| E02 | ct plugin → Stratum | events via `stratum emit` | D | T1 built | `stratum:docs/DECISIONS.md` ig-000–ig-005; ig-006/007 via PR 109 (merged) |
+| E03 | Blog → ct-reshape | hosts spec, changelog, trace | D | built | `mazze-leczzare-blog:public/cognitive-topology/reshape/`; PR 225 (merged) |
 | E04 | Stele → Stratum | Stele decisions recorded in Stratum | D | built | `stratum:data/stele-trace.jsonl` st-000 |
 | E05 | Temenos → Stratum | `decision` events, asserted, with evidence | D | built | `temenos:temenos/ledger.py` |
 | E06 | Checkmate → Stratum | reads Checkmate's Stratum log; status stays Stratum's | D | built | joint spec v1 (private); `stratum:docs/ADR-003-trust-primitives.md` |
-| E07 | Stratum → Checkmate | head anchored off-system (R2) | D | in PR | Stratum PR 108 (waits on Mazze) |
+| E07 | Stratum → Checkmate | head anchored off-system (R2) | D | built | Stratum PR 108; live per #120, `stratum:docs/ADR-004-off-system-anchor.md` |
 | E08 | claude-stamp → Checkmate | ledger anchors | D | partly | claude-stamp README (private) |
 | E09 | Aletheia → Apatea | malicious corpus as seeds | D | built | `apatea:README.md` Seed fodder |
 | E10 | Apatea → Aletheia | target adapter | D | built | `apatea:targets/aletheia_adapter.py` |
-| E11 | Stele → Aletheia, Apatea | pinned pairing, CI eval | D | built | `stele:evals/pairing-lock.json`; PR 119 (waits on Mazze) |
+| E11 | Stele → Aletheia, Apatea | pinned pairing, CI eval | D | built | `stele:evals/pairing-lock.json`; Stele PR 119 (merged) |
 | E12 | Temenos → Aletheia | gate (vendored) | D | built | `temenos:temenos/gate.py` |
 | E13 | Temenos → Apatea | adversary pass | D | built | `temenos:temenos/adversary.py` |
 | E14 | Context Synapse → Stratum | decisions only (sb-020–sb-024); telemetry never | D | proposed | `context-synapse:docs/adr/ADR-006-ledger-separation.md` (PROPOSED) |
