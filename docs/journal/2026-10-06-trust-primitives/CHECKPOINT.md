@@ -7,7 +7,7 @@ Last updated: 2026-10-07 — handoff: stratum_export_2026-10-07.md (merged #80)
 - [x] 2 v2 evidence binding + schemas/event.v2.schema.json + CLI --run (tp-002, tp-011, tp-014, tp-015) — PR #76
 - [ ] **Reordered (tp-019, mazze-approved):**
   - [x] R1 Stack landed: #72, #75 (f34d190), #76 (9270736); prod verified (demo head == oracle). Incident fix #78 merged (tp-021), verified on bound evidence by tp-030 (#81, c102931). tp-022 awaiting mazze.
-  - [ ] R2 Anchor the log head off-system (claude-stamp / checkmate forward-only hub). Hub-first chosen by mazze 2026-11-15; ADR-004 + cron in PR #108 open (tp-035..038). Tick only after merge and a provisioned production tick.
+  - [x] R2 Anchor the log head off-system (checkmate forward-only hub). Hub-first chosen by mazze 2026-11-15; ADR-004 + cron merged #108 (fd26bd1), incl. mazze's complete-truncation fix (6489a05); implementation verified by tp-041. Provisioned and live: first production tick 2026-11-15 21:00Z logged `first / anchored rows:20` for stratum:demo (head 67f7689b…, = golden), later ticks `extends / unchanged` (Workers Logs, read 2026-11-18). That observation is not a ledger binding: tp-035 is already validated, so a second verification is refused (validated → validated). R2b (Rekor over the hub head) not started.
   - [x] R3 Re-checker + weekly CI job; output_path added; merged #79 (253a26a); now 5/5 reproduced in CI incl. tp-030
   - [ ] R4 Authority registry — per-log quorum fixed at genesis; single hardware key allowed for single-human logs, labeled (tp-003, tp-004, tp-010)
   - [ ] R5 Temenos → v2 evidence (first external writer)
