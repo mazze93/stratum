@@ -170,7 +170,7 @@ In-process Worker unit tests (vitest-pool-workers) are deferred for v1; the depl
 
 *Cross-project use: STELE decisions routed through Stratum.*
 
-> `data/stele-trace.jsonl` · epoch 2 · 3 events · 2 decisions · 0 foreclosures
+> `data/stele-trace.jsonl` · epoch 3 · 4 events · 3 decisions · 0 foreclosures
 
 ## Decisions
 
@@ -189,6 +189,16 @@ All STELE decisions route through Stratum. Case reports for stele (app + stele-c
 Unblock stele delivery by adding a CodeQL workflow (codeql.yml, javascript-typescript) to the repo, satisfying the branch ruleset's required Code Scanning results. The ruleset currently requires scanning results while no scanner is configured, so NO pull request can merge (observed: PR #29, all checks green, merge blocked even with --admin via API).
 
 > **Shadow [TRACE · certainty 0.9]** — Ghost edges: (1) delete the code-scanning requirement from the ruleset — rejected: weakens the hardening posture github-hardening-skills deliberately applied; the rule is right, the missing scanner is the bug. (2) per-PR admin bypass — rejected: failed via API, and unreproducible process even where it works. Validation: PR #29 merges cleanly once CodeQL has run on the PR/base.
+
+### st-003 — ◐ PROVISIONAL · pending_evidence
+
+**codex** · 2026-11-16T23:51:58.182782+00:00
+
+Implement Stele project refresh through the existing philosopher-scribe and osmotic inheritance in CI. Collect public repository metadata at named revisions, expose source identities for session review, retain authored governance, and carry reviewed context through compilation and narrative export. Disseminate the authority boundary from Stratum ADR-003 and tor-reference incident dec-mu5mtytb-251a in integration-project output.
+
+- evidence · `url_check` · https://github.com/mazze93/stele/commit/b3e03f2 · **cited — not checked**
+
+> **Shadow [TRACE · certainty 0.85]** — User directed implementation on 2026-11-16 and identified philosopher-scribe history as the starting point. Implementation b3e03f2 in mazze93/stele adds a public observation collector, CI artifacts and offline identity review. The agent records this direction and implementation claim without ratifying it. The incident sources are first-party agent-produced records. The blue-marked tor-reference head is preserved by intent. Model-assisted CI synthesis, private-repository ingestion and authenticated human approval remain outside this implementation.
 
 ## Foreclosures — ghost edges
 
