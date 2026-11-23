@@ -75,6 +75,9 @@ The Worker also makes **outbound** calls, never on a request path. A Cron Trigge
   (with `incident`) · `not-sent` · `transport` · `hub-error:<status>` ·
   `hub-malformed` · `error`. `local` is the label of record. Credentials never
   appear in it.
+- An empty log is checked against the hub too: with no hub anchor it logs
+  `empty`; with one, it logs `hub-ahead` (a complete truncation) and posts
+  nothing, since the hub refuses `rows: 0`.
 
 ## Appending an event
 

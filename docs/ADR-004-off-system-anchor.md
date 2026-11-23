@@ -1,7 +1,7 @@
 # ADR-004 — Anchor each log's head off-system
 
-**Status:** Proposed — lands as trust-primitives R2 in one PR (tp-020). Inert until
-provisioned.
+**Status:** Accepted — merged in #108 (`fd26bd1`), provisioned and anchoring in
+production since 2026-11-15 (§6).
 **Date:** 2026-11-15
 **Relates to:** ADR-003 §8 (the deferred anchor), `docs/journal/2026-10-06-trust-primitives/CHECKPOINT.md` R2
 **Trace:** `data/trust-trace.jsonl` `tp-035` (decision), `tp-036`–`tp-038` (foreclosures)
@@ -81,12 +81,18 @@ Further limits, stated so nobody leans on them:
 - **Repeat incidents.** A broken log is refused, and recorded as a critical
   incident, every tick until someone resolves it. That is intended; it also
   means the allowlist must hold only logs that are never reseeded.
-- **Access on a Worker subrequest is unverified.** Whether a request from the
-  `stratum` Worker to checkmate's Access-protected custom domain is evaluated
-  by Access and gets a JWT minted from the service-token headers has not been
-  observed. If it is not, the fallback is a service binding plus a dedicated,
-  anchor-only bearer on checkmate's side, which turns `tp-038` from a
-  foreclosure into a decision.
+- **A wiped log raises no hub incident.** A log emptied after it was anchored
+  is judged `hub-ahead` locally, but nothing is posted, because the hub refuses
+  `rows: 0` as malformed. Only Stratum's own log line reports it. The hub still
+  holds the earlier anchor, so an outside verifier comparing against it catches
+  the wipe; a compromised Stratum Worker could suppress the line, not the anchor.
+- **Access on a Worker subrequest: observed to work.** Before provisioning this
+  was unverified. After the secrets were set, the first production tick
+  (2026-11-15 21:00 UTC) logged `local:first hub:anchored rows:20` for
+  `stratum:demo`, with the head equal to the canonical golden genesis head, and
+  later ticks log `extends / unchanged` against that hub row. So Access accepted
+  the service-token headers on a Worker subrequest, and `tp-038`'s reopen
+  condition did not arise.
 
 ## 5. Alternatives (foreclosed, with reopen conditions)
 

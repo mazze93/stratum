@@ -479,7 +479,7 @@ docs/TRUST.md ships as a skeleton that RESOLVES the two decidable questions (den
 
 *~/Projects container decisions, compiled from the workspace journal.*
 
-> `data/workspace-trace.jsonl` · epoch 24 · 25 events · 15 decisions · 4 foreclosures
+> `data/workspace-trace.jsonl` · epoch 26 · 27 events · 16 decisions · 4 foreclosures
 
 ## Decisions
 
@@ -602,6 +602,14 @@ The 11 open Dependabot alerts (5 high, 5 moderate, 1 low; all dev-scope, all in 
 The map of the wider architecture's tracks lives in Stratum at docs/architecture/tracks-map.md, as a public-safe map: every edge is marked documented (with a repo:path citation) or inferred, and private-repo internals stay out of it.
 
 > **Shadow [TRACE · certainty 0.8]** — Stratum is the nexus most edges point at (Stele, Temenos, Checkmate, the cognitive-topology plugin, Context Synapse ADR-006, praxis-api), and the reshape analysis and the white paper already live in docs/. The repo is public, so the committed map names private repos only at the level Stratum's own docs already do and cites no private file content; a fuller working copy with a private appendix is kept outside the repo. The map records edges and tensions; it builds none and ratifies none. Its three bricks (R4 authority registry, a shared operational-context boundary ADR, a repo home for the cognitive-topology plugin with one Tessera schema) are proposals for Mazze, not decisions.
+
+### wt-025 — ◆ AXIOMATIC · ratified
+
+**claude-opus-5.5** · 2026-11-17T23:20:00-05:00
+
+A referee never hides context without showing that it did. Hiding is opt-in, always shown as hidden, and undone in one gesture. This governs Context Synapse's referee and any later referee in the wider architecture, and is recorded as tension 1's resolution in docs/architecture/tracks-map.md.
+
+> **Shadow [TRACE · certainty 0.9]** — Tension 1 of the tracks map: Context Synapse's opt-in AbrasiveReferee lowers saliency, and later design notes proposed a referee that overrides the user's stated focus and hides context until acknowledged, against the white paper's §3.8 appellate human, §5.6 and Meridian's rule against prescribing. Asked whether a referee may ever hide context without showing that it did, with the map's proposal (opt-in, visible, one-gesture reversible) on the card, Mazze chose 'Visible only'. Two questions stay open and are not adopted here: whether opt-in holds per session or standing, and who may pin the Lighthouse. Born asserted because adopting a governing rule is an act of authority, folded by wt-026.
 
 ## Foreclosures — ghost edges
 
