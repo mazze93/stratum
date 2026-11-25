@@ -3,6 +3,7 @@ title: "Stratum R4: Authority registry, implementation spec"
 repo: github.com/mazze93/stratum
 status: draft for handoff
 date: 2026-11-20
+revised: 2026-11-25 (v0.2.0: mixed-version authority acts, §2.16, §5, §7)
 sources:
   - docs/ADR-003-trust-primitives.md (§3, §4, §5, §6 phase 3)
   - docs/journal/2026-10-06-trust-primitives/CHECKPOINT.md (R4 line)
@@ -43,7 +44,8 @@ This is ADR-003 **phase 3**. One PR, against `main`, no stacking (tp-020).
 12. **Never shell out** to `ssh-keygen` or anything else. Guards stay pure and synchronous (tp-007, tp-010).
 13. **Python oracle:** self-contained stdlib RFC 8032 verifier, pinned by RFC 8032 test vectors. **No pip step in CI** (tp-004, tp-008).
 14. **HMAC / shared-secret signatures are foreclosed** (tp-008).
-15. **v1 is untouched.** v1 events keep v1 guards byte-for-byte; "verified remains verified" (tp-016). Projection of existing traces and `data/genesis-projection.golden.json` must not change.
+15. **v1 is untouched.** v1 events keep v1 guards byte-for-byte; "verified remains verified" (tp-016). Projection of existing traces and `data/genesis-projection.golden.json` must not change. This covers v1 markers on **v1 targets** only; see 16.
+16. **The target decides, not the marker.** Whether an act needs registry signatures is set by the **target's** version, not the marker's. Any `ratification` or `trust_root_revoked` whose target is a v2 trust root is a v2 authority act, whatever the marker's own `schema_version`. A v1 marker can't carry `signatures` (parse error, §4), so a v1 `ratification` or `trust_root_revoked` targeting a v2 trust root is **refused**. Reason: today `guardTransition` branches on `t.schemaVersion`, while membership follows the target's status. Without this rule a token holder could remove a v2 root with a v1 revoke carrying two made-up `checked_at` signer names (v1's `QUORUM = 2` counts strings), or restore a revoked v2 root with an unsigned v1 ratification (`contradicted → ratified` is a legal edge). This changes no existing history: `guardOriginating` refuses every v2 `ratified` birth today, so no stored log holds a v2 trust root yet.
 
 ## 3. Amendment R4 must make to ADR-003
 
@@ -106,8 +108,11 @@ Let `members(E)` = live authorities at epoch E (the event's position in the fold
 | v2 `trust_root_revoked` | ≥ q verifying signatures from distinct live members. Replaces v1's "distinct signer strings with `checked_at`". |
 | v2 `ratification` | ≥ 1 verifying signature from a live member (ADR-003 §4). See Q4 on whether a single-human log changes anything here. |
 | v2 `verification` with a `signed_attestation` binding | Counts toward I1 only if `key_id ∈ members(E)` and the signature verifies over the attestation payload. Until now these parse and never count. |
+| v1 `ratification` or v1 `trust_root_revoked` whose target is a v2 trust root | Refused (§2.16). The guard reads the target's `schemaVersion` and `isTrustRoot`; the marker's version alone never selects the v1 path. |
 | Any v2 authority act when the log has no genesis | Refused (keeps tp-014's interim behavior for logs that never adopt a registry). |
 | Registry with live members < q | Every act that needs quorum is refused. Fail closed; nothing auto-recovers. |
+
+**Fold rule (both implementations).** `statusAt` must skip a v1 `ratification` / `trust_root_revoked` targeting a v2 trust root, the same way it skips an illegal transition. Append guards stop these on the honest path; the fold has to stay total and agree with the guard if a log is ever assembled outside `append` (e.g. rebuilt from storage by `loadLog`).
 
 Signature checks, in order (fail on first miss):
 1. `key_id` resolves to a live member at E.
@@ -156,12 +161,15 @@ Negative (each must be refused, in both impls):
 - Grant/revoke with q−1 valid signatures.
 - Registry bricked: revoke down to fewer than q members, then any quorum act refused.
 - `authorities` / `signatures` / `registry` on a v1 event; unknown keys inside them.
+- **Mixed version, revoke:** a v1 `trust_root_revoked` with two distinct `policy_authority` signer names, both with `checked_at`, targeting a ratified v2 authority root. Refused; the root stays `ratified` and `members(E)` is unchanged.
+- **Mixed version, restore:** revoke a v2 authority root with a valid v2 quorum-signed `trust_root_revoked`, then append an unsigned v1 `ratification` targeting it. Refused; the root stays `contradicted` and its keys stay out of `members(E)`.
+- **Fold twin of both:** a log fixture containing each of those markers as if stored (bypassing `append`) projects with the marker skipped, identically in both impls.
 
 Invariance:
 - All existing traces and `data/genesis-projection.golden.json` project unchanged.
 - Canonical golden unchanged.
 
-Touchstone pass before calling it done: enumerate the boundaries the suite doesn't reach and probe the top risks (fold ordering at the revocation epoch; signatures computed before vs after `seq` assignment; number canonicalization inside `authorities`).
+Touchstone pass before calling it done: enumerate the boundaries the suite doesn't reach and probe the top risks (any other path where a marker's version picks the guard for a v2 target; fold ordering at the revocation epoch; signatures computed before vs after `seq` assignment; number canonicalization inside `authorities`).
 
 ## 8. Repo conventions the implementer must follow
 
